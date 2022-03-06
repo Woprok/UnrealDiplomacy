@@ -2,13 +2,17 @@
 
 
 #include "Core/Map/AUDHexTile.h"
+#include <Components/SceneComponent.h>
+#include <Components/StaticMeshComponent.h>
 
 // Sets default values
 AUDHexTile::AUDHexTile()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
+	PrimaryActorTick.bCanEverTick = false;
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComp"));
+	TileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TileMesh"));
+	TileMesh->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned

@@ -16,7 +16,8 @@ Personal Dev Notes on Progress
 - Why does UE prefix new C++ classes with naming convention prefix, isnt it my job ? Now I need to rename bunch  of classes as I want name of class to be equal to name of file, prefix included...
 - Multiplayer should work out of box which is great, but understanding what is necessary for it to work correctly gave me headache
 - I gave up on SlateUi without even trying, like that thing is super complicated compared to blueprints, even if its super usefull.
-
+- Replication is not simple as it looks. Anytime client joins via JoinSession, server will invoke OnPostLogin. But it does not mean that Client is synchronized as RPC calls will not affect it as one might want.
+- Replicating correctly on newly joined client can be done via BeginPlay on PlayerState or others that will be replicated.
 
 TODO 
 move MyGameInstance, MyGameMode, MyPlayerController, State, HexTile, HexManager
