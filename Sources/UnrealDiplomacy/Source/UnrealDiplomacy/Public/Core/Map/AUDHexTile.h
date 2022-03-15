@@ -22,7 +22,7 @@ class UNREALDIPLOMACY_API AUDHexTile : public AActor
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(VisibleInstanceOnly, Category = "Tile")
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Tile")
 	FIntPoint TileIndex;
 	
 protected:
