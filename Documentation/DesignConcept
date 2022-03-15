@@ -1,0 +1,125 @@
+Game Design:
+
+-> TURN-Based Gameplay
+- Each PLAYER takes turn in order.
+- During TURN PLAYER executes actions.
+- We distinguish two types of actions:
+--> Self-Affecting Actions
+-- Basically economic, base-building actions etc. 
+--> Other-Affecting Actions
+-- Any direct or indirect action that affects other PLAYERS or other PLAYERS TERRITORIES.
+
+-> TURN
+- Dunno it just represents unit of time, like a week/month/year depending on how we want to scale it.
+- NOTE: It would be perfect if we could go Real-Time with Pause but that is not feasable in time we can allocate for this.
+
+-> Maximum and minimum of allowed PLAYERS
+- Due to fact that we are looking for TURN-Based gameplay, we can't have too many players.
+- Due to diplomacy condition, we need reasonable count of opponents to force stalemates.
+- We can limit player count to something like 16 - 32, which is also reasonable range for solid diplomacy.
+
+-> PLAYER is NATION
+-> NATION is combination of TERRITORIES and NATION IDENTITY
+
+-> TERRITORIES
+- Each TERRITORY is represented as an HEX TILE.
+- TERRITORIES are generated during MAP GENERATION and their count does not change.
+
+-> MAP GENERATION
+- Done in multiple steps:
+--> Generate Total HEX TILE Count 
+- Based on amount of Players, each player should have SAFE AREA and that has to reflect in total count.
+--> Generate PLAYER positions
+- With respect to SAFE AREA required
+--> Generate Resources
+
+-> MAP
+- Collection of HEX TILES
+- Might or might not indicate existance of MINIMAP, it's optional feature that would be nice to have. (optional feature)
+
+-> MINIMAP
+- Optional, as it provides lot of filters etc. that can help player to navigate to correct action.
+
+-> HEX TILE
+- Has RESOURCE
+- Has FEATURE
+- Has TYPE
+- Has OWNER
+- Creates INFORMATIONS every TURN
+
+-> OWNER
+- Is either a PLAYER or GAIA/NATURE.
+
+-> GAIA/NATURE
+- Is PLAYER 0, that never makes any action during his turn ?
+- Basically just controls WORLD.
+
+-> WORLD
+- :COOL:
+
+-> SAFE AREA
+- Specific area around PLAYER starting CAPITAL TERRITORY.
+- One unit of distance from CAPITAL TERRITORY all MANDATORIES TERRITORIES must spawn.
+- Two unit of distance anything can appear but no other PLAYER SAFE AREA.
+
+-> MANDATORIES TERRITORIES
+- Contains specific HEX TILE FEATURES.
+
+-> NATION IDENTITY
+- Each nation has set of BONUSES and FLAWS.
+- They encourage certain behaviour that favors specific playstyle.
+- Due to diversity in NATION IDENTITIES it can cause inbalance, but should always encourage DIPLOMACY
+- NATION IDENTITIES do not have to be on same level, we can distinguish less and more advanced... (optional feature)
+
+-> DIPLOMACY
+- Used very loosely in this document. Replace by any suitable words that carry the spirit of DIPLOMACY.
+
+-> RESOURCE
+- Two types of RESOURCE:
+--> SIMPLE RESOURCE
+- Can be traded 1:X, works like TRADE CONTRACT.
+- We will start with 3 SIMPLE RESOURCES: FOOD, WOOD, GOLD
+--> LUXURIOUS RESOURCE
+- Can be traded, which creates TRADE CONTRACT that provides LUXURIOUS RESOURCE to another PLAYER for specific amount of TURNS.
+- Original owner keeps LUXURIOUS RESOURCE as well, making it benefitial and encouraging to trade.
+- Bonus from LUXURIOUS RESOURCE increases for each ongoing trade for owner
+- LUXURIOUS RESOUCE can be varied to create content illusion ? but they will all behave same.
+
+-> FOOD
+- Resource primarily used for economy (PEACE)
+-> WOOD
+- Resource primarily used for construction (NEUTRAL)
+-> GOLD
+- Resource primarily used for military (WAR)
+
+-> TILE TYPE
+- Different TILE TYPE can provide different BONUS to it YIELD.
+- We will consider following types: WATER, LAND
+
+-> TILE FEATURE
+- Different TILE FEATURE can provide different BONUS to it YIELD.
+- We will consider following feature: UNDERGROUND, SKYLANDS
+
+-> NATION BONUSES
+- In general bonus to something in easy to quantify and imagine number so either numerically big value or percentual increase.
+-> NATION FLAWS
+- In general penalty to something in easy to quantify and imagine number so either numerically big value or percentual increase.
+- Preferably flaw should always come with cool bonus.
+
+-> HEX TILE IMPROVEMENT
+- Each tile can be improved:
+- Upgrades: FOOD, WOOD, GOLD can be upgraded to increase YIELD
+- Special upgrades are always available: PEACE, NEUTRAL, WAR (Bonuses & Penalties will be done later as we achieve something).
+- Special upgrades are expected to help PLAYER to even to other or get supperiority over other in certain area like war.
+
+-> INFORMATIONS
+- Each PLAYER ACTION should be representable as INFORMATION and with this it should be possible to later create at least a little functional espionage system.
+
+TODO ONEPAGEDESIGN FOR MAIN MENU
+TODO ONEPAGEDESIGN FOR MAIN GAME SCREEN CENTERED ON MAP
+TODO ONEPAGEDESIGN FOR HEX TILE SUBSCREEN
+TODO ONEPAGEDESIGN FOR NATION INFORMATION SCREEN
+
+
+QUESTIONS:
+MP yes or no ? like there is very little to no reason not to. If everything behaves like MP due to turn nature?

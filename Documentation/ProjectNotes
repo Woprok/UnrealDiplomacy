@@ -1,0 +1,80 @@
+Unreal Engine Notes
+
+Naming Conventions
+
+Personal Dev Notes on Progress
+- Learning UE is not hard after having some experience with Unity
+- But learning is more complex as UE seems to expose much more on user at first glance, even tutorials are not really beginner level, more of beginner with experience in dev/gamedev.
+- Naming conventions are quite intuitive and consistent, compared to Unity, which is messy
+- Compiling C++ source is painful, its easy to break whole project
+- Blueprints can crash quite easily whole editor
+- Default configuration files, could use better documentation as internet just points you to what write, without describing why its necessary
+- Blueprints are easy to use, yes you can easily make mistake with wrong condition and not even realize it.
+- C++ is actually scary due even with c++ experience, I find it hard to find the right path
+- Walking through MultiplayerShootout and StrategyGame helped a lot to understand how to do things
+- Did I mention how I can waste day on deciding naming convention to use, even through I am just using official one ?
+- Why does UE prefix new C++ classes with naming convention prefix, isnt it my job ? Now I need to rename bunch  of classes as I want name of class to be equal to name of file, prefix included...
+- Multiplayer should work out of box which is great, but understanding what is necessary for it to work correctly gave me headache
+- I gave up on SlateUi without even trying, like that thing is super complicated compared to blueprints, even if its super usefull.
+- Replication is not simple as it looks. Anytime client joins via JoinSession, server will invoke OnPostLogin. But it does not mean that Client is synchronized as RPC calls will not affect it as one might want.
+- Replicating correctly on newly joined client can be done via BeginPlay on PlayerState or others that will be replicated.
+- One should remember that GameInstance is local and to do anything over network it has to be in GameState or PlayerState. GameMode is authoritative gameloop for handling logic.
+- Game Instance is single for whole time game runs.
+- Player Controller on index 0 is basically always returning current application controller.
+- RepNot is variant to replication that gives notification of change, very helpful for UI.
+
+
+
+DEV Notes for consistency and design defend:
+Widgets a.k.a. UI
+- Widget contains only UI elements and methods to update them
+- Widget button clicks and other callbacks call HUD callback, which will invoke proper function on GameInstance or GameState
+- Widget is updated from callback that is intercepted at HUD level, after which proper function on widget will be called with obtained data.
+- Widget should always be DUMB, they should only be able to CALL BIG BOSS HUD and GET ORDERS FROM BIG BOSS HUD
+
+GameInstance
+- Should contain nongame logic such as networking callbacks, switching and opening levels, error handling...
+
+GameMode
+- Contains server authoritative code that executes only on server, for example Start Game is function that should be here.
+
+GameState
+- Contains everything related to game, including all Actors are required to be replicated.
+- Should hold most of RPC calls.
+
+
+Task TODOS:
+Move UI creation and assign to HUDs.
+HUDs should assign state.
+HUDs should keep correct calls on GameInstance.
+Create TurnManager
+Create LobbyManager
+Create GameManager
+
+Create proper menu workflow. (Game starts in MainMenu, anytime it moves to game level or leaves game level is has to be remembered and properly initialized or deconstructed)
+
+Task DONES:
+- Create initial design.
+- Create test project.
+- Learn Unreal Engine basics.
+- Create working multiplayer test project.
+- Create production project.
+- Create basic menu.
+- Create basic game host and join part.
+
+
+
+
+
+
+Dumb stories:
+
+RPC vs Woprok part HOW TO DO TURN MANAGMENT
+
+chapem ako replikovat event z klienta na server:
+1. Najst objekt ktori existuje na klientovi a sucasne na serveri.
+2. Konkretne potrebujeme objekt ktori je vlastneny klientom.
+3. Klient vlastniaci takyto objekt moze zavolat event ktori ma nastaveny RPC RunOnServer
+4. Vytvorit event
+5. Zavolat na rozumnom mieste event
+6. Ked je event zavolany tak sa zavola iba na serveri. Takze klient nic nespravi. Server spravi to co po nom chceme, kludne aj na server vlastnenom objekte.
