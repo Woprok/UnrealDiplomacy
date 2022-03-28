@@ -2,6 +2,7 @@
 
 
 #include "Core/Map/AUDHexTile.h"
+#include "Core/Data/FUDTypes.h"
 #include <Components/SceneComponent.h>
 #include <Components/StaticMeshComponent.h>
 

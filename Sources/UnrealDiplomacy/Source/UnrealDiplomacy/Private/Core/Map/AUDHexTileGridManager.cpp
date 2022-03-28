@@ -69,7 +69,7 @@ void AUDHexTileGridManager::GenerateMap()
 				tileToSpawn = GrassHexTile;
 			}
 
-			AUDHexTile* newTile = GetWorld()->SpawnActor<AUDHexTile>(tileToSpawn, FVector(FIntPoint(xPosition, yPosition)), FRotator::ZeroRotator);
+			TObjectPtr<AUDHexTile> newTile = GetWorld()->SpawnActor<AUDHexTile>(tileToSpawn, FVector(FIntPoint(xPosition, yPosition)), FRotator::ZeroRotator);
 			newTile->TileIndex = FIntPoint(x, y);
 			newTile->SetActorLabel(FString::Printf(TEXT("Tile_%d-%d"), x, y));
 			HexGrid2DArray[x][y] = newTile;

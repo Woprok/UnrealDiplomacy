@@ -6,16 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "AUDHexTile.generated.h"
 
+enum class EHexTileType : uint8;
 class UStaticMeshComponent;
-
-UENUM()
-enum class EHexTileType : uint8
-{
-	INVALID,
-	GRASS,
-	WATER,
-	MAX UMETA(Hidden)
-};
 
 UCLASS()
 class UNREALDIPLOMACY_API AUDHexTile : public AActor
@@ -30,7 +22,7 @@ protected:
 	EHexTileType TileType;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Tile")
-	UStaticMeshComponent* TileMesh;
+	TObjectPtr<UStaticMeshComponent> TileMesh;
 	
 public:
 	// Sets default values for this actor's properties

@@ -14,7 +14,7 @@ class UNREALDIPLOMACY_API AUDHexTileGridManager : public AActor
 	GENERATED_BODY()
 	
 protected:
-	TArray<TArray<AUDHexTile*>> HexGrid2DArray;
+	TArray<TArray<TObjectPtr<AUDHexTile>>> HexGrid2DArray;
 
 	UPROPERTY(EditAnywhere, Category = "HexGrid|Layout")
 	float TileRadius = 100;
