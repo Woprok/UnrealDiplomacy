@@ -41,6 +41,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Resource)
 	int32 Maximum;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Resource)
+	int32 Gain;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Resource)
 	TObjectPtr<UTexture> Icon;

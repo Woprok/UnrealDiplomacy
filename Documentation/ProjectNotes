@@ -22,7 +22,8 @@ Personal Dev Notes on Progress
 - Game Instance is single for whole time game runs.
 - Player Controller on index 0 is basically always returning current application controller.
 - RepNot is variant to replication that gives notification of change, very helpful for UI.
-
+- Ownership is definitely my bane at the moment. It's not complicated, it's just hard to get used to thinking who is the owner and what is correct approach to propagate informations.
+- PostLogin happens before BeginPlay (this is explainable once we learnt that BeginPlay is just a function callable in game mode base)
 
 
 DEV Notes for consistency and design defend:
