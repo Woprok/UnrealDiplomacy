@@ -24,7 +24,7 @@ Personal Dev Notes on Progress
 - RepNot is variant to replication that gives notification of change, very helpful for UI.
 - Ownership is definitely my bane at the moment. It's not complicated, it's just hard to get used to thinking who is the owner and what is correct approach to propagate informations.
 - PostLogin happens before BeginPlay (this is explainable once we learnt that BeginPlay is just a function callable in game mode base)
-
+- Gamemode initializes Gamestate. After that Gamemode initializes Player Controllers. Finally Gamestate initializes Player State. Initialization hierarchy for these is then Gamemode -> Gamestate -> Player Controller -> Player State.
 
 DEV Notes for consistency and design defend:
 Widgets a.k.a. UI
@@ -32,6 +32,7 @@ Widgets a.k.a. UI
 - Widget button clicks and other callbacks call HUD callback, which will invoke proper function on GameInstance or GameState
 - Widget is updated from callback that is intercepted at HUD level, after which proper function on widget will be called with obtained data.
 - Widget should always be DUMB, they should only be able to CALL BIG BOSS HUD and GET ORDERS FROM BIG BOSS HUD
+- Widget should understand only his content, everything else should be unknown to him.
 
 GameInstance
 - Should contain nongame logic such as networking callbacks, switching and opening levels, error handling...
@@ -64,8 +65,13 @@ Task DONES:
 - Create basic game host and join part.
 
 
-
-
+Namings
+Events
+VERBS
+- InvokeOnButtonClicked for anything called by UI etc. (we always use mediator between UI and logic)
+- OnSomething should be used for Event Dispatchers and events that handle their answers
+- RPC start with Server/Client/Multicast, their handlers start with On, if handlers forwards invoke then forward is without On 
+Example: (InvokeOnStartClicked -> ServerStart -> OnStart -> Start)
 
 
 Dumb stories:
