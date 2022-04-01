@@ -25,6 +25,7 @@ Personal Dev Notes on Progress
 - Ownership is definitely my bane at the moment. It's not complicated, it's just hard to get used to thinking who is the owner and what is correct approach to propagate informations.
 - PostLogin happens before BeginPlay (this is explainable once we learnt that BeginPlay is just a function callable in game mode base)
 - Gamemode initializes Gamestate. After that Gamemode initializes Player Controllers. Finally Gamestate initializes Player State. Initialization hierarchy for these is then Gamemode -> Gamestate -> Player Controller -> Player State.
+- Grids are back, finally understood how they work as 0 is auto and everything else is x* (same as WPF). Creating UI with correct free space scaling is nice.
 
 DEV Notes for consistency and design defend:
 Widgets a.k.a. UI
