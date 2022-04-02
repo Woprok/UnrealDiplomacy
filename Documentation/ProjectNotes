@@ -27,6 +27,14 @@ Personal Dev Notes on Progress
 - Gamemode initializes Gamestate. After that Gamemode initializes Player Controllers. Finally Gamestate initializes Player State. Initialization hierarchy for these is then Gamemode -> Gamestate -> Player Controller -> Player State.
 - Grids are back, finally understood how they work as 0 is auto and everything else is x* (same as WPF). Creating UI with correct free space scaling is nice.
 
+
+NetWork REPLICATION
+- Construct happens first, so its good to initialize objects there. BeginPlay is not consistent between server and client, see order of call varies. PlayerState should be avoided for sync events after login.
+- GameState BeginPlay is most important aspect of after join replication as it can be used consistently for same effect on both client and server, if BeginPlay is avoided on others.
+- GameState BeginPlay is followed by replication, so its worth remembering that this will ensure sync. Same for all others, but seriously dont relay on PlayerState as it might get initialized in wonky time before GameState or after it.
+- HUD initialize in constructor what can be done there.
+- GameMode initialize in constructor what can be done there and what cant do in GameState constructor.
+
 DEV Notes for consistency and design defend:
 Widgets a.k.a. UI
 - Widget contains only UI elements and methods to update them
