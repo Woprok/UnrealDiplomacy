@@ -35,6 +35,8 @@ NetWork REPLICATION
 - HUD initialize in constructor what can be done there.
 - GameMode initialize in constructor what can be done there and what cant do in GameState constructor.
 
+- Game State calls ClientReplication methods/events, PlayerController calls ServerReplication methods/events creating clear line between server and clients
+
 DEV Notes for consistency and design defend:
 Widgets a.k.a. UI
 - Widget contains only UI elements and methods to update them
@@ -53,16 +55,12 @@ GameState
 - Contains everything related to game, including all Actors are required to be replicated.
 - Should hold most of RPC calls.
 
+Events vs Functions
+Events will serve as interface from now on. (Everything should be changed to fit this idealogy ASAP)
+Function will serve as inner calls within one object. These are always private. 
+Function will be public if they are returning something that other object needs.
+GameInstance can contain public function as not everything there requires to be event or is desired to be one.
 
-Task TODOS:
-Move UI creation and assign to HUDs.
-HUDs should assign state.
-HUDs should keep correct calls on GameInstance.
-Create TurnManager
-Create LobbyManager
-Create GameManager
-
-Create proper menu workflow. (Game starts in MainMenu, anytime it moves to game level or leaves game level is has to be remembered and properly initialized or deconstructed)
 
 Task DONES:
 - Create initial design.
@@ -72,7 +70,14 @@ Task DONES:
 - Create production project.
 - Create basic menu.
 - Create basic game host and join part.
-
+- Move UI creation and assign to HUDs.
+- HUDs should assign state.
+- HUDs should keep correct calls on GameInstance.
+- Create TurnManager
+- Create LobbyManager
+- Create GameManager
+- Create proper menu workflow. (Game starts in MainMenu, anytime it moves to game level or leaves game level is has to be remembered and properly initialized or deconstructed)
+- Managing tasks on github
 
 Namings
 Events

@@ -49,22 +49,6 @@ public:
 	TObjectPtr<UTexture> Icon;
 };
 
-
-
-
-/*/UENUM()
-enum class EUDTileRegion : uint8
-{
-	INVALID,
-	UNDERLAND,
-	LAND,
-	SKYLAND,
-	MAX UMETA(Hidden)
-
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Region)
-	//EUDTileRegion Region;
-};*/
-
 // Representation of tile most important part, be it Underground, Ground or Sky...
 USTRUCT(BlueprintType)
 struct UNREALDIPLOMACY_API FUDTileRegion : public FTableRowBase
