@@ -103,8 +103,18 @@ public:
 		FUDTileBiome Biome;
 	
 	// Any amount of features [Ocean, River, Hill, Beach]
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tile)
 	TArray<FUDTileFeature> Features;
 
 
 	// Any amount of links to extensions ?
+};
+
+USTRUCT(BlueprintType)
+struct UNREALDIPLOMACY_API FUDTileRow
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tile)
+	TArray<FUDTile> Tiles;
 };

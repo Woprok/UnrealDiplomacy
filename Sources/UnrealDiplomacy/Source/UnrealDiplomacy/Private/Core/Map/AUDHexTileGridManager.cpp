@@ -8,8 +8,13 @@
 AUDHexTileGridManager::AUDHexTileGridManager()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
+}
 
+// Called every frame
+void AUDHexTileGridManager::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
 }
 
 // Called when the game starts or when spawned
@@ -25,12 +30,91 @@ void AUDHexTileGridManager::Generate()
 	GenerateMap();
 }
 
-
-// Called every frame
-void AUDHexTileGridManager::Tick(float DeltaTime)
+int32 AUDHexTileGridManager::GetTilesPerPlayer()
 {
-	Super::Tick(DeltaTime);
+	// 3 n^2 - 3 n + 1 so we get proper sequence.
+	const int32 eRad = PlayerExclusionRadius + 1;
+	return 3 * eRad * eRad - 3 * eRad + 1;
+}
 
+void AUDHexTileGridManager::AdjustGridSize()
+{
+	
+	
+	// Extend by BorderTileThickness, so there is enough space for border.
+	GridWidth += BorderTileThickness;
+	GridHeight += BorderTileThickness;
+	
+}
+
+void AUDHexTileGridManager::GenerateBorder()
+{
+	if (BorderTileThickness >= 1)
+	{
+		// first i rows
+		for (int i = 0; i < BorderTileThickness; ++i)
+		{
+			for (int32 x = 0; x < GridWidth; ++x)
+			{
+				// Place Border at [x][i]
+			}
+		}
+		// last i rows
+		for (int i = GridHeight - BorderTileThickness; i < GridHeight; ++i)
+		{
+			for (int32 x = 0; x < GridWidth; ++x)
+			{
+				// Place Border at [x][i]
+			}
+		}
+
+		// first j columns
+		for (int j = 0; j < BorderTileThickness; ++j)
+		{
+			for (int32 y = 0; y < GridHeight; ++y)
+			{
+				// Place Border at [j][y]
+			}
+		}
+		// last j columns
+		for (int j = GridWidth - BorderTileThickness; j < GridWidth; ++j)
+		{
+			for (int32 x = 0; x < GridWidth; ++x)
+			{
+				// Place Border at [j][y]
+			}
+		}
+	}
+}
+
+void AUDHexTileGridManager::GenerateMapInSteps()
+{
+	// Initialize
+	
+	SetupPositionConstantValues();
+	// Adjust grid size before generation.
+	AdjustGridSize();
+	// Adjust internal array to proper dimensions.
+	SetupMapSize();
+	// Create border part.
+	GenerateBorder();
+	//
+
+	// precondition:: maintaned array of all tiles
+	// random: any index in current array returns only non used tile
+	// postcondition: buffer array of all unused tiles
+	// for each player
+		// Get random point in map
+		// Select it as player spawn
+		// Remove all adjacent tiles based on exclusion radius
+		// Remove all adjacent tiles based on buffer radius
+		// next random point is always valid
+	// generate all of remaining buffer returned as postcondition
+	// these are tiles that were not used by other players
+	// merge results from adjecent tiles if possible
+
+
+	
 }
 
 void AUDHexTileGridManager::SetupPositionConstantValues()
