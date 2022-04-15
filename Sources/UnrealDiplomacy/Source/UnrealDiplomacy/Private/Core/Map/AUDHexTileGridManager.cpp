@@ -2,6 +2,7 @@
 
 
 #include "Core/Map/AUDHexTileGridManager.h"
+#include "Core/Data/FUDTypes.h"
 #include "Core/Map/AUDHexTile.h"
 
 // Sets default values
@@ -23,83 +24,177 @@ void AUDHexTileGridManager::BeginPlay()
 	Super::BeginPlay();
 }
 
-void AUDHexTileGridManager::Generate()
-{	
-	SetupPositionConstantValues();
-	SetupMapSize();
-	GenerateMap();
-}
+// ----------------------------------------------------------------------------------
+// Preparation methods for map gen.
+// ----------------------------------------------------------------------------------
 
-int32 AUDHexTileGridManager::GetTilesPerPlayer()
+void AUDHexTileGridManager::PrepareMapParameters()
 {
-	// 3 n^2 - 3 n + 1 so we get proper sequence.
-	const int32 eRad = PlayerExclusionRadius + 1;
-	return 3 * eRad * eRad - 3 * eRad + 1;
+	DefineTileOffsets();
+
+	DefinePlayerTileCounts();
+	
+	DefineGridSize();
+
+	DefineFullGridSize();
+
+	InitializeGridArray();
 }
 
-void AUDHexTileGridManager::AdjustGridSize()
+void AUDHexTileGridManager::DefineTileOffsets()
 {
-	
-	
-	// Extend by BorderTileThickness, so there is enough space for border.
-	GridWidth += BorderTileThickness;
-	GridHeight += BorderTileThickness;
-	
+	TileHorizontalOffsetEven = sqrt(3) * TileExtendedRadius;
+	TileHorizontalOffsetOdd = TileHorizontalOffsetEven / 2;
+	TileVerticalOffset = (6 * TileExtendedRadius) / 4;
 }
 
-void AUDHexTileGridManager::GenerateBorder()
+void AUDHexTileGridManager::DefinePlayerTileCounts()
+{
+	// 3 n^2 - 3 n + 1 should be how we get proper sequence for hexes.
+	auto CalculateTileCount = [](int32 n)
+	{
+		return static_cast<int32>(3 * n * n - 3 * n + 1);
+	};
+	
+	PlayerExclusionTiles = CalculateTileCount(1 + PlayerExclusionRadius);
+	PlayerBufferTiles = CalculateTileCount(1 + PlayerExclusionRadius + PlayerBufferRadius);
+}
+
+void AUDHexTileGridManager::DefineGridSize()
+{
+	int32 totalRequired = PlayerCount * PlayerBufferTiles;
+	UseableGridHeight = MinimumGridHeight;
+	UseableGridWidth = MinimumGridWidth;
+	int32 baseProvided = UseableGridHeight * UseableGridWidth;
+	while (totalRequired > baseProvided)
+	{
+		UseableGridHeight++;
+		UseableGridWidth++;
+		baseProvided = UseableGridHeight * UseableGridWidth;
+	}
+}
+
+void AUDHexTileGridManager::DefineFullGridSize()
+{
+	UseableGridWidth += 2 * BorderTileThickness;
+	UseableGridHeight += 2 * BorderTileThickness;
+}
+
+void AUDHexTileGridManager::InitializeGridArray()
+{
+	// ROWS
+	HexGrid2DArray.SetNumZeroed(UseableGridHeight);
+	for (int32 i = 0; i < HexGrid2DArray.Num(); ++i)
+	{
+		// COLUMNS
+		HexGrid2DArray[i].SetNumZeroed(UseableGridWidth);
+	}
+}
+
+FIntPoint AUDHexTileGridManager::DetermineTilePositionInWorld(const int32 x, const int32 y)
+{
+	const bool isOddRow = y % 2 == 1;
+	const float xPosition = isOddRow ? x * TileHorizontalOffsetEven + TileHorizontalOffsetOdd : x * TileHorizontalOffsetEven;
+	const float yPosition = y * TileVerticalOffset;
+	return FIntPoint(xPosition, yPosition);
+}
+
+void AUDHexTileGridManager::SpawnTile(const int32 xWorld, const int32 yWorld, TSubclassOf<AUDHexTile> tileType, int32 xData, int32 yData)
+{
+	FVector worldPosition = FVector(DetermineTilePositionInWorld(xWorld, yWorld), 0);
+	// Create at position
+	TObjectPtr<AUDHexTile> newTile = GetWorld()->SpawnActor<AUDHexTile>(tileType, worldPosition, FRotator::ZeroRotator);
+	newTile->GridIndices = FIntPoint(xWorld, yWorld);
+	newTile->DataIndices = FIntPoint(xData, yData);
+	HexGrid2DArray[xWorld][yWorld] = newTile;
+}
+
+void AUDHexTileGridManager::SpawnBorderTile(const int32 x, const int32 y)
+{
+	SpawnTile(x, y, MapBorderHexTile, -1, -1);
+}
+
+// ----------------------------------------------------------------------------------
+// Generation methods for map gen.
+// ----------------------------------------------------------------------------------
+
+void AUDHexTileGridManager::GenerateMapBorder()
 {
 	if (BorderTileThickness >= 1)
 	{
-		// first i rows
+		// First i rows
 		for (int i = 0; i < BorderTileThickness; ++i)
 		{
-			for (int32 x = 0; x < GridWidth; ++x)
+			for (int32 x = 0; x < FullGridWidth; ++x)
 			{
 				// Place Border at [x][i]
+				SpawnBorderTile(x, i);
 			}
 		}
-		// last i rows
-		for (int i = GridHeight - BorderTileThickness; i < GridHeight; ++i)
+		// Last i rows
+		for (int i = FullGridHeight - BorderTileThickness; i < FullGridHeight; ++i)
 		{
-			for (int32 x = 0; x < GridWidth; ++x)
+			for (int32 x = 0; x < FullGridWidth; ++x)
 			{
 				// Place Border at [x][i]
+				SpawnBorderTile(x, i);
 			}
 		}
 
-		// first j columns
+		// First j columns
 		for (int j = 0; j < BorderTileThickness; ++j)
 		{
-			for (int32 y = 0; y < GridHeight; ++y)
+			// Start after first few rows and End before last few rows
+			for (int32 y = BorderTileThickness; y < FullGridHeight - BorderTileThickness; ++y)
 			{
 				// Place Border at [j][y]
+				SpawnBorderTile(j, y);
 			}
 		}
-		// last j columns
-		for (int j = GridWidth - BorderTileThickness; j < GridWidth; ++j)
+		// Last j columns
+		for (int j = FullGridWidth - BorderTileThickness; j < FullGridWidth; ++j)
 		{
-			for (int32 x = 0; x < GridWidth; ++x)
+			// Start after first few rows and End before last few rows
+			for (int32 y = BorderTileThickness; y < FullGridHeight - BorderTileThickness; ++y)
 			{
 				// Place Border at [j][y]
+				SpawnBorderTile(j, y);
 			}
 		}
 	}
 }
 
-void AUDHexTileGridManager::GenerateMapInSteps()
-{
-	// Initialize
-	
-	SetupPositionConstantValues();
-	// Adjust grid size before generation.
-	AdjustGridSize();
-	// Adjust internal array to proper dimensions.
-	SetupMapSize();
-	// Create border part.
-	GenerateBorder();
-	//
+//void AUDHexTileGridManager::GenerateFromTileData(TArray<FUDTileRow>& map)
+//{
+//	check(map.Num() == UseableGridHeight)
+//	// ROWS
+//	for (int i = 0; i < map.Num(); ++i)
+//	{
+//		check(map[i].Tiles.Num() == UseableGridWidth)
+//		// COLUMNS
+//		for (int j = 0; j < map[i].Tiles.Num(); ++j)
+//		{
+//			// World position must include border.
+//			int32 xWorld = i + BorderTileThickness;
+//			int32 yWorld = j + BorderTileThickness;
+//			map[i].Tiles[j].WorldPosition = FIntPoint(xWorld, yWorld);
+//			// Data postion is same as the receiving map position.
+//			SpawnTile(xWorld, yWorld, MapWorldHexTile, i, j);
+//			HexGrid2DArray[xWorld][yWorld]->VisualUpdate(map[i].Tiles[j]);
+//		}
+//	}
+//}
 
+
+void TestGen()
+{
+	//FRandomStream Stream(MapSeed);
+	//if (Stream.FRandRange(0.f, 1.0f) < 0.5f) {
+	//	tileToSpawn = WaterHexTile;
+	//}
+
+	// Obtain generated tilemap
+	
 	// precondition:: maintaned array of all tiles
 	// random: any index in current array returns only non used tile
 	// postcondition: buffer array of all unused tiles
@@ -111,53 +206,5 @@ void AUDHexTileGridManager::GenerateMapInSteps()
 		// next random point is always valid
 	// generate all of remaining buffer returned as postcondition
 	// these are tiles that were not used by other players
-	// merge results from adjecent tiles if possible
-
-
-	
+	// merge results from adjecent tiles if possible	
 }
-
-void AUDHexTileGridManager::SetupPositionConstantValues()
-{
-	auto extendedRadius = TileRadius + 4;
-	TileHorizontalOffset = sqrt(3) * extendedRadius;
-	OddRowTileHorizontalOffset = TileHorizontalOffset / 2;
-	TileVerticalOffset = (6 * extendedRadius) / 4;
-}
-void AUDHexTileGridManager::SetupMapSize()
-{
-	HexGrid2DArray.SetNumZeroed(GridWidth);
-	for (int32 i = 0; i < HexGrid2DArray.Num(); ++i)
-	{
-		HexGrid2DArray[i].SetNumZeroed(GridHeight);
-	}
-}
-void AUDHexTileGridManager::GenerateMap()
-{
-	FRandomStream Stream(MapSeed);
-	
-	for (int32 y = 0; y < GridHeight; ++y)
-	{
-		for (int32 x = 0; x < GridWidth; ++x)
-		{
-			const bool isOddRow = y % 2 == 1;
-			const float xPosition = isOddRow ? x * TileHorizontalOffset + OddRowTileHorizontalOffset : x * TileHorizontalOffset;
-			const float yPosition = y * TileVerticalOffset;
-			TSubclassOf<AUDHexTile> tileToSpawn;
-
-			if (Stream.FRandRange(0.f, 1.0f) < 0.5f) {
-				tileToSpawn = WaterHexTile;
-			}
-			else
-			{
-				tileToSpawn = GrassHexTile;
-			}
-
-			TObjectPtr<AUDHexTile> newTile = GetWorld()->SpawnActor<AUDHexTile>(tileToSpawn, FVector(FIntPoint(xPosition, yPosition)), FRotator::ZeroRotator);
-			newTile->TileIndex = FIntPoint(x, y);
-			newTile->SetActorLabel(FString::Printf(TEXT("Tile_%d-%d"), x, y));
-			HexGrid2DArray[x][y] = newTile;
-		}
-	}
-}
-

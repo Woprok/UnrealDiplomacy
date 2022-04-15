@@ -16,12 +16,13 @@ public:
 	~FUDTypes();
 };
 
+// Each tile is either part of world or border around the world. This can be used to determine additional behaviour.
 UENUM(BlueprintType)
 enum class EHexTileType : uint8
 {
 	INVALID,
-	GRASS,
-	WATER,
+	BORDER,
+	WORLD,
 	MAX UMETA(Hidden)
 };
 
@@ -94,17 +95,21 @@ struct UNREALDIPLOMACY_API FUDTile
 {
 	GENERATED_BODY()
 public:
-	// Single region
+	// Defines position in the world.
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Tile)
+	FIntPoint WorldPosition;
+	
+	// Single region.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tile)
 	FUDTileRegion Region;
 
-	// Single biome
+	// Single biome.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tile)
-		FUDTileBiome Biome;
+	FUDTileBiome Biome;
 	
 	// Any amount of features [Ocean, River, Hill, Beach]
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tile)
-	TArray<FUDTileFeature> Features;
+	FUDTileFeature Feature;
 
 
 	// Any amount of links to extensions ?
