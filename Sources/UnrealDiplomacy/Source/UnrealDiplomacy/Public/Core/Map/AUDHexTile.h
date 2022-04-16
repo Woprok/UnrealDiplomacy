@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-//#include "Core/Data/FUDTypes.h"
+#include "Core/Data/FUDTypes.h"
 #include "AUDHexTile.generated.h"
 
 enum class EHexTileType : uint8;
@@ -29,9 +29,9 @@ public:
 	AUDHexTile();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	// Updates visual of this class based on supplied data.
-	//UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "Tile")
-	//void VisualUpdate(FUDTile& tile);
+	// Event that updates visuals of this class based on supplied data. Visual logic is separated from rest of game logic even if its using game logic data.
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "Tile")
+	void OnVisualUpdate(UPARAM(ref)FUDTile& tile);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

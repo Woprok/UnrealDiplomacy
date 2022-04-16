@@ -2,7 +2,6 @@
 
 
 #include "Core/Map/AUDHexTileGridManager.h"
-#include "Core/Data/FUDTypes.h"
 #include "Core/Map/AUDHexTile.h"
 
 // Sets default values
@@ -76,18 +75,18 @@ void AUDHexTileGridManager::DefineGridSize()
 
 void AUDHexTileGridManager::DefineFullGridSize()
 {
-	UseableGridWidth += 2 * BorderTileThickness;
-	UseableGridHeight += 2 * BorderTileThickness;
+	FullGridWidth = UseableGridWidth + 2 * BorderTileThickness;
+	FullGridHeight = UseableGridHeight + 2 * BorderTileThickness;
 }
 
 void AUDHexTileGridManager::InitializeGridArray()
 {
 	// ROWS
-	HexGrid2DArray.SetNumZeroed(UseableGridHeight);
+	HexGrid2DArray.SetNumZeroed(FullGridHeight);
 	for (int32 i = 0; i < HexGrid2DArray.Num(); ++i)
 	{
 		// COLUMNS
-		HexGrid2DArray[i].SetNumZeroed(UseableGridWidth);
+		HexGrid2DArray[i].SetNumZeroed(FullGridWidth);
 	}
 }
 
@@ -125,66 +124,63 @@ void AUDHexTileGridManager::GenerateMapBorder()
 		// First i rows
 		for (int i = 0; i < BorderTileThickness; ++i)
 		{
-			for (int32 x = 0; x < FullGridWidth; ++x)
+			for (int32 y = 0; y < FullGridWidth; ++y)
 			{
-				// Place Border at [x][i]
-				SpawnBorderTile(x, i);
+				// Place Border at [i_row][y_column]
+				SpawnBorderTile(i, y);
 			}
 		}
 		// Last i rows
 		for (int i = FullGridHeight - BorderTileThickness; i < FullGridHeight; ++i)
 		{
-			for (int32 x = 0; x < FullGridWidth; ++x)
+			for (int32 y = 0; y < FullGridWidth; ++y)
 			{
-				// Place Border at [x][i]
-				SpawnBorderTile(x, i);
+				// Place Border at [i_row][y_column]
+				SpawnBorderTile(i, y);
 			}
 		}
 
 		// First j columns
 		for (int j = 0; j < BorderTileThickness; ++j)
 		{
-			// Start after first few rows and End before last few rows
-			for (int32 y = BorderTileThickness; y < FullGridHeight - BorderTileThickness; ++y)
+			for (int32 x = BorderTileThickness; x < FullGridHeight - BorderTileThickness; ++x)
 			{
-				// Place Border at [j][y]
-				SpawnBorderTile(j, y);
+				// Place Border at [x][j_columns]
+				SpawnBorderTile(x, j);
 			}
 		}
 		// Last j columns
 		for (int j = FullGridWidth - BorderTileThickness; j < FullGridWidth; ++j)
 		{
-			// Start after first few rows and End before last few rows
-			for (int32 y = BorderTileThickness; y < FullGridHeight - BorderTileThickness; ++y)
+			for (int32 x = BorderTileThickness; x < FullGridHeight - BorderTileThickness; ++x)
 			{
-				// Place Border at [j][y]
-				SpawnBorderTile(j, y);
+				// Place Border at [x][j_columns]
+				SpawnBorderTile(x, j);
 			}
 		}
 	}
 }
 
-//void AUDHexTileGridManager::GenerateFromTileData(TArray<FUDTileRow>& map)
-//{
-//	check(map.Num() == UseableGridHeight)
-//	// ROWS
-//	for (int i = 0; i < map.Num(); ++i)
-//	{
-//		check(map[i].Tiles.Num() == UseableGridWidth)
-//		// COLUMNS
-//		for (int j = 0; j < map[i].Tiles.Num(); ++j)
-//		{
-//			// World position must include border.
-//			int32 xWorld = i + BorderTileThickness;
-//			int32 yWorld = j + BorderTileThickness;
-//			map[i].Tiles[j].WorldPosition = FIntPoint(xWorld, yWorld);
-//			// Data postion is same as the receiving map position.
-//			SpawnTile(xWorld, yWorld, MapWorldHexTile, i, j);
-//			HexGrid2DArray[xWorld][yWorld]->VisualUpdate(map[i].Tiles[j]);
-//		}
-//	}
-//}
-
+void AUDHexTileGridManager::GenerateFromTileData(TArray<FUDTileRow>& tilemap)
+{
+	check(tilemap.Num() == UseableGridHeight)
+	// ROWS
+	for (int i = 0; i < tilemap.Num(); ++i)
+	{
+		check(tilemap[i].Tiles.Num() == UseableGridWidth)
+		// COLUMNS
+		for (int j = 0; j < tilemap[i].Tiles.Num(); ++j)
+		{
+			// World position must include border.
+			int32 xWorld = i + BorderTileThickness;
+			int32 yWorld = j + BorderTileThickness;
+			tilemap[i].Tiles[j].WorldPosition = FIntPoint(xWorld, yWorld);
+			// Data postion is same as the receiving map position.
+			SpawnTile(xWorld, yWorld, MapWorldHexTile, i, j);
+			HexGrid2DArray[xWorld][yWorld]->OnVisualUpdate(tilemap[i].Tiles[j]);
+		}
+	}
+}
 
 void TestGen()
 {

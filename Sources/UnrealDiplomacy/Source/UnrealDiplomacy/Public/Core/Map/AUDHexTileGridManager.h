@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Core/Data/FUDTypes.h"
 #include "AUDHexTileGridManager.generated.h"
 
-struct FUDTileRow;
 class AUDHexTile;
 
 UCLASS()
@@ -82,12 +82,20 @@ public:
 	// Sets default values for this actor's properties
 	AUDHexTileGridManager();
 	// Called every frame
-	virtual void Tick(float DeltaTime) override;	
+	virtual void Tick(float DeltaTime) override;
+	// Prepares map generation parameters, adjusting any parameter that would cause fatal problem. Follows strict step order.
+	UFUNCTION(BlueprintCallable, Category = "MapGeneration")
+	void PrepareMapParameters();
+	// Creates map border with defined thickness.	
+	UFUNCTION(BlueprintCallable, Category = "MapGeneration")
+	void GenerateMapBorder();
+	// Creates actors for provided map within predefined grid.
+	// Tiles must be adjusted to world index
+	UFUNCTION(BlueprintCallable, Category = "MapGeneration")
+	void GenerateFromTileData(UPARAM(ref)TArray<FUDTileRow>& tilemap);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	// Prepares map generation parameters, adjusting any parameter that would cause fatal problem. Follows strict step order.
-	void PrepareMapParameters();	
 	// Updates TileOffsets based on TileRadius
 	void DefineTileOffsets();
 	// Updates Player tile counts to fit into exclusion and border zones.
@@ -105,11 +113,4 @@ protected:
 	void SpawnTile(const int32 xWorld, const int32 yWorld, TSubclassOf<AUDHexTile> tileType, int32 xData, int32 yData);
 	// Direct spawn of border tile.
 	void SpawnBorderTile(int32 x, int32 y);
-	
-	// Creates map border with defined thickness.	
-	UFUNCTION(BlueprintCallable)
-	void GenerateMapBorder();
-	// Creates actors for provided map within predefined grid.
-	//UFUNCTION(BlueprintCallable)
-	//void GenerateFromTileData(TArray<FUDTileRow>& map);
 };
