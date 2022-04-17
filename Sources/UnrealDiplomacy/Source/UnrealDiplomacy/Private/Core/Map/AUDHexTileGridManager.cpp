@@ -90,11 +90,11 @@ void AUDHexTileGridManager::InitializeGridArray()
 	}
 }
 
-FIntPoint AUDHexTileGridManager::DetermineTilePositionInWorld(const int32 x, const int32 y)
+FIntPoint AUDHexTileGridManager::DetermineTilePositionInWorld(const int32 xRow, const int32 yCol)
 {
-	const bool isOddRow = y % 2 == 1;
-	const float xPosition = isOddRow ? x * TileHorizontalOffsetEven + TileHorizontalOffsetOdd : x * TileHorizontalOffsetEven;
-	const float yPosition = y * TileVerticalOffset;
+	const float xPosition = xRow * TileVerticalOffset;
+	const bool isOddRow = xRow % 2 == 1;
+	const float yPosition = isOddRow ? yCol * TileHorizontalOffsetEven + TileHorizontalOffsetOdd : yCol * TileHorizontalOffsetEven;
 	return FIntPoint(xPosition, yPosition);
 }
 
@@ -121,6 +121,11 @@ void AUDHexTileGridManager::GenerateMapBorder()
 {
 	if (BorderTileThickness >= 1)
 	{
+		//********
+		//|      |
+		//|      |
+		//|      |
+		//--------
 		// First i rows
 		for (int i = 0; i < BorderTileThickness; ++i)
 		{
@@ -130,6 +135,11 @@ void AUDHexTileGridManager::GenerateMapBorder()
 				SpawnBorderTile(i, y);
 			}
 		}
+		//--------
+		//|      |
+		//|      |
+		//|      |
+		//********
 		// Last i rows
 		for (int i = FullGridHeight - BorderTileThickness; i < FullGridHeight; ++i)
 		{
@@ -139,7 +149,11 @@ void AUDHexTileGridManager::GenerateMapBorder()
 				SpawnBorderTile(i, y);
 			}
 		}
-
+		//--------
+		//*      |
+		//*      |
+		//*      |
+		//--------
 		// First j columns
 		for (int j = 0; j < BorderTileThickness; ++j)
 		{
@@ -149,6 +163,11 @@ void AUDHexTileGridManager::GenerateMapBorder()
 				SpawnBorderTile(x, j);
 			}
 		}
+		//--------
+		//|      *
+		//|      *
+		//|      *
+		//--------
 		// Last j columns
 		for (int j = FullGridWidth - BorderTileThickness; j < FullGridWidth; ++j)
 		{
@@ -180,27 +199,4 @@ void AUDHexTileGridManager::GenerateFromTileData(TArray<FUDTileRow>& tilemap)
 			HexGrid2DArray[xWorld][yWorld]->OnVisualUpdate(tilemap[i].Tiles[j]);
 		}
 	}
-}
-
-void TestGen()
-{
-	//FRandomStream Stream(MapSeed);
-	//if (Stream.FRandRange(0.f, 1.0f) < 0.5f) {
-	//	tileToSpawn = WaterHexTile;
-	//}
-
-	// Obtain generated tilemap
-	
-	// precondition:: maintaned array of all tiles
-	// random: any index in current array returns only non used tile
-	// postcondition: buffer array of all unused tiles
-	// for each player
-		// Get random point in map
-		// Select it as player spawn
-		// Remove all adjacent tiles based on exclusion radius
-		// Remove all adjacent tiles based on buffer radius
-		// next random point is always valid
-	// generate all of remaining buffer returned as postcondition
-	// these are tiles that were not used by other players
-	// merge results from adjecent tiles if possible	
 }
