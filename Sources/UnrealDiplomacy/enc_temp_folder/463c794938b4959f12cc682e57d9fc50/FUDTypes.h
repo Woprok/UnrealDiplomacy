@@ -114,10 +114,9 @@ public:
 	// Any amount of features [Ocean, River, Hill, Beach]
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tile)
 	TArray<FUDTileFeature> Features;
-	
+
+
 	// Any amount of links to extensions ?
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tile)
-	TArray<FUDExtension> Extensions;
 };
 
 USTRUCT(BlueprintType)
