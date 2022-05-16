@@ -82,7 +82,7 @@ public:
 
 // Represents various special features add to Tile such as Settlement, Capital City, Improvements...
 USTRUCT(BlueprintType)
-struct UNREALDIPLOMACY_API FUDExtension
+struct UNREALDIPLOMACY_API FUDTileExtension : public FTableRowBase
 {
 	GENERATED_BODY()
 public:
@@ -117,7 +117,7 @@ public:
 	
 	// Any amount of links to extensions ?
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tile)
-	TArray<FUDExtension> Extensions;
+	TArray<FUDTileExtension> Extensions;
 };
 
 USTRUCT(BlueprintType)
