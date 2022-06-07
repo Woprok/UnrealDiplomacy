@@ -15,7 +15,7 @@ AUDHexTile::AUDHexTile()
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComp"));
 	TileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TileMesh"));
 	TileMesh->SetupAttachment(RootComponent);
-	bReplicates = true;
+	bReplicates = false;
 }
 
 // Called when the game starts or when spawned
