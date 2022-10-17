@@ -6,7 +6,7 @@ Personal Dev Notes on Progress
 - Learning UE is not hard after having some experience with Unity
 - But learning is more complex as UE seems to expose much more on user at first glance, even tutorials are not really beginner level, more of beginner with experience in dev/gamedev.
 - Naming conventions are quite intuitive and consistent, compared to Unity, which is messy
-- Compiling C++ source is painful, its easy to break whole project
+- Compiling C++ source is painful, its easy to break whole project (repeat too many times :D)
 - Blueprints can crash quite easily whole editor
 - Default configuration files, could use better documentation as internet just points you to what write, without describing why its necessary
 - Blueprints are easy to use, yes you can easily make mistake with wrong condition and not even realize it.

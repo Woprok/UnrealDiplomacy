@@ -13,5 +13,7 @@ UCLASS()
 class UNREALDIPLOMACY_API AUDSimulationBase : public AUDActor
 {
 	GENERATED_BODY()
-	
+public:
+	//void AddedPlayer();
+	//void EndTurn();
 };
