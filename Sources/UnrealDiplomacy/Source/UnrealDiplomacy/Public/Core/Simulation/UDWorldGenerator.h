@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Core/UDActor.h"
-#include "UDMapGeneratorBase.generated.h"
+#include "UDWorldGenerator.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UNREALDIPLOMACY_API AUDMapGeneratorBase : public AUDActor
+class UNREALDIPLOMACY_API AUDWorldGenerator : public AUDActor
 {
 	GENERATED_BODY()
 	

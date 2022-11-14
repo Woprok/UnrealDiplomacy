@@ -8,7 +8,7 @@
 #include "UDPlayerController.generated.h"
 
 /**
- * 
+ * Overrides default PlayerController to always use Game & UI input.
  */
 UCLASS()
 class UNREALDIPLOMACY_API AUDPlayerController : public AModularPlayerController
