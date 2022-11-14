@@ -1,5 +1,8 @@
 #Prototypes
 
+# Visual Studio Hint
+*.icph
+
 # Visual Studio 2015 user specific files
 .vs/
 
