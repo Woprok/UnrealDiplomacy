@@ -88,6 +88,7 @@ class UNREALDIPLOMACY_API UUDEndTurnAction : public UObject, public IUDActionInt
 {
 	GENERATED_BODY()
 public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override;

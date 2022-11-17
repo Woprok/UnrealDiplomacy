@@ -26,8 +26,8 @@ int32 IUDActionInterface::GetActionTypeId()
 void UUDLogAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
 	UE_LOG(LogTemp, Log,
-		TEXT("UUDLogAction was invoked by FUDActionData with id(%d), so it was logged due to UUDLogAction is id(%d)."),
-		actionData.ActionTypeId, ActionTypeId);
+		TEXT("INSTANCE(%d): UUDLogAction was invoked by FUDActionData with id(%d), so it was logged due to UUDLogAction is id(%d)."),
+		targetWorldState->PerspectivePlayerId, actionData.ActionTypeId, ActionTypeId);
 }
 
 void UUDLogAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
@@ -47,16 +47,16 @@ int32 UUDLogAction::GetActionTypeId()
 void UUDAddPlayerAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
 	UE_LOG(LogTemp, Log,
-		TEXT("AddPlayer was invoked by new playerd with id(%d)."),
-		actionData.InvokerPlayerId);
+		TEXT("INSTANCE(%d): AddPlayer was invoked by new playerd with id(%d)."),
+		targetWorldState->PerspectivePlayerId, actionData.InvokerPlayerId);
 	targetWorldState->PlayerOrder.Add(UUDNationState::CreateState(actionData.InvokerPlayerId));
 }
 
 void UUDAddPlayerAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
 	UE_LOG(LogTemp, Log,
-		TEXT("AddPlayer was reverted by removing playerd with id(%d)."),
-		actionData.InvokerPlayerId);
+		TEXT("INSTANCE(%d): AddPlayer was reverted by removing playerd with id(%d)."),
+		targetWorldState->PerspectivePlayerId, actionData.InvokerPlayerId);
 	auto& removedState = *targetWorldState->PlayerOrder.FindByPredicate(
 			[&actionData](TObjectPtr<UUDNationState> state) { return state->PlayerUniqueId == actionData.InvokerPlayerId; }
 	);
@@ -72,11 +72,17 @@ int32 UUDAddPlayerAction::GetActionTypeId()
 
 #pragma region UUDEndTurnAction
 
+bool UUDEndTurnAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+		actionData.InvokerPlayerId == targetWorldState->CurrentTurnPlayerId;
+}
+
 void UUDEndTurnAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
 	UE_LOG(LogTemp, Log, 
-		TEXT("EndTurn was invoked by playerd with id(%d)."),
-		actionData.InvokerPlayerId);
+		TEXT("INSTANCE(%d): EndTurn was invoked by playerd with id(%d)."),
+		targetWorldState->PerspectivePlayerId, actionData.InvokerPlayerId);
 	// Search for next follower or jump to beginning.
 	int32 nextPlayer = 0;
 

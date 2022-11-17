@@ -43,15 +43,18 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 	}
 	// Obtained executor for this action.
 	auto& actionExecutor = Actions[newAction.ActionTypeId];
-	if (actionExecutor->CanExecute(newAction, GaiaState))
+	if (!actionExecutor->CanExecute(newAction, GaiaState))
 	{
-		// Saved for future reference
-		ExecutionHistory.Add(newAction);
-		// Updated all current states with this action.
-		for (auto& pair : States)
-		{
-			Actions[newAction.ActionTypeId]->Execute(newAction, pair.Value);
-		}
+		UE_LOG(LogTemp, Log, TEXT("Action executor was halted for action id(%d)."), newAction.ActionTypeId);
+		return;
+	}
+
+	// Saved for future reference
+	ExecutionHistory.Add(newAction);
+	// Updated all current states with this action.
+	for (auto& pair : States)
+	{
+		Actions[newAction.ActionTypeId]->Execute(newAction, pair.Value);
 	}
 }
 
@@ -66,4 +69,24 @@ void AUDWorldSimulation::SynchronizeNewPlayerState(TObjectPtr<UUDWorldState> new
 	// After that push new synchronize action to all, including new joined player.
 	FUDActionData joinPlayer(1, newState->PerspectivePlayerId);
 	ExecuteAction(joinPlayer);
+}
+
+void AUDWorldSimulation::RevertAction()
+{
+	if (ExecutionHistory.Num() == 0)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Action executor couldn't unload action due to empty history."));
+		return;
+	}
+	FUDActionData oldAction = ExecutionHistory.Pop();
+
+	// Obtained executor for this action.
+	auto& actionExecutor = Actions[oldAction.ActionTypeId];
+	// Revert all current states with this action.
+	for (auto& pair : States)
+	{
+		Actions[oldAction.ActionTypeId]->Revert(oldAction, pair.Value);
+	}
+	UE_LOG(LogTemp, Log, TEXT("Action executor reverted action last successful action."));
+	UndoHistory.Add(oldAction);
 }

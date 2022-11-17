@@ -15,14 +15,22 @@ void AUDDevelopmentGameMode::BeginPlay()
 	UE_LOG(LogTemp, Log, TEXT("Testing environtment simulation!"));
 	CreateAiPlayers(1);
 	UE_LOG(LogTemp, Log, TEXT("Testing simple simulation!"));
-	FUDActionData action(0, 0);
-	WorldSimulation->ExecuteAction(action);
-	/**
-	Simulation->FinishTurn(0);
-	Simulation->FinishTurn(1);
-	Simulation->FinishTurn(1);
-	Simulation->FinishTurn(2);
-	Simulation->FinishTurn(0);*/
+	FUDActionData log(0, 0);
+	WorldSimulation->ExecuteAction(log);
+	FUDActionData endTurnP0(3, 0);
+	WorldSimulation->ExecuteAction(endTurnP0);
+	FUDActionData endTurnP1(3, 1);
+	WorldSimulation->ExecuteAction(endTurnP0);
+	WorldSimulation->ExecuteAction(endTurnP1);
+	FUDActionData endTurnP2(3, 2);
+	WorldSimulation->ExecuteAction(endTurnP2);
+	WorldSimulation->ExecuteAction(endTurnP0);
+	WorldSimulation->RevertAction();
+	WorldSimulation->ExecuteAction(endTurnP0);
+	WorldSimulation->RevertAction();
+	WorldSimulation->RevertAction();
+	WorldSimulation->ExecuteAction(endTurnP0);
+	WorldSimulation->ExecuteAction(endTurnP2);
 }
 
 TObjectPtr<AUDSkirmishAIController> AUDDevelopmentGameMode::CreateAi()

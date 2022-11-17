@@ -16,9 +16,10 @@ void AUDSkirmishGameMode::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	WorldSimulation = GetWorld()->SpawnActor<AUDWorldSimulation>();
-	WorldSimulation->InitializeGaiaWorldState();
 	LoadSkirmishAction();
 	UE_LOG(LogTemp, Log, TEXT("Finalized initialization of UObjects and Actors for GameMode."));
+	WorldSimulation->InitializeGaiaWorldState();
+	UE_LOG(LogTemp, Log, TEXT("Finalized creation of Gaia state for GameMode. Follows game log..."));
 }
 
 int32 AUDSkirmishGameMode::GetNextUniqueControllerId()
@@ -77,4 +78,6 @@ void AUDSkirmishGameMode::AssignToSimulation(TObjectPtr<IUDControllerInterface> 
 void AUDSkirmishGameMode::LoadSkirmishAction()
 {
 	WorldSimulation->RegisterAction(NewObject<UUDLogAction>());
+	WorldSimulation->RegisterAction(NewObject<UUDAddPlayerAction>());
+	WorldSimulation->RegisterAction(NewObject<UUDEndTurnAction>());
 }

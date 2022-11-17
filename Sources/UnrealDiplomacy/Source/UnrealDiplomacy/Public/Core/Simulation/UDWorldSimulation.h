@@ -38,6 +38,13 @@ public:
 	 * TODO FAIL TYPE
 	 */
 	void ExecuteAction(FUDActionData& newAction);
+	/**
+	 * Reverse execution of single action.
+	 * Can be called repeateadly to revert all actions.
+	 * Can and will break execution of used too much.
+	 * TODO improve this, if there will be good reason to make it a full feature.
+	 */
+	void RevertAction();
 protected:
 	/**
  	 * Each Player/Ai and Server have their own instance/state of the world.
@@ -61,6 +68,11 @@ protected:
 	 * desync would ever happen.
 	 */
 	TArray<FUDActionData> ExecutionHistory;
+	/**
+	 * List of all actions that were reverted.
+	 * TODO improve this, if there will be good reason to make it a full feature.
+	 */
+	TArray<FUDActionData> UndoHistory;
 private:
 	/**
 	 * Synchronize new player state to be on par with the old ones.
