@@ -7,6 +7,23 @@
 //#include "UObject/NoExportTypes.h"
 #include "UDWorldState.generated.h"
 
+/**
+ * Represents single Player/Ai state.
+ */
+UCLASS()
+class UUDNationState : public UObject
+{
+	GENERATED_BODY()
+public:
+	/**
+	 * Creates new instance of the player state for specified player.
+	 */
+	static TObjectPtr<UUDNationState> CreateState(int32 playerId);
+	/**
+	 * Unique id assigned to the owner.
+	 */
+	int32 PlayerUniqueId;
+};
 
 /**
  * Holds the state of a world.
@@ -33,7 +50,7 @@ public:
 	/**
 	 * List of players in turn order.
 	 */
-	TArray<int32> PlayerOrder;
+	TArray<TObjectPtr<UUDNationState>> PlayerOrder;
 	/**
 	 * Current Player/Ai/Server that is able to act.
 	 * Default value is 0.

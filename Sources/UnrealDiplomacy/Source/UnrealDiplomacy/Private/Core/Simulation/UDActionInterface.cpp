@@ -49,7 +49,7 @@ void UUDAddPlayerAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldS
 	UE_LOG(LogTemp, Log,
 		TEXT("AddPlayer was invoked by new playerd with id(%d)."),
 		actionData.InvokerPlayerId);
-	targetWorldState->PlayerOrder.Add(actionData.InvokerPlayerId);
+	targetWorldState->PlayerOrder.Add(UUDNationState::CreateState(actionData.InvokerPlayerId));
 }
 
 void UUDAddPlayerAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
@@ -57,7 +57,10 @@ void UUDAddPlayerAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldSt
 	UE_LOG(LogTemp, Log,
 		TEXT("AddPlayer was reverted by removing playerd with id(%d)."),
 		actionData.InvokerPlayerId);
-	targetWorldState->PlayerOrder.Remove(actionData.InvokerPlayerId);
+	auto& removedState = *targetWorldState->PlayerOrder.FindByPredicate(
+			[&actionData](TObjectPtr<UUDNationState> state) { return state->PlayerUniqueId == actionData.InvokerPlayerId; }
+	);
+	targetWorldState->PlayerOrder.Remove(removedState);
 }
 
 int32 UUDAddPlayerAction::GetActionTypeId()
@@ -79,9 +82,9 @@ void UUDEndTurnAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldSta
 
 	for (auto& player : targetWorldState->PlayerOrder)
 	{
-		if (player > targetWorldState->CurrentTurnPlayerId)
+		if (player->PlayerUniqueId > targetWorldState->CurrentTurnPlayerId)
 		{
-			nextPlayer = player;
+			nextPlayer = player->PlayerUniqueId;
 			break;
 		}
 	}
