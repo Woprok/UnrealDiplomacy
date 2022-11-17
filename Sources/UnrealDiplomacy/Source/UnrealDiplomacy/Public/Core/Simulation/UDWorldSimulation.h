@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Core/UDActor.h"
+#include "UDActionData.h"
 #include "UDActionInterface.h"
 #include "UDWorldState.h"
 #include "UDWorldSimulation.generated.h"
@@ -32,6 +33,11 @@ public:
 	 * Register new action that can be executed over this simulation.
 	 */
 	void RegisterAction(TObjectPtr<IUDActionInterface> newAction);
+	/**
+	 * Verifies viability of the action and executes it.
+	 * TODO FAIL TYPE
+	 */
+	void ExecuteAction(FUDActionData& newAction);
 protected:
 	/**
  	 * Each Player/Ai and Server have their own instance/state of the world.
@@ -40,13 +46,25 @@ protected:
 	/**
 	 * Gaia state shortcut. Exists only on server.
 	 */
-	TObjectPtr<UUDWorldState>& GaiaState;
+	TObjectPtr<UUDWorldState> GaiaState;
 	/**
 	 * Gaia id.
 	 */
 	const int32 GaiaWorldStateId = 0;
 	/**
-	 * Gaia state shortcut. Exists only on server.
+	 * List of all actions registered in this simulation.
 	 */
 	TMap<int32, TObjectPtr<IUDActionInterface>> Actions;
+	/**
+	 * List of all actions in chronological order of execution over the GaiaState.
+	 * Due to that it's necessary tool for synchronizing new players as well as old, if
+	 * desync would ever happen.
+	 */
+	TArray<FUDActionData> ExecutionHistory;
+private:
+	/**
+	 * Synchronize new player state to be on par with the old ones.
+	 * This will result in modification of all states as new player must be added to them as well.
+	 */
+	void AUDWorldSimulation::SynchronizeNewPlayerState(TObjectPtr<UUDWorldState> newState);
 };

@@ -21,7 +21,7 @@ public:
 	/**
 	 * Constructor for generic use. 
 	 */
-	FUDActionData(int32 actionTypeId);
+	FUDActionData(int32 actionTypeId, int32 invokerPlayerId);
 	/**
 	 * Unique specifier for each action type is defined by implementation.
 	 * This specifier is used by IUDAction interface to determine, which one is
@@ -29,4 +29,9 @@ public:
 	 */
 	UPROPERTY()
 	int32 ActionTypeId;
+	/**
+	 * Player/Ai/Server that created this action and asked for it to be executed.
+	 */
+	UPROPERTY()
+	int32 InvokerPlayerId;
 };

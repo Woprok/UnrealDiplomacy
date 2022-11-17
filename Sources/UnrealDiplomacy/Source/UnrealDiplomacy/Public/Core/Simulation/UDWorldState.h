@@ -30,4 +30,18 @@ public:
 	 * State either belongs to specific Player/Ai or is global.
 	 */
 	bool IsPlayerPerspectiveOnly;
+	/**
+	 * List of players in turn order.
+	 */
+	TArray<int32> PlayerOrder;
+	/**
+	 * Current Player/Ai/Server that is able to act.
+	 * Default value is 0.
+	 */
+	int32 CurrentTurnPlayerId = 0;
+	/**
+	 * Current turn, has no purpose other than flavor info.
+	 * Default value is 0.
+	 */
+	int32 CurrentTurn = 0;
 };

@@ -15,10 +15,9 @@ void AUDDevelopmentGameMode::BeginPlay()
 	UE_LOG(LogTemp, Log, TEXT("Testing environtment simulation!"));
 	CreateAiPlayers(1);
 	UE_LOG(LogTemp, Log, TEXT("Testing simple simulation!"));
+	FUDActionData action(0, 0);
+	WorldSimulation->ExecuteAction(action);
 	/**
-	FUDActionData action(0);
-	Simulation->RegisterAction(NewObject<UUDLogAction>());
-	Simulation->Execute(action);
 	Simulation->FinishTurn(0);
 	Simulation->FinishTurn(1);
 	Simulation->FinishTurn(1);

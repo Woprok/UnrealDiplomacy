@@ -54,6 +54,10 @@ protected:
 	TObjectPtr<AUDWorldSimulation> WorldSimulation;
 private:
 	/**
+	 * Updates Simulation with known actions, that are necessary for Skirmish gameplay.
+	 */
+	virtual void LoadSkirmishAction();
+	/**
 	 * Assigns state to Ai and saves Ai in AiControllers.
 	 */
 	void RegisterAi();
