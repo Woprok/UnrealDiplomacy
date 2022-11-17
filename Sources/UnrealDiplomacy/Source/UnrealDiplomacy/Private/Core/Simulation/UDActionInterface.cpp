@@ -60,7 +60,7 @@ void UUDAddPlayerAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldSt
 	targetWorldState->PlayerOrder.Remove(actionData.InvokerPlayerId);
 }
 
-int32 UUDEndTurnAction::GetActionTypeId()
+int32 UUDAddPlayerAction::GetActionTypeId()
 {
 	return ActionTypeId;
 }
@@ -74,15 +74,34 @@ void UUDEndTurnAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldSta
 	UE_LOG(LogTemp, Log, 
 		TEXT("EndTurn was invoked by playerd with id(%d)."),
 		actionData.InvokerPlayerId);
-	// TODO proper pass once players are saved
-	targetWorldState->CurrentTurnPlayerId = actionData.InvokerPlayerId + 1;
+	// Search for next follower or jump to beginning.
+	int32 nextPlayer = 0;
+
+	for (auto& player : targetWorldState->PlayerOrder)
+	{
+		if (player > targetWorldState->CurrentTurnPlayerId)
+		{
+			nextPlayer = player;
+			break;
+		}
+	}
+
+	targetWorldState->CurrentTurnPlayerId = nextPlayer;
+
+	// Update turn counter.
 	targetWorldState->CurrentTurn += 1;
 }
 
 void UUDEndTurnAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
-	// TODO proper pass once players are saved
-	targetWorldState->CurrentTurnPlayerId = actionData.InvokerPlayerId - 1;
+	// Search for previous player is not necessary as it's always the one who invoked this action.
+	// Technically this could backfire if server quits the player turn, but in that case the id passed should be
+	// of the player that didn't finish his turn and was forced to give up.
+	int32 previousPlayer = actionData.InvokerPlayerId;
+
+	targetWorldState->CurrentTurnPlayerId = previousPlayer;
+
+	// Revert turn counter.
 	targetWorldState->CurrentTurn -= 1;
 }
 

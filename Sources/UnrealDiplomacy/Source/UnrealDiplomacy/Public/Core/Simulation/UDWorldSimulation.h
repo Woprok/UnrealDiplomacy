@@ -66,5 +66,5 @@ private:
 	 * Synchronize new player state to be on par with the old ones.
 	 * This will result in modification of all states as new player must be added to them as well.
 	 */
-	void AUDWorldSimulation::SynchronizeNewPlayerState(TObjectPtr<UUDWorldState> newState);
+	void SynchronizeNewPlayerState(TObjectPtr<UUDWorldState> newState);
 };
