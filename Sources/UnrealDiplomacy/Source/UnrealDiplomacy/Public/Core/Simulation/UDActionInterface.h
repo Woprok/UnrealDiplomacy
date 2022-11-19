@@ -59,7 +59,7 @@ class UNREALDIPLOMACY_API UUDLogAction : public UObject, public IUDActionInterfa
 public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual int32 GetActionTypeId() override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
 private:
 	const int32 ActionTypeId = 0;
 };
@@ -75,7 +75,7 @@ class UNREALDIPLOMACY_API UUDAddPlayerAction : public UObject, public IUDActionI
 public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual int32 GetActionTypeId() override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
 private:
 	const int32 ActionTypeId = 1;
 };
@@ -91,7 +91,40 @@ public:
 	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual int32 GetActionTypeId() override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
 private:
 	const int32 ActionTypeId = 3;
 };
+
+/**
+ * Generates income for all players. 
+ * Called only on GAIA turn.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDGenerateIncomeAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+private:
+	const int32 ActionTypeId = 100;
+};
+
+/**
+ * Simple gift of resources between two players, without any strings attached.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDUnconditionalGiftAction : public UObject, public IUDActionInterface
+ {
+	 GENERATED_BODY()
+ public:
+	 virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	 virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	 virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	 virtual int32 GetActionTypeId() override { return ActionTypeId; };
+ private:
+	 const int32 ActionTypeId = 1000;
+ };

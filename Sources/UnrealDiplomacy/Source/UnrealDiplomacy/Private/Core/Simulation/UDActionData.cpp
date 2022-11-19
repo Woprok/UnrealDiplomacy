@@ -12,3 +12,15 @@ FUDActionData::FUDActionData(int32 actionTypeId, int32 invokerPlayerId) : Action
 {
 
 }
+
+FUDActionData::FUDActionData(int32 actionTypeId, int32 invokerPlayerId, int32 targetPlayerId)
+	: ActionTypeId(actionTypeId), InvokerPlayerId(invokerPlayerId), TargetPlayerId(targetPlayerId)
+{
+
+}
+
+FUDActionData::FUDActionData(int32 actionTypeId, int32 invokerPlayerId, int32 targetPlayerId, int32 valueParameter)
+	: ActionTypeId(actionTypeId), InvokerPlayerId(invokerPlayerId), TargetPlayerId(targetPlayerId), ValueParameter(valueParameter)
+{
+
+}

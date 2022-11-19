@@ -18,7 +18,7 @@ void AUDSkirmishGameMode::PostInitializeComponents()
 	WorldSimulation = GetWorld()->SpawnActor<AUDWorldSimulation>();
 	LoadSkirmishAction();
 	UE_LOG(LogTemp, Log, TEXT("Finalized initialization of UObjects and Actors for GameMode."));
-	WorldSimulation->InitializeGaiaWorldState();
+	RegisterGaiaAi();
 	UE_LOG(LogTemp, Log, TEXT("Finalized creation of Gaia state for GameMode. Follows game log..."));
 }
 
@@ -77,7 +77,22 @@ void AUDSkirmishGameMode::AssignToSimulation(TObjectPtr<IUDControllerInterface> 
 
 void AUDSkirmishGameMode::LoadSkirmishAction()
 {
+	// Basics 0+
 	WorldSimulation->RegisterAction(NewObject<UUDLogAction>());
 	WorldSimulation->RegisterAction(NewObject<UUDAddPlayerAction>());
 	WorldSimulation->RegisterAction(NewObject<UUDEndTurnAction>());
+	// Gaia 100+
+	WorldSimulation->RegisterAction(NewObject<UUDGenerateIncomeAction>());
+	// Player 1000+
+	WorldSimulation->RegisterAction(NewObject<UUDUnconditionalGiftAction>());
+}
+
+void AUDSkirmishGameMode::RegisterGaiaAi()
+{
+	GaiaController = GetWorld()->SpawnActor<AUDSkirmishGaiaAIController>();
+	// This is supposed to be first call, if this ever becomes out of order, it will cause
+	// more issues as the initialization will not be able to handle a player that
+	// initialized sooner then server class.
+	GaiaController->SetControllerUniqueId(GetNextUniqueControllerId());
+	WorldSimulation->InitializeGaiaWorldState(GaiaController->GetControllerUniqueId());
 }

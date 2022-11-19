@@ -35,11 +35,6 @@ void UUDLogAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> t
 	// LogAction is not revertable as there is no state change.
 }
 
-int32 UUDLogAction::GetActionTypeId()
-{
-	return ActionTypeId;
-}
-
 #pragma endregion
 
 #pragma region UUDAddPlayerAction
@@ -49,7 +44,8 @@ void UUDAddPlayerAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldS
 	UE_LOG(LogTemp, Log,
 		TEXT("INSTANCE(%d): AddPlayer was invoked by new playerd with id(%d)."),
 		targetWorldState->PerspectivePlayerId, actionData.InvokerPlayerId);
-	targetWorldState->PlayerOrder.Add(UUDNationState::CreateState(actionData.InvokerPlayerId));
+	targetWorldState->PlayerOrder.Add(actionData.InvokerPlayerId);
+	targetWorldState->Players.Add(actionData.InvokerPlayerId, UUDNationState::CreateState(actionData.InvokerPlayerId));
 }
 
 void UUDAddPlayerAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
@@ -57,15 +53,14 @@ void UUDAddPlayerAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldSt
 	UE_LOG(LogTemp, Log,
 		TEXT("INSTANCE(%d): AddPlayer was reverted by removing playerd with id(%d)."),
 		targetWorldState->PerspectivePlayerId, actionData.InvokerPlayerId);
-	auto& removedState = *targetWorldState->PlayerOrder.FindByPredicate(
-			[&actionData](TObjectPtr<UUDNationState> state) { return state->PlayerUniqueId == actionData.InvokerPlayerId; }
-	);
-	targetWorldState->PlayerOrder.Remove(removedState);
-}
-
-int32 UUDAddPlayerAction::GetActionTypeId()
-{
-	return ActionTypeId;
+	// Removing is trivial as long as we are using two separate lists.
+	targetWorldState->PlayerOrder.Remove(actionData.InvokerPlayerId);
+	targetWorldState->Players.Remove(actionData.InvokerPlayerId);
+	// TODO remove this commented code during TODO cleanup
+	//auto& removedState = *targetWorldState->PlayerOrder.FindByPredicate(
+	//		[&actionData](TObjectPtr<UUDNationState> state) { return state->PlayerUniqueId == actionData.InvokerPlayerId; }
+	//);
+	//targetWorldState->PlayerOrder.Remove(removedState);
 }
 
 #pragma endregion
@@ -86,11 +81,11 @@ void UUDEndTurnAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldSta
 	// Search for next follower or jump to beginning.
 	int32 nextPlayer = 0;
 
-	for (auto& player : targetWorldState->PlayerOrder)
+	for (auto& playerUniqueId : targetWorldState->PlayerOrder)
 	{
-		if (player->PlayerUniqueId > targetWorldState->CurrentTurnPlayerId)
+		if (playerUniqueId > targetWorldState->CurrentTurnPlayerId)
 		{
-			nextPlayer = player->PlayerUniqueId;
+			nextPlayer = playerUniqueId;
 			break;
 		}
 	}
@@ -114,9 +109,69 @@ void UUDEndTurnAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldStat
 	targetWorldState->CurrentTurn -= 1;
 }
 
-int32 UUDEndTurnAction::GetActionTypeId()
+#pragma endregion
+
+#pragma region UUDGenerateIncomeAction
+bool UUDGenerateIncomeAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
-	return ActionTypeId;
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+		actionData.InvokerPlayerId == UUDWorldState::GaiaWorldStateId;
+}
+
+void UUDGenerateIncomeAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d): Generate income invoked by player with id(%d)."),
+		targetWorldState->PerspectivePlayerId, actionData.InvokerPlayerId);
+	for (auto& state : targetWorldState->Players)
+	{
+		state.Value->ResourceGold += 100;
+	}
+	UE_LOG(LogTemp, Log, TEXT("INSTANCE(%d): Generated income for each player."), targetWorldState->PerspectivePlayerId);
+}
+
+void UUDGenerateIncomeAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	for (auto& state : targetWorldState->Players)
+	{
+		state.Value->ResourceGold -= 100;
+	}
+	UE_LOG(LogTemp, Log, TEXT("INSTANCE(%d): Removed last income for each player."), targetWorldState->PerspectivePlayerId);
+}
+
+#pragma endregion
+
+#pragma region UUDUnconditionalGiftAction
+
+bool UUDUnconditionalGiftAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+		actionData.InvokerPlayerId != actionData.TargetPlayerId;
+}
+
+void UUDUnconditionalGiftAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d): UnconditionalGift was invoked by playerd with id(%d) toward the player with id(%d)."),
+		targetWorldState->PerspectivePlayerId, actionData.InvokerPlayerId, actionData.TargetPlayerId);
+	targetWorldState->Players[actionData.InvokerPlayerId]->ResourceGold -= actionData.ValueParameter;
+	targetWorldState->Players[actionData.TargetPlayerId]->ResourceGold += actionData.ValueParameter;
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d): UnconditionalGift result: giver left (%d), receiver left (%d)."),
+		targetWorldState->PerspectivePlayerId, 
+		targetWorldState->Players[actionData.InvokerPlayerId]->ResourceGold, 
+		targetWorldState->Players[actionData.TargetPlayerId]->ResourceGold);
+}
+
+void UUDUnconditionalGiftAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Players[actionData.InvokerPlayerId]->ResourceGold += actionData.ValueParameter;
+	targetWorldState->Players[actionData.TargetPlayerId]->ResourceGold -= actionData.ValueParameter;
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d): UnconditionalGift undo result: giver left (%d), receiver left (%d)."),
+		targetWorldState->PerspectivePlayerId,
+		targetWorldState->Players[actionData.InvokerPlayerId]->ResourceGold,
+		targetWorldState->Players[actionData.TargetPlayerId]->ResourceGold);
 }
 
 #pragma endregion

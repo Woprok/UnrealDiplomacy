@@ -9,6 +9,7 @@
 #include "UDSkirmishGameState.h"
 #include "UDSkirmishHUD.h"
 #include "UDSkirmishAIController.h"
+#include "UDSkirmishGaiaAIController.h"
 #include "UDSkirmishPlayerController.h"
 #include "UDSkirmishPlayerState.h"
 #include "UDSkirmishGameMode.generated.h"
@@ -41,7 +42,11 @@ protected:
 	 */
 	int32 GetNextUniqueControllerId();
 	/** 
-	 * List of recognized bots. 
+	 * Instance of Gaia. 
+	 */
+	TObjectPtr<AUDSkirmishGaiaAIController> GaiaController;
+	/**
+	 * List of recognized bots.
 	 */
 	TArray<TObjectPtr<AUDSkirmishAIController>> AiControllers;
 	/**
@@ -58,6 +63,10 @@ private:
 	 */
 	virtual void LoadSkirmishAction();
 	/**
+	 * Assigns state to Gaia.
+	 */
+	void RegisterGaiaAi();
+	/**
 	 * Assigns state to Ai and saves Ai in AiControllers.
 	 */
 	void RegisterAi();
@@ -72,8 +81,9 @@ private:
 	/**
 	 * Each controller posses unique Id, that is assigned to it via interface.
 	 * This is then used for managing it state.
+	 * Starts at 0, which is expected to be assigned always to world.
 	 */
-	int32 NextUniqueControllerIdCount = 1;
+	int32 NextUniqueControllerIdCount = 0;
 	/**
 	 * Assigns state to a Player/Ai.
 	 */

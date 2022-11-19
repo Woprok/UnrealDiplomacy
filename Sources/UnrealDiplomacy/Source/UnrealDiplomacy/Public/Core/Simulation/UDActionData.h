@@ -23,6 +23,14 @@ public:
 	 */
 	FUDActionData(int32 actionTypeId, int32 invokerPlayerId);
 	/**
+	 * Constructor for generic target use.
+	 */
+	FUDActionData(int32 actionTypeId, int32 invokerPlayerId, int32 targetPlayerId);
+	/**
+	 * Constructor for target use with value attached.
+	 */
+	FUDActionData(int32 actionTypeId, int32 invokerPlayerId, int32 targetPlayerId, int32 valueParameter);
+	/**
 	 * Unique specifier for each action type is defined by implementation.
 	 * This specifier is used by IUDAction interface to determine, which one is
 	 * supposed to execute this data.
@@ -34,4 +42,16 @@ public:
 	 */
 	UPROPERTY()
 	int32 InvokerPlayerId;
+	/**
+	 * Player/Ai/Server that are targeted by this action.
+	 */
+	UPROPERTY()
+	int32 TargetPlayerId;
+	/**
+	 * Simple numerical parameter.
+	 */
+	UPROPERTY()
+	int32 ValueParameter;
+
+	// TODO consider array of Imodifier that have variable implementations of fields for future data access
 };

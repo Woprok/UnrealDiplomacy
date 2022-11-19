@@ -23,7 +23,7 @@ public:
 	 * Initializes state that is used only by server and provides source of verification
 	 * for consistency of the world.
 	 */
-	void InitializeGaiaWorldState();
+	void InitializeGaiaWorldState(int32 gaiaId);
 	/**
 	 * Creates new state that will be simultenuosly simulated along with all others.
 	 * Note: Player and Ai are both considered player. Only world/gaia is considered non-player.
@@ -54,10 +54,6 @@ protected:
 	 * Gaia state shortcut. Exists only on server.
 	 */
 	TObjectPtr<UUDWorldState> GaiaState;
-	/**
-	 * Gaia id.
-	 */
-	const int32 GaiaWorldStateId = 0;
 	/**
 	 * List of all actions registered in this simulation.
 	 */

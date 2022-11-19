@@ -6,7 +6,7 @@
 void AUDWorldSimulation::CreateState(int32 playerId, bool isPlayerOrAi)
 {
 	UE_LOG(LogTemp, Log, TEXT("Id(%d)."), playerId);
-	if (playerId == GaiaWorldStateId || States.Contains(playerId))
+	if (playerId == UUDWorldState::GaiaWorldStateId || States.Contains(playerId))
 	{
 		UE_LOG(LogTemp, Log, TEXT("Duplicate initialization of player state for player with id(%d)."), playerId);
 		return;
@@ -16,11 +16,14 @@ void AUDWorldSimulation::CreateState(int32 playerId, bool isPlayerOrAi)
 	SynchronizeNewPlayerState(newState);
 }
 
-void AUDWorldSimulation::InitializeGaiaWorldState()
+void AUDWorldSimulation::InitializeGaiaWorldState(int32 gaiaId)
 {
-	TObjectPtr<UUDWorldState> newState = UUDWorldState::CreateState(GaiaWorldStateId, false);
-	States.Add(GaiaWorldStateId, newState);
-	GaiaState = States[GaiaWorldStateId];
+	// Let's leave this here, so we don't break it and if we do, then let's pray we find it :)
+	check(gaiaId == UUDWorldState::GaiaWorldStateId);
+
+	TObjectPtr<UUDWorldState> newState = UUDWorldState::CreateState(gaiaId, false);
+	States.Add(gaiaId, newState);
+	GaiaState = States[gaiaId];
 	SynchronizeNewPlayerState(newState);
 }
 

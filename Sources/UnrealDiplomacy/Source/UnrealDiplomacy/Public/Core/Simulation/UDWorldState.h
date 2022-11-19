@@ -23,6 +23,10 @@ public:
 	 * Unique id assigned to the owner.
 	 */
 	int32 PlayerUniqueId;
+	/**
+	 *
+	 */
+	int32 ResourceGold = 0;
 };
 
 /**
@@ -48,9 +52,13 @@ public:
 	 */
 	bool IsPlayerPerspectiveOnly;
 	/**
-	 * List of players in turn order.
+	 * List of players in turn order, represented only by their unique id.
 	 */
-	TArray<TObjectPtr<UUDNationState>> PlayerOrder;
+	TArray<int32> PlayerOrder;
+	/**
+	 * Map of players with key as their id.
+	 */
+	TMap<int32, TObjectPtr<UUDNationState>> Players;
 	/**
 	 * Current Player/Ai/Server that is able to act.
 	 * Default value is 0.
@@ -61,4 +69,8 @@ public:
 	 * Default value is 0.
 	 */
 	int32 CurrentTurn = 0;
+	/**
+	 * Gaia id.
+	 */
+	static const int32 GaiaWorldStateId = 0;
 };
