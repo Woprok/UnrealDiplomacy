@@ -24,7 +24,7 @@ class UNREALDIPLOMACY_API AUDSkirmishGameMode : public AUDGameMode
 public:
 	AUDSkirmishGameMode();
 protected:
-	/**
+	/** 
 	 * Final part of initialization of fields for the gamemode such as actors.
 	 */
 	virtual void PostInitializeComponents() override;
