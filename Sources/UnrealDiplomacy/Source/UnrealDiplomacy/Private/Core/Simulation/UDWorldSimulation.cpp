@@ -27,6 +27,11 @@ void AUDWorldSimulation::InitializeGaiaWorldState(int32 gaiaId)
 	SynchronizeNewPlayerState(newState);
 }
 
+void AUDWorldSimulation::RegisterActionMaker(TObjectPtr<IUDActionHandlingInterface> newListener)
+{
+	newListener->OnActionDecidedDelegate.BindUObject(this, &AUDWorldSimulation::ExecuteAction);
+}
+
 void AUDWorldSimulation::RegisterAction(TObjectPtr<IUDActionInterface> newAction)
 {
 	if (Actions.Contains(newAction->GetActionTypeId()))
@@ -59,6 +64,8 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 	{
 		Actions[newAction.ActionTypeId]->Execute(newAction, pair.Value);
 	}
+	// Notifies everyone about the action.
+	OnBroadcastActionExecutedDelegate.Broadcast(newAction);
 }
 
 void AUDWorldSimulation::SynchronizeNewPlayerState(TObjectPtr<UUDWorldState> newState)

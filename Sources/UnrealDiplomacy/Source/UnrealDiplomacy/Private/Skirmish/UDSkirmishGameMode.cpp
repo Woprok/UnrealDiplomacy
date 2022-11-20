@@ -66,6 +66,7 @@ void AUDSkirmishGameMode::RegisterAi()
 	AiControllers.Add(controller);
 	UE_LOG(LogTemp, Log, TEXT("Finalizing setup of new AI with Id: %d"), controller->GetControllerUniqueId());
 	UE_LOG(LogTemp, Log, TEXT("Retrieved Id(%d)."), controller->GetControllerUniqueId());
+	WorldSimulation->RegisterActionMaker(Cast<IUDActionHandlingInterface>(controller));
 	AssignToSimulation(Cast<IUDControllerInterface>(controller));
 }
 
@@ -94,5 +95,6 @@ void AUDSkirmishGameMode::RegisterGaiaAi()
 	// more issues as the initialization will not be able to handle a player that
 	// initialized sooner then server class.
 	GaiaController->SetControllerUniqueId(GetNextUniqueControllerId());
+	WorldSimulation->RegisterActionMaker(Cast<IUDActionHandlingInterface>(GaiaController));
 	WorldSimulation->InitializeGaiaWorldState(GaiaController->GetControllerUniqueId());
 }

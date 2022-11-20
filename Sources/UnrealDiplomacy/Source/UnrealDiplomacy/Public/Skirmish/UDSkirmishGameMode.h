@@ -23,7 +23,6 @@ class UNREALDIPLOMACY_API AUDSkirmishGameMode : public AUDGameMode
 	GENERATED_BODY()
 public:
 	AUDSkirmishGameMode();
-
 protected:
 	/**
 	 * Final part of initialization of fields for the gamemode such as actors.

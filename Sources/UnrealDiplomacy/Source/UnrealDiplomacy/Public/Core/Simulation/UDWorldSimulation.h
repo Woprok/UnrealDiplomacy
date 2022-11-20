@@ -6,6 +6,7 @@
 #include "Core/UDActor.h"
 #include "UDActionData.h"
 #include "UDActionInterface.h"
+#include "UDActionHandlingInterface.h"
 #include "UDWorldState.h"
 #include "UDWorldSimulation.generated.h"
 
@@ -19,6 +20,23 @@ class UNREALDIPLOMACY_API AUDWorldSimulation : public AUDActor
 	GENERATED_BODY()
 
 public:
+	/**
+	 * Allows controllers to register for incoming messages from the simulation about the state change.
+	 * Invoked everytime an action was executed by the simulation.
+	 */
+	DECLARE_MULTICAST_DELEGATE_OneParam(BroadcastActionExecutedDelegate, FUDActionData&);
+	/**
+	 * Delegate for broadcast of an action being executed, thus resulting in state changing.
+	 * Action that was done is passed ?
+	 * TODO reevaluate restraints.
+	 */
+	BroadcastActionExecutedDelegate OnBroadcastActionExecutedDelegate;
+	/**
+	 * This allows controller to respond for each action that it received if deemed necessary.
+	 * TODO simplify the register process for controllers.
+	 */
+	void RegisterActionMaker(TObjectPtr<IUDActionHandlingInterface> newListener);
+
 	/**
 	 * Initializes state that is used only by server and provides source of verification
 	 * for consistency of the world.

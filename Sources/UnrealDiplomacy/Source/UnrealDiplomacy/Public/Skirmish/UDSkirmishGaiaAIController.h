@@ -13,10 +13,19 @@
  * the world and handles all neutral action invocations. 
  */
 UCLASS()
-class UNREALDIPLOMACY_API AUDSkirmishGaiaAIController : public AUDAIController, public IUDControllerInterface
+class UNREALDIPLOMACY_API AUDSkirmishGaiaAIController : public AUDAIController, public IUDControllerInterface, public IUDActionHandlingInterface
 {
 	GENERATED_BODY()
 public:
+	/**
+	 * TODO
+	 * Temporary enable of ticks, should be changed to event handler.
+	 */
+	//AUDSkirmishGaiaAIController();
+	/**
+	 * Every decision is done via ticks.
+	 */
+	//void Tick(float DeltaSeconds) override;
 	virtual void SetControllerUniqueId(int32 uniqueControllerId) override;
 	virtual int32 GetControllerUniqueId() override;
 private:
