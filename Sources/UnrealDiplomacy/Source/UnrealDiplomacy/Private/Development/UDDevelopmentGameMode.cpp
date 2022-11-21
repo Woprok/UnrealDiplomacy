@@ -14,6 +14,14 @@ void AUDDevelopmentGameMode::BeginPlay()
 	Super::BeginPlay();
 	UE_LOG(LogTemp, Log, TEXT("Testing environtment simulation!"));
 	CreateAiPlayers(1);
+
+	// AI INIT IS DONE
+
+	// FINALLY START GAME
+	StartGame();
+
+	// YES GAME IS RUNNING FOR PLAYERS TO DO THEIR DANCE MOVES
+
 	UE_LOG(LogTemp, Log, TEXT("Testing simple simulation!"));
 	FUDActionData log(0, 0);
 	WorldSimulation->ExecuteAction(log);
@@ -37,8 +45,6 @@ void AUDDevelopmentGameMode::BeginPlay()
 	WorldSimulation->ExecuteAction(endTurnP2);
 
 	// Test unconditional gift
-	FUDActionData generateIncome(100, 0);
-	WorldSimulation->ExecuteAction(generateIncome);
 	FUDActionData unconditionalGiftFrom0To1(1000, 0, 1, 100);
 	WorldSimulation->ExecuteAction(unconditionalGiftFrom0To1);
 	WorldSimulation->RevertAction();

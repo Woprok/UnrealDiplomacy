@@ -18,14 +18,11 @@ class UNREALDIPLOMACY_API AUDSkirmishGaiaAIController : public AUDAIController, 
 	GENERATED_BODY()
 public:
 	/**
-	 * TODO
-	 * Temporary enable of ticks, should be changed to event handler.
+	 * Binds this interface to particular WorldSimulation authority.
 	 */
-	//AUDSkirmishGaiaAIController();
-	/**
-	 * Every decision is done via ticks.
-	 */
-	//void Tick(float DeltaSeconds) override;
+	virtual void ListenActionExecutor(TObjectPtr<AUDWorldSimulation> authority);
+	virtual void OnActionExecuted(FUDActionData& executedAction) override;
+
 	virtual void SetControllerUniqueId(int32 uniqueControllerId) override;
 	virtual int32 GetControllerUniqueId() override;
 private:

@@ -19,7 +19,12 @@ public:
 	 */
 	FUDActionData();
 	/**
-	 * Constructor for generic use. 
+	 * Constructor for generic server/automatic use of an action.
+	 * Example: StartGame (only actionTypeId is relevant for execution)
+	 */
+	FUDActionData(int32 actionTypeId);
+	/**
+	 * Constructor for generic use.
 	 */
 	FUDActionData(int32 actionTypeId, int32 invokerPlayerId);
 	/**

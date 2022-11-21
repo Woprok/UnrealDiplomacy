@@ -24,6 +24,11 @@ class UNREALDIPLOMACY_API AUDSkirmishGameMode : public AUDGameMode
 public:
 	AUDSkirmishGameMode();
 protected:
+	/**
+	 * Required to be called as last thing during game setup.
+	 * This will invoke UUDStartGameAction that handles pre-first turn play.
+	 */
+	virtual void StartGame();
 	/** 
 	 * Final part of initialization of fields for the gamemode such as actors.
 	 */

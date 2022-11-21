@@ -65,6 +65,26 @@ void UUDAddPlayerAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldSt
 
 #pragma endregion
 
+#pragma region UUDStartGameAction
+
+void UUDStartGameAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d): StartGameAction invoked."),
+		targetWorldState->PerspectivePlayerId);
+	IsGameStarted = true;
+}
+
+void UUDStartGameAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d): StartGame was reverted."),
+		targetWorldState->PerspectivePlayerId);
+	IsGameStarted = false;
+}
+
+#pragma endregion
+
 #pragma region UUDEndTurnAction
 
 bool UUDEndTurnAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
