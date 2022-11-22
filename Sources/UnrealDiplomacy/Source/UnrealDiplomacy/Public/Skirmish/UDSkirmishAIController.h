@@ -27,4 +27,5 @@ public:
 	virtual int32 GetControllerUniqueId() override;
 private:
 	int32 UniqueControllerId;
+	TObjectPtr<UUDWorldState> PersonalState;
 };

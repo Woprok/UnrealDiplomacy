@@ -60,8 +60,7 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
-private:
-	const int32 ActionTypeId = 0;
+	static const int32 ActionTypeId = 0;
 };
 
 /**
@@ -76,8 +75,7 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
-private:
-	const int32 ActionTypeId = 1;
+	static const int32 ActionTypeId = 1;
 };
 
 /**
@@ -95,8 +93,8 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	static 	const int32 ActionTypeId = 2;
 private:
-	const int32 ActionTypeId = 2;
 	bool IsGameStarted = false;
 };
 
@@ -112,8 +110,7 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
-private:
-	const int32 ActionTypeId = 3;
+	static const int32 ActionTypeId = 3;
 };
 
 /**
@@ -129,8 +126,7 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
-private:
-	const int32 ActionTypeId = 100;
+	static const int32 ActionTypeId = 100;
 };
 
 /**
@@ -145,6 +141,50 @@ class UNREALDIPLOMACY_API UUDUnconditionalGiftAction : public UObject, public IU
 	 virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	 virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	 virtual int32 GetActionTypeId() override { return ActionTypeId; };
- private:
-	 const int32 ActionTypeId = 1000;
+	 static const int32 ActionTypeId = 1000;
  };
+
+
+/**
+ * Simple gift of resources between two players, that must be accepted.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDGiftAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	static const int32 ActionTypeId = 1001;
+};
+
+/**
+ * Confirm action for UUDGiftAction
+ * Simple gift of resources between two players, that must be accepted.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDConfirmGiftAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	static const int32 ActionTypeId = 1002;
+};
+
+/**
+ * Reject action for UUDGiftAction
+ * Simple gift of resources between two players, that must be accepted.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDRejectGiftAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	static const int32 ActionTypeId = 1003;
+};

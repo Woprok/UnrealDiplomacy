@@ -56,11 +56,6 @@ void UUDAddPlayerAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldSt
 	// Removing is trivial as long as we are using two separate lists.
 	targetWorldState->PlayerOrder.Remove(actionData.InvokerPlayerId);
 	targetWorldState->Players.Remove(actionData.InvokerPlayerId);
-	// TODO remove this commented code during TODO cleanup
-	//auto& removedState = *targetWorldState->PlayerOrder.FindByPredicate(
-	//		[&actionData](TObjectPtr<UUDNationState> state) { return state->PlayerUniqueId == actionData.InvokerPlayerId; }
-	//);
-	//targetWorldState->PlayerOrder.Remove(removedState);
 }
 
 #pragma endregion
@@ -192,6 +187,106 @@ void UUDUnconditionalGiftAction::Revert(FUDActionData& actionData, TObjectPtr<UU
 		targetWorldState->PerspectivePlayerId,
 		targetWorldState->Players[actionData.InvokerPlayerId]->ResourceGold,
 		targetWorldState->Players[actionData.TargetPlayerId]->ResourceGold);
+}
+
+#pragma endregion
+
+#pragma region UUDGiftAction
+
+// TODO added CanExecute overloads that check if the action is still queued.
+// Revert can not be executed, neither Execute if the action is in meantime reverted.
+
+void GiftRemoveAction(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	// requires to be found first, list should be always short.
+	//int32 searchedId = actionData.UniqueId;
+	//auto removedData = targetWorldState->Players[actionData.TargetPlayerId]->PendingRequests.FindByPredicate(
+	//	[searchedId](FUDActionData& pendingData) { return pendingData.UniqueId == searchedId; }
+	//);
+	
+	// Item is simply removed based on comparison
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d): (%d) unresolved requests."),
+		targetWorldState->PerspectivePlayerId, targetWorldState->Players[actionData.TargetPlayerId]->PendingRequests.Num());
+	targetWorldState->Players[actionData.TargetPlayerId]->PendingRequests.Remove(actionData);
+
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d): (%d) unresolved requests."),
+		targetWorldState->PerspectivePlayerId, targetWorldState->Players[actionData.TargetPlayerId]->PendingRequests.Num());
+}
+
+void UUDGiftAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	// Unconfirmed request is added to queue.
+	targetWorldState->Players[actionData.TargetPlayerId]->PendingRequests.Add(actionData);
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):GiftAction(%d) assigned."),
+		targetWorldState->PerspectivePlayerId, actionData.UniqueId);
+}
+
+void UUDGiftAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):GiftAction(%d) assign reverted."),
+		targetWorldState->PerspectivePlayerId, actionData.UniqueId);
+
+	// Unconfirmed request is removed from queue.
+	GiftRemoveAction(actionData, targetWorldState);
+}
+
+void UUDConfirmGiftAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	// Action data is copied so we can use them instead of the original one.
+	targetWorldState->Players[actionData.InvokerPlayerId]->ResourceGold -= actionData.ValueParameter;
+	targetWorldState->Players[actionData.TargetPlayerId]->ResourceGold += actionData.ValueParameter;
+
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):GiftAction(%d) applied. (s(%d) transfered (%d) to t(%d))"),
+		targetWorldState->PerspectivePlayerId, actionData.UniqueId,
+		actionData.InvokerPlayerId, 
+		actionData.ValueParameter,
+		actionData.TargetPlayerId);
+
+	// Request is removed from queue and it's effect is applied.
+	GiftRemoveAction(actionData, targetWorldState);
+}
+
+void UUDConfirmGiftAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	// Confirmed request is returned to queue, but it has to be changed first.
+	FUDActionData copy(actionData, UUDGiftAction::ActionTypeId);
+	targetWorldState->Players[actionData.TargetPlayerId]->PendingRequests.Add(copy);
+
+	// Action data is copied so we can use them instead of the original one.
+	targetWorldState->Players[actionData.InvokerPlayerId]->ResourceGold += actionData.ValueParameter;
+	targetWorldState->Players[actionData.TargetPlayerId]->ResourceGold -= actionData.ValueParameter;
+
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):GiftAction(%d) apply reverted. (s(%d) transfered (%d) to t(%d))"),
+		targetWorldState->PerspectivePlayerId, actionData.UniqueId,
+		actionData.InvokerPlayerId,
+		actionData.ValueParameter,
+		actionData.TargetPlayerId);
+}
+
+void UUDRejectGiftAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):GiftAction(%d) removed."),
+		targetWorldState->PerspectivePlayerId, actionData.UniqueId);
+
+	// Request is removed from queue, without any effect being applied.
+	GiftRemoveAction(actionData, targetWorldState);
+}
+
+void UUDRejectGiftAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	// Deny request is returned to queue.
+	FUDActionData copy(actionData, UUDGiftAction::ActionTypeId);
+	targetWorldState->Players[actionData.TargetPlayerId]->PendingRequests.Add(copy);
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):GiftAction(%d) remove reverted."),
+		targetWorldState->PerspectivePlayerId, actionData.UniqueId);
 }
 
 #pragma endregion

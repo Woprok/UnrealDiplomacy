@@ -57,6 +57,11 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 		return;
 	}
 
+	if (!IsValidAssignableActionId(newAction.UniqueId))
+	{
+		newAction.UniqueId = GetAssignableActionId();
+	}
+
 	// Saved for future reference
 	ExecutionHistory.Add(newAction);
 	// Updated all current states with this action.

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 //ToDo is this required by anything at all ?
 //#include "UObject/NoExportTypes.h"
+#include "UDActionData.h"
 #include "UDWorldState.generated.h"
 
 /**
@@ -27,6 +28,11 @@ public:
 	 *
 	 */
 	int32 ResourceGold = 0;
+	/**
+	 * List of unresolved requests created by actions 
+	 * that are pending for confirm/reject action from this player.
+	 */
+	TArray<FUDActionData> PendingRequests;
 };
 
 /**

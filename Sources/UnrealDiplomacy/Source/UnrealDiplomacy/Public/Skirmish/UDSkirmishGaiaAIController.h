@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Core/Simulation/UDWorldState.h"
 #include "Core/UDAIController.h"
 #include "Core/UDControllerInterface.h"
 #include "UDSkirmishGaiaAIController.generated.h"
@@ -27,4 +28,5 @@ public:
 	virtual int32 GetControllerUniqueId() override;
 private:
 	int32 UniqueControllerId;
+	TObjectPtr<UUDWorldState> GaiaState;
 };

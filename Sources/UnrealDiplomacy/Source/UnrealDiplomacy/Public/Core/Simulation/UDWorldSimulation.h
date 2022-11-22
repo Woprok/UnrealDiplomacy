@@ -63,6 +63,21 @@ public:
 	 * TODO improve this, if there will be good reason to make it a full feature.
 	 */
 	void RevertAction();
+	/**
+	 * Returns state for read only purposes. Exposed for controllers.
+	 */
+	TObjectPtr<UUDWorldState> GetSpecificState(int32 stateOwnerId)
+	{
+		if (stateOwnerId == UUDWorldState::GaiaWorldStateId)
+		{
+			return GaiaState;
+		}
+		if (States.Contains(stateOwnerId))
+		{
+			return States[stateOwnerId];
+		}
+		return nullptr;
+	};
 protected:
 	/**
  	 * Each Player/Ai and Server have their own instance/state of the world.
@@ -93,4 +108,34 @@ private:
 	 * This will result in modification of all states as new player must be added to them as well.
 	 */
 	void SynchronizeNewPlayerState(TObjectPtr<UUDWorldState> newState);
+	/**
+	 * Returns true if the current id is proper, otherwise false. 
+	 * Id with value of 0 is not valid.
+	 */
+	bool IsValidAssignableActionId(int32 currentId)
+	{
+		return currentId != 0;
+	}
+	/**
+	 * Id assigned to actions, that were passed for execution. If action already has an id,
+	 * it will not get new id.
+	 * Id with value 0 is considered invalid.
+	 * TODO maybe we should not really on 0 as invalid value :)
+	 */
+	int32 GetAssignableActionId()
+	{
+		if (AssignableActionId != 0)
+		{
+			// returns non 0 value.
+			return AssignableActionId++;
+		}
+		// avoid returning 0 as that would break it.
+		return ++AssignableActionId;
+	}
+	/**
+	 * Id assigned to actions, that were passed for execution. If action already has an id,
+	 * it will not get new id.
+	 * Id with value 0 is considered invalid.
+	 */
+	int32 AssignableActionId = 0;
 };

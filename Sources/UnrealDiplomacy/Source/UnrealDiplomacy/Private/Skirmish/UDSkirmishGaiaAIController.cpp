@@ -17,25 +17,38 @@ int32 AUDSkirmishGaiaAIController::GetControllerUniqueId()
 void AUDSkirmishGaiaAIController::ListenActionExecutor(TObjectPtr<AUDWorldSimulation> authority)
 {
 	authority->OnBroadcastActionExecutedDelegate.AddUObject(this, &AUDSkirmishGaiaAIController::OnActionExecuted);
+	GaiaState = authority->GetSpecificState(GetControllerUniqueId());
 }
 
 void AUDSkirmishGaiaAIController::OnActionExecuted(FUDActionData& executedAction)
 {
-	// Do nothing. Whoever inherits this should consider override for custom logic.
 	// Simulator called this after action was executed
 	// We have to pass our action if its our turn
-	// We are quite lazy so let's do the simplest one
+	// We are quite lazy so let's do the simplest one for now.
 
-	if (executedAction.ActionTypeId == 2)
+	// After start of the game do some exclusive actions.
+	if (executedAction.ActionTypeId == UUDStartGameAction::ActionTypeId)
 	{
-		FUDActionData createResources(100, 0);
+		FUDActionData createResources(UUDGenerateIncomeAction::ActionTypeId, GetControllerUniqueId());
 		OnActionDecidedDelegate.ExecuteIfBound(createResources);
+		return;
 	}
 
-	//void IUDActionHandlingInterface::BindActionExecuted(TObjectPtr<AUDWorldSimulation> authority)
-	//{
-	//	authority->OnNotifyActionExecutedDelegate.AddUObject(this, &IUDActionHandlingInterface::OnActionExecuted);
-	//}
+	// End turn once income was generated for the first time.
+	if (executedAction.ActionTypeId == UUDGenerateIncomeAction::ActionTypeId)
+	{
+		FUDActionData endTurn(UUDEndTurnAction::ActionTypeId, GetControllerUniqueId());
+		OnActionDecidedDelegate.ExecuteIfBound(endTurn);
+		return;
+	}
+	
+	// End turn automatically as there is no other action to await for.
+	if (executedAction.ActionTypeId == UUDEndTurnAction::ActionTypeId && GaiaState->CurrentTurnPlayerId == GetControllerUniqueId())
+	{
+		FUDActionData endTurn(UUDEndTurnAction::ActionTypeId, GetControllerUniqueId());
+		OnActionDecidedDelegate.ExecuteIfBound(endTurn);
+		return;
+	}
 }
 
 //AUDSkirmishGaiaAIController::AUDSkirmishGaiaAIController() {

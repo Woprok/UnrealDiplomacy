@@ -7,6 +7,7 @@ TObjectPtr<UUDNationState> UUDNationState::CreateState(int32 playerId)
 {
 	TObjectPtr<UUDNationState> newState = NewObject<UUDNationState>();
 	newState->PlayerUniqueId = playerId;
+	newState->PendingRequests.SetNum(0);
 	return newState;
 }
 

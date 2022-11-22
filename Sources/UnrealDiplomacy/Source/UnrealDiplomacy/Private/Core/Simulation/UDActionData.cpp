@@ -8,6 +8,16 @@ FUDActionData::FUDActionData()
 
 }
 
+FUDActionData::FUDActionData(const FUDActionData& existingAction, int32 ActionTypeId) :
+	ActionTypeId(ActionTypeId),
+	InvokerPlayerId(existingAction.InvokerPlayerId),
+	TargetPlayerId(existingAction.TargetPlayerId),
+	ValueParameter(existingAction.ValueParameter),
+	UniqueId(existingAction.UniqueId)
+{
+
+}
+
 FUDActionData::FUDActionData(int32 actionTypeId) : ActionTypeId(actionTypeId)
 {
 

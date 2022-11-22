@@ -23,31 +23,40 @@ void AUDDevelopmentGameMode::BeginPlay()
 	// YES GAME IS RUNNING FOR PLAYERS TO DO THEIR DANCE MOVES
 
 	UE_LOG(LogTemp, Log, TEXT("Testing simple simulation!"));
-	FUDActionData log(0, 0);
-	WorldSimulation->ExecuteAction(log);
-
-	// Test full turn cycle with incorrect end and undo attempts.
-	FUDActionData endTurnP0(3, 0);
-	WorldSimulation->ExecuteAction(endTurnP0);
-	// Test incorrect end turn.
-	FUDActionData endTurnP1(3, 1);
-	WorldSimulation->ExecuteAction(endTurnP0);
+	// From perspective of human player as AI is partially automized.
+	FUDActionData endTurnP1(UUDEndTurnAction::ActionTypeId, 1);
 	WorldSimulation->ExecuteAction(endTurnP1);
-	FUDActionData endTurnP2(3, 2);
-	WorldSimulation->ExecuteAction(endTurnP2);
-	// Test how undo works over end turn.
-	WorldSimulation->ExecuteAction(endTurnP0);
-	WorldSimulation->RevertAction();
-	WorldSimulation->ExecuteAction(endTurnP0);
-	WorldSimulation->RevertAction();
-	WorldSimulation->RevertAction();
-	WorldSimulation->ExecuteAction(endTurnP0);
-	WorldSimulation->ExecuteAction(endTurnP2);
 
-	// Test unconditional gift
-	FUDActionData unconditionalGiftFrom0To1(1000, 0, 1, 100);
-	WorldSimulation->ExecuteAction(unconditionalGiftFrom0To1);
+	FUDActionData unconditionalGiftFrom1To2(UUDUnconditionalGiftAction::ActionTypeId, 1, 2, 69);
+	WorldSimulation->ExecuteAction(unconditionalGiftFrom1To2);
 	WorldSimulation->RevertAction();
+
+	FUDActionData conditionalGiftFrom1To2(UUDGiftAction::ActionTypeId, 1, 2, 42);
+	WorldSimulation->ExecuteAction(conditionalGiftFrom1To2);
+
+	// Example of how this operates...
+	// Test full turn cycle with incorrect end and undo attempts.
+	//FUDActionData log(0, 1);
+	// WorldSimulation->ExecuteAction(log);
+	// moved to automatic execution 
+		// FUDActionData endTurnP0(3, 0);
+		// WorldSimulation->ExecuteAction(endTurnP0);
+	// Test incorrect end turn.
+	//FUDActionData endTurnP1(3, 1);
+	//WorldSimulation->ExecuteAction(endTurnP1);
+	//WorldSimulation->ExecuteAction(endTurnP1);
+	//FUDActionData endTurnP2(3, 2);
+	//WorldSimulation->ExecuteAction(endTurnP2);
+	// Test how undo works over end turn.
+	//WorldSimulation->ExecuteAction(endTurnP1);
+	//WorldSimulation->RevertAction();
+	//WorldSimulation->ExecuteAction(endTurnP1);
+	//WorldSimulation->ExecuteAction(endTurnP2);
+	//WorldSimulation->RevertAction();
+	//WorldSimulation->RevertAction();
+	//WorldSimulation->ExecuteAction(endTurnP2);
+	//WorldSimulation->ExecuteAction(endTurnP1);
+	//WorldSimulation->ExecuteAction(endTurnP2);
 }
 
 TObjectPtr<AUDSkirmishAIController> AUDDevelopmentGameMode::CreateAi()

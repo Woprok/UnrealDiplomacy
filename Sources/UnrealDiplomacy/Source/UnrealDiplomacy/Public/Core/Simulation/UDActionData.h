@@ -19,6 +19,10 @@ public:
 	 */
 	FUDActionData();
 	/**
+	 * Copy constructor used by actions, that require multiple execution steps to carry over data.
+	 */
+	FUDActionData(const FUDActionData& existingAction, int32 ActionTypeId);
+	/**
 	 * Constructor for generic server/automatic use of an action.
 	 * Example: StartGame (only actionTypeId is relevant for execution)
 	 */
@@ -57,6 +61,29 @@ public:
 	 */
 	UPROPERTY()
 	int32 ValueParameter;
+	/**
+	 * Unique identifier, that is responsible for acting as a link between different actions.
+	 * By default is assigned by WorldSimulation or copy constructor.
+	 * E.g. Gift and it's eventual confirm/reject action will share this.
+	 */
+	UPROPERTY()
+	int32 UniqueId = 0;
 
 	// TODO consider array of Imodifier that have variable implementations of fields for future data access
+
+	inline bool operator!=(const FUDActionData& rhs) 
+	{ 
+		return !(*this == rhs); 
+	}
+
+	inline bool operator==(const FUDActionData& rhs)
+	{ 
+		return UniqueId == rhs.UniqueId 
+			// &&
+			// ActionTypeId == rhs.ActionTypeId &&
+			// InvokerPlayerId == rhs.InvokerPlayerId &&
+			// TargetPlayerId == rhs.TargetPlayerId &&
+			// ValueParameter == rhs.ValueParameter
+			;
+	}
 };
