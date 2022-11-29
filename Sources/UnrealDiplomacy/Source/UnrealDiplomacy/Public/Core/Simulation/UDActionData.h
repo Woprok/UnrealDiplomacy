@@ -8,6 +8,9 @@
 /**
  * Defines data passed to a an action.
  * TODO maybe change this to class, so we can use inheritance/variants.
+ * 
+ * Note: default comparison == is done based purely on UniqueId, if you need complete value comparison
+ * use IsValueEqual...
  */
 USTRUCT()
 struct UNREALDIPLOMACY_API FUDActionData
@@ -78,12 +81,15 @@ public:
 
 	inline bool operator==(const FUDActionData& rhs)
 	{ 
-		return UniqueId == rhs.UniqueId 
-			// &&
-			// ActionTypeId == rhs.ActionTypeId &&
-			// InvokerPlayerId == rhs.InvokerPlayerId &&
-			// TargetPlayerId == rhs.TargetPlayerId &&
-			// ValueParameter == rhs.ValueParameter
-			;
+		return UniqueId == rhs.UniqueId;
+	}
+
+	inline bool IsValueEqual(const FUDActionData& rhs)
+	{
+		return UniqueId == rhs.UniqueId &&
+			ActionTypeId == rhs.ActionTypeId &&
+			InvokerPlayerId == rhs.InvokerPlayerId &&
+			TargetPlayerId == rhs.TargetPlayerId &&
+			ValueParameter == rhs.ValueParameter;
 	}
 };

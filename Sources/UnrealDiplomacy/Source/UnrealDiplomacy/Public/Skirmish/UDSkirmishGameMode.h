@@ -58,7 +58,7 @@ protected:
 	 */ 
 	TArray<TObjectPtr<AUDSkirmishPlayerController>> PlayerControllers;
 	/**
-	 * List of recognized players.
+	 * Simulation that is responsible for maintaining and managing all interactions.
 	 */
 	TObjectPtr<AUDWorldSimulation> WorldSimulation;
 private:

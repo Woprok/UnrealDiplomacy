@@ -3,6 +3,58 @@
 
 #include "Core/Simulation/UDWorldState.h"
 
+TObjectPtr<UUDTileState> UUDTileState::CreateState(int32 x, int32 y)
+{
+	TObjectPtr<UUDTileState> newState = NewObject<UUDTileState>();
+	newState->Position = FIntPoint(x, y);
+	newState->OwnerUniqueId = UUDWorldState::GaiaWorldStateId;
+	return newState;
+}
+
+TObjectPtr<UUDTileState>&& UUDTileState::Duplicate(TObjectPtr<UUDTileState> existingState)
+{
+	TObjectPtr<UUDTileState> newState = NewObject<UUDTileState>();
+	newState->Position = FIntPoint(existingState->Position.X, existingState->Position.Y);
+	newState->OwnerUniqueId = existingState->OwnerUniqueId;
+	return MoveTempIfPossible(newState);
+}
+
+TObjectPtr<UUDMapState> UUDMapState::CreateState(int32 seed, int32 sizeOfX, int32 sizeOfY)
+{
+	TObjectPtr<UUDMapState> newState = NewObject<UUDMapState>();
+	newState->MapSeed = seed;
+	newState->MapSizeOfX = sizeOfX;
+	newState->MapSizeOfY = sizeOfY;
+	return newState;
+}
+
+TObjectPtr<UUDMapState>&& UUDMapState::Duplicate(TObjectPtr<UUDMapState> existingState)
+{
+	// Self duplication
+	TObjectPtr<UUDMapState> newState = NewObject<UUDMapState>();
+	newState->MapSeed = existingState->MapSeed;
+	newState->MapSizeOfX = existingState->MapSizeOfX;
+	newState->MapSizeOfY = existingState->MapSizeOfY;
+
+	// Recursive duplicate on tiles
+	newState->Tiles.SetNumZeroed(existingState->MapSizeOfX);
+
+	for (int32 x = 0; x < existingState->MapSizeOfX; x++)
+	{
+		newState->Tiles[x].SetNumZeroed(existingState->MapSizeOfY);
+	}
+
+	for (int32 x = 0; x < existingState->MapSizeOfX; x++)
+	{
+		for (int32 y = 0; y < existingState->MapSizeOfY; y++)
+		{
+			newState->Tiles[x][y] = UUDTileState::Duplicate(existingState->Tiles[x][y]);
+		}
+	}
+
+	return MoveTempIfPossible(newState);
+}
+
 TObjectPtr<UUDNationState> UUDNationState::CreateState(int32 playerId)
 {
 	TObjectPtr<UUDNationState> newState = NewObject<UUDNationState>();
