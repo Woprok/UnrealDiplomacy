@@ -24,7 +24,7 @@ public:
 	/**
 	 * Creates new instance of the tile state for specific location in array.
 	 */
-	static TObjectPtr<UUDTileState>&& Duplicate(TObjectPtr<UUDTileState> existingState);
+	static TObjectPtr<UUDTileState> Duplicate(TObjectPtr<UUDTileState> existingState);
 	/**
 	 * Position in map array.
 	 */
@@ -53,7 +53,7 @@ public:
 	 * Creates new instance of the map state based on existing one.
 	 * Used for copying map to a state.
 	 */
-	static TObjectPtr<UUDMapState>&& Duplicate(TObjectPtr<UUDMapState> existingState);
+	static TObjectPtr<UUDMapState> Duplicate(TObjectPtr<UUDMapState> existingState);
 	/**
 	 * Each tile present in the world.
 	 */
@@ -113,6 +113,10 @@ public:
 	 */
 	static TObjectPtr<UUDWorldState> CreateState(int32 playerId, bool isPlayerPerspectiveOnly);
 
+	/**
+	 * Current Map of tiles.
+	 */
+	TObjectPtr<UUDMapState> Map;
 	/**
 	 * Id associated with a Player/Ai, that controls this simulation.
 	 */

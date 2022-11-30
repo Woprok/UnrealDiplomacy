@@ -290,3 +290,28 @@ void UUDRejectGiftAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldS
 }
 
 #pragma endregion
+
+#pragma region UUDCreateWorldMapAction
+
+void UUDCreateWorldMapAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	// Get reference to existing generator, this is expected set by the AUDWorldSimulation or whoever is executing actions.
+	// Create empty state for the map to be filled in.
+	targetWorldState->Map = UUDMapState::CreateState(actionData.ValueParameter, actionData.TileParameter.X, actionData.TileParameter.Y);
+	// Generate world and replicate it to state, or just replicate if it exists.
+	WorldGenerator->CreateAndDuplicate(targetWorldState->Map);
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):CreateWorldMap initialized."),
+		targetWorldState->PerspectivePlayerId);
+}
+
+void UUDCreateWorldMapAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Map = nullptr;
+
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):CreateWorldMap reverted."),
+		targetWorldState->PerspectivePlayerId);
+}
+
+#pragma endregion

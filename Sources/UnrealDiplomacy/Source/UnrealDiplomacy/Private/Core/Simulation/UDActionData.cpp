@@ -13,6 +13,7 @@ FUDActionData::FUDActionData(const FUDActionData& existingAction, int32 ActionTy
 	InvokerPlayerId(existingAction.InvokerPlayerId),
 	TargetPlayerId(existingAction.TargetPlayerId),
 	ValueParameter(existingAction.ValueParameter),
+	TileParameter(existingAction.TileParameter),
 	UniqueId(existingAction.UniqueId)
 {
 
@@ -36,6 +37,12 @@ FUDActionData::FUDActionData(int32 actionTypeId, int32 invokerPlayerId, int32 ta
 
 FUDActionData::FUDActionData(int32 actionTypeId, int32 invokerPlayerId, int32 targetPlayerId, int32 valueParameter)
 	: ActionTypeId(actionTypeId), InvokerPlayerId(invokerPlayerId), TargetPlayerId(targetPlayerId), ValueParameter(valueParameter)
+{
+
+}
+
+FUDActionData::FUDActionData(int32 actionTypeId, int32 valueParameter, FIntPoint tileParameter)
+	: ActionTypeId(actionTypeId), ValueParameter(valueParameter), TileParameter(tileParameter)
 {
 
 }

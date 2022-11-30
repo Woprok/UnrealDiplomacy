@@ -3,6 +3,11 @@
 
 #include "Core/Simulation/UDWorldSimulation.h"
 
+void AUDWorldSimulation::Initialize()
+{
+	WorldGenerator = NewObject<UUDWorldGenerator>();
+}
+
 void AUDWorldSimulation::CreateState(int32 playerId, bool isPlayerOrAi)
 {
 	UE_LOG(LogTemp, Log, TEXT("Id(%d)."), playerId);
@@ -38,6 +43,7 @@ void AUDWorldSimulation::RegisterAction(TObjectPtr<IUDActionInterface> newAction
 	{
 		UE_LOG(LogTemp, Log, TEXT("Duplicate registration of action with id(%d)."), newAction->GetActionTypeId());
 	}
+	newAction->SetWorldGenerator(WorldGenerator);
 	Actions.Add(newAction->GetActionTypeId(), newAction);
 }
 

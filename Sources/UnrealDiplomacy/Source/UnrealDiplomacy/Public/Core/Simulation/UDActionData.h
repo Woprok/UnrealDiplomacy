@@ -43,6 +43,11 @@ public:
 	 */
 	FUDActionData(int32 actionTypeId, int32 invokerPlayerId, int32 targetPlayerId, int32 valueParameter);
 	/**
+	 * Constructor for target use with value attached and tile.
+	 * TODO rethink how to pass the parameters...
+	 */
+	FUDActionData(int32 actionTypeId, int32 valueParameter, FIntPoint tileParameter);
+	/**
 	 * Unique specifier for each action type is defined by implementation.
 	 * This specifier is used by IUDAction interface to determine, which one is
 	 * supposed to execute this data.
@@ -64,6 +69,11 @@ public:
 	 */
 	UPROPERTY()
 	int32 ValueParameter;
+	/**
+	 * Simple tile parameter, two bundled ints.
+	 */
+	UPROPERTY()
+	FIntPoint TileParameter;
 	/**
 	 * Unique identifier, that is responsible for acting as a link between different actions.
 	 * By default is assigned by WorldSimulation or copy constructor.

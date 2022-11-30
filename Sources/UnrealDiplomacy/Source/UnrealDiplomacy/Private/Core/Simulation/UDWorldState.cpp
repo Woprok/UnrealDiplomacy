@@ -11,7 +11,7 @@ TObjectPtr<UUDTileState> UUDTileState::CreateState(int32 x, int32 y)
 	return newState;
 }
 
-TObjectPtr<UUDTileState>&& UUDTileState::Duplicate(TObjectPtr<UUDTileState> existingState)
+TObjectPtr<UUDTileState> UUDTileState::Duplicate(TObjectPtr<UUDTileState> existingState)
 {
 	TObjectPtr<UUDTileState> newState = NewObject<UUDTileState>();
 	newState->Position = FIntPoint(existingState->Position.X, existingState->Position.Y);
@@ -28,7 +28,7 @@ TObjectPtr<UUDMapState> UUDMapState::CreateState(int32 seed, int32 sizeOfX, int3
 	return newState;
 }
 
-TObjectPtr<UUDMapState>&& UUDMapState::Duplicate(TObjectPtr<UUDMapState> existingState)
+TObjectPtr<UUDMapState> UUDMapState::Duplicate(TObjectPtr<UUDMapState> existingState)
 {
 	// Self duplication
 	TObjectPtr<UUDMapState> newState = NewObject<UUDMapState>();
@@ -52,7 +52,7 @@ TObjectPtr<UUDMapState>&& UUDMapState::Duplicate(TObjectPtr<UUDMapState> existin
 		}
 	}
 
-	return MoveTempIfPossible(newState);
+	return newState;
 }
 
 TObjectPtr<UUDNationState> UUDNationState::CreateState(int32 playerId)

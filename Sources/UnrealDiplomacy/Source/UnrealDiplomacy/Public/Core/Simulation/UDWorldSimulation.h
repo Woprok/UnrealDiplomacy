@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Core/UDActor.h"
 #include "UDActionData.h"
+#include "UDWorldGenerator.h"
 #include "UDActionInterface.h"
 #include "UDActionHandlingInterface.h"
 #include "UDWorldState.h"
@@ -20,6 +21,10 @@ class UNREALDIPLOMACY_API AUDWorldSimulation : public AUDActor
 	GENERATED_BODY()
 
 public:
+	/**
+	 * Initialize all necessary fields for actions and simulation.
+	 */
+	void Initialize();
 	/**
 	 * Allows controllers to register for incoming messages from the simulation about the state change.
 	 * Invoked everytime an action was executed by the simulation.
@@ -102,6 +107,10 @@ protected:
 	 * TODO improve this, if there will be good reason to make it a full feature.
 	 */
 	TArray<FUDActionData> UndoHistory;
+	/**
+	 * Current world generator used by this simulation.
+	 */
+	TObjectPtr<UUDWorldGenerator> WorldGenerator;
 private:
 	/**
 	 * Synchronize new player state to be on par with the old ones.

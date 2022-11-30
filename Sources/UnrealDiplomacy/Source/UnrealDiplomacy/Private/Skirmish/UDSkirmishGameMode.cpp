@@ -16,6 +16,7 @@ void AUDSkirmishGameMode::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	WorldSimulation = GetWorld()->SpawnActor<AUDWorldSimulation>();
+	WorldSimulation->Initialize();
 	LoadSkirmishAction();
 	UE_LOG(LogTemp, Log, TEXT("Finalized initialization of UObjects and Actors for GameMode."));
 	RegisterGaiaAi();
@@ -92,6 +93,8 @@ void AUDSkirmishGameMode::LoadSkirmishAction()
 	WorldSimulation->RegisterAction(NewObject<UUDGiftAction>());
 	WorldSimulation->RegisterAction(NewObject<UUDConfirmGiftAction>());
 	WorldSimulation->RegisterAction(NewObject<UUDRejectGiftAction>());
+	// CreateWorldMap action, requires self initializing WorldGenerator
+	WorldSimulation->RegisterAction(NewObject<UUDCreateWorldMapAction>());
 }
 
 void AUDSkirmishGameMode::RegisterGaiaAi()
@@ -108,6 +111,11 @@ void AUDSkirmishGameMode::RegisterGaiaAi()
 
 void AUDSkirmishGameMode::StartGame()
 {
+	// Test map gen action
+	// TODO implement lobby setting passover
+	FUDActionData mapGen(UUDCreateWorldMapAction::ActionTypeId, 4, FIntPoint(5,5));
+	WorldSimulation->ExecuteAction(mapGen);
+
 	FUDActionData startGame(UUDStartGameAction::ActionTypeId);
 	WorldSimulation->ExecuteAction(startGame);
 }

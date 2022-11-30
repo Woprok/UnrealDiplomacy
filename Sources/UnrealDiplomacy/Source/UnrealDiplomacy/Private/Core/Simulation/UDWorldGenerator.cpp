@@ -3,6 +3,22 @@
 
 #include "Core/Simulation/UDWorldGenerator.h"
 
+void UUDWorldGenerator::CreateAndDuplicate(TObjectPtr<UUDMapState> targetMapState)
+{
+	if (IsNewMapRequested(targetMapState))
+	{
+		CreateMap(targetMapState);
+	}
+	DuplicateToState(targetMapState);
+}
+
+bool UUDWorldGenerator::IsNewMapRequested(TObjectPtr<UUDMapState> mapState)
+{
+	return mapState->MapSeed != LastSeed ||
+		mapState->MapSizeOfX != LastSizeOfX ||
+		mapState->MapSizeOfY != LastSizeOfY;
+}
+
 void UUDWorldGenerator::CreateMap(TObjectPtr<UUDMapState> emptyMapState)
 {
 	GenerateArray(emptyMapState->MapSizeOfX, emptyMapState->MapSizeOfY);
