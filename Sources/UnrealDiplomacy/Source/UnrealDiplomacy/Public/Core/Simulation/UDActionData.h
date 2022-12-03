@@ -57,6 +57,16 @@ public:
 	 * This specifier is used by IUDAction interface to determine, which one is
 	 * supposed to execute this data.
 	 */
+
+	static FUDActionData Create(int32 actionTypeId, int32 invokerPLayerId, FIntPoint tileParameter)
+	{
+		FUDActionData data;
+		data.ActionTypeId = actionTypeId;
+		data.InvokerPlayerId = invokerPLayerId;
+		data.TileParameter = tileParameter;
+		return data;
+	}
+
 	UPROPERTY()
 	int32 ActionTypeId;
 	/**

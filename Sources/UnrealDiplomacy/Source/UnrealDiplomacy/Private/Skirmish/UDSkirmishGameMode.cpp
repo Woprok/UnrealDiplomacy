@@ -97,6 +97,13 @@ void AUDSkirmishGameMode::LoadSkirmishAction()
 	WorldSimulation->RegisterAction(NewObject<UUDCreateWorldMapAction>());
 	// Take Tile
 	WorldSimulation->RegisterAction(NewObject<UUDTakeTileAction>());
+	// Exploit Tile
+	WorldSimulation->RegisterAction(NewObject<UUDExploitTileAction>());
+	// Transfer Tile Action 1004-1006
+	WorldSimulation->RegisterAction(NewObject<UUDTransferTileAction>());
+	WorldSimulation->RegisterAction(NewObject<UUDConfirmTransferTileAction>());
+	WorldSimulation->RegisterAction(NewObject<UUDRejectTransferTileAction>());
+
 }
 
 void AUDSkirmishGameMode::RegisterGaiaAi()

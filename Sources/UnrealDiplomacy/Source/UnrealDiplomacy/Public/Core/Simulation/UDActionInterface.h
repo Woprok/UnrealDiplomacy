@@ -231,3 +231,62 @@ public:
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
 	static const int32 ActionTypeId = 5004;
 };
+
+/**
+ * Exploit tile for resource. Requires tile to be owned by the invoking player.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDExploitTileAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	static const int32 ActionTypeId = 5008;
+};
+
+/**
+ * Simple transfer of tile between two players, that must be accepted.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDTransferTileAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	static const int32 ActionTypeId = 1004;
+};
+
+/**
+ * Confirm action for UUDTransferTileAction
+ * Simple transfer of tile between two players, that must be accepted.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDConfirmTransferTileAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	static const int32 ActionTypeId = 1005;
+};
+
+/**
+ * Reject action for UUDTransferTileAction
+ * Simple transfer of tile between two players, that must be accepted.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDRejectTransferTileAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	static const int32 ActionTypeId = 1006;
+};

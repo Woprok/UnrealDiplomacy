@@ -340,10 +340,139 @@ void UUDTakeTileAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldSta
 	targetWorldState->Map->Tiles[actionData.TileParameter.X][actionData.TileParameter.Y]->OwnerUniqueId = actionData.TargetPlayerId;
 
 	UE_LOG(LogTemp, Log,
-		TEXT("INSTANCE(%d):UUDTakeTileAction tile(x=%d,y=%d) taken by %d."),
+		TEXT("INSTANCE(%d):UUDTakeTileAction tile(x=%d,y=%d) returned to %d."),
 		targetWorldState->PerspectivePlayerId,
 		actionData.TileParameter.X, actionData.TileParameter.Y,
 		actionData.TargetPlayerId);
+}
+
+#pragma endregion
+
+#pragma region UUDExploitTileAction
+
+const int UUDExploitTestValue = 100;
+
+bool UUDExploitTileAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+		targetWorldState->Map->Tiles[actionData.TileParameter.X][actionData.TileParameter.Y]->OwnerUniqueId == actionData.InvokerPlayerId;
+}
+
+void UUDExploitTileAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Players[actionData.InvokerPlayerId]->ResourceGold += UUDExploitTestValue;
+
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):UUDExploitTileAction tile(x=%d,y=%d) player(%d) exploited for %d."),
+		targetWorldState->PerspectivePlayerId,
+		actionData.TileParameter.X, actionData.TileParameter.Y,
+		actionData.InvokerPlayerId,
+		UUDExploitTestValue);
+}
+
+void UUDExploitTileAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Players[actionData.InvokerPlayerId]->ResourceGold -= UUDExploitTestValue;
+
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):UUDExploitTileAction tile(x=%d,y=%d) player(%d) returned exploit of %d."),
+		targetWorldState->PerspectivePlayerId,
+		actionData.TileParameter.X, actionData.TileParameter.Y,
+		actionData.InvokerPlayerId,
+		UUDExploitTestValue);
+}
+
+#pragma endregion
+
+
+#pragma region UUDTransferTileAction
+
+// TODO added CanExecute overloads that check if the action is still queued.
+// Revert can not be executed, neither Execute if the action is in meantime reverted.
+
+void TransferTileRemoveAction(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	// Item is simply removed based on comparison
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d): (%d) unresolved requests."),
+		targetWorldState->PerspectivePlayerId, targetWorldState->Players[actionData.TargetPlayerId]->PendingRequests.Num());
+	targetWorldState->Players[actionData.TargetPlayerId]->PendingRequests.Remove(actionData);
+
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d): (%d) unresolved requests."),
+		targetWorldState->PerspectivePlayerId, targetWorldState->Players[actionData.TargetPlayerId]->PendingRequests.Num());
+}
+
+void UUDTransferTileAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	// Unconfirmed request is added to queue.
+	targetWorldState->Players[actionData.TargetPlayerId]->PendingRequests.Add(actionData);
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):UUDTransferTileAction(%d) assigned."),
+		targetWorldState->PerspectivePlayerId, actionData.UniqueId);
+}
+
+void UUDTransferTileAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):UUDTransferTileAction(%d) assign reverted."),
+		targetWorldState->PerspectivePlayerId, actionData.UniqueId);
+
+	// Unconfirmed request is removed from queue.
+	TransferTileRemoveAction(actionData, targetWorldState);
+}
+
+void UUDConfirmTransferTileAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	// Action data is copied so we can use them instead of the original one.
+	targetWorldState->Map->Tiles[actionData.TileParameter.X][actionData.TileParameter.Y]->OwnerUniqueId = actionData.TargetPlayerId;
+
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):UUDTransferTileAction(%d) applied. (s(%d) transfered tile[%d, %d] to t(%d))"),
+		targetWorldState->PerspectivePlayerId, actionData.UniqueId,
+		actionData.InvokerPlayerId,
+		actionData.TileParameter.X, actionData.TileParameter.Y,
+		actionData.TargetPlayerId);
+
+	// Request is removed from queue and it's effect is applied.
+	TransferTileRemoveAction(actionData, targetWorldState);
+}
+
+void UUDConfirmTransferTileAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	// Confirmed request is returned to queue, but it has to be changed first.
+	FUDActionData copy(actionData, UUDTransferTileAction::ActionTypeId);
+	targetWorldState->Players[actionData.TargetPlayerId]->PendingRequests.Add(copy);
+
+	// Action data is copied so we can use them instead of the original one.
+	targetWorldState->Map->Tiles[actionData.TileParameter.X][actionData.TileParameter.Y]->OwnerUniqueId = actionData.InvokerPlayerId;
+
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):UUDTransferTileAction(%d) apply reverted. (s(%d) transfered tile[%d, %d] to t(%d))"),
+		targetWorldState->PerspectivePlayerId, actionData.UniqueId,
+		actionData.TargetPlayerId,
+		actionData.TileParameter.X, actionData.TileParameter.Y,
+		actionData.InvokerPlayerId);
+}
+
+void UUDRejectTransferTileAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):UUDTransferTileAction(%d) removed."),
+		targetWorldState->PerspectivePlayerId, actionData.UniqueId);
+
+	// Request is removed from queue, without any effect being applied.
+	TransferTileRemoveAction(actionData, targetWorldState);
+}
+
+void UUDRejectTransferTileAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	// Deny request is returned to queue.
+	FUDActionData copy(actionData, UUDTransferTileAction::ActionTypeId);
+	targetWorldState->Players[actionData.TargetPlayerId]->PendingRequests.Add(copy);
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):UUDTransferTileAction(%d) remove reverted."),
+		targetWorldState->PerspectivePlayerId, actionData.UniqueId);
 }
 
 #pragma endregion
