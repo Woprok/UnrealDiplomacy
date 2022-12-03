@@ -28,6 +28,9 @@ Personal Dev Notes on Progress
 - Grids are back, finally understood how they work as 0 is auto and everything else is x* (same as WPF). Creating UI with correct free space scaling is nice.
 - Network call are dangerous as once they are called it may execute it on other side also code that follows it invocation in next pin
 
+- Interfaces can't use certain PROJECT_API macro, only their implementation can use it, the empty declarator can't.
+- Static singletons are not possible and are not adviced to be hacked in. Instead of them you can use GameMode or GameInstance as instance that runs during single session of PIE.
+
 NetWork REPLICATION
 - Construct happens first, so its good to initialize objects there. BeginPlay is not consistent between server and client, see order of call varies. PlayerState should be avoided for sync events after login.
 - GameState BeginPlay is most important aspect of after join replication as it can be used consistently for same effect on both client and server, if BeginPlay is avoided on others.

@@ -7,8 +7,10 @@ void UUDWorldGenerator::CreateAndDuplicate(TObjectPtr<UUDMapState> targetMapStat
 {
 	if (IsNewMapRequested(targetMapState))
 	{
+		UE_LOG(LogTemp, Log, TEXT("Generating new map for supplied parameters."));
 		CreateMap(targetMapState);
 	}
+	UE_LOG(LogTemp, Log, TEXT("Duplicating map for supplied parameters."));
 	DuplicateToState(targetMapState);
 }
 

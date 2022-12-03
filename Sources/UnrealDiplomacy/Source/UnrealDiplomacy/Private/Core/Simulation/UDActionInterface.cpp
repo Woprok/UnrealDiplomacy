@@ -315,3 +315,35 @@ void UUDCreateWorldMapAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWo
 }
 
 #pragma endregion
+
+#pragma region UUDTakeTileAction
+
+bool UUDTakeTileAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+		targetWorldState->Map->Tiles[actionData.TileParameter.X][actionData.TileParameter.Y]->OwnerUniqueId == actionData.TargetPlayerId;
+}
+
+void UUDTakeTileAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Map->Tiles[actionData.TileParameter.X][actionData.TileParameter.Y]->OwnerUniqueId = actionData.InvokerPlayerId;
+
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):UUDTakeTileAction tile(x=%d,y=%d) taken by %d."),
+		targetWorldState->PerspectivePlayerId,
+		actionData.TileParameter.X, actionData.TileParameter.Y,
+		actionData.InvokerPlayerId);
+}
+
+void UUDTakeTileAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Map->Tiles[actionData.TileParameter.X][actionData.TileParameter.Y]->OwnerUniqueId = actionData.TargetPlayerId;
+
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):UUDTakeTileAction tile(x=%d,y=%d) taken by %d."),
+		targetWorldState->PerspectivePlayerId,
+		actionData.TileParameter.X, actionData.TileParameter.Y,
+		actionData.TargetPlayerId);
+}
+
+#pragma endregion
