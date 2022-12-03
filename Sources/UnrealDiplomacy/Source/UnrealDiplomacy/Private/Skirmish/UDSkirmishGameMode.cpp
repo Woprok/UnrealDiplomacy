@@ -95,6 +95,8 @@ void AUDSkirmishGameMode::LoadSkirmishAction()
 	WorldSimulation->RegisterAction(NewObject<UUDRejectGiftAction>());
 	// CreateWorldMap action, requires self initializing WorldGenerator
 	WorldSimulation->RegisterAction(NewObject<UUDCreateWorldMapAction>());
+	// Take Tile
+	WorldSimulation->RegisterAction(NewObject<UUDTakeTileAction>());
 }
 
 void AUDSkirmishGameMode::RegisterGaiaAi()

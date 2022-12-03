@@ -34,6 +34,9 @@ void AUDDevelopmentGameMode::BeginPlay()
 	FUDActionData conditionalGiftFrom1To2(UUDGiftAction::ActionTypeId, 1, 2, 42);
 	WorldSimulation->ExecuteAction(conditionalGiftFrom1To2);
 
+	FUDActionData takeTile(UUDTakeTileAction::ActionTypeId, 1, 0, FIntPoint(1, 1));
+	WorldSimulation->ExecuteAction(takeTile);
+
 	// Example of how this operates...
 	// Test full turn cycle with incorrect end and undo attempts.
 	//FUDActionData log(0, 1);

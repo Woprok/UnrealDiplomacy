@@ -48,6 +48,11 @@ public:
 	 */
 	FUDActionData(int32 actionTypeId, int32 valueParameter, FIntPoint tileParameter);
 	/**
+	 * Constructor for source and target as well as Tile.
+	 * TODO rethink how to pass the parameters...
+	 */
+	FUDActionData(int32 actionTypeId, int32 invokerPlayerId, int32 targetPlayerId, FIntPoint tileParameter);
+	/**
 	 * Unique specifier for each action type is defined by implementation.
 	 * This specifier is used by IUDAction interface to determine, which one is
 	 * supposed to execute this data.

@@ -46,3 +46,9 @@ FUDActionData::FUDActionData(int32 actionTypeId, int32 valueParameter, FIntPoint
 {
 
 }
+
+FUDActionData::FUDActionData(int32 actionTypeId, int32 invokerPlayerId, int32 targetPlayerId, FIntPoint tileParameter)
+	: ActionTypeId(actionTypeId), InvokerPlayerId(invokerPlayerId), TargetPlayerId(targetPlayerId), TileParameter(tileParameter)
+{
+
+}
