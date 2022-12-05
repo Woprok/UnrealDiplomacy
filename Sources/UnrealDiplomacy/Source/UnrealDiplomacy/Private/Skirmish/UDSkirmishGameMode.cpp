@@ -103,6 +103,8 @@ void AUDSkirmishGameMode::LoadSkirmishAction()
 	WorldSimulation->RegisterAction(NewObject<UUDTransferTileAction>());
 	WorldSimulation->RegisterAction(NewObject<UUDConfirmTransferTileAction>());
 	WorldSimulation->RegisterAction(NewObject<UUDRejectTransferTileAction>());
+	// Grant exploit permission
+	WorldSimulation->RegisterAction(NewObject<UUDGrantExploitTilePermissionAction>());
 
 }
 

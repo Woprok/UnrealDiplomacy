@@ -6,6 +6,8 @@
 #include "UDActionData.h"
 #include "UDWorldState.h"
 #include "UDWorldGenerator.h"
+#include "UDModifier.h"
+#include "UDModifierManager.h"
 #include "UDActionInterface.generated.h"
 
 // TODO extend by adding more functions that do verify & check restriction
@@ -58,8 +60,19 @@ public:
 	 {
 		 WorldGenerator = worldGenerator;
 	 }
+	 /**
+	  * Set the instance of modifier manager used by all registred actions.
+	  * Actions share modifier manager to correctly handle all modifiers.
+	  * Note: all actions that use modifiers needs this to be set.
+	  * By default set this to every action.
+	  */
+	 virtual void SetModifierManager(TObjectPtr<UUDModifierManager> modifierManager)
+	 {
+		 ModifierManager = modifierManager;
+	 }
 protected:
 	TObjectPtr<UUDWorldGenerator> WorldGenerator;
+	TObjectPtr<UUDModifierManager> ModifierManager;
 };
 
 /**
@@ -289,4 +302,20 @@ public:
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
 	static const int32 ActionTypeId = 1006;
+};
+
+/**
+ * Enables other player to exploit tile.
+ * Simple/First use of modifier system.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDGrantExploitTilePermissionAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	static const int32 ActionTypeId = 1007;
 };

@@ -197,13 +197,7 @@ void UUDUnconditionalGiftAction::Revert(FUDActionData& actionData, TObjectPtr<UU
 // Revert can not be executed, neither Execute if the action is in meantime reverted.
 
 void GiftRemoveAction(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
-{
-	// requires to be found first, list should be always short.
-	//int32 searchedId = actionData.UniqueId;
-	//auto removedData = targetWorldState->Players[actionData.TargetPlayerId]->PendingRequests.FindByPredicate(
-	//	[searchedId](FUDActionData& pendingData) { return pendingData.UniqueId == searchedId; }
-	//);
-	
+{	
 	// Item is simply removed based on comparison
 	UE_LOG(LogTemp, Log,
 		TEXT("INSTANCE(%d): (%d) unresolved requests."),
@@ -354,8 +348,22 @@ const int UUDExploitTestValue = 100;
 
 bool UUDExploitTileAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
+	bool validByModifier = false;
+	for (auto& mod : ModifierManager->GetTileModifiers(targetWorldState->Map->Tiles[actionData.TileParameter.X][actionData.TileParameter.Y],
+		UUDExploitTilePermissionModifier::ModifierTypeId))
+	{
+		TObjectPtr<UUDExploitTilePermissionModifier> castedMod = Cast<UUDExploitTilePermissionModifier>(mod);
+		if (castedMod->PlayerId == actionData.InvokerPlayerId)
+		{
+			validByModifier = true;
+			break;
+		}
+	}
 	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
-		targetWorldState->Map->Tiles[actionData.TileParameter.X][actionData.TileParameter.Y]->OwnerUniqueId == actionData.InvokerPlayerId;
+		(
+			targetWorldState->Map->Tiles[actionData.TileParameter.X][actionData.TileParameter.Y]->OwnerUniqueId == actionData.InvokerPlayerId ||
+			validByModifier
+		);
 }
 
 void UUDExploitTileAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
@@ -473,6 +481,40 @@ void UUDRejectTransferTileAction::Revert(FUDActionData& actionData, TObjectPtr<U
 	UE_LOG(LogTemp, Log,
 		TEXT("INSTANCE(%d):UUDTransferTileAction(%d) remove reverted."),
 		targetWorldState->PerspectivePlayerId, actionData.UniqueId);
+}
+
+#pragma endregion
+
+#pragma region UUDGrantExploitTilePermissionAction
+
+bool UUDGrantExploitTilePermissionAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+		targetWorldState->Map->Tiles[actionData.TileParameter.X][actionData.TileParameter.Y]->OwnerUniqueId == actionData.InvokerPlayerId;
+}
+
+void UUDGrantExploitTilePermissionAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	ModifierManager->ApplyTileModifier(targetWorldState->Map->Tiles[actionData.TileParameter.X][actionData.TileParameter.Y],
+		UUDExploitTilePermissionModifier::Create(actionData.UniqueId, actionData.TargetPlayerId));
+
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):UUDGrantExploitTilePermissionAction tile(x=%d,y=%d) can be exploited by player(%d)."),
+		targetWorldState->PerspectivePlayerId,
+		actionData.TileParameter.X, actionData.TileParameter.Y,
+		actionData.TargetPlayerId);
+}
+
+void UUDGrantExploitTilePermissionAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	ModifierManager->RemoveTileModifier(targetWorldState->Map->Tiles[actionData.TileParameter.X][actionData.TileParameter.Y], 
+		actionData.UniqueId);
+
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):UUDGrantExploitTilePermissionAction tile(x=%d,y=%d) can no longer be exploited by player(%d)."),
+		targetWorldState->PerspectivePlayerId,
+		actionData.TileParameter.X, actionData.TileParameter.Y,
+		actionData.TargetPlayerId);
 }
 
 #pragma endregion

@@ -41,6 +41,14 @@ void AUDSkirmishAIController::OnActionExecuted(FUDActionData& executedAction)
 		return;
 	}
 
+	if (executedAction.ActionTypeId == UUDGrantExploitTilePermissionAction::ActionTypeId && executedAction.TargetPlayerId == GetControllerUniqueId())
+	{
+		// Exploit your new tile in use
+		FUDActionData exploitNewTile = FUDActionData::Create(UUDExploitTileAction::ActionTypeId, GetControllerUniqueId(), executedAction.TileParameter);
+		OnActionDecidedDelegate.ExecuteIfBound(exploitNewTile);
+		return;
+	}
+
 	if (executedAction.ActionTypeId == UUDConfirmTransferTileAction::ActionTypeId && executedAction.TargetPlayerId == GetControllerUniqueId())
 	{
 		FUDActionData exploitNewTile = FUDActionData::Create(UUDExploitTileAction::ActionTypeId, GetControllerUniqueId(), executedAction.TileParameter);

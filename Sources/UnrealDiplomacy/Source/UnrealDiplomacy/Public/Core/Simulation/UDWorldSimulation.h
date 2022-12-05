@@ -6,6 +6,7 @@
 #include "Core/UDActor.h"
 #include "UDActionData.h"
 #include "UDWorldGenerator.h"
+#include "UDModifierManager.h"
 #include "UDActionInterface.h"
 #include "UDActionHandlingInterface.h"
 #include "UDWorldState.h"
@@ -111,6 +112,10 @@ protected:
 	 * Current world generator used by this simulation.
 	 */
 	TObjectPtr<UUDWorldGenerator> WorldGenerator;
+	/**
+	 * Current modifier manager used by this simulation.
+	 */
+	TObjectPtr<UUDModifierManager> ModifierManager;
 private:
 	/**
 	 * Synchronize new player state to be on par with the old ones.

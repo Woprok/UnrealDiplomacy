@@ -6,6 +6,7 @@
 //ToDo is this required by anything at all ?
 //#include "UObject/NoExportTypes.h"
 #include "UDActionData.h"
+#include "UDModifier.h"
 #include "UDWorldState.generated.h"
 
 /**
@@ -34,6 +35,11 @@ public:
 	 * Default is UUDWorldState::GaiaWorldStateId as this is inherently part of world state.
 	 */
 	int32 OwnerUniqueId;
+	/**
+	 * List of all modifiers applied to this tile.
+	 * This are modifiers that are applied to this tile.
+	 */
+	TArray<TObjectPtr<UUDModifier>> Modifiers;
 };
 
 /**
@@ -97,6 +103,11 @@ public:
 	 * that are pending for confirm/reject action from this player.
 	 */
 	TArray<FUDActionData> PendingRequests;
+	/**
+	 * List of all modifiers applied to this player.
+	 * This are modifiers that are applied to this player.
+	 */
+	TArray<TObjectPtr<UUDModifier>> Modifiers;
 };
 
 /**

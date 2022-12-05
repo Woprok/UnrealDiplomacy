@@ -6,6 +6,7 @@
 void AUDWorldSimulation::Initialize()
 {
 	WorldGenerator = NewObject<UUDWorldGenerator>();
+	ModifierManager = NewObject<UUDModifierManager>();
 }
 
 void AUDWorldSimulation::CreateState(int32 playerId, bool isPlayerOrAi)
@@ -44,6 +45,7 @@ void AUDWorldSimulation::RegisterAction(TObjectPtr<IUDActionInterface> newAction
 		UE_LOG(LogTemp, Log, TEXT("Duplicate registration of action with id(%d)."), newAction->GetActionTypeId());
 	}
 	newAction->SetWorldGenerator(WorldGenerator);
+	newAction->SetModifierManager(ModifierManager);
 	Actions.Add(newAction->GetActionTypeId(), newAction);
 }
 
