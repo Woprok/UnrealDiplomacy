@@ -20,10 +20,6 @@ public:
 	virtual void SetControllerUniqueId(int32 uniqueControllerId) override;
 	virtual int32 GetControllerUniqueId() override;
 
-	/**
-	 * Final part of initialization of fields for the an actors.
-	 */
-	virtual void PostInitializeComponents() override;
 
 	/**
 	 * Passes received action to world simulation.
@@ -43,17 +39,27 @@ public:
 	UFUNCTION(Server, Reliable)
 	void ServercastSendActionToServer(FUDActionData clientData);
 private:
-	int32 UniqueControllerId;
-protected:
 	/**
-	 * Local simulation that is used by specific client to present current results to user.
-	 * This is allowed to only execute actions, that are delivered through the network.
-	 * If this would execute local;y created action, it would cause desyncs. 
-	 * 
-	 * TODO added handling for premature apply and possible revert on fail to minimize input delay.
+	 * Initializes all fields and prepares all objects for use.
 	 */
-	TObjectPtr<AUDWorldSimulation> LocalSimulation;
-protected:
+	void Initialize();
+	/**
+	 * Simulation that is responsible for maintaining and managing all interactions.
+	 */
+	int32 UniqueControllerId;
+protected:	
+	/**
+	 * Lazy access to a WorldSimulation.
+	 * Necessary to prevent early call of uninitialized fields.
+	 */
+	TObjectPtr<AUDWorldSimulation> GetWorldSimulation()
+	{
+		if (InternalWorldSimulation.IsNull())
+		{
+			Initialize();
+		}
+		return InternalWorldSimulation;
+	}
 	/**
 	 * Retrieves current GameState that is associated with the running level.
 	 */
@@ -71,4 +77,12 @@ private:
 	 * Access through the GetCastGameState(), this does not have to be initialized.
 	 */
 	TObjectPtr<AUDSkirmishGameState> InternalCurrentGameState;
+	/**
+	 * Local simulation that is used by specific client to present current results to user.
+	 * This is allowed to only execute actions, that are delivered through the network.
+	 * If this would execute local;y created action, it would cause desyncs.
+	 *
+	 * TODO added handling for premature apply and possible revert on fail to minimize input delay.
+	 */
+	TObjectPtr<AUDWorldSimulation> InternalWorldSimulation;
 };

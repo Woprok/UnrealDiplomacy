@@ -32,6 +32,7 @@ void AUDSkirmishGameState::MulticastSendActionToAllClients_Implementation(FUDAct
 	//TObjectPtr<APlayerController> controller = GEngine->GetFirstLocalPlayerController(GetWorld());
 	if (controller.IsNull())
 	{
+		//controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 		UE_LOG(LogTemp, Log, TEXT("UDSkirmishGameState Multicast as $d type failed."), GetNetMode());
 	}
 	TObjectPtr<AUDSkirmishPlayerController> skirmishController = Cast<AUDSkirmishPlayerController>(controller);

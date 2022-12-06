@@ -28,7 +28,7 @@ void AUDDevelopmentGameMode::BeginPlay()
 	GetCastGameState()->OnServerSendAction(endTurnP1);
 	FUDActionData unconditionalGiftFrom1To2(UUDUnconditionalGiftAction::ActionTypeId, 1, 2, 69);
 	GetCastGameState()->OnServerSendAction(unconditionalGiftFrom1To2);
-	WorldSimulation->RevertAction();
+	GetWorldSimulation()->RevertAction();
 
 	FUDActionData conditionalGiftFrom1To2(UUDGiftAction::ActionTypeId, 1, 2, 42);
 	GetCastGameState()->OnServerSendAction(conditionalGiftFrom1To2);

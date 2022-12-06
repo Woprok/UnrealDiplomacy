@@ -38,10 +38,6 @@ protected:
 	 * This will invoke UUDStartGameAction that handles pre-first turn play.
 	 */
 	virtual void StartGame();
-	/** 
-	 * Final part of initialization of fields for the gamemode such as actors.
-	 */
-	virtual void PostInitializeComponents() override;
 	/**
 	 * Creates sufficient amount of Ai controllers.
 	 */
@@ -67,10 +63,26 @@ protected:
 	 */ 
 	TArray<TObjectPtr<AUDSkirmishPlayerController>> PlayerControllers;
 	/**
+	 * Lazy access to a WorldSimulation.
+	 * Necessary to prevent early call of uninitialized fields.
+	 */
+	TObjectPtr<AUDWorldSimulation> GetWorldSimulation()
+	{
+		if (InternalWorldSimulation.IsNull())
+		{
+			Initialize();
+		}
+		return InternalWorldSimulation;
+	}
+private:
+	/**
+	 * Initializes all fields and prepares all objects for use.
+	 */
+	void Initialize();
+	/**
 	 * Simulation that is responsible for maintaining and managing all interactions.
 	 */
-	TObjectPtr<AUDWorldSimulation> WorldSimulation;
-private:
+	TObjectPtr<AUDWorldSimulation> InternalWorldSimulation;
 	/**
 	 * Registers listen to world simulation owned by this GameMode.
 	 */

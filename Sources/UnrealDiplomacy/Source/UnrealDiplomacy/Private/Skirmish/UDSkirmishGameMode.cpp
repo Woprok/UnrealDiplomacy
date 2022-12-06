@@ -12,11 +12,10 @@ AUDSkirmishGameMode::AUDSkirmishGameMode()
 	UE_LOG(LogTemp, Log, TEXT("Defined static classes for SkirmishGameMode."));
 }
 
-void AUDSkirmishGameMode::PostInitializeComponents()
+void AUDSkirmishGameMode::Initialize()
 {
-	Super::PostInitializeComponents();
-	WorldSimulation = GetWorld()->SpawnActor<AUDWorldSimulation>();
-	WorldSimulation->Initialize();
+	InternalWorldSimulation = GetWorld()->SpawnActor<AUDWorldSimulation>();
+	GetWorldSimulation()->Initialize();
 	RegisterAsListenerToWorldSimulation();
 	UE_LOG(LogTemp, Log, TEXT("Finalized initialization of UObjects and Actors for GameMode."));
 	RegisterGaiaAi();
@@ -62,20 +61,21 @@ TObjectPtr<AUDSkirmishAIController> AUDSkirmishGameMode::CreateAi()
 
 void AUDSkirmishGameMode::RegisterAi()
 {
+	// TODO REDUCE AND MERGE AS MUCH AS POSSIBLE WITH PLAYER VERSION
 	TObjectPtr<AUDSkirmishAIController> controller = CreateAi();
 	controller->SetControllerUniqueId(GetNextUniqueControllerId());
 	AiControllers.Add(controller);
 	UE_LOG(LogTemp, Log, TEXT("Finalizing setup of new AI with Id: %d"), controller->GetControllerUniqueId());
 	UE_LOG(LogTemp, Log, TEXT("Retrieved Id(%d)."), controller->GetControllerUniqueId());
 	AssignToSimulation(Cast<IUDControllerInterface>(controller));
-	controller->SetSimulatedStateAccess(WorldSimulation->GetSpecificState(controller->GetControllerUniqueId()));
+	controller->SetSimulatedStateAccess(GetWorldSimulation()->GetSpecificState(controller->GetControllerUniqueId()));
 	GetCastGameState()->RegisterActionMaker(Cast<IUDActionHandlingInterface>(controller));
 }
 
 void AUDSkirmishGameMode::AssignToSimulation(TObjectPtr<IUDControllerInterface> playerOrAi)
 {
 	UE_LOG(LogTemp, Log, TEXT("Retrieved Interface Id(%d)."), playerOrAi->GetControllerUniqueId());
-	WorldSimulation->CreateState(playerOrAi->GetControllerUniqueId(), true);
+	GetWorldSimulation()->CreateState(playerOrAi->GetControllerUniqueId(), true);
 }
 
 void AUDSkirmishGameMode::RegisterGaiaAi()
@@ -85,8 +85,8 @@ void AUDSkirmishGameMode::RegisterGaiaAi()
 	// more issues as the initialization will not be able to handle a player that
 	// initialized sooner then server class.
 	GaiaController->SetControllerUniqueId(GetNextUniqueControllerId());
-	WorldSimulation->InitializeGaiaWorldState(GaiaController->GetControllerUniqueId());
-	GaiaController->SetSimulatedStateAccess(WorldSimulation->GetSpecificState(GaiaController->GetControllerUniqueId()));
+	GetWorldSimulation()->InitializeGaiaWorldState(GaiaController->GetControllerUniqueId());
+	GaiaController->SetSimulatedStateAccess(GetWorldSimulation()->GetSpecificState(GaiaController->GetControllerUniqueId()));
 	GetCastGameState()->RegisterActionMaker(Cast<IUDActionHandlingInterface>(GaiaController));
 }
 
@@ -95,15 +95,15 @@ void AUDSkirmishGameMode::StartGame()
 	// Test map gen action
 	// TODO implement lobby setting passover
 	FUDActionData mapGen(UUDCreateWorldMapAction::ActionTypeId, 4, FIntPoint(5,5));
-	WorldSimulation->ExecuteAction(mapGen);
+	GetWorldSimulation()->ExecuteAction(mapGen);
 
 	FUDActionData startGame(UUDStartGameAction::ActionTypeId);
-	WorldSimulation->ExecuteAction(startGame);
+	GetWorldSimulation()->ExecuteAction(startGame);
 }
 
 void AUDSkirmishGameMode::ProcessAction(FUDActionData& actionData)
 {
-	WorldSimulation->ExecuteAction(actionData);
+	GetWorldSimulation()->ExecuteAction(actionData);
 }
 
 void AUDSkirmishGameMode::ActionExecutionFinished(FUDActionData& actionData)
@@ -140,5 +140,5 @@ void AUDSkirmishGameMode::ActionExecutionFinished(FUDActionData& actionData)
 
 void AUDSkirmishGameMode::RegisterAsListenerToWorldSimulation()
 {
-	WorldSimulation->OnBroadcastActionExecutedDelegate.AddUObject(this, &AUDSkirmishGameMode::ActionExecutionFinished);
+	GetWorldSimulation()->OnBroadcastActionExecutedDelegate.AddUObject(this, &AUDSkirmishGameMode::ActionExecutionFinished);
 }

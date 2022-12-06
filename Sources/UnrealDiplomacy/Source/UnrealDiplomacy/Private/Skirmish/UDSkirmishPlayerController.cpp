@@ -13,21 +13,17 @@ int32 AUDSkirmishPlayerController::GetControllerUniqueId()
 	return UniqueControllerId;
 }
 
-void AUDSkirmishPlayerController::PostInitializeComponents()
+void AUDSkirmishPlayerController::Initialize()
 {
-	Super::PostInitializeComponents();
-	LocalSimulation = GetWorld()->SpawnActor<AUDWorldSimulation>();
-	LocalSimulation->Initialize();
-	//LoadSkirmishAction();
-	UE_LOG(LogTemp, Log, TEXT("Finalized initialization of UObjects and Actors for GameMode."));
-	//RegisterGaiaAi();
-	UE_LOG(LogTemp, Log, TEXT("Finalized creation of Gaia state for GameMode. Follows game log..."));
+	InternalWorldSimulation = GetWorld()->SpawnActor<AUDWorldSimulation>();
+	GetWorldSimulation()->Initialize();
+	UE_LOG(LogTemp, Log, TEXT("Finalized initialization of UObjects and Actors for PlayerController."));
 }
 
 void AUDSkirmishPlayerController::ProcessReceivedAction(FUDActionData& actionData)
 {
 	// TODO maybe added variant for execute that does not check CanExecute ?
-	LocalSimulation->ExecuteAction(actionData);
+	GetWorldSimulation()->ExecuteAction(actionData);
 }
 
 // Header part for this is automatically generated from RPC definition.
