@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Core/Simulation/UDWorldState.h"
 #include "Core/Simulation/UDActionData.h"
 #include "UDActionHandlingInterface.generated.h"
 
@@ -10,7 +11,7 @@ class AUDWorldSimulation;
 
 /**
  * Interface for managing interaction between controllers (decision makers)
- * and simulation (executor)
+ * and simulation (executor). Used by AI.
  * This is required by UE compiler. This can't contain UNREALDIPLOMACY_API macro.
  */
 UINTERFACE(MinimalAPI, Blueprintable)
@@ -21,7 +22,7 @@ class UUDActionHandlingInterface : public UInterface
 
 /**
  * Interface for managing interaction between controllers (decision makers)
- * and simulation (executor)
+ * and simulation (executor). Used by AI.
  */
 class UNREALDIPLOMACY_API IUDActionHandlingInterface
 {
@@ -33,10 +34,16 @@ public:
 	 DECLARE_DELEGATE_OneParam(ActionDecidedDelegate, FUDActionData&);
 	 /**
 	  * Binded to simulation, as this is a way for this controller to be informed about change.
+	  * TODO register action executed as event/delegate to normalize how this interacts with GM & GS.
 	  */
 	 virtual void OnActionExecuted(FUDActionData& executedAction);
 	 /**
 	  * Delegate ?
 	  */
 	 ActionDecidedDelegate OnActionDecidedDelegate;
+	 /**
+	  * Used to grant access to game state to owner of this interface.
+	  * This access should be used only for reading the world state.
+	  */
+	 virtual void SetSimulatedStateAccess(TObjectPtr<UUDWorldState> personalWorldState);
 };

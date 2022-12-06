@@ -7,6 +7,7 @@ void AUDWorldSimulation::Initialize()
 {
 	WorldGenerator = NewObject<UUDWorldGenerator>();
 	ModifierManager = NewObject<UUDModifierManager>();
+	LoadCoreActions();
 }
 
 void AUDWorldSimulation::CreateState(int32 playerId, bool isPlayerOrAi)
@@ -31,11 +32,6 @@ void AUDWorldSimulation::InitializeGaiaWorldState(int32 gaiaId)
 	States.Add(gaiaId, newState);
 	GaiaState = States[gaiaId];
 	SynchronizeNewPlayerState(newState);
-}
-
-void AUDWorldSimulation::RegisterActionMaker(TObjectPtr<IUDActionHandlingInterface> newListener)
-{
-	newListener->OnActionDecidedDelegate.BindUObject(this, &AUDWorldSimulation::ExecuteAction);
 }
 
 void AUDWorldSimulation::RegisterAction(TObjectPtr<IUDActionInterface> newAction)
@@ -112,4 +108,33 @@ void AUDWorldSimulation::RevertAction()
 	}
 	UE_LOG(LogTemp, Log, TEXT("Action executor reverted action last successful action."));
 	UndoHistory.Add(oldAction);
+}
+
+void AUDWorldSimulation::LoadCoreActions()
+{
+	// Basics 0+
+	RegisterAction(NewObject<UUDLogAction>());
+	RegisterAction(NewObject<UUDAddPlayerAction>());
+	RegisterAction(NewObject<UUDStartGameAction>());
+	RegisterAction(NewObject<UUDEndTurnAction>());
+	// Gaia 100+
+	RegisterAction(NewObject<UUDGenerateIncomeAction>());
+	// Player 1000+
+	RegisterAction(NewObject<UUDUnconditionalGiftAction>());
+	// Gift Action 1001-1003
+	RegisterAction(NewObject<UUDGiftAction>());
+	RegisterAction(NewObject<UUDConfirmGiftAction>());
+	RegisterAction(NewObject<UUDRejectGiftAction>());
+	// CreateWorldMap action, requires self initializing WorldGenerator
+	RegisterAction(NewObject<UUDCreateWorldMapAction>());
+	// Take Tile
+	RegisterAction(NewObject<UUDTakeTileAction>());
+	// Exploit Tile
+	RegisterAction(NewObject<UUDExploitTileAction>());
+	// Transfer Tile Action 1004-1006
+	RegisterAction(NewObject<UUDTransferTileAction>());
+	RegisterAction(NewObject<UUDConfirmTransferTileAction>());
+	RegisterAction(NewObject<UUDRejectTransferTileAction>());
+	// Grant exploit permission
+	RegisterAction(NewObject<UUDGrantExploitTilePermissionAction>());
 }

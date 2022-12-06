@@ -25,31 +25,31 @@ void AUDDevelopmentGameMode::BeginPlay()
 	UE_LOG(LogTemp, Log, TEXT("Testing simple simulation!"));
 	// From perspective of human player as AI is partially automized.
 	FUDActionData endTurnP1(UUDEndTurnAction::ActionTypeId, 1);
-	WorldSimulation->ExecuteAction(endTurnP1);
-
+	GetCastGameState()->OnServerSendAction(endTurnP1);
 	FUDActionData unconditionalGiftFrom1To2(UUDUnconditionalGiftAction::ActionTypeId, 1, 2, 69);
-	WorldSimulation->ExecuteAction(unconditionalGiftFrom1To2);
+	GetCastGameState()->OnServerSendAction(unconditionalGiftFrom1To2);
 	WorldSimulation->RevertAction();
 
 	FUDActionData conditionalGiftFrom1To2(UUDGiftAction::ActionTypeId, 1, 2, 42);
-	WorldSimulation->ExecuteAction(conditionalGiftFrom1To2);
+	GetCastGameState()->OnServerSendAction(conditionalGiftFrom1To2);
 
 	FIntPoint tile(1, 1);
 	FUDActionData takeTile(UUDTakeTileAction::ActionTypeId, 1, 0, tile);
-	WorldSimulation->ExecuteAction(takeTile);
+	GetCastGameState()->OnServerSendAction(takeTile);
 
 	FUDActionData exploitTile = FUDActionData::Create(UUDExploitTileAction::ActionTypeId, 1, tile);
-	WorldSimulation->ExecuteAction(exploitTile);
+	GetCastGameState()->OnServerSendAction(exploitTile);
 
 	FUDActionData permissionShare(UUDGrantExploitTilePermissionAction::ActionTypeId, 1, 2, tile);
-	WorldSimulation->ExecuteAction(permissionShare);
+	GetCastGameState()->OnServerSendAction(permissionShare);
 
 
 	FIntPoint tileOther(2, 2);
 	FUDActionData takeTileOther(UUDTakeTileAction::ActionTypeId, 1, 0, tileOther);
-	WorldSimulation->ExecuteAction(takeTileOther);
+	GetCastGameState()->OnServerSendAction(takeTileOther);
+
 	FUDActionData transferTileOther(UUDTransferTileAction::ActionTypeId, 1, 2, tileOther);
-	WorldSimulation->ExecuteAction(transferTileOther);
+	GetCastGameState()->OnServerSendAction(transferTileOther);
 
 	// Example of how this operates...
 	// Test full turn cycle with incorrect end and undo attempts.

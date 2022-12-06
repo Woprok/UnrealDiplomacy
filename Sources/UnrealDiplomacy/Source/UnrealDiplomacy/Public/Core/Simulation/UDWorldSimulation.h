@@ -37,11 +37,6 @@ public:
 	 * TODO reevaluate restraints.
 	 */
 	BroadcastActionExecutedDelegate OnBroadcastActionExecutedDelegate;
-	/**
-	 * This allows controller to respond for each action that it received if deemed necessary.
-	 * TODO simplify the register process for controllers.
-	 */
-	void RegisterActionMaker(TObjectPtr<IUDActionHandlingInterface> newListener);
 
 	/**
 	 * Initializes state that is used only by server and provides source of verification
@@ -117,6 +112,10 @@ protected:
 	 */
 	TObjectPtr<UUDModifierManager> ModifierManager;
 private:
+	/**
+	 * Updates Simulation with known actions, that are necessary^TM for core gameplay.
+	 */
+	virtual void LoadCoreActions();
 	/**
 	 * Synchronize new player state to be on par with the old ones.
 	 * This will result in modification of all states as new player must be added to them as well.

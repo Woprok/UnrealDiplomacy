@@ -23,7 +23,16 @@ class UNREALDIPLOMACY_API AUDSkirmishGameMode : public AUDGameMode
 	GENERATED_BODY()
 public:
 	AUDSkirmishGameMode();
+	/**
+	 * Process action that was invoked by Client. TODO as well for AI ?
+	 */
+	virtual void ProcessAction(FUDActionData& actionData);
 protected:
+	/**
+	 * Handles decision how to propagate action that was successfully executed.
+	 * GameMode handles passing notification and action to all Clients and AIs.
+	 */
+	virtual void ActionExecutionFinished(FUDActionData& actionData);
 	/**
 	 * Required to be called as last thing during game setup.
 	 * This will invoke UUDStartGameAction that handles pre-first turn play.
@@ -63,9 +72,9 @@ protected:
 	TObjectPtr<AUDWorldSimulation> WorldSimulation;
 private:
 	/**
-	 * Updates Simulation with known actions, that are necessary for Skirmish gameplay.
+	 * Registers listen to world simulation owned by this GameMode.
 	 */
-	virtual void LoadSkirmishAction();
+	virtual void RegisterAsListenerToWorldSimulation();
 	/**
 	 * Assigns state to Gaia.
 	 */
@@ -92,4 +101,22 @@ private:
 	 * Assigns state to a Player/Ai.
 	 */
 	void AssignToSimulation(TObjectPtr<IUDControllerInterface> playerOrAi);
+protected:
+	/**
+	 * Retrieves current GameState that is associated with the running level.
+	 */
+	TObjectPtr<AUDSkirmishGameState> GetCastGameState()
+	{
+		if (InternalCurrentGameState.IsNull())
+		{
+			InternalCurrentGameState = Cast<AUDSkirmishGameState>(GameState);
+		}
+		return InternalCurrentGameState;
+	}
+private:
+	/**
+	 * Saved pointer for the GameState to reduce amount of access casts.
+	 * Access through the GetCastGameState(), this does not have to be initialized.
+	 */
+	TObjectPtr<AUDSkirmishGameState> InternalCurrentGameState;
 };

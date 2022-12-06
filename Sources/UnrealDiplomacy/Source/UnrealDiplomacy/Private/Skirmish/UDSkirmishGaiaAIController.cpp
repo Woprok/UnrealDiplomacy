@@ -14,10 +14,9 @@ int32 AUDSkirmishGaiaAIController::GetControllerUniqueId()
 	return UniqueControllerId;
 }
 
-void AUDSkirmishGaiaAIController::ListenActionExecutor(TObjectPtr<AUDWorldSimulation> authority)
+void AUDSkirmishGaiaAIController::SetSimulatedStateAccess(TObjectPtr<UUDWorldState> personalWorldState)
 {
-	authority->OnBroadcastActionExecutedDelegate.AddUObject(this, &AUDSkirmishGaiaAIController::OnActionExecuted);
-	GaiaState = authority->GetSpecificState(GetControllerUniqueId());
+	GaiaState = personalWorldState;
 }
 
 void AUDSkirmishGaiaAIController::OnActionExecuted(FUDActionData& executedAction)

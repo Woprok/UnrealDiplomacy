@@ -17,7 +17,7 @@ void AUDSkirmishGameMode::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	WorldSimulation = GetWorld()->SpawnActor<AUDWorldSimulation>();
 	WorldSimulation->Initialize();
-	LoadSkirmishAction();
+	RegisterAsListenerToWorldSimulation();
 	UE_LOG(LogTemp, Log, TEXT("Finalized initialization of UObjects and Actors for GameMode."));
 	RegisterGaiaAi();
 	UE_LOG(LogTemp, Log, TEXT("Finalized creation of Gaia state for GameMode. Follows game log..."));
@@ -68,44 +68,14 @@ void AUDSkirmishGameMode::RegisterAi()
 	UE_LOG(LogTemp, Log, TEXT("Finalizing setup of new AI with Id: %d"), controller->GetControllerUniqueId());
 	UE_LOG(LogTemp, Log, TEXT("Retrieved Id(%d)."), controller->GetControllerUniqueId());
 	AssignToSimulation(Cast<IUDControllerInterface>(controller));
-	controller->ListenActionExecutor(WorldSimulation);
-	WorldSimulation->RegisterActionMaker(Cast<IUDActionHandlingInterface>(controller));
+	controller->SetSimulatedStateAccess(WorldSimulation->GetSpecificState(controller->GetControllerUniqueId()));
+	GetCastGameState()->RegisterActionMaker(Cast<IUDActionHandlingInterface>(controller));
 }
 
 void AUDSkirmishGameMode::AssignToSimulation(TObjectPtr<IUDControllerInterface> playerOrAi)
 {
 	UE_LOG(LogTemp, Log, TEXT("Retrieved Interface Id(%d)."), playerOrAi->GetControllerUniqueId());
 	WorldSimulation->CreateState(playerOrAi->GetControllerUniqueId(), true);
-}
-
-void AUDSkirmishGameMode::LoadSkirmishAction()
-{
-	// Basics 0+
-	WorldSimulation->RegisterAction(NewObject<UUDLogAction>());
-	WorldSimulation->RegisterAction(NewObject<UUDAddPlayerAction>());
-	WorldSimulation->RegisterAction(NewObject<UUDStartGameAction>());
-	WorldSimulation->RegisterAction(NewObject<UUDEndTurnAction>());
-	// Gaia 100+
-	WorldSimulation->RegisterAction(NewObject<UUDGenerateIncomeAction>());
-	// Player 1000+
-	WorldSimulation->RegisterAction(NewObject<UUDUnconditionalGiftAction>());
-	// Gift Action 1001-1003
-	WorldSimulation->RegisterAction(NewObject<UUDGiftAction>());
-	WorldSimulation->RegisterAction(NewObject<UUDConfirmGiftAction>());
-	WorldSimulation->RegisterAction(NewObject<UUDRejectGiftAction>());
-	// CreateWorldMap action, requires self initializing WorldGenerator
-	WorldSimulation->RegisterAction(NewObject<UUDCreateWorldMapAction>());
-	// Take Tile
-	WorldSimulation->RegisterAction(NewObject<UUDTakeTileAction>());
-	// Exploit Tile
-	WorldSimulation->RegisterAction(NewObject<UUDExploitTileAction>());
-	// Transfer Tile Action 1004-1006
-	WorldSimulation->RegisterAction(NewObject<UUDTransferTileAction>());
-	WorldSimulation->RegisterAction(NewObject<UUDConfirmTransferTileAction>());
-	WorldSimulation->RegisterAction(NewObject<UUDRejectTransferTileAction>());
-	// Grant exploit permission
-	WorldSimulation->RegisterAction(NewObject<UUDGrantExploitTilePermissionAction>());
-
 }
 
 void AUDSkirmishGameMode::RegisterGaiaAi()
@@ -116,8 +86,8 @@ void AUDSkirmishGameMode::RegisterGaiaAi()
 	// initialized sooner then server class.
 	GaiaController->SetControllerUniqueId(GetNextUniqueControllerId());
 	WorldSimulation->InitializeGaiaWorldState(GaiaController->GetControllerUniqueId());
-	GaiaController->ListenActionExecutor(WorldSimulation);
-	WorldSimulation->RegisterActionMaker(Cast<IUDActionHandlingInterface>(GaiaController));
+	GaiaController->SetSimulatedStateAccess(WorldSimulation->GetSpecificState(GaiaController->GetControllerUniqueId()));
+	GetCastGameState()->RegisterActionMaker(Cast<IUDActionHandlingInterface>(GaiaController));
 }
 
 void AUDSkirmishGameMode::StartGame()
@@ -129,4 +99,46 @@ void AUDSkirmishGameMode::StartGame()
 
 	FUDActionData startGame(UUDStartGameAction::ActionTypeId);
 	WorldSimulation->ExecuteAction(startGame);
+}
+
+void AUDSkirmishGameMode::ProcessAction(FUDActionData& actionData)
+{
+	WorldSimulation->ExecuteAction(actionData);
+}
+
+void AUDSkirmishGameMode::ActionExecutionFinished(FUDActionData& actionData)
+{
+	// GAMEMODE decides who will receive which action, based on expected requirements passed by simulation.
+	
+	// Gaia always receives action notification.
+	GaiaController->OnActionExecuted(actionData);
+	// TODO all
+
+	// if all
+	GetCastGameState()->MulticastSendActionToAllClients(actionData);
+	// AI
+	for (auto& controller : AiControllers)
+	{
+		controller->OnActionExecuted(actionData);
+	}
+
+	/*
+	// TODO selection or single
+	// else
+	for (auto& controller : PlayerControllers)
+	{
+		// if is part
+		controller->ClientcastReceiveActionFromServer(actionData);
+	}
+	// AI
+	for (auto& controller : AiControllers)
+	{ //if is in range
+		controller->OnActionExecuted(actionData);
+	}
+	*/
+}
+
+void AUDSkirmishGameMode::RegisterAsListenerToWorldSimulation()
+{
+	WorldSimulation->OnBroadcastActionExecutedDelegate.AddUObject(this, &AUDSkirmishGameMode::ActionExecutionFinished);
 }

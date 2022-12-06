@@ -17,11 +17,8 @@ class UNREALDIPLOMACY_API AUDSkirmishAIController : public AUDAIController, publ
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Binds this interface to particular WorldSimulation authority.
-	 */
-	virtual void ListenActionExecutor(TObjectPtr<AUDWorldSimulation> authority);
 	virtual void OnActionExecuted(FUDActionData& executedAction) override;
+	virtual void SetSimulatedStateAccess(TObjectPtr<UUDWorldState> personalWorldState) override;
 
 	virtual void SetControllerUniqueId(int32 uniqueControllerId) override;
 	virtual int32 GetControllerUniqueId() override;

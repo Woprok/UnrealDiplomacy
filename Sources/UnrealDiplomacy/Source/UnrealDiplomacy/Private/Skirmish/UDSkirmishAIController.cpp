@@ -13,10 +13,9 @@ int32 AUDSkirmishAIController::GetControllerUniqueId()
 	return UniqueControllerId;
 }
 
-void AUDSkirmishAIController::ListenActionExecutor(TObjectPtr<AUDWorldSimulation> authority)
+void AUDSkirmishAIController::SetSimulatedStateAccess(TObjectPtr<UUDWorldState> personalWorldState)
 {
-	authority->OnBroadcastActionExecutedDelegate.AddUObject(this, &AUDSkirmishAIController::OnActionExecuted);
-	PersonalState = authority->GetSpecificState(GetControllerUniqueId());
+	PersonalState = personalWorldState;
 }
 
 void AUDSkirmishAIController::OnActionExecuted(FUDActionData& executedAction)
