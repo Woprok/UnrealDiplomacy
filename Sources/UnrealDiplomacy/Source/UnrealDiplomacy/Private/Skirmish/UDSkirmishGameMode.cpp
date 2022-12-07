@@ -5,8 +5,8 @@
 
 AUDSkirmishGameMode::AUDSkirmishGameMode() 
 {	
-	GameStateClass = AUDGameState::StaticClass();
-	HUDClass = AUDHUD::StaticClass();
+	GameStateClass = AUDSkirmishGameState::StaticClass();
+	HUDClass = AUDSkirmishHUD::StaticClass();
 	PlayerControllerClass = AUDSkirmishPlayerController::StaticClass();
 	PlayerStateClass = AUDSkirmishPlayerState::StaticClass();
 	UE_LOG(LogTemp, Log, TEXT("Defined static classes for SkirmishGameMode."));
@@ -85,7 +85,7 @@ void AUDSkirmishGameMode::RegisterGaiaAi()
 	// This is supposed to be first call, if this ever becomes out of order, it will cause
 	// more issues as the initialization will not be able to handle a player that
 	// initialized sooner then server class.
-	AssignToSimulation(GaiaController, false);
+	AssignToSimulation(Cast<IUDControllerInterface>(GaiaController), false);
 
 	GaiaController->SetSimulatedStateAccess(GetWorldSimulation()->GetSpecificState(GaiaController->GetControllerUniqueId()));
 	GetCastGameState()->RegisterActionMaker(Cast<IUDActionHandlingInterface>(GaiaController));
@@ -93,11 +93,13 @@ void AUDSkirmishGameMode::RegisterGaiaAi()
 
 void AUDSkirmishGameMode::AssignToSimulation(TObjectPtr<IUDControllerInterface> controller, bool isPlayerOrAi)
 {
+	// Always retrieve this before calling anything that might depend on it.
+	TObjectPtr<AUDWorldSimulation> worldSim = GetWorldSimulation();
 	// Define new controller ID.
 	controller->SetControllerUniqueId(GetNextUniqueControllerId());
 	UE_LOG(LogTemp, Log, TEXT("Finishing initialization of player with Id: %d"), controller->GetControllerUniqueId());
 	// Register controller for WorldSimulation, so it has it's own unique representation in the server simulation.
-	GetWorldSimulation()->CreateState(controller->GetControllerUniqueId(), isPlayerOrAi);
+	worldSim->CreateState(controller->GetControllerUniqueId(), isPlayerOrAi);
 }
 
 void AUDSkirmishGameMode::StartGame()

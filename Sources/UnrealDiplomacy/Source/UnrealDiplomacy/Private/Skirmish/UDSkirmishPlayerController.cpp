@@ -3,6 +3,24 @@
 
 #include "Skirmish/UDSkirmishPlayerController.h"
 
+//AUDSkirmishPlayerController::AUDSkirmishPlayerController()
+//{
+//	// This should be on by default as PlayerController is replicated already.
+//	//bReplicates = true;
+//}
+
+void AUDSkirmishPlayerController::OnRep_SetUniqueControllerId(const int32& oldId)
+{
+	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController: Synchronized Id from %d to %d."), oldId, UniqueControllerId);
+	// if IsLocallyController() <-client?server-> GetLocalRole() == ROLE_Authority
+}
+
+void AUDSkirmishPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AUDSkirmishPlayerController, UniqueControllerId);
+}
+
 void AUDSkirmishPlayerController::SetControllerUniqueId(int32 uniqueControllerId)
 {
 	UniqueControllerId = uniqueControllerId;
@@ -22,8 +40,9 @@ void AUDSkirmishPlayerController::Initialize()
 
 void AUDSkirmishPlayerController::ProcessReceivedAction(FUDActionData& actionData)
 {
+//	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController: Execute from %d."), GetControllerUniqueId());
 	// TODO maybe added variant for execute that does not check CanExecute ?
-	GetWorldSimulation()->ExecuteAction(actionData);
+	//GetWorldSimulation()->ExecuteAction(actionData);
 }
 
 // Header part for this is automatically generated from RPC definition.

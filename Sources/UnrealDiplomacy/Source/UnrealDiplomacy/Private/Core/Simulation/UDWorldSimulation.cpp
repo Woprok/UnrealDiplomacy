@@ -18,13 +18,13 @@ void AUDWorldSimulation::CreateState(int32 playerId, bool isPlayerOrAi)
 		return;
 	}
 
-	if (isPlayerOrAi && playerId != UUDWorldState::GaiaWorldStateId)
-	{
-		UE_LOG(LogTemp, Log, TEXT("Registering Player or Ai as Id(%d)."), playerId);
-	}
-	else if (!isPlayerOrAi && playerId == UUDWorldState::GaiaWorldStateId)
+	if (!isPlayerOrAi && playerId == UUDWorldState::GaiaWorldStateId)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Registering Gaia as Id(%d)."), playerId);
+	}
+	else if (isPlayerOrAi && playerId != UUDWorldState::GaiaWorldStateId)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Registering Player or Ai as Id(%d)."), playerId);
 	}
 	else
 	{
@@ -58,9 +58,11 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 	}
 	// Obtained executor for this action.
 	auto& actionExecutor = Actions[newAction.ActionTypeId];
+	
 	if (!actionExecutor->CanExecute(newAction, GetSpecificState(UUDWorldState::GaiaWorldStateId)))
 	{
-		UE_LOG(LogTemp, Log, TEXT("Action executor was halted for action id(%d)."), newAction.ActionTypeId);
+		UE_LOG(LogTemp, Log, TEXT("Action executor was halted for action id(%d) due to executor id(%d)."), 
+			newAction.ActionTypeId, actionExecutor->GetActionTypeId());
 		return;
 	}
 
@@ -90,6 +92,7 @@ void AUDWorldSimulation::SynchronizeNewPlayerState(TObjectPtr<UUDWorldState> new
 	}
 	// After that push new synchronize action to all, including new joined player.
 	FUDActionData joinPlayer(UUDAddPlayerAction::ActionTypeId, newState->PerspectivePlayerId);
+	UE_LOG(LogTemp, Log, TEXT("Calling join action for player id(%d)."), newState->PerspectivePlayerId);
 	ExecuteAction(joinPlayer);
 }
 

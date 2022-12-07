@@ -17,6 +17,17 @@ class UNREALDIPLOMACY_API AUDSkirmishPlayerController : public AUDPlayerControll
 {
 	GENERATED_BODY()
 public:
+	/**
+	 * Default constructor used by engine.
+	 */
+	//AUDSkirmishPlayerController();
+	/**
+	 * Allows replication of properties. 
+	 * This is used for initial sync as we need to ensure that both
+	 * client and server have controller prepared for action.
+	 */
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
+
 	virtual void SetControllerUniqueId(int32 uniqueControllerId) override;
 	virtual int32 GetControllerUniqueId() override;
 
@@ -38,6 +49,16 @@ public:
 	 */
 	UFUNCTION(Server, Reliable)
 	void ServercastSendActionToServer(FUDActionData clientData);
+	
+	/**
+	 * 
+	 */
+	//void ClientcastInitialSync();
+	/**
+	 *
+	 */
+	//void ServercastInitialSync();
+
 private:
 	/**
 	 * Initializes all fields and prepares all objects for use.
@@ -46,7 +67,10 @@ private:
 	/**
 	 * Simulation that is responsible for maintaining and managing all interactions.
 	 */
+	UPROPERTY(ReplicatedUsing=OnRep_SetUniqueControllerId)
 	int32 UniqueControllerId;
+	UFUNCTION()
+	void OnRep_SetUniqueControllerId(const int32& oldId);
 protected:	
 	/**
 	 * Lazy access to a WorldSimulation.

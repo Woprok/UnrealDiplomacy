@@ -5,6 +5,8 @@
 
 bool IUDActionInterface::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
+	UE_LOG(LogTemp, Log, TEXT("INSTANCE(%d): Default Can Execute is %d==%d."),
+		targetWorldState->PerspectivePlayerId, actionData.ActionTypeId, GetActionTypeId());
 	return actionData.ActionTypeId == GetActionTypeId();
 }
 
