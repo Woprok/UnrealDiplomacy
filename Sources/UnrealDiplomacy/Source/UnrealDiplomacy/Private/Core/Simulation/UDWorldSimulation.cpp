@@ -12,25 +12,28 @@ void AUDWorldSimulation::Initialize()
 
 void AUDWorldSimulation::CreateState(int32 playerId, bool isPlayerOrAi)
 {
-	UE_LOG(LogTemp, Log, TEXT("Id(%d)."), playerId);
-	if (playerId == UUDWorldState::GaiaWorldStateId || States.Contains(playerId))
+	if (States.Contains(playerId))
 	{
 		UE_LOG(LogTemp, Log, TEXT("Duplicate initialization of player state for player with id(%d)."), playerId);
 		return;
 	}
+
+	if (isPlayerOrAi && playerId != UUDWorldState::GaiaWorldStateId)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Registering Player or Ai as Id(%d)."), playerId);
+	}
+	else if (!isPlayerOrAi && playerId == UUDWorldState::GaiaWorldStateId)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Registering Gaia as Id(%d)."), playerId);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("Invalid combination of Id(%d) and isPlayerOrAi."), playerId);
+		return;
+	}
+
 	TObjectPtr<UUDWorldState> newState = UUDWorldState::CreateState(playerId, isPlayerOrAi);
 	States.Add(playerId, newState);
-	SynchronizeNewPlayerState(newState);
-}
-
-void AUDWorldSimulation::InitializeGaiaWorldState(int32 gaiaId)
-{
-	// Let's leave this here, so we don't break it and if we do, then let's pray we find it :)
-	check(gaiaId == UUDWorldState::GaiaWorldStateId);
-
-	TObjectPtr<UUDWorldState> newState = UUDWorldState::CreateState(gaiaId, false);
-	States.Add(gaiaId, newState);
-	GaiaState = States[gaiaId];
 	SynchronizeNewPlayerState(newState);
 }
 
@@ -55,7 +58,7 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 	}
 	// Obtained executor for this action.
 	auto& actionExecutor = Actions[newAction.ActionTypeId];
-	if (!actionExecutor->CanExecute(newAction, GaiaState))
+	if (!actionExecutor->CanExecute(newAction, GetSpecificState(UUDWorldState::GaiaWorldStateId)))
 	{
 		UE_LOG(LogTemp, Log, TEXT("Action executor was halted for action id(%d)."), newAction.ActionTypeId);
 		return;
@@ -86,7 +89,7 @@ void AUDWorldSimulation::SynchronizeNewPlayerState(TObjectPtr<UUDWorldState> new
 		Actions[actionData.ActionTypeId]->Execute(actionData, newState);		
 	}
 	// After that push new synchronize action to all, including new joined player.
-	FUDActionData joinPlayer(1, newState->PerspectivePlayerId);
+	FUDActionData joinPlayer(UUDAddPlayerAction::ActionTypeId, newState->PerspectivePlayerId);
 	ExecuteAction(joinPlayer);
 }
 

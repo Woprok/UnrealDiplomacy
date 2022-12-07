@@ -100,6 +100,11 @@ private:
 	 */
 	virtual TObjectPtr<AUDSkirmishAIController> CreateAi();
 	/**
+	 * Create Server player by initializing new AiController.
+	 * This player acts as the world.
+	 */
+	virtual TObjectPtr<AUDSkirmishGaiaAIController> CreateServerPlayer();
+	/**
 	 * Assigns state to Player and saves Player in PlayerControllers.
 	 */
 	void RegisterPlayer(APlayerController* NewPlayer);
@@ -112,7 +117,7 @@ private:
 	/**
 	 * Assigns state to a Player/Ai.
 	 */
-	void AssignToSimulation(TObjectPtr<IUDControllerInterface> playerOrAi);
+	void AssignToSimulation(TObjectPtr<IUDControllerInterface> controller, bool isPlayerOrAi);
 protected:
 	/**
 	 * Retrieves current GameState that is associated with the running level.

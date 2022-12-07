@@ -39,11 +39,6 @@ public:
 	BroadcastActionExecutedDelegate OnBroadcastActionExecutedDelegate;
 
 	/**
-	 * Initializes state that is used only by server and provides source of verification
-	 * for consistency of the world.
-	 */
-	void InitializeGaiaWorldState(int32 gaiaId);
-	/**
 	 * Creates new state that will be simultenuosly simulated along with all others.
 	 * Note: Player and Ai are both considered player. Only world/gaia is considered non-player.
 	 */
@@ -69,10 +64,6 @@ public:
 	 */
 	TObjectPtr<UUDWorldState> GetSpecificState(int32 stateOwnerId)
 	{
-		if (stateOwnerId == UUDWorldState::GaiaWorldStateId)
-		{
-			return GaiaState;
-		}
 		if (States.Contains(stateOwnerId))
 		{
 			return States[stateOwnerId];
@@ -84,10 +75,6 @@ protected:
  	 * Each Player/Ai and Server have their own instance/state of the world.
 	 */
 	TMap<int32, TObjectPtr<UUDWorldState>> States;
-	/**
-	 * Gaia state shortcut. Exists only on server.
-	 */
-	TObjectPtr<UUDWorldState> GaiaState;
 	/**
 	 * List of all actions registered in this simulation.
 	 */

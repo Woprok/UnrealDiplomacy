@@ -35,17 +35,6 @@ void AUDSkirmishGameMode::PostLogin(APlayerController* NewPlayer)
 	RegisterPlayer(NewPlayer);
 }
 
-void AUDSkirmishGameMode::RegisterPlayer(APlayerController* NewPlayer)
-{
-
-	TObjectPtr<AUDSkirmishPlayerController> controller = Cast<AUDSkirmishPlayerController>(NewPlayer);
-	controller->SetControllerUniqueId(GetNextUniqueControllerId());
-	PlayerControllers.Add(controller);
-	UE_LOG(LogTemp, Log, TEXT("Finalizing setup of new Player with Id: %d"), controller->GetControllerUniqueId());
-	UE_LOG(LogTemp, Log, TEXT("Retrieved Id(%d)."), controller->GetControllerUniqueId());
-	AssignToSimulation(Cast<IUDControllerInterface>(controller));
-}
-
 void AUDSkirmishGameMode::CreateAiPlayers(int32 count)
 {
 	for (int32 i = 0; i < count; i++)
@@ -59,35 +48,56 @@ TObjectPtr<AUDSkirmishAIController> AUDSkirmishGameMode::CreateAi()
 	return GetWorld()->SpawnActor<AUDSkirmishAIController>();
 }
 
+TObjectPtr<AUDSkirmishGaiaAIController> AUDSkirmishGameMode::CreateServerPlayer()
+{
+	return GetWorld()->SpawnActor<AUDSkirmishGaiaAIController>();
+}
+
+void AUDSkirmishGameMode::RegisterPlayer(APlayerController* NewPlayer)
+{
+	UE_LOG(LogTemp, Log, TEXT("Setting up new Player."));
+	// Cast obtained controller and save it.
+	TObjectPtr<AUDSkirmishPlayerController> controller = Cast<AUDSkirmishPlayerController>(NewPlayer);
+	PlayerControllers.Add(controller);
+
+	AssignToSimulation(Cast<IUDControllerInterface>(controller), true);
+}
+
 void AUDSkirmishGameMode::RegisterAi()
 {
-	// TODO REDUCE AND MERGE AS MUCH AS POSSIBLE WITH PLAYER VERSION
+	UE_LOG(LogTemp, Log, TEXT("Setting up new Ai."));
+	// Create new controller and save it.
 	TObjectPtr<AUDSkirmishAIController> controller = CreateAi();
-	controller->SetControllerUniqueId(GetNextUniqueControllerId());
 	AiControllers.Add(controller);
-	UE_LOG(LogTemp, Log, TEXT("Finalizing setup of new AI with Id: %d"), controller->GetControllerUniqueId());
-	UE_LOG(LogTemp, Log, TEXT("Retrieved Id(%d)."), controller->GetControllerUniqueId());
-	AssignToSimulation(Cast<IUDControllerInterface>(controller));
+
+	AssignToSimulation(Cast<IUDControllerInterface>(controller), true);
+
 	controller->SetSimulatedStateAccess(GetWorldSimulation()->GetSpecificState(controller->GetControllerUniqueId()));
 	GetCastGameState()->RegisterActionMaker(Cast<IUDActionHandlingInterface>(controller));
 }
 
-void AUDSkirmishGameMode::AssignToSimulation(TObjectPtr<IUDControllerInterface> playerOrAi)
-{
-	UE_LOG(LogTemp, Log, TEXT("Retrieved Interface Id(%d)."), playerOrAi->GetControllerUniqueId());
-	GetWorldSimulation()->CreateState(playerOrAi->GetControllerUniqueId(), true);
-}
-
 void AUDSkirmishGameMode::RegisterGaiaAi()
 {
-	GaiaController = GetWorld()->SpawnActor<AUDSkirmishGaiaAIController>();
+	UE_LOG(LogTemp, Log, TEXT("Setting up new Gaia."));
+	// Create new controller and save it.
+	GaiaController = CreateServerPlayer();
+
 	// This is supposed to be first call, if this ever becomes out of order, it will cause
 	// more issues as the initialization will not be able to handle a player that
 	// initialized sooner then server class.
-	GaiaController->SetControllerUniqueId(GetNextUniqueControllerId());
-	GetWorldSimulation()->InitializeGaiaWorldState(GaiaController->GetControllerUniqueId());
+	AssignToSimulation(GaiaController, false);
+
 	GaiaController->SetSimulatedStateAccess(GetWorldSimulation()->GetSpecificState(GaiaController->GetControllerUniqueId()));
 	GetCastGameState()->RegisterActionMaker(Cast<IUDActionHandlingInterface>(GaiaController));
+}
+
+void AUDSkirmishGameMode::AssignToSimulation(TObjectPtr<IUDControllerInterface> controller, bool isPlayerOrAi)
+{
+	// Define new controller ID.
+	controller->SetControllerUniqueId(GetNextUniqueControllerId());
+	UE_LOG(LogTemp, Log, TEXT("Finishing initialization of player with Id: %d"), controller->GetControllerUniqueId());
+	// Register controller for WorldSimulation, so it has it's own unique representation in the server simulation.
+	GetWorldSimulation()->CreateState(controller->GetControllerUniqueId(), isPlayerOrAi);
 }
 
 void AUDSkirmishGameMode::StartGame()
