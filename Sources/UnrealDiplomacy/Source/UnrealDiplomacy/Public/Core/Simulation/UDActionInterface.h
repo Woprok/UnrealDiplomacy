@@ -71,7 +71,9 @@ public:
 		 ModifierManager = modifierManager;
 	 }
 protected:
+	//UPROPERTY()
 	TObjectPtr<UUDWorldGenerator> WorldGenerator;
+	//UPROPERTY()
 	TObjectPtr<UUDModifierManager> ModifierManager;
 };
 

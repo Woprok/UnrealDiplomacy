@@ -39,6 +39,7 @@ public:
 	 * List of all modifiers applied to this tile.
 	 * This are modifiers that are applied to this tile.
 	 */
+	UPROPERTY()
 	TArray<TObjectPtr<UUDModifier>> Modifiers;
 };
 
@@ -107,6 +108,7 @@ public:
 	 * List of all modifiers applied to this player.
 	 * This are modifiers that are applied to this player.
 	 */
+	UPROPERTY()
 	TArray<TObjectPtr<UUDModifier>> Modifiers;
 };
 
@@ -127,6 +129,7 @@ public:
 	/**
 	 * Current Map of tiles.
 	 */
+	UPROPERTY()
 	TObjectPtr<UUDMapState> Map;
 	/**
 	 * Id associated with a Player/Ai, that controls this simulation.
@@ -143,6 +146,7 @@ public:
 	/**
 	 * Map of players with key as their id.
 	 */
+	UPROPERTY()
 	TMap<int32, TObjectPtr<UUDNationState>> Players;
 	/**
 	 * Current Player/Ai/Server that is able to act.
