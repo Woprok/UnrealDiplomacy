@@ -29,11 +29,13 @@ public:
 	/**
 	 * Position in map array.
 	 */
+	UPROPERTY()
 	FIntPoint Position;
 	/**
 	 * Owner's unique id.
 	 * Default is UUDWorldState::GaiaWorldStateId as this is inherently part of world state.
 	 */
+	UPROPERTY()
 	int32 OwnerUniqueId;
 	/**
 	 * List of all modifiers applied to this tile.
@@ -63,19 +65,30 @@ public:
 	static TObjectPtr<UUDMapState> Duplicate(TObjectPtr<UUDMapState> existingState);
 	/**
 	 * Each tile present in the world.
+	 * Due to UE, this is represented as 1D array in Row-Major order (x * y)
+	 * Access is then x * desired[x] + desired[y].
 	 */
-	TArray<TArray<TObjectPtr<UUDTileState>>> Tiles;
+	UPROPERTY()
+	TArray<TObjectPtr<UUDTileState>> Tiles;
+	UFUNCTION()
+	UUDTileState* GetTile(FIntPoint tile)
+	{
+		return Tiles[MapSizeOfX * tile.X + tile.Y];
+	}
 	/**
 	 * Seed used by generator.
 	 */
+	UPROPERTY()
 	int32 MapSeed = 0;
 	/**
 	 * X size of Map (first in array).
 	 */
+	UPROPERTY()
 	int32 MapSizeOfX = 0;
 	/**
 	 * Y size of Map (second in array).
 	 */
+	UPROPERTY()
 	int32 MapSizeOfY = 0;
 };
 
@@ -94,15 +107,18 @@ public:
 	/**
 	 * Unique id assigned to the owner.
 	 */
+	UPROPERTY()
 	int32 PlayerUniqueId;
 	/**
 	 *
 	 */
+	UPROPERTY()
 	int32 ResourceGold = 0;
 	/**
 	 * List of unresolved requests created by actions 
 	 * that are pending for confirm/reject action from this player.
 	 */
+	UPROPERTY()
 	TArray<FUDActionData> PendingRequests;
 	/**
 	 * List of all modifiers applied to this player.
@@ -134,14 +150,17 @@ public:
 	/**
 	 * Id associated with a Player/Ai, that controls this simulation.
 	 */
+	UPROPERTY()
 	int32 PerspectivePlayerId;
 	/**
 	 * State either belongs to specific Player/Ai or is global.
 	 */
+	UPROPERTY()
 	bool IsPlayerPerspectiveOnly;
 	/**
 	 * List of players in turn order, represented only by their unique id.
 	 */
+	UPROPERTY()
 	TArray<int32> PlayerOrder;
 	/**
 	 * Map of players with key as their id.
@@ -152,11 +171,13 @@ public:
 	 * Current Player/Ai/Server that is able to act.
 	 * Default value is 0.
 	 */
+	UPROPERTY()
 	int32 CurrentTurnPlayerId = 0;
 	/**
 	 * Current turn, has no purpose other than flavor info.
 	 * Default value is 0.
 	 */
+	UPROPERTY()
 	int32 CurrentTurn = 0;
 	/**
 	 * Gaia id.

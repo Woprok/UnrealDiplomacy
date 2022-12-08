@@ -37,19 +37,11 @@ TObjectPtr<UUDMapState> UUDMapState::Duplicate(TObjectPtr<UUDMapState> existingS
 	newState->MapSizeOfY = existingState->MapSizeOfY;
 
 	// Recursive duplicate on tiles
-	newState->Tiles.SetNumZeroed(existingState->MapSizeOfX);
+	newState->Tiles.SetNumZeroed(existingState->MapSizeOfX * existingState->MapSizeOfY);
 
-	for (int32 x = 0; x < existingState->MapSizeOfX; x++)
+	for (int32 xy = 0; xy < existingState->MapSizeOfX * existingState->MapSizeOfY; xy++)
 	{
-		newState->Tiles[x].SetNumZeroed(existingState->MapSizeOfY);
-	}
-
-	for (int32 x = 0; x < existingState->MapSizeOfX; x++)
-	{
-		for (int32 y = 0; y < existingState->MapSizeOfY; y++)
-		{
-			newState->Tiles[x][y] = UUDTileState::Duplicate(existingState->Tiles[x][y]);
-		}
+		newState->Tiles[xy] = UUDTileState::Duplicate(existingState->Tiles[xy]);
 	}
 
 	return newState;

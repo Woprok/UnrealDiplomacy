@@ -47,19 +47,11 @@ void UUDWorldGenerator::GenerateProperties(int32 mapSeed)
 void UUDWorldGenerator::DuplicateToState(TObjectPtr<UUDMapState> fillableMapState)
 {
 	// Recursive duplicate on tiles, that duplicates individual tiles from current Map.
-	fillableMapState->Tiles.SetNumZeroed(fillableMapState->MapSizeOfX);
+	fillableMapState->Tiles.SetNumZeroed(fillableMapState->MapSizeOfX * fillableMapState->MapSizeOfY);
 
-	for (int32 x = 0; x < fillableMapState->MapSizeOfX; x++)
+	for (int32 xy = 0; xy < fillableMapState->MapSizeOfX * fillableMapState->MapSizeOfY; xy++)
 	{
-		fillableMapState->Tiles[x].SetNumZeroed(fillableMapState->MapSizeOfY);
-	}
-
-	for (int32 x = 0; x < fillableMapState->MapSizeOfX; x++)
-	{
-		for (int32 y = 0; y < fillableMapState->MapSizeOfY; y++)
-		{
-			fillableMapState->Tiles[x][y] = UUDTileState::Duplicate(Map[x][y]);
-		}
+		fillableMapState->Tiles[xy] = UUDTileState::Duplicate(Map[xy]);
 	}
 }
 
@@ -70,18 +62,14 @@ void UUDWorldGenerator::GenerateArray(int32 xSize, int32 ySize)
 	LastSizeOfY = ySize;
 
 	// Generate empty array for future use.
-	Map.SetNumZeroed(xSize);
+	Map.SetNumZeroed(LastSizeOfX * LastSizeOfY);
 
-	for (int32 x = 0; x < xSize; x++)
+	for (int32 x = 0; x < LastSizeOfX; x++)
 	{
-		Map[x].SetNumZeroed(ySize);
-	}
-
-	for (int32 x = 0; x < xSize; x++)
-	{
-		for (int32 y = 0; y < ySize; y++)
+		for (int32 y = 0; y < LastSizeOfY; y++)
 		{
-			Map[x][y] = UUDTileState::CreateState(x, y);
+			int32 xy = LastSizeOfX * x + y;
+			Map[xy] = UUDTileState::CreateState(x, y);
 		}
 	}
 }

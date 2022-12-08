@@ -317,12 +317,12 @@ void UUDCreateWorldMapAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWo
 bool UUDTakeTileAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
 	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
-		targetWorldState->Map->Tiles[actionData.TileParameter.X][actionData.TileParameter.Y]->OwnerUniqueId == actionData.TargetPlayerId;
+		targetWorldState->Map->GetTile(actionData.TileParameter)->OwnerUniqueId == actionData.TargetPlayerId;
 }
 
 void UUDTakeTileAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
-	targetWorldState->Map->Tiles[actionData.TileParameter.X][actionData.TileParameter.Y]->OwnerUniqueId = actionData.InvokerPlayerId;
+	targetWorldState->Map->GetTile(actionData.TileParameter)->OwnerUniqueId = actionData.InvokerPlayerId;
 
 	UE_LOG(LogTemp, Log,
 		TEXT("INSTANCE(%d):UUDTakeTileAction tile(x=%d,y=%d) taken by %d."),
@@ -333,7 +333,7 @@ void UUDTakeTileAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldSt
 
 void UUDTakeTileAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
-	targetWorldState->Map->Tiles[actionData.TileParameter.X][actionData.TileParameter.Y]->OwnerUniqueId = actionData.TargetPlayerId;
+	targetWorldState->Map->GetTile(actionData.TileParameter)->OwnerUniqueId = actionData.TargetPlayerId;
 
 	UE_LOG(LogTemp, Log,
 		TEXT("INSTANCE(%d):UUDTakeTileAction tile(x=%d,y=%d) returned to %d."),
@@ -351,7 +351,7 @@ const int UUDExploitTestValue = 100;
 bool UUDExploitTileAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
 	bool validByModifier = false;
-	for (auto& mod : ModifierManager->GetTileModifiers(targetWorldState->Map->Tiles[actionData.TileParameter.X][actionData.TileParameter.Y],
+	for (auto& mod : ModifierManager->GetTileModifiers(targetWorldState->Map->GetTile(actionData.TileParameter),
 		UUDExploitTilePermissionModifier::ModifierTypeId))
 	{
 		TObjectPtr<UUDExploitTilePermissionModifier> castedMod = Cast<UUDExploitTilePermissionModifier>(mod);
@@ -363,7 +363,7 @@ bool UUDExploitTileAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDW
 	}
 	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
 		(
-			targetWorldState->Map->Tiles[actionData.TileParameter.X][actionData.TileParameter.Y]->OwnerUniqueId == actionData.InvokerPlayerId ||
+			targetWorldState->Map->GetTile(actionData.TileParameter)->OwnerUniqueId == actionData.InvokerPlayerId ||
 			validByModifier
 		);
 }
@@ -435,7 +435,7 @@ void UUDTransferTileAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorl
 void UUDConfirmTransferTileAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
 	// Action data is copied so we can use them instead of the original one.
-	targetWorldState->Map->Tiles[actionData.TileParameter.X][actionData.TileParameter.Y]->OwnerUniqueId = actionData.TargetPlayerId;
+	targetWorldState->Map->GetTile(actionData.TileParameter)->OwnerUniqueId = actionData.TargetPlayerId;
 
 	UE_LOG(LogTemp, Log,
 		TEXT("INSTANCE(%d):UUDTransferTileAction(%d) applied. (s(%d) transfered tile[%d, %d] to t(%d))"),
@@ -455,7 +455,7 @@ void UUDConfirmTransferTileAction::Revert(FUDActionData& actionData, TObjectPtr<
 	targetWorldState->Players[actionData.TargetPlayerId]->PendingRequests.Add(copy);
 
 	// Action data is copied so we can use them instead of the original one.
-	targetWorldState->Map->Tiles[actionData.TileParameter.X][actionData.TileParameter.Y]->OwnerUniqueId = actionData.InvokerPlayerId;
+	targetWorldState->Map->GetTile(actionData.TileParameter)->OwnerUniqueId = actionData.InvokerPlayerId;
 
 	UE_LOG(LogTemp, Log,
 		TEXT("INSTANCE(%d):UUDTransferTileAction(%d) apply reverted. (s(%d) transfered tile[%d, %d] to t(%d))"),
@@ -492,12 +492,12 @@ void UUDRejectTransferTileAction::Revert(FUDActionData& actionData, TObjectPtr<U
 bool UUDGrantExploitTilePermissionAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
 	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
-		targetWorldState->Map->Tiles[actionData.TileParameter.X][actionData.TileParameter.Y]->OwnerUniqueId == actionData.InvokerPlayerId;
+		targetWorldState->Map->GetTile(actionData.TileParameter)->OwnerUniqueId == actionData.InvokerPlayerId;
 }
 
 void UUDGrantExploitTilePermissionAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
-	ModifierManager->ApplyTileModifier(targetWorldState->Map->Tiles[actionData.TileParameter.X][actionData.TileParameter.Y],
+	ModifierManager->ApplyTileModifier(targetWorldState->Map->GetTile(actionData.TileParameter),
 		UUDExploitTilePermissionModifier::Create(actionData.UniqueId, actionData.TargetPlayerId));
 
 	UE_LOG(LogTemp, Log,
@@ -509,7 +509,7 @@ void UUDGrantExploitTilePermissionAction::Execute(FUDActionData& actionData, TOb
 
 void UUDGrantExploitTilePermissionAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
-	ModifierManager->RemoveTileModifier(targetWorldState->Map->Tiles[actionData.TileParameter.X][actionData.TileParameter.Y], 
+	ModifierManager->RemoveTileModifier(targetWorldState->Map->GetTile(actionData.TileParameter), 
 		actionData.UniqueId);
 
 	UE_LOG(LogTemp, Log,

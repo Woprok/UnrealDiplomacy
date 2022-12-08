@@ -43,16 +43,20 @@ protected:
 	 */
 	void GenerateArray(int32 xSize, int32 ySize);
 	/**
-	 * Holds generated information about the last generated map.
-	 * Access in order of [X][Y]
-	 */
-	TArray<TArray<TObjectPtr<UUDTileState>>> Map;
-	/**
 	 * Checks if last map is same as the new request.
 	 */
 	bool IsNewMapRequested(TObjectPtr<UUDMapState> mapState);
+	/**
+	 * Holds generated information about the last generated map.
+	 * Access in order of [X][Y]
+	 */
+	UPROPERTY()
+	TArray<TObjectPtr<UUDTileState>> Map;
 private:
+	UPROPERTY()
 	int32 LastSeed = 0;
+	UPROPERTY()
 	int32 LastSizeOfX = 0;
+	UPROPERTY()
 	int32 LastSizeOfY = 0;
 };
