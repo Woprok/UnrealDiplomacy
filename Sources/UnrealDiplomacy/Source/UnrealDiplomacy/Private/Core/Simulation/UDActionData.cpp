@@ -1,6 +1,5 @@
 // Copyright Miroslav Valach
 
-
 #include "Core/Simulation/UDActionData.h"
 
 FUDActionData::FUDActionData()

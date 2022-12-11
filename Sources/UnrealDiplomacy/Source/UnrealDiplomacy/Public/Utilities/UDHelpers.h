@@ -9,7 +9,4 @@
  */
 class UNREALDIPLOMACY_API FUDHelpers
 {
-public:
-	FUDHelpers();
-	~FUDHelpers();
 };

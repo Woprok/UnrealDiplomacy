@@ -15,5 +15,8 @@ class UNREALDIPLOMACY_API AUDPlayerController : public AModularPlayerController
 {
 	GENERATED_BODY()
 public:
+	/**
+	 * Called when the game starts or when spawned.
+	 */
 	virtual void BeginPlay() override;
 };

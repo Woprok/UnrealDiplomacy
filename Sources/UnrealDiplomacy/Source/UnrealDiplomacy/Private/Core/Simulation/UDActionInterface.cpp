@@ -5,22 +5,10 @@
 
 bool IUDActionInterface::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
+	// Default Interface call is pure check of GetActionTypeId equality.
 	UE_LOG(LogTemp, Log, TEXT("INSTANCE(%d): Default Can Execute is %d==%d."),
 		targetWorldState->PerspectivePlayerId, actionData.ActionTypeId, GetActionTypeId());
 	return actionData.ActionTypeId == GetActionTypeId();
-}
-
-void IUDActionInterface::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
-{
-}
-
-void IUDActionInterface::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
-{
-}
-
-int32 IUDActionInterface::GetActionTypeId()
-{
-	return -1;
 }
 
 #pragma region UUDLogAction

@@ -22,6 +22,20 @@ class UNREALDIPLOMACY_API IUDControllerInterface
 {
 	GENERATED_BODY()
 public:
-	virtual void SetControllerUniqueId(int32 uniqueControllerId);
-	virtual int32 GetControllerUniqueId();
+	/**
+	 * Set unique Id used by this controller to identify yourself.
+	 */
+	virtual void SetControllerUniqueId(int32 uniqueControllerId) 
+	{
+		// Default Interface call is empty.
+	}
+	/**
+	 * Returns unique Id assigned to this controller.
+	 * This has to be overriden, otherwise the controller might be discarded as invalid (valid values are 0 - int32.MAX).
+	 */
+	virtual int32 GetControllerUniqueId()
+	{
+		// Default Interface call returns invalid value, e.g. -1.
+		return -1;
+	}
 };

@@ -13,5 +13,4 @@ UCLASS()
 class UNREALDIPLOMACY_API AUDSkirmishPlayerState : public AUDPlayerState
 {
 	GENERATED_BODY()
-	
 };

@@ -31,14 +31,21 @@ public:
 	 * Unique modifier id that is provided for each modifier.
 	 * This is directly referenced by actions and ModifierManager to determine,
 	 * how to use this and what kind of data it might contain.
-	 * This has to be overriden, expected range for id is (valid values are 0 - int32.MAX).
+	 * This has to be overriden, otherwise the modifier might be discarded as invalid (valid values are 0 - int32.MAX).
 	 */
-	virtual int32 GetModifierTypeId();
+	virtual int32 GetModifierTypeId()
+	{
+		// Default Interface call returns invalid value, e.g. -1.
+		return -1;
+	}
 	/**
 	 * Unique id that is assigned to each action that is executed.
 	 * Used for managing collections.
 	 */
-	virtual int32 GetAssociatedActionUniqueId();
+	virtual int32 GetAssociatedActionUniqueId()
+	{
+		return UniqueActionId;
+	}
 protected:
 	int32 UniqueActionId;
 };

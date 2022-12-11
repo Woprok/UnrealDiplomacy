@@ -1,6 +1,5 @@
 // Copyright Miroslav Valach
 
-
 #include "Core/Map/UDHexTileGridManager.h"
 #include "Core/Map/UDHexTile.h"
 

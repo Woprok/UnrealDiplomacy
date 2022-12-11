@@ -71,7 +71,12 @@ public:
 	UPROPERTY()
 	TArray<TObjectPtr<UUDTileState>> Tiles;
 	UFUNCTION()
-	UUDTileState* GetTile(FIntPoint tile)
+	UUDTileState* BP_GetTile(FIntPoint tile)
+	{
+		return GetTile(tile);
+	}
+
+	TObjectPtr<UUDTileState> GetTile(FIntPoint tile)
 	{
 		return Tiles[MapSizeOfX * tile.X + tile.Y];
 	}

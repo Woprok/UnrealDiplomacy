@@ -13,5 +13,4 @@ UCLASS()
 class UNREALDIPLOMACY_API AUDSkirmishSpectatorPawn : public AUDSpectatorPawn
 {
 	GENERATED_BODY()
-	
 };

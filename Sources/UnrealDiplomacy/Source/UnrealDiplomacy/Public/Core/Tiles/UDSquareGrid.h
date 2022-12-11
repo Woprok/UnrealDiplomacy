@@ -13,5 +13,4 @@ UCLASS()
 class UNREALDIPLOMACY_API AUDSquareGrid : public AUDActor
 {
 	GENERATED_BODY()
-	
 };

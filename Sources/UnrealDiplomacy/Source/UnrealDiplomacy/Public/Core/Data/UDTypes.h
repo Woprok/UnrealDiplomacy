@@ -11,9 +11,6 @@
 
 class UNREALDIPLOMACY_API FUDTypes
 {
-public:
-	FUDTypes();
-	~FUDTypes();
 };
 
 // Each tile is either part of world or border around the world. This can be used to determine additional behaviour.

@@ -37,19 +37,29 @@ public:
 	/**
 	 * This applies action over the UUDWorldState.
 	 */
-	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState);
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+	{
+		// Default Interface call is empty.
+	}
 	 /**
 	  * If possible action should be able to revert, whatever kind of operation it did,
 	  * if it's provided with the same data.
 	  */
-	 virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState);
+	 virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+	 {
+		 // Default Interface call is empty.
+	 }
 	 /**
 	  * Unique action id that is provided for each action.
 	  * This is directly referenced by FUDActionData to determine,
 	  * who can execute it as the FUDActionData is very simple container.
 	  * This has to be overriden, otherwise the action will be discarded (valid values are 0 - int32.MAX).
 	  */
-	 virtual int32 GetActionTypeId();
+	 virtual int32 GetActionTypeId()
+	 {
+		 // Default Interface call returns invalid value, e.g. -1.
+		 return -1;
+	 }
 	 /**
 	  * Set the instance of world generator used by all registred actions.
 	  * If actions share world generator, they can use same data.
@@ -58,7 +68,7 @@ public:
 	  */
 	 virtual void SetWorldGenerator(TObjectPtr<UUDWorldGenerator> worldGenerator)
 	 {
-		 WorldGenerator = worldGenerator;
+		 // Default Interface call is empty.
 	 }
 	 /**
 	  * Set the instance of modifier manager used by all registred actions.
@@ -68,13 +78,8 @@ public:
 	  */
 	 virtual void SetModifierManager(TObjectPtr<UUDModifierManager> modifierManager)
 	 {
-		 ModifierManager = modifierManager;
+		 // Default Interface call is empty.
 	 }
-protected:
-	//UPROPERTY()
-	TObjectPtr<UUDWorldGenerator> WorldGenerator;
-	//UPROPERTY()
-	TObjectPtr<UUDModifierManager> ModifierManager;
 };
 
 /**
@@ -229,6 +234,13 @@ public:
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
 	static const int32 ActionTypeId = 66600;
+	virtual void SetWorldGenerator(TObjectPtr<UUDWorldGenerator> worldGenerator) override
+	{
+		WorldGenerator = worldGenerator;
+	}
+protected:
+	UPROPERTY()
+	TObjectPtr<UUDWorldGenerator> WorldGenerator;
 };
 
 /**
@@ -260,6 +272,13 @@ public:
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
 	static const int32 ActionTypeId = 5008;
+	virtual void SetModifierManager(TObjectPtr<UUDModifierManager> modifierManager) override
+	{
+		ModifierManager = modifierManager;
+	}
+protected:
+	UPROPERTY()
+	TObjectPtr<UUDModifierManager> ModifierManager;
 };
 
 /**
@@ -320,4 +339,11 @@ public:
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
 	static const int32 ActionTypeId = 1007;
+	virtual void SetModifierManager(TObjectPtr<UUDModifierManager> modifierManager) override
+	{
+		ModifierManager = modifierManager;
+	}
+protected:
+	UPROPERTY()
+	TObjectPtr<UUDModifierManager> ModifierManager;
 };

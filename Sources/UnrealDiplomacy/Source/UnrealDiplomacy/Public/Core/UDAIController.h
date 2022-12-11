@@ -14,5 +14,4 @@ UCLASS()
 class UNREALDIPLOMACY_API AUDAIController : public AModularAIController
 {
 	GENERATED_BODY()
-	
 };

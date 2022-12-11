@@ -13,5 +13,4 @@ UCLASS()
 class UNREALDIPLOMACY_API AUDSpectatorPawn : public ASpectatorPawn
 {
 	GENERATED_BODY()
-	
 };

@@ -1,13 +1,11 @@
 // Copyright Miroslav Valach
 
-
 #include "Development/UDDevelopmentGameMode.h"
 
 AUDDevelopmentGameMode::AUDDevelopmentGameMode() 
 {
 	UE_LOG(LogTemp, Log, TEXT("Running DEVELOPMENT ONLY version of an SkirmishGameMode"));
 }
-
 
 void AUDDevelopmentGameMode::BeginPlay()
 {
@@ -74,9 +72,4 @@ void AUDDevelopmentGameMode::BeginPlay()
 	//WorldSimulation->ExecuteAction(endTurnP2);
 	//WorldSimulation->ExecuteAction(endTurnP1);
 	//WorldSimulation->ExecuteAction(endTurnP2);
-}
-
-TObjectPtr<AUDSkirmishAIController> AUDDevelopmentGameMode::CreateAi()
-{
-	return GetWorld()->SpawnActor<AUDDevelopmentAIController>();
 }

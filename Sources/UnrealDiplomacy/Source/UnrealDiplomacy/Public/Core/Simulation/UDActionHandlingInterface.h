@@ -36,7 +36,10 @@ public:
 	  * Binded to simulation, as this is a way for this controller to be informed about change.
 	  * TODO register action executed as event/delegate to normalize how this interacts with GM & GS.
 	  */
-	 virtual void OnActionExecuted(FUDActionData& executedAction);
+	 virtual void OnActionExecuted(FUDActionData& executedAction)
+	 {
+		 // Default Interface call is empty.
+	 }
 	 /**
 	  * Delegate ?
 	  */
@@ -45,5 +48,8 @@ public:
 	  * Used to grant access to game state to owner of this interface.
 	  * This access should be used only for reading the world state.
 	  */
-	 virtual void SetSimulatedStateAccess(TObjectPtr<UUDWorldState> personalWorldState);
+	 virtual void SetSimulatedStateAccess(TObjectPtr<UUDWorldState> personalWorldState)
+	 {
+		 // Default Interface call is empty.
+	 }
 };

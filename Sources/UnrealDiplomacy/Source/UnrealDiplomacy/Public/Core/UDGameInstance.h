@@ -13,5 +13,4 @@ UCLASS()
 class UNREALDIPLOMACY_API UUDGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
-	
 };

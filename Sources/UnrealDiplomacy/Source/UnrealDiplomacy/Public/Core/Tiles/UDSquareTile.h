@@ -6,7 +6,9 @@
 #include "Core/UDActor.h"
 #include "UDSquareTile.generated.h"
 
-// Determines how can player interact with the tile.
+/** 
+ * Determines how can player interact with the tile.
+ */
 UENUM(BlueprintType)
 enum class ESquareTileType : uint8
 {

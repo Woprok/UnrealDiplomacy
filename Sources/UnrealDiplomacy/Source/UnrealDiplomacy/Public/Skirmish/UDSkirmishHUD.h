@@ -13,5 +13,4 @@ UCLASS()
 class UNREALDIPLOMACY_API AUDSkirmishHUD : public AUDHUD
 {
 	GENERATED_BODY()
-	
 };

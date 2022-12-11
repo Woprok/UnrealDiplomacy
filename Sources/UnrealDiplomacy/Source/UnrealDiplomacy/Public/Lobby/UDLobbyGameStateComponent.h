@@ -13,5 +13,4 @@ UCLASS()
 class UNREALDIPLOMACY_API UUDLobbyGameStateComponent : public UGameStateComponent
 {
 	GENERATED_BODY()
-	
 };

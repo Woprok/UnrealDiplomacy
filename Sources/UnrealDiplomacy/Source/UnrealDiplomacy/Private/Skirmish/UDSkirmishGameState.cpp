@@ -1,6 +1,5 @@
 // Copyright Miroslav Valach
 
-
 #include "Skirmish/UDSkirmishGameState.h"
 #include "Skirmish/UDSkirmishGameMode.h"
 
@@ -38,4 +37,3 @@ void AUDSkirmishGameState::MulticastSendActionToAllClients_Implementation(FUDAct
 	TObjectPtr<AUDSkirmishPlayerController> skirmishController = Cast<AUDSkirmishPlayerController>(controller);
 	skirmishController->ProcessReceivedAction(serverData);
 }
-

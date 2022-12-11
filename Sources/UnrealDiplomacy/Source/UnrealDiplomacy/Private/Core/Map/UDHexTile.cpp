@@ -1,6 +1,5 @@
 // Copyright Miroslav Valach
 
-
 #include "Core/Map/UDHexTile.h"
 #include <Components/SceneComponent.h>
 #include <Components/StaticMeshComponent.h>

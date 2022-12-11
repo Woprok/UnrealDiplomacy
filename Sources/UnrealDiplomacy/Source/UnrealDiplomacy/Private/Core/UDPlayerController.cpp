@@ -1,13 +1,10 @@
 // Copyright Miroslav Valach
 
-
 #include "Core/UDPlayerController.h"
 
 void AUDPlayerController::BeginPlay()
 {
-	// Forces default behaviour of input on all player controllers.
-	// Basically we always interact with UI and Widgets so there is never a reason for it
-	// to use any other mode.
 	Super::BeginPlay();
+	// Overrides default input mode to be Game & UI allowing player to use cursor & navigate the world.
 	AUDPlayerController::SetInputMode(FInputModeGameAndUI());
 }

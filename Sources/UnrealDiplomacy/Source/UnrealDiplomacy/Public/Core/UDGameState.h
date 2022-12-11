@@ -14,5 +14,4 @@ UCLASS()
 class UNREALDIPLOMACY_API AUDGameState : public AModularGameStateBase
 {
 	GENERATED_BODY()
-	
 };

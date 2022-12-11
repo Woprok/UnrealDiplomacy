@@ -14,5 +14,4 @@ UCLASS()
 class UNREALDIPLOMACY_API AUDGameMode : public AModularGameModeBase
 {
 	GENERATED_BODY()
-	
 };
