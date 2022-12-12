@@ -23,4 +23,7 @@ public:
 	 * Called when the game starts or when spawned.
 	 */
 	virtual void BeginPlay() override;
+
+	void PlayTest();
+	virtual void Tick(float DeltaTime) override;
 };

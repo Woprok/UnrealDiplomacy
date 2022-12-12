@@ -279,7 +279,7 @@ void UUDRejectGiftAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldS
 
 void UUDCreateWorldMapAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
-	// Get reference to existing generator, this is expected set by the AUDWorldSimulation or whoever is executing actions.
+	// Get reference to existing generator, this is expected set by the UDWorldSimulation or whoever is executing actions.
 	// Create empty state for the map to be filled in.
 	targetWorldState->Map = UUDMapState::CreateState(actionData.ValueParameter, actionData.TileParameter.X, actionData.TileParameter.Y);
 	// Generate world and replicate it to state, or just replicate if it exists.

@@ -14,6 +14,7 @@ AUDSkirmishGameMode::AUDSkirmishGameMode()
 void AUDSkirmishGameMode::Initialize()
 {
 	InternalWorldSimulation = GetWorld()->SpawnActor<AUDWorldSimulation>();
+
 	GetWorldSimulation()->Initialize();
 	RegisterAsListenerToWorldSimulation();
 	UE_LOG(LogTemp, Log, TEXT("Finalized initialization of UObjects and Actors for GameMode."));

@@ -62,6 +62,7 @@ public:
 	static TObjectPtr<UUDModifier> Create(int32 uniqueActionId, int32 playerId)
 	{
 		TObjectPtr<UUDExploitTilePermissionModifier> modifier = NewObject<UUDExploitTilePermissionModifier>();
+		//modifier->AddToRoot();
 		modifier->UniqueActionId = uniqueActionId;
 		modifier->PlayerId = playerId;
 		return modifier;

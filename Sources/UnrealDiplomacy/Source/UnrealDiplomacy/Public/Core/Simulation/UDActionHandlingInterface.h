@@ -7,8 +7,6 @@
 #include "Core/Simulation/UDActionData.h"
 #include "UDActionHandlingInterface.generated.h"
 
-class AUDWorldSimulation;
-
 /**
  * Interface for managing interaction between controllers (decision makers)
  * and simulation (executor). Used by AI.

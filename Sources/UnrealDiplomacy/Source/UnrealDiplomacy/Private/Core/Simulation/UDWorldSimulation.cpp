@@ -5,8 +5,8 @@
 
 void AUDWorldSimulation::Initialize()
 {
-	WorldGenerator = NewObject<UUDWorldGenerator>();
-	ModifierManager = NewObject<UUDModifierManager>();
+	WorldGenerator = NewObject<UUDWorldGenerator>(this);
+	ModifierManager = NewObject<UUDModifierManager>(this);
 	LoadCoreActions();
 }
 
@@ -42,10 +42,11 @@ void AUDWorldSimulation::RegisterAction(TObjectPtr<IUDActionInterface> newAction
 	if (Actions.Contains(newAction->GetActionTypeId()))
 	{
 		UE_LOG(LogTemp, Log, TEXT("Duplicate registration of action with id(%d)."), newAction->GetActionTypeId());
+		return;
 	}
 	newAction->SetWorldGenerator(WorldGenerator);
 	newAction->SetModifierManager(ModifierManager);
-	Actions.Add(newAction->GetActionTypeId(), newAction);
+	Actions.Add(newAction->GetActionTypeId(), newAction.Get());
 }
 
 void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
@@ -87,7 +88,6 @@ void AUDWorldSimulation::SynchronizeNewPlayerState(TObjectPtr<UUDWorldState> new
 	// New player state must be synchronzied from old action list first.
 	for (auto& actionData : ExecutionHistory)
 	{
-		auto& actionExecutor = Actions[actionData.ActionTypeId];
 		Actions[actionData.ActionTypeId]->Execute(actionData, newState);		
 	}
 	// After that push new synchronize action to all, including new joined player.
@@ -119,28 +119,33 @@ void AUDWorldSimulation::RevertAction()
 void AUDWorldSimulation::LoadCoreActions()
 {
 	// Basics 0+
+	//or this directly in the RegisterAction worked TObjectPtr<UUDLogAction> newAction2 = NewObject<UUDLogAction>(this);
+	//TObjectPtr<UUDLogAction> log = NewObject<UUDLogAction>(this);
+	//log->AddToRoot();
+	//RegisterAction(log);
 	RegisterAction(NewObject<UUDLogAction>());
-	RegisterAction(NewObject<UUDAddPlayerAction>());
-	RegisterAction(NewObject<UUDStartGameAction>());
-	RegisterAction(NewObject<UUDEndTurnAction>());
+	//RegisterAction(NewObject<UUDLogAction>(this));
+	/*RegisterAction(NewObject<UUDAddPlayerAction>(this));
+	RegisterAction(NewObject<UUDStartGameAction>(this));
+	RegisterAction(NewObject<UUDEndTurnAction>(this));
 	// Gaia 100+
-	RegisterAction(NewObject<UUDGenerateIncomeAction>());
+	RegisterAction(NewObject<UUDGenerateIncomeAction>(this));
 	// Player 1000+
-	RegisterAction(NewObject<UUDUnconditionalGiftAction>());
+	RegisterAction(NewObject<UUDUnconditionalGiftAction>(this));
 	// Gift Action 1001-1003
-	RegisterAction(NewObject<UUDGiftAction>());
-	RegisterAction(NewObject<UUDConfirmGiftAction>());
-	RegisterAction(NewObject<UUDRejectGiftAction>());
+	RegisterAction(NewObject<UUDGiftAction>(this));
+	RegisterAction(NewObject<UUDConfirmGiftAction>(this));
+	RegisterAction(NewObject<UUDRejectGiftAction>(this));
 	// CreateWorldMap action, requires self initializing WorldGenerator
-	RegisterAction(NewObject<UUDCreateWorldMapAction>());
+	RegisterAction(NewObject<UUDCreateWorldMapAction>(this));
 	// Take Tile
-	RegisterAction(NewObject<UUDTakeTileAction>());
+	RegisterAction(NewObject<UUDTakeTileAction>(this));
 	// Exploit Tile
-	RegisterAction(NewObject<UUDExploitTileAction>());
+	RegisterAction(NewObject<UUDExploitTileAction>(this));
 	// Transfer Tile Action 1004-1006
-	RegisterAction(NewObject<UUDTransferTileAction>());
-	RegisterAction(NewObject<UUDConfirmTransferTileAction>());
-	RegisterAction(NewObject<UUDRejectTransferTileAction>());
+	RegisterAction(NewObject<UUDTransferTileAction>(this));
+	RegisterAction(NewObject<UUDConfirmTransferTileAction>(this));
+	RegisterAction(NewObject<UUDRejectTransferTileAction>(this));
 	// Grant exploit permission
-	RegisterAction(NewObject<UUDGrantExploitTilePermissionAction>());
+	RegisterAction(NewObject<UUDGrantExploitTilePermissionAction>(this));*/
 }

@@ -18,6 +18,7 @@ void AUDSkirmishPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimePro
 void AUDSkirmishPlayerController::Initialize()
 {
 	InternalWorldSimulation = GetWorld()->SpawnActor<AUDWorldSimulation>();
+
 	GetWorldSimulation()->Initialize();
 	UE_LOG(LogTemp, Log, TEXT("Finalized initialization of UObjects and Actors for PlayerController."));
 }

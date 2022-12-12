@@ -17,7 +17,7 @@
  * holds all Player/Ai and server states.
  */
 UCLASS()
-class UNREALDIPLOMACY_API AUDWorldSimulation : public AUDActor
+class UNREALDIPLOMACY_API AUDWorldSimulation : public UObject
 {
 	GENERATED_BODY()
 public:
