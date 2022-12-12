@@ -3,8 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-//ToDo is this required by anything at all ?
-//#include "UObject/NoExportTypes.h"
 #include "UDActionData.h"
 #include "UDModifier.h"
 #include "UDWorldState.generated.h"
@@ -26,6 +24,7 @@ public:
 	 * Creates new instance of the tile state for specific location in array.
 	 */
 	static TObjectPtr<UUDTileState> Duplicate(TObjectPtr<UUDTileState> existingState);
+public:
 	/**
 	 * Position in map array.
 	 */
@@ -63,23 +62,22 @@ public:
 	 * Used for copying map to a state.
 	 */
 	static TObjectPtr<UUDMapState> Duplicate(TObjectPtr<UUDMapState> existingState);
+public:
 	/**
-	 * Each tile present in the world.
-	 * Due to UE, this is represented as 1D array in Row-Major order (x * y)
-	 * Access is then x * desired[x] + desired[y].
+	 * Returns tile that is represented by provided FIntPoint.
 	 */
-	UPROPERTY()
-	TArray<TObjectPtr<UUDTileState>> Tiles;
-	UFUNCTION()
-	UUDTileState* BP_GetTile(FIntPoint tile)
-	{
-		return GetTile(tile);
-	}
-
 	TObjectPtr<UUDTileState> GetTile(FIntPoint tile)
 	{
 		return Tiles[MapSizeOfX * tile.X + tile.Y];
 	}
+public:
+	/**
+	 * Each tile present in the world.
+	 * Due to UE, this is represented as 1D array in Row-Major order (x * y).
+	 * Access is then x * desired[x] + desired[y].
+	 */
+	UPROPERTY()
+	TArray<TObjectPtr<UUDTileState>> Tiles;
 	/**
 	 * Seed used by generator.
 	 */
@@ -109,16 +107,7 @@ public:
 	 * Creates new instance of the player state for specified player.
 	 */
 	static TObjectPtr<UUDNationState> CreateState(int32 playerId);
-	/**
-	 * Unique id assigned to the owner.
-	 */
-	UPROPERTY()
-	int32 PlayerUniqueId;
-	/**
-	 *
-	 */
-	UPROPERTY()
-	int32 ResourceGold = 0;
+public:
 	/**
 	 * List of unresolved requests created by actions 
 	 * that are pending for confirm/reject action from this player.
@@ -131,6 +120,16 @@ public:
 	 */
 	UPROPERTY()
 	TArray<TObjectPtr<UUDModifier>> Modifiers;
+	/**
+	 * Unique id assigned to the owner.
+	 */
+	UPROPERTY()
+		int32 PlayerUniqueId;
+	/**
+	 *
+	 */
+	UPROPERTY()
+		int32 ResourceGold = 0;
 };
 
 /**
@@ -146,12 +145,26 @@ public:
 	 * IsPlayerPerspectiveOnly defines if this state is supposed to hold all knowledge about the world.
 	 */
 	static TObjectPtr<UUDWorldState> CreateState(int32 playerId, bool isPlayerPerspectiveOnly);
-
+	/**
+	 * Gaia id.
+	 */
+	static const int32 GaiaWorldStateId = 0;
+public:
 	/**
 	 * Current Map of tiles.
 	 */
 	UPROPERTY()
 	TObjectPtr<UUDMapState> Map;
+	/**
+	 * Map of players with key as their id.
+	 */
+	UPROPERTY()
+	TMap<int32, TObjectPtr<UUDNationState>> Players;
+	/**
+	 * List of players in turn order, represented only by their unique id.
+	 */
+	UPROPERTY()
+	TArray<int32> PlayerOrder;
 	/**
 	 * Id associated with a Player/Ai, that controls this simulation.
 	 */
@@ -162,16 +175,6 @@ public:
 	 */
 	UPROPERTY()
 	bool IsPlayerPerspectiveOnly;
-	/**
-	 * List of players in turn order, represented only by their unique id.
-	 */
-	UPROPERTY()
-	TArray<int32> PlayerOrder;
-	/**
-	 * Map of players with key as their id.
-	 */
-	UPROPERTY()
-	TMap<int32, TObjectPtr<UUDNationState>> Players;
 	/**
 	 * Current Player/Ai/Server that is able to act.
 	 * Default value is 0.
@@ -184,8 +187,4 @@ public:
 	 */
 	UPROPERTY()
 	int32 CurrentTurn = 0;
-	/**
-	 * Gaia id.
-	 */
-	static const int32 GaiaWorldStateId = 0;
 };

@@ -20,8 +20,6 @@ class UNREALDIPLOMACY_API AUDSkirmishGameState : public AUDGameState
 {
 	GENERATED_BODY()
 public:
-	// DELEGATE that calls PA
-	// fnc that is invoked by GM
 	/**
 	 * Propagates action to GameMode that will resolve it.
 	 * This will cause GameMode to send a response.
@@ -32,7 +30,6 @@ public:
 	 * TODO simplify the register process for controllers.
 	 */
 	void RegisterActionMaker(TObjectPtr<IUDActionHandlingInterface> newListener);
-
 	/**
 	 * Send message to all connected clients.
 	 * Server-owned actor with Multicast RPC invoked from the server -> Runs on server and all clients.
@@ -49,5 +46,6 @@ private:
 	 * Saved pointer for the GameMode to reduce amount of access casts.
 	 * Access through the GetCastGameMode(), this does not have to be initialized.
 	 */
-	TObjectPtr<AUDSkirmishGameMode> InternalCurrentGameMode;
+	UPROPERTY()
+	TObjectPtr<AUDSkirmishGameMode> InternalCurrentGameMode = nullptr;
 };

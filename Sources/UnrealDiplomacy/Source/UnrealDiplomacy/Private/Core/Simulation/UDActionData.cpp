@@ -7,8 +7,8 @@ FUDActionData::FUDActionData()
 
 }
 
-FUDActionData::FUDActionData(const FUDActionData& existingAction, int32 ActionTypeId) :
-	ActionTypeId(ActionTypeId),
+FUDActionData::FUDActionData(const FUDActionData& existingAction, int32 ActionTypeId) 
+	: ActionTypeId(ActionTypeId),
 	InvokerPlayerId(existingAction.InvokerPlayerId),
 	TargetPlayerId(existingAction.TargetPlayerId),
 	ValueParameter(existingAction.ValueParameter),
@@ -18,36 +18,49 @@ FUDActionData::FUDActionData(const FUDActionData& existingAction, int32 ActionTy
 
 }
 
-FUDActionData::FUDActionData(int32 actionTypeId) : ActionTypeId(actionTypeId)
+FUDActionData::FUDActionData(int32 actionTypeId) 
+	: ActionTypeId(actionTypeId)
 {
 
 }
 
-FUDActionData::FUDActionData(int32 actionTypeId, int32 invokerPlayerId) : ActionTypeId(actionTypeId), InvokerPlayerId(invokerPlayerId)
+FUDActionData::FUDActionData(int32 actionTypeId, int32 invokerPlayerId) 
+	: ActionTypeId(actionTypeId), 
+	InvokerPlayerId(invokerPlayerId)
 {
 
 }
 
 FUDActionData::FUDActionData(int32 actionTypeId, int32 invokerPlayerId, int32 targetPlayerId)
-	: ActionTypeId(actionTypeId), InvokerPlayerId(invokerPlayerId), TargetPlayerId(targetPlayerId)
+	: ActionTypeId(actionTypeId), 
+	InvokerPlayerId(invokerPlayerId), 
+	TargetPlayerId(targetPlayerId)
 {
 
 }
 
 FUDActionData::FUDActionData(int32 actionTypeId, int32 invokerPlayerId, int32 targetPlayerId, int32 valueParameter)
-	: ActionTypeId(actionTypeId), InvokerPlayerId(invokerPlayerId), TargetPlayerId(targetPlayerId), ValueParameter(valueParameter)
+	: ActionTypeId(actionTypeId), 
+	InvokerPlayerId(invokerPlayerId), 
+	TargetPlayerId(targetPlayerId), 
+	ValueParameter(valueParameter)
 {
 
 }
 
 FUDActionData::FUDActionData(int32 actionTypeId, int32 valueParameter, FIntPoint tileParameter)
-	: ActionTypeId(actionTypeId), ValueParameter(valueParameter), TileParameter(tileParameter)
+	: ActionTypeId(actionTypeId), 
+	ValueParameter(valueParameter), 
+	TileParameter(tileParameter)
 {
 
 }
 
 FUDActionData::FUDActionData(int32 actionTypeId, int32 invokerPlayerId, int32 targetPlayerId, FIntPoint tileParameter)
-	: ActionTypeId(actionTypeId), InvokerPlayerId(invokerPlayerId), TargetPlayerId(targetPlayerId), TileParameter(tileParameter)
+	: ActionTypeId(actionTypeId), 
+	InvokerPlayerId(invokerPlayerId), 
+	TargetPlayerId(targetPlayerId), 
+	TileParameter(tileParameter)
 {
 
 }

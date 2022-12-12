@@ -93,6 +93,7 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
 	static const int32 ActionTypeId = 0;
 };
 
@@ -108,6 +109,7 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
 	static const int32 ActionTypeId = 1;
 };
 
@@ -126,8 +128,9 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
 	static 	const int32 ActionTypeId = 2;
-private:
+protected:
 	bool IsGameStarted = false;
 };
 
@@ -143,6 +146,7 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
 	static const int32 ActionTypeId = 3;
 };
 
@@ -159,6 +163,7 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
 	static const int32 ActionTypeId = 100;
 };
 
@@ -174,6 +179,7 @@ class UNREALDIPLOMACY_API UUDUnconditionalGiftAction : public UObject, public IU
 	 virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	 virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	 virtual int32 GetActionTypeId() override { return ActionTypeId; };
+ public:
 	 static const int32 ActionTypeId = 1000;
  };
 
@@ -189,6 +195,7 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
 	static const int32 ActionTypeId = 1001;
 };
 
@@ -204,6 +211,7 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
 	static const int32 ActionTypeId = 1002;
 };
 
@@ -219,6 +227,7 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
 	static const int32 ActionTypeId = 1003;
 };
 
@@ -233,14 +242,15 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
-	static const int32 ActionTypeId = 66600;
 	virtual void SetWorldGenerator(TObjectPtr<UUDWorldGenerator> worldGenerator) override
 	{
 		WorldGenerator = worldGenerator;
 	}
+public:
+	static const int32 ActionTypeId = 66600;
 protected:
 	UPROPERTY()
-	TObjectPtr<UUDWorldGenerator> WorldGenerator;
+	TObjectPtr<UUDWorldGenerator> WorldGenerator = nullptr;
 };
 
 /**
@@ -256,6 +266,7 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
 	static const int32 ActionTypeId = 5004;
 };
 
@@ -271,14 +282,15 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
-	static const int32 ActionTypeId = 5008;
 	virtual void SetModifierManager(TObjectPtr<UUDModifierManager> modifierManager) override
 	{
 		ModifierManager = modifierManager;
 	}
+public:
+	static const int32 ActionTypeId = 5008;
 protected:
 	UPROPERTY()
-	TObjectPtr<UUDModifierManager> ModifierManager;
+	TObjectPtr<UUDModifierManager> ModifierManager = nullptr;
 };
 
 /**
@@ -292,6 +304,7 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
 	static const int32 ActionTypeId = 1004;
 };
 
@@ -307,6 +320,7 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
 	static const int32 ActionTypeId = 1005;
 };
 
@@ -322,6 +336,7 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
 	static const int32 ActionTypeId = 1006;
 };
 
@@ -338,12 +353,13 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
-	static const int32 ActionTypeId = 1007;
 	virtual void SetModifierManager(TObjectPtr<UUDModifierManager> modifierManager) override
 	{
 		ModifierManager = modifierManager;
 	}
+public:
+	static const int32 ActionTypeId = 1007;
 protected:
 	UPROPERTY()
-	TObjectPtr<UUDModifierManager> ModifierManager;
+	TObjectPtr<UUDModifierManager> ModifierManager = nullptr;
 };

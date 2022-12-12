@@ -1,26 +1,25 @@
 // Copyright Miroslav Valach
 
 #include "Development/UDDevelopmentGameMode.h"
+#include "Core/Simulation/UDWorldSimulation.h"
+#include "Core/Simulation/UDActionInterface.h"
 
 AUDDevelopmentGameMode::AUDDevelopmentGameMode() 
 {
-	UE_LOG(LogTemp, Log, TEXT("Running DEVELOPMENT ONLY version of an SkirmishGameMode"));
+	UE_LOG(LogTemp, Log, TEXT("AUDDevelopmentGameMode: Initialized."));
 }
 
 void AUDDevelopmentGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Log, TEXT("Testing environtment simulation!"));
+	UE_LOG(LogTemp, Log, TEXT("AUDDevelopmentGameMode: Continuing execution after inherited BeginPlay..."));
+	UE_LOG(LogTemp, Log, TEXT("AUDDevelopmentGameMode: Spawning AI player."));
 	CreateAiPlayers(1);
-
-	// AI INIT IS DONE
-
-	// FINALLY START GAME
+	UE_LOG(LogTemp, Log, TEXT("AUDDevelopmentGameMode: Starting game."));
 	StartGame();
+	UE_LOG(LogTemp, Log, TEXT("AUDDevelopmentGameMode: Testing few possible plays."));
 
-	// YES GAME IS RUNNING FOR PLAYERS TO DO THEIR DANCE MOVES
-
-	UE_LOG(LogTemp, Log, TEXT("Testing simple simulation!"));
+	return;
 	// From perspective of human player as AI is partially automized.
 	FUDActionData endTurnP1(UUDEndTurnAction::ActionTypeId, 1);
 	GetCastGameState()->OnServerSendAction(endTurnP1);
@@ -72,4 +71,5 @@ void AUDDevelopmentGameMode::BeginPlay()
 	//WorldSimulation->ExecuteAction(endTurnP2);
 	//WorldSimulation->ExecuteAction(endTurnP1);
 	//WorldSimulation->ExecuteAction(endTurnP2);
+	UE_LOG(LogTemp, Log, TEXT("AUDDevelopmentGameMode: Testing finished."));
 }

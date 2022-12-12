@@ -8,7 +8,8 @@
 /**
  * Defines data passed to a an action.
  * TODO maybe change this to class, so we can use inheritance/variants.
- * 
+ * TODO consider array of Imodifier that have variable implementations of fields for future data access
+ *
  * Note: default comparison == is done based purely on UniqueId, if you need complete value comparison
  * use IsValueEqual...
  */
@@ -57,7 +58,6 @@ public:
 	 * This specifier is used by IUDAction interface to determine, which one is
 	 * supposed to execute this data.
 	 */
-
 	static FUDActionData Create(int32 actionTypeId, int32 invokerPLayerId, FIntPoint tileParameter)
 	{
 		FUDActionData data;
@@ -66,7 +66,33 @@ public:
 		data.TileParameter = tileParameter;
 		return data;
 	}
-
+public:
+	/**
+	 * Equality over UniqueId field.
+	 */
+	inline bool operator!=(const FUDActionData & rhs)
+	{
+		return !(*this == rhs);
+	}
+	/**
+	 * Equality over UniqueId field.
+	 */
+	inline bool operator==(const FUDActionData & rhs)
+	{
+		return UniqueId == rhs.UniqueId;
+	}
+	/**
+	 * Equality over all fields.
+	 */
+	inline bool IsValueEqual(const FUDActionData & rhs)
+	{
+		return UniqueId == rhs.UniqueId &&
+			ActionTypeId == rhs.ActionTypeId &&
+			InvokerPlayerId == rhs.InvokerPlayerId &&
+			TargetPlayerId == rhs.TargetPlayerId &&
+			ValueParameter == rhs.ValueParameter;
+	}
+public:
 	UPROPERTY()
 	int32 ActionTypeId;
 	/**
@@ -96,25 +122,4 @@ public:
 	 */
 	UPROPERTY()
 	int32 UniqueId = 0;
-
-	// TODO consider array of Imodifier that have variable implementations of fields for future data access
-
-	inline bool operator!=(const FUDActionData& rhs) 
-	{ 
-		return !(*this == rhs); 
-	}
-
-	inline bool operator==(const FUDActionData& rhs)
-	{ 
-		return UniqueId == rhs.UniqueId;
-	}
-
-	inline bool IsValueEqual(const FUDActionData& rhs)
-	{
-		return UniqueId == rhs.UniqueId &&
-			ActionTypeId == rhs.ActionTypeId &&
-			InvokerPlayerId == rhs.InvokerPlayerId &&
-			TargetPlayerId == rhs.TargetPlayerId &&
-			ValueParameter == rhs.ValueParameter;
-	}
 };

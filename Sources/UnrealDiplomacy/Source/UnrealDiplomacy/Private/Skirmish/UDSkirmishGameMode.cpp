@@ -21,16 +21,10 @@ void AUDSkirmishGameMode::Initialize()
 	UE_LOG(LogTemp, Log, TEXT("Finalized creation of Gaia state for GameMode. Follows game log..."));
 }
 
-int32 AUDSkirmishGameMode::GetNextUniqueControllerId()
-{
-	UE_LOG(LogTemp, Log, TEXT("Current unset id(%d)."), NextUniqueControllerIdCount);
-	return NextUniqueControllerIdCount++;
-};
-
 void AUDSkirmishGameMode::PostLogin(APlayerController* NewPlayer)
 {
+	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: New player joined."));
 	Super::PostLogin(NewPlayer);
-
 	RegisterPlayer(NewPlayer);
 }
 

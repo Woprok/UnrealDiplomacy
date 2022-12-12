@@ -3,21 +3,6 @@
 
 #include "Skirmish/UDSkirmishAIController.h"
 
-void AUDSkirmishAIController::SetControllerUniqueId(int32 uniqueControllerId)
-{
-	UniqueControllerId = uniqueControllerId;
-}
-
-int32 AUDSkirmishAIController::GetControllerUniqueId()
-{
-	return UniqueControllerId;
-}
-
-void AUDSkirmishAIController::SetSimulatedStateAccess(TObjectPtr<UUDWorldState> personalWorldState)
-{
-	PersonalState = personalWorldState;
-}
-
 void AUDSkirmishAIController::OnActionExecuted(FUDActionData& executedAction)
 {
 	// This should contain decisions, or alternatively if we reach a point where behaviour tree is implemented
@@ -59,7 +44,8 @@ void AUDSkirmishAIController::OnActionExecuted(FUDActionData& executedAction)
 	if (executedAction.ActionTypeId == UUDEndTurnAction::ActionTypeId && PersonalState->CurrentTurnPlayerId == GetControllerUniqueId())
 	{
 		FUDActionData endTurn(UUDEndTurnAction::ActionTypeId, GetControllerUniqueId());
-		OnActionDecidedDelegate.ExecuteIfBound(endTurn);
+		//OnActionDecidedDelegate.ExecuteIfBound(endTurn);
+		// TODO THIS REQUIRES AT LEAST ONE PLAYER OR AI WILL NEVER END 
 		return;
 	}
 }

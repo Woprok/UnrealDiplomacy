@@ -19,11 +19,21 @@ class UNREALDIPLOMACY_API AUDSkirmishGaiaAIController : public AUDAIController, 
 	GENERATED_BODY()
 public:
 	virtual void OnActionExecuted(FUDActionData& executedAction) override;
-	virtual void SetSimulatedStateAccess(TObjectPtr<UUDWorldState> personalWorldState) override;
-
-	virtual void SetControllerUniqueId(int32 uniqueControllerId) override;
-	virtual int32 GetControllerUniqueId() override;
-private:
+	virtual void SetSimulatedStateAccess(TObjectPtr<UUDWorldState> personalWorldState) override
+	{
+		GaiaState = personalWorldState;
+	}
+	virtual void SetControllerUniqueId(int32 uniqueControllerId) override
+	{
+		UniqueControllerId = uniqueControllerId;
+	}
+	virtual int32 GetControllerUniqueId() override
+	{
+		return UniqueControllerId;
+	}
+protected:
+	UPROPERTY()
 	int32 UniqueControllerId;
-	TObjectPtr<UUDWorldState> GaiaState;
+	UPROPERTY()
+	TObjectPtr<UUDWorldState> GaiaState = nullptr;
 };

@@ -4,21 +4,6 @@
 #include "Skirmish/UDSkirmishGaiaAIController.h"
 #include "Skirmish/UDSkirmishGameMode.h"
 
-void AUDSkirmishGaiaAIController::SetControllerUniqueId(int32 uniqueControllerId)
-{
-	UniqueControllerId = uniqueControllerId;
-}
-
-int32 AUDSkirmishGaiaAIController::GetControllerUniqueId()
-{
-	return UniqueControllerId;
-}
-
-void AUDSkirmishGaiaAIController::SetSimulatedStateAccess(TObjectPtr<UUDWorldState> personalWorldState)
-{
-	GaiaState = personalWorldState;
-}
-
 void AUDSkirmishGaiaAIController::OnActionExecuted(FUDActionData& executedAction)
 {
 	// Simulator called this after action was executed
@@ -45,20 +30,8 @@ void AUDSkirmishGaiaAIController::OnActionExecuted(FUDActionData& executedAction
 	if (executedAction.ActionTypeId == UUDEndTurnAction::ActionTypeId && GaiaState->CurrentTurnPlayerId == GetControllerUniqueId())
 	{
 		FUDActionData endTurn(UUDEndTurnAction::ActionTypeId, GetControllerUniqueId());
-		OnActionDecidedDelegate.ExecuteIfBound(endTurn);
+		//OnActionDecidedDelegate.ExecuteIfBound(endTurn);
+		// TODO THIS REQUIRES AT LEAST ONE PLAYER OR AI WILL NEVER END 
 		return;
 	}
 }
-
-//AUDSkirmishGaiaAIController::AUDSkirmishGaiaAIController() {
-//	UE_LOG(LogTemp, Log, TEXT("Initialized GAIA AI controller for debugging purposes!"));
-//	PrimaryActorTick.bCanEverTick = false;
-//}
-//
-//void AUDSkirmishGaiaAIController::Tick(float DeltaSeconds)
-//{
-//	Super::Tick(DeltaSeconds);
-//	UE_LOG(LogTemp, Log, TEXT("AI DID NOTHING ON THIS TICK!"));
-//	const auto& gm = Cast<AUDSkirmishGameMode>(GetWorld()->GetAuthGameMode());
-//	gm->WorldSimulation->ExecuteAction()
-//}

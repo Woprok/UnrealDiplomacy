@@ -3,12 +3,6 @@
 
 #include "Skirmish/UDSkirmishPlayerController.h"
 
-//AUDSkirmishPlayerController::AUDSkirmishPlayerController()
-//{
-//	// This should be on by default as PlayerController is replicated already.
-//	//bReplicates = true;
-//}
-
 void AUDSkirmishPlayerController::OnRep_SetUniqueControllerId(const int32& oldId)
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController: Synchronized Id from %d to %d."), oldId, UniqueControllerId);
@@ -21,16 +15,6 @@ void AUDSkirmishPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimePro
 	DOREPLIFETIME(AUDSkirmishPlayerController, UniqueControllerId);
 }
 
-void AUDSkirmishPlayerController::SetControllerUniqueId(int32 uniqueControllerId)
-{
-	UniqueControllerId = uniqueControllerId;
-}
-
-int32 AUDSkirmishPlayerController::GetControllerUniqueId()
-{
-	return UniqueControllerId;
-}
-
 void AUDSkirmishPlayerController::Initialize()
 {
 	InternalWorldSimulation = GetWorld()->SpawnActor<AUDWorldSimulation>();
@@ -40,7 +24,7 @@ void AUDSkirmishPlayerController::Initialize()
 
 void AUDSkirmishPlayerController::ProcessReceivedAction(FUDActionData& actionData)
 {
-//	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController: Execute from %d."), GetControllerUniqueId());
+	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController: Execute from %d."), GetControllerUniqueId());
 	// TODO maybe added variant for execute that does not check CanExecute ?
 	//GetWorldSimulation()->ExecuteAction(actionData);
 }

@@ -5,8 +5,9 @@
 
 TObjectPtr<AUDSkirmishGameMode> AUDSkirmishGameState::GetCastGameMode()
 {
-	if (InternalCurrentGameMode.IsNull())
+	if (!IsValid(InternalCurrentGameMode))
 	{
+		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameState: New GameMode required."));
 		InternalCurrentGameMode = Cast<AUDSkirmishGameMode>(AuthorityGameMode);
 	}
 	return InternalCurrentGameMode;
@@ -19,20 +20,27 @@ void AUDSkirmishGameState::RegisterActionMaker(TObjectPtr<IUDActionHandlingInter
 
 void AUDSkirmishGameState::OnServerSendAction(FUDActionData& clientData)
 {
+	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameState: Received Action for GameMode."));
 	GetCastGameMode()->ProcessAction(clientData);
 }
 
 // Header part for this is automatically generated from RPC definition.
 void AUDSkirmishGameState::MulticastSendActionToAllClients_Implementation(FUDActionData serverData)
 {
-	UE_LOG(LogTemp, Log, TEXT("UDSkirmishGameState Multicast as $d type"), GetNetMode());
+	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameState: Multicast invoked by GameMode."));
+	if (GetNetMode() < ENetMode::NM_Client)
+	{
+		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameState: Multicast halted by being Server."));
+		return;
+	}
+
 	// TODO verify that this works in all possible conditions.
 	TObjectPtr<APlayerController> controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	//TObjectPtr<APlayerController> controller = GEngine->GetFirstLocalPlayerController(GetWorld());
 	if (controller.IsNull())
 	{
 		//controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-		UE_LOG(LogTemp, Log, TEXT("UDSkirmishGameState Multicast as $d type failed."), GetNetMode());
+		UE_LOG(LogTemp, Log, TEXT("UDSkirmishGameState Multicast as $d type failed."), (int32)GetNetMode());
 	}
 	TObjectPtr<AUDSkirmishPlayerController> skirmishController = Cast<AUDSkirmishPlayerController>(controller);
 	skirmishController->ProcessReceivedAction(serverData);
