@@ -37,12 +37,12 @@ void AUDSkirmishGameMode::CreateAiPlayers(int32 count)
 	}
 }
 
-TObjectPtr<AUDSkirmishAIController> AUDSkirmishGameMode::CreateAi()
+TWeakObjectPtr<AUDSkirmishAIController> AUDSkirmishGameMode::CreateAi()
 {
 	return GetWorld()->SpawnActor<AUDSkirmishAIController>();
 }
 
-TObjectPtr<AUDSkirmishGaiaAIController> AUDSkirmishGameMode::CreateServerPlayer()
+TWeakObjectPtr<AUDSkirmishGaiaAIController> AUDSkirmishGameMode::CreateServerPlayer()
 {
 	return GetWorld()->SpawnActor<AUDSkirmishGaiaAIController>();
 }
@@ -51,7 +51,7 @@ void AUDSkirmishGameMode::RegisterPlayer(APlayerController* NewPlayer)
 {
 	UE_LOG(LogTemp, Log, TEXT("Setting up new Player."));
 	// Cast obtained controller and save it.
-	TObjectPtr<AUDSkirmishPlayerController> controller = Cast<AUDSkirmishPlayerController>(NewPlayer);
+	TWeakObjectPtr<AUDSkirmishPlayerController> controller = Cast<AUDSkirmishPlayerController>(NewPlayer);
 	PlayerControllers.Add(controller);
 
 	AssignToSimulation(Cast<IUDControllerInterface>(controller), true);
@@ -61,7 +61,7 @@ void AUDSkirmishGameMode::RegisterAi()
 {
 	UE_LOG(LogTemp, Log, TEXT("Setting up new Ai."));
 	// Create new controller and save it.
-	TObjectPtr<AUDSkirmishAIController> controller = CreateAi();
+	TWeakObjectPtr<AUDSkirmishAIController> controller = CreateAi();
 	AiControllers.Add(controller);
 
 	AssignToSimulation(Cast<IUDControllerInterface>(controller), true);
@@ -85,10 +85,10 @@ void AUDSkirmishGameMode::RegisterGaiaAi()
 	GetCastGameState()->RegisterActionMaker(Cast<IUDActionHandlingInterface>(GaiaController));
 }
 
-void AUDSkirmishGameMode::AssignToSimulation(TObjectPtr<IUDControllerInterface> controller, bool isPlayerOrAi)
+void AUDSkirmishGameMode::AssignToSimulation(TWeakObjectPtr<IUDControllerInterface> controller, bool isPlayerOrAi)
 {
 	// Always retrieve this before calling anything that might depend on it.
-	TObjectPtr<AUDWorldSimulation> worldSim = GetWorldSimulation();
+	TWeakObjectPtr<AUDWorldSimulation> worldSim = GetWorldSimulation();
 	// Define new controller ID.
 	controller->SetControllerUniqueId(GetNextUniqueControllerId());
 	UE_LOG(LogTemp, Log, TEXT("Finishing initialization of player with Id: %d"), controller->GetControllerUniqueId());

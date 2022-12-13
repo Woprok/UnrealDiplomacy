@@ -13,11 +13,17 @@
 #include "UDWorldSimulation.generated.h"
 
 /**
+ * Allows controllers to register for incoming messages from the simulation about the state change.
+ * Invoked everytime an action was executed by the simulation.
+ */
+DECLARE_MULTICAST_DELEGATE_OneParam(BroadcastActionExecutedDelegate, FUDActionData&);
+
+/**
  * Handles all operations over the UDWorldState and 
  * holds all Player/Ai and server states.
  */
 UCLASS()
-class UNREALDIPLOMACY_API AUDWorldSimulation : public UObject
+class UNREALDIPLOMACY_API AUDWorldSimulation : public AUDActor
 {
 	GENERATED_BODY()
 public:
@@ -25,11 +31,6 @@ public:
 	 * Initialize all necessary fields for actions and simulation.
 	 */
 	void Initialize();
-	/**
-	 * Allows controllers to register for incoming messages from the simulation about the state change.
-	 * Invoked everytime an action was executed by the simulation.
-	 */
-	DECLARE_MULTICAST_DELEGATE_OneParam(BroadcastActionExecutedDelegate, FUDActionData&);
 	/**
 	 * Delegate for broadcast of an action being executed, thus resulting in state changing.
 	 * Action that was done is passed ?
@@ -144,4 +145,7 @@ private:
 	 */
 	UPROPERTY()
 	int32 AssignableActionId = 0;
+
+	UPROPERTY()
+	TObjectPtr<UUDLogAction> LogAction = nullptr;
 };

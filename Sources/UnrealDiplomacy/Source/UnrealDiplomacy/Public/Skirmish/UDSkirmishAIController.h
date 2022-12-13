@@ -22,10 +22,12 @@ public:
 	{
 		PersonalState = personalWorldState;
 	}
+	UFUNCTION()
 	virtual void SetControllerUniqueId(int32 uniqueControllerId) override
 	{
 		UniqueControllerId = uniqueControllerId;
 	}
+	UFUNCTION()
 	virtual int32 GetControllerUniqueId() override
 	{
 		return UniqueControllerId;

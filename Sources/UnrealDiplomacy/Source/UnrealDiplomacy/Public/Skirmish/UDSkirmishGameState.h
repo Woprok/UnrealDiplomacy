@@ -40,12 +40,12 @@ protected:
 	/**
 	 * Retrieves current GameMode that is associated with this GameState.
 	 */
-	TObjectPtr<AUDSkirmishGameMode> GetCastGameMode();
+	TWeakObjectPtr<AUDSkirmishGameMode> GetCastGameMode();
 private:
 	/**
 	 * Saved pointer for the GameMode to reduce amount of access casts.
 	 * Access through the GetCastGameMode(), this does not have to be initialized.
 	 */
 	UPROPERTY()
-	TObjectPtr<AUDSkirmishGameMode> InternalCurrentGameMode = nullptr;
+	TWeakObjectPtr<AUDSkirmishGameMode> InternalCurrentGameMode = nullptr;
 };

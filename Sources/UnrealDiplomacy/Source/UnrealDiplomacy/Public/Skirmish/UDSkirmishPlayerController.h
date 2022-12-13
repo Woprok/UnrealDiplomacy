@@ -48,10 +48,12 @@ public:
 	 * client and server have controller prepared for action.
 	 */
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	UFUNCTION()
 	virtual void SetControllerUniqueId(int32 uniqueControllerId) override
 	{
 		UniqueControllerId = uniqueControllerId;
 	}
+	UFUNCTION()
 	virtual int32 GetControllerUniqueId() override
 	{
 		return UniqueControllerId;
@@ -71,9 +73,9 @@ protected:
 	 * Lazy access to a WorldSimulation.
 	 * Necessary to prevent early call of uninitialized fields.
 	 */
-	TObjectPtr<AUDWorldSimulation> GetWorldSimulation()
+	TWeakObjectPtr<AUDWorldSimulation> GetWorldSimulation()
 	{
-		if (!IsValid(InternalWorldSimulation))
+		if (!InternalWorldSimulation.IsValid())
 		{
 			UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController: New simulation required."));
 			Initialize();
@@ -83,9 +85,9 @@ protected:
 	/**
 	 * Retrieves current GameState that is associated with the running level.
 	 */
-	TObjectPtr<AUDSkirmishGameState> GetCastGameState()
+	TWeakObjectPtr<AUDSkirmishGameState> GetCastGameState()
 	{
-		if (InternalCurrentGameState.IsNull())
+		if (!InternalCurrentGameState.IsValid())
 		{
 			InternalCurrentGameState = Cast<AUDSkirmishGameState>(GetWorld()->GetGameState());
 		}
@@ -99,7 +101,7 @@ private:
 	 * Access through the GetCastGameState(), this does not have to be initialized.
 	 */
 	UPROPERTY()
-	TObjectPtr<AUDSkirmishGameState> InternalCurrentGameState = nullptr;
+	TWeakObjectPtr<AUDSkirmishGameState> InternalCurrentGameState = nullptr;
 	/**
 	 * Simulation that is responsible for maintaining and managing all interactions.
 	 * Local simulation that is used by specific client to present current results to user.
@@ -109,5 +111,5 @@ private:
 	 * TODO added handling for premature apply and possible revert on fail to minimize input delay.
 	 */
 	UPROPERTY()
-	TObjectPtr<AUDWorldSimulation> InternalWorldSimulation = nullptr;
+	TWeakObjectPtr<AUDWorldSimulation> InternalWorldSimulation = nullptr;
 };

@@ -5,6 +5,7 @@
 
 void AUDWorldSimulation::Initialize()
 {
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Initializing."));
 	WorldGenerator = NewObject<UUDWorldGenerator>(this);
 	ModifierManager = NewObject<UUDModifierManager>(this);
 	LoadCoreActions();
@@ -12,23 +13,24 @@ void AUDWorldSimulation::Initialize()
 
 void AUDWorldSimulation::CreateState(int32 playerId, bool isPlayerOrAi)
 {
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Creating new State."));
 	if (States.Contains(playerId))
 	{
-		UE_LOG(LogTemp, Log, TEXT("Duplicate initialization of player state for player with id(%d)."), playerId);
+		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Duplicate initialization of player state for player with id(%d)."), playerId);
 		return;
 	}
 
 	if (!isPlayerOrAi && playerId == UUDWorldState::GaiaWorldStateId)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Registering Gaia as Id(%d)."), playerId);
+		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering Gaia as Id(%d)."), playerId);
 	}
 	else if (isPlayerOrAi && playerId != UUDWorldState::GaiaWorldStateId)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Registering Player or Ai as Id(%d)."), playerId);
+		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering Player or Ai as Id(%d)."), playerId);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("Invalid combination of Id(%d) and isPlayerOrAi."), playerId);
+		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Invalid combination of Id(%d) and isPlayerOrAi."), playerId);
 		return;
 	}
 
@@ -39,9 +41,10 @@ void AUDWorldSimulation::CreateState(int32 playerId, bool isPlayerOrAi)
 
 void AUDWorldSimulation::RegisterAction(TObjectPtr<IUDActionInterface> newAction)
 {
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering Action."));
 	if (Actions.Contains(newAction->GetActionTypeId()))
 	{
-		UE_LOG(LogTemp, Log, TEXT("Duplicate registration of action with id(%d)."), newAction->GetActionTypeId());
+		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Duplicate registration of action with id(%d)."), newAction->GetActionTypeId());
 		return;
 	}
 	newAction->SetWorldGenerator(WorldGenerator);
@@ -51,10 +54,11 @@ void AUDWorldSimulation::RegisterAction(TObjectPtr<IUDActionInterface> newAction
 
 void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 {
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Executing Action."));
 	if (!Actions.Contains(newAction.ActionTypeId))
 	{
 		// Blocked execution of non-existing action.
-		UE_LOG(LogTemp, Log, TEXT("Action executor for action id(%d) is not defined."), newAction.ActionTypeId);
+		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Action executor for action id(%d) is not defined."), newAction.ActionTypeId);
 		return;
 	}
 	// Obtained executor for this action.
@@ -62,7 +66,7 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 	
 	if (!actionExecutor->CanExecute(newAction, GetSpecificState(UUDWorldState::GaiaWorldStateId)))
 	{
-		UE_LOG(LogTemp, Log, TEXT("Action executor was halted for action id(%d) due to executor id(%d)."), 
+		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Action executor was halted for action id(%d) due to executor id(%d)."), 
 			newAction.ActionTypeId, actionExecutor->GetActionTypeId());
 		return;
 	}
@@ -85,6 +89,7 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 
 void AUDWorldSimulation::SynchronizeNewPlayerState(TObjectPtr<UUDWorldState> newState)
 {
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Synchrinizing new Player."));
 	// New player state must be synchronzied from old action list first.
 	for (auto& actionData : ExecutionHistory)
 	{
@@ -92,38 +97,39 @@ void AUDWorldSimulation::SynchronizeNewPlayerState(TObjectPtr<UUDWorldState> new
 	}
 	// After that push new synchronize action to all, including new joined player.
 	FUDActionData joinPlayer(UUDAddPlayerAction::ActionTypeId, newState->PerspectivePlayerId);
-	UE_LOG(LogTemp, Log, TEXT("Calling join action for player id(%d)."), newState->PerspectivePlayerId);
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Calling join action for player id(%d)."), newState->PerspectivePlayerId);
 	ExecuteAction(joinPlayer);
 }
 
 void AUDWorldSimulation::RevertAction()
 {
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Reverting Action."));
 	if (ExecutionHistory.Num() == 0)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Action executor couldn't unload action due to empty history."));
+		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Action executor couldn't unload action due to empty history."));
 		return;
 	}
 	FUDActionData oldAction = ExecutionHistory.Pop();
 
-	// Obtained executor for this action.
-	auto& actionExecutor = Actions[oldAction.ActionTypeId];
 	// Revert all current states with this action.
 	for (auto& pair : States)
 	{
 		Actions[oldAction.ActionTypeId]->Revert(oldAction, pair.Value);
 	}
-	UE_LOG(LogTemp, Log, TEXT("Action executor reverted action last successful action."));
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Action executor reverted action last successful action."));
 	UndoHistory.Add(oldAction);
 }
 
 void AUDWorldSimulation::LoadCoreActions()
 {
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering Actions."));
 	// Basics 0+
 	//or this directly in the RegisterAction worked TObjectPtr<UUDLogAction> newAction2 = NewObject<UUDLogAction>(this);
 	//TObjectPtr<UUDLogAction> log = NewObject<UUDLogAction>(this);
 	//log->AddToRoot();
 	//RegisterAction(log);
-	RegisterAction(NewObject<UUDLogAction>());
+	//LogAction = NewObject<UUDLogAction>(this);
+	//RegisterAction(LogAction);
 	//RegisterAction(NewObject<UUDLogAction>(this));
 	/*RegisterAction(NewObject<UUDAddPlayerAction>(this));
 	RegisterAction(NewObject<UUDStartGameAction>(this));

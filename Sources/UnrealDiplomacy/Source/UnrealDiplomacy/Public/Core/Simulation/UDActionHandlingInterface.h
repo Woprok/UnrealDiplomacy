@@ -8,6 +8,11 @@
 #include "UDActionHandlingInterface.generated.h"
 
 /**
+ * Invoked everytime an action was decided by this controller.
+ */
+DECLARE_DELEGATE_OneParam(ActionDecidedDelegate, FUDActionData&);
+
+/**
  * Interface for managing interaction between controllers (decision makers)
  * and simulation (executor). Used by AI.
  * This is required by UE compiler. This can't contain UNREALDIPLOMACY_API macro.
@@ -26,10 +31,6 @@ class UNREALDIPLOMACY_API IUDActionHandlingInterface
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Invoked everytime an action was decided by this controller.
-	 */
-	 DECLARE_DELEGATE_OneParam(ActionDecidedDelegate, FUDActionData&);
 	 /**
 	  * Binded to simulation, as this is a way for this controller to be informed about change.
 	  * TODO register action executed as event/delegate to normalize how this interacts with GM & GS.

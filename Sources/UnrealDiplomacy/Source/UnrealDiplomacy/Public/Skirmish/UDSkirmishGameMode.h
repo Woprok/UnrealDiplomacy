@@ -59,12 +59,12 @@ protected:
 	/**
 	 * Create Ai by initializing new AiController.
 	 */
-	virtual TObjectPtr<AUDSkirmishAIController> CreateAi();
+	virtual TWeakObjectPtr<AUDSkirmishAIController> CreateAi();
 	/**
 	 * Create Server player by initializing new AiController.
 	 * This player acts as the world.
 	 */
-	virtual TObjectPtr<AUDSkirmishGaiaAIController> CreateServerPlayer();
+	virtual TWeakObjectPtr<AUDSkirmishGaiaAIController> CreateServerPlayer();
 	/**
 	 * Assigns state to Player and saves Player in PlayerControllers.
 	 */
@@ -80,15 +80,15 @@ protected:
 	/**
 	 * Assigns state to a Player/Ai.
 	 */
-	void AssignToSimulation(TObjectPtr<IUDControllerInterface> controller, bool isPlayerOrAi);
+	void AssignToSimulation(TWeakObjectPtr<IUDControllerInterface> controller, bool isPlayerOrAi);
 protected:
 	/**
 	 * Lazy access to a WorldSimulation.
 	 * Necessary to prevent early call of uninitialized fields.
 	 */
-	TObjectPtr<AUDWorldSimulation> GetWorldSimulation()
+	TWeakObjectPtr<AUDWorldSimulation> GetWorldSimulation()
 	{
-		if (!IsValid(InternalWorldSimulation))
+		if (!InternalWorldSimulation.IsValid())
 		{
 			UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: New simulation required."));
 			Initialize();
@@ -105,9 +105,9 @@ protected:
 	/**
 	 * Retrieves current GameState that is associated with the running level.
 	 */
-	TObjectPtr<AUDSkirmishGameState> GetCastGameState()
+	TWeakObjectPtr<AUDSkirmishGameState> GetCastGameState()
 	{
-		if (!IsValid(InternalCurrentGameState))
+		if (!InternalCurrentGameState.IsValid())
 		{
 			UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: New GameState required."));
 			InternalCurrentGameState = Cast<AUDSkirmishGameState>(GameState);
@@ -119,22 +119,22 @@ private:
 	 * Simulation that is responsible for maintaining and managing all interactions.
 	 */
 	UPROPERTY()
-	TObjectPtr<AUDWorldSimulation> InternalWorldSimulation = nullptr;
+	TWeakObjectPtr<AUDWorldSimulation> InternalWorldSimulation = nullptr;
 	/**
 	 * Instance of Gaia.
 	 */
 	UPROPERTY()
-	TObjectPtr<AUDSkirmishGaiaAIController> GaiaController = nullptr;
+	TWeakObjectPtr<AUDSkirmishGaiaAIController> GaiaController = nullptr;
 	/**
 	 * List of recognized bots.
 	 */
 	UPROPERTY()
-	TArray<TObjectPtr<AUDSkirmishAIController>> AiControllers;
+	TArray<TWeakObjectPtr<AUDSkirmishAIController>> AiControllers;
 	/**
 	 * List of recognized players.
 	 */
 	UPROPERTY()
-	TArray<TObjectPtr<AUDSkirmishPlayerController>> PlayerControllers;
+	TArray<TWeakObjectPtr<AUDSkirmishPlayerController>> PlayerControllers;
 	/**
 	 * Each controller posses unique Id, that is assigned to it via interface.
 	 * This is then used for managing it state.
@@ -147,5 +147,5 @@ private:
 	 * Access through the GetCastGameState(), this does not have to be initialized.
 	 */
 	UPROPERTY()
-	TObjectPtr<AUDSkirmishGameState> InternalCurrentGameState = nullptr;
+	TWeakObjectPtr<AUDSkirmishGameState> InternalCurrentGameState = nullptr;
 };

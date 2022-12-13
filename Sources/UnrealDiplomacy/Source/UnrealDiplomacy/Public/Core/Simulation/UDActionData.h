@@ -94,27 +94,27 @@ public:
 	}
 public:
 	UPROPERTY()
-	int32 ActionTypeId;
+	int32 ActionTypeId = 0;
 	/**
 	 * Player/Ai/Server that created this action and asked for it to be executed.
 	 */
 	UPROPERTY()
-	int32 InvokerPlayerId;
+	int32 InvokerPlayerId = 0;
 	/**
 	 * Player/Ai/Server that are targeted by this action.
 	 */
 	UPROPERTY()
-	int32 TargetPlayerId;
+	int32 TargetPlayerId = 0;
 	/**
 	 * Simple numerical parameter.
 	 */
 	UPROPERTY()
-	int32 ValueParameter;
+	int32 ValueParameter = 0;
 	/**
 	 * Simple tile parameter, two bundled ints.
 	 */
 	UPROPERTY()
-	FIntPoint TileParameter;
+	FIntPoint TileParameter = FIntPoint(0);
 	/**
 	 * Unique identifier, that is responsible for acting as a link between different actions.
 	 * By default is assigned by WorldSimulation or copy constructor.

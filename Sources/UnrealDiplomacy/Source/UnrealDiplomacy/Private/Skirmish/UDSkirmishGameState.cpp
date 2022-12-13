@@ -3,9 +3,9 @@
 #include "Skirmish/UDSkirmishGameState.h"
 #include "Skirmish/UDSkirmishGameMode.h"
 
-TObjectPtr<AUDSkirmishGameMode> AUDSkirmishGameState::GetCastGameMode()
+TWeakObjectPtr<AUDSkirmishGameMode> AUDSkirmishGameState::GetCastGameMode()
 {
-	if (!IsValid(InternalCurrentGameMode))
+	if (!InternalCurrentGameMode.IsValid())
 	{
 		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameState: New GameMode required."));
 		InternalCurrentGameMode = Cast<AUDSkirmishGameMode>(AuthorityGameMode);

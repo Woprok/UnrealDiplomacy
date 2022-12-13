@@ -14,9 +14,9 @@ AUDDevelopmentGameMode::AUDDevelopmentGameMode()
 void AUDDevelopmentGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (IsValid(GetWorldSimulation()))
+	if (!GetWorldSimulation().IsValid())
 	{
-		UE_LOG(LogTemp, Log, TEXT("AUDDevelopmentGameMode: %d."), DeltaTime);
+		UE_LOG(LogTemp, Log, TEXT("AUDDevelopmentGameMode: Tick detected invalid world."));
 	}
 }
 
