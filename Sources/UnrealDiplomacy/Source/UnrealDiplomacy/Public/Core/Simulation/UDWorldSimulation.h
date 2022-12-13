@@ -148,4 +148,10 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UUDLogAction> LogAction = nullptr;
+	UPROPERTY()
+	TObjectPtr<UUDAddPlayerAction> AddPlayerAction = nullptr;
+	UPROPERTY()
+	TObjectPtr<UUDStartGameAction> StartGameAction = nullptr;
+	UPROPERTY()
+	TObjectPtr<UUDEndTurnAction> EndTurnAction = nullptr;
 };

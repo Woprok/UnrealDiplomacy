@@ -38,6 +38,7 @@ protected:
 	 * Handles decision how to propagate action that was successfully executed.
 	 * GameMode handles passing notification and action to all Clients and AIs.
 	 */
+	UFUNCTION()
 	virtual void ActionExecutionFinished(FUDActionData& actionData);
 	/**
 	 * Initializes all fields and prepares all objects for use.
@@ -46,6 +47,7 @@ protected:
 	/**
 	 * Registers listen to world simulation owned by this GameMode.
 	 */
+	UFUNCTION()
 	virtual void RegisterAsListenerToWorldSimulation();
 protected:
 	/**
@@ -80,7 +82,7 @@ protected:
 	/**
 	 * Assigns state to a Player/Ai.
 	 */
-	void AssignToSimulation(TWeakObjectPtr<IUDControllerInterface> controller, bool isPlayerOrAi);
+	void AssignToSimulation(TObjectPtr<IUDControllerInterface> controller, bool isPlayerOrAi);
 protected:
 	/**
 	 * Lazy access to a WorldSimulation.

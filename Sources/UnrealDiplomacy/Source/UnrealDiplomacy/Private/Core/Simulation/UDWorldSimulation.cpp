@@ -39,19 +39,6 @@ void AUDWorldSimulation::CreateState(int32 playerId, bool isPlayerOrAi)
 	SynchronizeNewPlayerState(newState);
 }
 
-void AUDWorldSimulation::RegisterAction(TObjectPtr<IUDActionInterface> newAction)
-{
-	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering Action."));
-	if (Actions.Contains(newAction->GetActionTypeId()))
-	{
-		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Duplicate registration of action with id(%d)."), newAction->GetActionTypeId());
-		return;
-	}
-	newAction->SetWorldGenerator(WorldGenerator);
-	newAction->SetModifierManager(ModifierManager);
-	Actions.Add(newAction->GetActionTypeId(), newAction.Get());
-}
-
 void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Executing Action."));
@@ -120,6 +107,19 @@ void AUDWorldSimulation::RevertAction()
 	UndoHistory.Add(oldAction);
 }
 
+void AUDWorldSimulation::RegisterAction(TObjectPtr<IUDActionInterface> newAction)
+{
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering Action."));
+	if (Actions.Contains(newAction->GetActionTypeId()))
+	{
+		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Duplicate registration of action with id(%d)."), newAction->GetActionTypeId());
+		return;
+	}
+	newAction->SetWorldGenerator(WorldGenerator);
+	newAction->SetModifierManager(ModifierManager);
+	Actions.Add(newAction->GetActionTypeId(), newAction);
+}
+
 void AUDWorldSimulation::LoadCoreActions()
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering Actions."));
@@ -127,13 +127,16 @@ void AUDWorldSimulation::LoadCoreActions()
 	//or this directly in the RegisterAction worked TObjectPtr<UUDLogAction> newAction2 = NewObject<UUDLogAction>(this);
 	//TObjectPtr<UUDLogAction> log = NewObject<UUDLogAction>(this);
 	//log->AddToRoot();
-	//RegisterAction(log);
-	//LogAction = NewObject<UUDLogAction>(this);
-	//RegisterAction(LogAction);
 	//RegisterAction(NewObject<UUDLogAction>(this));
-	/*RegisterAction(NewObject<UUDAddPlayerAction>(this));
-	RegisterAction(NewObject<UUDStartGameAction>(this));
-	RegisterAction(NewObject<UUDEndTurnAction>(this));
+	LogAction = NewObject<UUDLogAction>(this);
+	RegisterAction(Cast<IUDActionInterface>(LogAction));
+	AddPlayerAction = NewObject<UUDAddPlayerAction>(this);
+	//RegisterAction(Cast<IUDActionInterface>(AddPlayerAction));
+	StartGameAction = NewObject<UUDStartGameAction>(this);
+	//RegisterAction(Cast<IUDActionInterface>(StartGameAction));
+	EndTurnAction = NewObject<UUDEndTurnAction>(this);
+	//RegisterAction(Cast<IUDActionInterface>(EndTurnAction));
+	/*
 	// Gaia 100+
 	RegisterAction(NewObject<UUDGenerateIncomeAction>(this));
 	// Player 1000+

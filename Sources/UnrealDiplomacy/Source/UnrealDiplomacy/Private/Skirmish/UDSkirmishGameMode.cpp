@@ -26,7 +26,7 @@ void AUDSkirmishGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: New player joined."));
 	Super::PostLogin(NewPlayer);
-	RegisterPlayer(NewPlayer);
+	//RegisterPlayer(NewPlayer);
 }
 
 void AUDSkirmishGameMode::CreateAiPlayers(int32 count)
@@ -85,7 +85,7 @@ void AUDSkirmishGameMode::RegisterGaiaAi()
 	GetCastGameState()->RegisterActionMaker(Cast<IUDActionHandlingInterface>(GaiaController));
 }
 
-void AUDSkirmishGameMode::AssignToSimulation(TWeakObjectPtr<IUDControllerInterface> controller, bool isPlayerOrAi)
+void AUDSkirmishGameMode::AssignToSimulation(TObjectPtr<IUDControllerInterface> controller, bool isPlayerOrAi)
 {
 	// Always retrieve this before calling anything that might depend on it.
 	TWeakObjectPtr<AUDWorldSimulation> worldSim = GetWorldSimulation();

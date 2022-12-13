@@ -24,6 +24,7 @@ public:
 	 * Propagates action to GameMode that will resolve it.
 	 * This will cause GameMode to send a response.
 	 */
+	UFUNCTION()
 	void OnServerSendAction(FUDActionData& clientData);
 	/**
 	 * This allows AIController to act by using same channel as remote client with PlayerController.
