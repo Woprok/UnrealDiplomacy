@@ -8,22 +8,40 @@ AUDDevelopmentGameMode::AUDDevelopmentGameMode()
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDDevelopmentGameMode: Initialized."));
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	//PrimaryActorTick.bCanEverTick = true;
 }
 
 void AUDDevelopmentGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (!GetWorldSimulation().IsValid())
+	TWeakObjectPtr<AUDWorldSimulation> sim = GetWorldSimulation();
+	auto test = sim->GetSpecificState(0);
+	if (IsValid(test))
+	{
+		UE_LOG(LogTemp, Log, TEXT("AUDDevelopmentGameMode: Tick detected valid world."));
+	}
+	else
 	{
 		UE_LOG(LogTemp, Log, TEXT("AUDDevelopmentGameMode: Tick detected invalid world."));
 	}
+	if (IsValid(sim->LogAction))
+	{
+		UE_LOG(LogTemp, Log, TEXT("AUDDevelopmentGameMode: Tick detected valid action."));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("AUDDevelopmentGameMode: Tick detected invalid action."));
+	}
+	//if (!GetWorldSimulation().IsValid())
+	//{
+	//	UE_LOG(LogTemp, Log, TEXT("AUDDevelopmentGameMode: Tick detected invalid world."));
+	//}
 }
 
 void AUDDevelopmentGameMode:: BeginPlay()
 {
 	Super::BeginPlay();
-	PlayTest();
+	//PlayTest();
 }
 
 void AUDDevelopmentGameMode::PlayTest()

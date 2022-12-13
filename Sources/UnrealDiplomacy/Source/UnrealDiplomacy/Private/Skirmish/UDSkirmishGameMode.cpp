@@ -26,7 +26,7 @@ void AUDSkirmishGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: New player joined."));
 	Super::PostLogin(NewPlayer);
-	//RegisterPlayer(NewPlayer);
+	RegisterPlayer(NewPlayer);
 }
 
 void AUDSkirmishGameMode::CreateAiPlayers(int32 count)

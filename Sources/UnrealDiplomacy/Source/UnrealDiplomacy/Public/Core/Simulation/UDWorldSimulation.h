@@ -79,7 +79,7 @@ protected:
 	/**
 	 * Register new action that can be executed over this simulation.
 	 */
-	void RegisterAction(TObjectPtr<IUDActionInterface> newAction);
+	void RegisterAction(TScriptInterface<IUDActionInterface> newAction);
 	/**
 	 * Returns true if the current id is proper, otherwise false.
 	 * Id with value of 0 is not valid.
@@ -114,7 +114,7 @@ private:
 	 * List of all actions registered in this simulation.
 	 */
 	UPROPERTY()
-	TMap<int32, TObjectPtr<IUDActionInterface>> Actions;
+	TMap<int32, TScriptInterface<IUDActionInterface>> Actions;
 	/**
 	 * List of all actions in chronological order of execution over the GaiaState.
 	 * Due to that it's necessary tool for synchronizing new players as well as old, if
@@ -145,7 +145,7 @@ private:
 	 */
 	UPROPERTY()
 	int32 AssignableActionId = 0;
-
+public:
 	UPROPERTY()
 	TObjectPtr<UUDLogAction> LogAction = nullptr;
 	UPROPERTY()

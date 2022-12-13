@@ -107,7 +107,7 @@ void AUDWorldSimulation::RevertAction()
 	UndoHistory.Add(oldAction);
 }
 
-void AUDWorldSimulation::RegisterAction(TObjectPtr<IUDActionInterface> newAction)
+void AUDWorldSimulation::RegisterAction(TScriptInterface<IUDActionInterface> newAction)
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering Action."));
 	if (Actions.Contains(newAction->GetActionTypeId()))
@@ -123,20 +123,16 @@ void AUDWorldSimulation::RegisterAction(TObjectPtr<IUDActionInterface> newAction
 void AUDWorldSimulation::LoadCoreActions()
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering Actions."));
-	// Basics 0+
-	//or this directly in the RegisterAction worked TObjectPtr<UUDLogAction> newAction2 = NewObject<UUDLogAction>(this);
-	//TObjectPtr<UUDLogAction> log = NewObject<UUDLogAction>(this);
-	//log->AddToRoot();
-	//RegisterAction(NewObject<UUDLogAction>(this));
 	LogAction = NewObject<UUDLogAction>(this);
-	RegisterAction(Cast<IUDActionInterface>(LogAction));
-	AddPlayerAction = NewObject<UUDAddPlayerAction>(this);
-	//RegisterAction(Cast<IUDActionInterface>(AddPlayerAction));
+	RegisterAction(LogAction);
+	//AddPlayerAction = NewObject<UUDAddPlayerAction>(this);
+	//RegisterAction(AddPlayerAction);
 	StartGameAction = NewObject<UUDStartGameAction>(this);
-	//RegisterAction(Cast<IUDActionInterface>(StartGameAction));
+	RegisterAction(StartGameAction);
 	EndTurnAction = NewObject<UUDEndTurnAction>(this);
-	//RegisterAction(Cast<IUDActionInterface>(EndTurnAction));
-	/*
+	RegisterAction(EndTurnAction);
+	RegisterAction(NewObject<UUDAddPlayerAction>(this));
+	
 	// Gaia 100+
 	RegisterAction(NewObject<UUDGenerateIncomeAction>(this));
 	// Player 1000+
@@ -156,5 +152,5 @@ void AUDWorldSimulation::LoadCoreActions()
 	RegisterAction(NewObject<UUDConfirmTransferTileAction>(this));
 	RegisterAction(NewObject<UUDRejectTransferTileAction>(this));
 	// Grant exploit permission
-	RegisterAction(NewObject<UUDGrantExploitTilePermissionAction>(this));*/
+	RegisterAction(NewObject<UUDGrantExploitTilePermissionAction>(this));
 }

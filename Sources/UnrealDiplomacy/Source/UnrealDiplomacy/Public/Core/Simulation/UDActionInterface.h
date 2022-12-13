@@ -250,7 +250,7 @@ public:
 	static const int32 ActionTypeId = 66600;
 protected:
 	UPROPERTY()
-	TObjectPtr<UUDWorldGenerator> WorldGenerator = nullptr;
+	TWeakObjectPtr<UUDWorldGenerator> WorldGenerator = nullptr;
 };
 
 /**
@@ -290,7 +290,7 @@ public:
 	static const int32 ActionTypeId = 5008;
 protected:
 	UPROPERTY()
-	TObjectPtr<UUDModifierManager> ModifierManager = nullptr;
+	TWeakObjectPtr<UUDModifierManager> ModifierManager = nullptr;
 };
 
 /**
@@ -361,5 +361,5 @@ public:
 	static const int32 ActionTypeId = 1007;
 protected:
 	UPROPERTY()
-	TObjectPtr<UUDModifierManager> ModifierManager = nullptr;
+	TWeakObjectPtr<UUDModifierManager> ModifierManager = nullptr;
 };
