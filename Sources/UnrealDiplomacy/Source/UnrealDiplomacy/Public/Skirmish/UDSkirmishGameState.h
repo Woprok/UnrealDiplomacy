@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Core/UDGameState.h"
+#include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDActionHandlingInterface.h"
 #include "UDSkirmishGameState.generated.h"
 
@@ -37,6 +38,12 @@ public:
 	 */
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastSendActionToAllClients(FUDActionData serverData);
+	/**
+	 * Propagates request for history to GameMode that will resolve it.
+	 * Returns wrapped TArray<FUDActionData> of all actions up to the point (optional; 0 = all).
+	 * Might be too big ? use with caution... for initial sync only.
+	 */
+	void ResolveGetSyncData(int32 controllerId, int32 firstKnown);
 protected:
 	/**
 	 * Retrieves current GameMode that is associated with this GameState.

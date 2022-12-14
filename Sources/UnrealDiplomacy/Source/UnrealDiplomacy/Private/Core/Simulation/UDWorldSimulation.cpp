@@ -36,7 +36,28 @@ void AUDWorldSimulation::CreateState(int32 playerId, bool isPlayerOrAi)
 
 	TObjectPtr<UUDWorldState> newState = UUDWorldState::CreateState(playerId, isPlayerOrAi);
 	States.Add(playerId, newState);
-	SynchronizeNewPlayerState(newState);
+}
+
+void AUDWorldSimulation::CreateStateAndSynchronize(int32 playerId, bool isPlayerOrAi)
+{
+	CreateState(playerId, isPlayerOrAi);
+	SynchronizeNewPlayerState(States[playerId]);
+	// After that push new synchronize action to all, including new joined player.
+	FUDActionData joinPlayer(UUDAddPlayerAction::ActionTypeId, States[playerId]->PerspectivePlayerId);
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Calling join action for player id(%d)."), States[playerId]->PerspectivePlayerId);
+	ExecuteAction(joinPlayer);
+}
+
+void AUDWorldSimulation::NaiveExecuteAction(FUDActionData& trustworthyAction)
+{
+	// This expects action data that passed through ExecuteAction and thus are valid and complete.
+	// This avoids checks over full state, thus allowing execution even if full state is not present.
+	// This also ignores simulation call for broadcast. Maybe this is actually useful ?
+	// TODO move these comments and verify their trustworthyness.
+	for (auto& pair : States)
+	{
+		Actions[trustworthyAction.ActionTypeId]->Execute(trustworthyAction, pair.Value);
+	}
 }
 
 void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
@@ -66,10 +87,7 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 	// Saved for future reference
 	ExecutionHistory.Add(newAction);
 	// Updated all current states with this action.
-	for (auto& pair : States)
-	{
-		Actions[newAction.ActionTypeId]->Execute(newAction, pair.Value);
-	}
+	NaiveExecuteAction(newAction);
 	// Notifies everyone about the action.
 	OnBroadcastActionExecutedDelegate.Broadcast(newAction);
 }
@@ -78,14 +96,11 @@ void AUDWorldSimulation::SynchronizeNewPlayerState(TObjectPtr<UUDWorldState> new
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Synchrinizing new Player."));
 	// New player state must be synchronzied from old action list first.
+	// This directly executes action over the supplied state.
 	for (auto& actionData : ExecutionHistory)
 	{
-		Actions[actionData.ActionTypeId]->Execute(actionData, newState);		
+		Actions[actionData.ActionTypeId]->Execute(actionData, newState);
 	}
-	// After that push new synchronize action to all, including new joined player.
-	FUDActionData joinPlayer(UUDAddPlayerAction::ActionTypeId, newState->PerspectivePlayerId);
-	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Calling join action for player id(%d)."), newState->PerspectivePlayerId);
-	ExecuteAction(joinPlayer);
 }
 
 void AUDWorldSimulation::RevertAction()
@@ -107,9 +122,47 @@ void AUDWorldSimulation::RevertAction()
 	UndoHistory.Add(oldAction);
 }
 
+FUDActionArray AUDWorldSimulation::GetHistoryUntil(int32 historyPoint)
+{
+	FUDActionArray newHistory;
+	newHistory.Actions.SetNumZeroed(0);
+	if (historyPoint == 0)
+	{
+		for (auto& historic : ExecutionHistory)
+		{
+			newHistory.Actions.Add(historic);
+		}
+	}
+	else
+	{
+		for (auto& historic : ExecutionHistory)
+		{
+			if (historic.UniqueId < historyPoint)
+			{
+				newHistory.Actions.Add(historic);
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
+
+	int32 first = 0;
+	int32 last = 0;
+	if (newHistory.Actions.Num() > 0)
+	{
+		first = newHistory.Actions[0].UniqueId;
+		last = newHistory.Actions.Last().UniqueId;
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Returning %d historic actions from %d to %d."), newHistory.Actions.Num(), first, last);
+	return newHistory;
+}
+
 void AUDWorldSimulation::RegisterAction(TScriptInterface<IUDActionInterface> newAction)
 {
-	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering Action."));
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering Action(%d)."), newAction->GetActionTypeId());
 	if (Actions.Contains(newAction->GetActionTypeId()))
 	{
 		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Duplicate registration of action with id(%d)."), newAction->GetActionTypeId());

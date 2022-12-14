@@ -40,6 +40,13 @@ public:
 	/**
 	 * Creates new state that will be simultenuosly simulated along with all others.
 	 * Note: Player and Ai are both considered player. Only world/gaia is considered non-player.
+	 * Automatically synchronizes data with this state.
+	 */
+	void CreateStateAndSynchronize(int32 playerId, bool isPlayerOrAi);
+	/**
+	 * Creates new state that will be simultenuosly simulated along with all others.
+	 * Note: Player and Ai are both considered player. Only world/gaia is considered non-player.
+	 * Creates only empty state.
 	 */
 	void CreateState(int32 playerId, bool isPlayerOrAi);
 	/**
@@ -65,6 +72,16 @@ public:
 		}
 		return nullptr;
 	};
+	/**
+	 * Creates copy of history until the specified point.
+	 * 0 = all
+	 */
+	FUDActionArray GetHistoryUntil(int32 historyPoint);
+	/**
+	 * Executes action without any verification.
+	 * Useful for actions that are believed to be absolutely correct. e.g. previously executed.
+	 */
+	void NaiveExecuteAction(FUDActionData& trustworthyAction);
 private:
 	/**
 	 * Synchronize new player state to be on par with the old ones.

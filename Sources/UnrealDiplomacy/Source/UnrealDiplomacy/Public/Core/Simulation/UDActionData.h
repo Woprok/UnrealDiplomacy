@@ -123,3 +123,32 @@ public:
 	UPROPERTY()
 	int32 UniqueId = 0;
 };
+
+USTRUCT()
+struct UNREALDIPLOMACY_API FUDActionArray
+{
+	GENERATED_BODY()
+public:
+	/**
+	 * Empty constructor used by UE.
+	 */
+	FUDActionArray()
+	{
+
+	};
+	/**
+	 * Empty constructor used by UE.
+	 */
+	FUDActionArray(TArray<FUDActionData> actions, int32 first, int32 last)
+		: Actions(actions), FirstActionId(first), LastActionId(last)
+	{
+
+	}
+public:
+	UPROPERTY()
+	TArray<FUDActionData> Actions;
+	UPROPERTY()
+	int32 FirstActionId = 0;
+	UPROPERTY()
+	int32 LastActionId = 0;
+};

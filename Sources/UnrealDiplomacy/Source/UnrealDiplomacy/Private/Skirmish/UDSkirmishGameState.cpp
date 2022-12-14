@@ -44,5 +44,11 @@ void AUDSkirmishGameState::MulticastSendActionToAllClients_Implementation(FUDAct
 		return;
 	}
 	TObjectPtr<AUDSkirmishPlayerController> skirmishController = Cast<AUDSkirmishPlayerController>(controller);
-	skirmishController->ProcessReceivedAction(serverData);
+	skirmishController->MulticastReceiveActionFromServer_Local(serverData);
+}
+
+void AUDSkirmishGameState::ResolveGetSyncData(int32 controllerId, int32 firstKnown)
+{
+	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameState: History requested by Player(%d)."), controllerId);
+	GetCastGameMode()->SendPartialHistoricData(controllerId, firstKnown);
 }

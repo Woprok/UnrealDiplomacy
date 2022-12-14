@@ -93,7 +93,7 @@ void AUDSkirmishGameMode::AssignToSimulation(TObjectPtr<IUDControllerInterface> 
 	controller->SetControllerUniqueId(GetNextUniqueControllerId());
 	UE_LOG(LogTemp, Log, TEXT("Finishing initialization of player with Id: %d"), controller->GetControllerUniqueId());
 	// Register controller for WorldSimulation, so it has it's own unique representation in the server simulation.
-	worldSim->CreateState(controller->GetControllerUniqueId(), isPlayerOrAi);
+	worldSim->CreateStateAndSynchronize(controller->GetControllerUniqueId(), isPlayerOrAi);
 }
 
 void AUDSkirmishGameMode::StartGame()
@@ -142,6 +142,23 @@ void AUDSkirmishGameMode::ActionExecutionFinished(FUDActionData& actionData)
 		controller->OnActionExecuted(actionData);
 	}
 	*/
+}
+
+void AUDSkirmishGameMode::SendPartialHistoricData(int32 controllerId, int32 firstKnown)
+{
+	// TODO add more strict checks for validity of request
+	FUDActionArray actions = GetWorldSimulation()->GetHistoryUntil(firstKnown);
+	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Sending history to Player(%d)"), controllerId);
+	// TODO swap this for map access, if we ever add a map
+	// TODO swap this for array access, if we ever merge controllers to single array
+	for (auto& controller : PlayerControllers)
+	{
+		if (controller->GetControllerUniqueId() == controllerId)
+		{
+			controller->ClientcastInitialSyncReceiveFromServer(actions);
+			break;
+		}
+	}
 }
 
 void AUDSkirmishGameMode::RegisterAsListenerToWorldSimulation()

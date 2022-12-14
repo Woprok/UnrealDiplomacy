@@ -6,7 +6,8 @@
 #include "Core/UDPlayerController.h"
 #include "Core/UDControllerInterface.h"
 #include "Core/Simulation/UDWorldSimulation.h"
-#include <Skirmish/UDSkirmishGameState.h>
+#include "Core/Simulation/UDActionData.h"
+#include "UDSkirmishGameState.h"
 #include "UDSkirmishPlayerController.generated.h"
 
 /**
@@ -32,15 +33,20 @@ public:
 	UFUNCTION(Server, Reliable)
 	void ServercastSendActionToServer(FUDActionData clientData);
 	/**
-	 * 
+	 * Receives sync data from server.
+	 * Client-owned actor with Server RPC invoked from the server -> Runs on actor's owning client.
 	 */
-	//UFUNCTION(Client, Reliable)
-	//void ClientcastInitialSync();
+	UFUNCTION(Client, Reliable)
+	void ClientcastInitialSyncReceiveFromServer(FUDActionArray actions);
 	/**
-	 *
+	 * Requests sync data from sever.
+	 * Owned by invoking client with Client RPC invoked from a client -> Runs on server.
+	 * Parameters:
+	 * controllerId
+	 * firstKnwon - optional (0 = all) id of first already owned action.
 	 */
-	//UFUNCTION(Server, Reliable)
-	//void ServercastInitialSync();
+	UFUNCTION(Server, Reliable)
+	void ServercastInitialSyncRequestToServer(int32 controllerId, int32 firstKnown);
 public:
 	/**
 	 * Allows replication of properties.
@@ -63,7 +69,7 @@ public:
 	 * Passes received action to world simulation.
 	 * Used whenever Multicast is the sender of an action from the server.
 	 */
-	void ProcessReceivedAction(FUDActionData& actionData);
+	void MulticastReceiveActionFromServer_Local(FUDActionData& actionData);
 protected:
 	/**
 	 * Initializes all fields and prepares all objects for use.
@@ -93,6 +99,28 @@ protected:
 		}
 		return InternalCurrentGameState;
 	}
+	/**
+	 * Determines how to deal with the action and executes it if possible.
+	 * Requires client to be synchronized.
+	 */
+	void ProcessAction(FUDActionData& actionData);
+	/**
+	 * Saves unresolveable actions for later.
+	 */
+	void SaveActionUntilSynchronization(FUDActionData& actionData);
+	/**
+	 * Verifies that sync is requested and if it is not then start it.
+	 * Invoked on receiving new action from standard channel.
+	 */
+	void VerifySyncInProgress();
+	/**
+	 * Starts initial sync by sending new request to server.
+	 */
+	void StartSynchronization();
+	/**
+	 * Process all data received...
+	 */
+	void FinishSynchronization(FUDActionArray& actionArray);
 private:
 	UPROPERTY(ReplicatedUsing = OnRep_SetUniqueControllerId)
 	int32 UniqueControllerId;
@@ -112,4 +140,19 @@ private:
 	 */
 	UPROPERTY()
 	TWeakObjectPtr<AUDWorldSimulation> InternalWorldSimulation = nullptr;
+	/**
+	 * Determines if this client asked & finished for initial history catch-up.
+	 */
+	UPROPERTY()
+	bool IsSynchronized = false;
+	/**
+	 * Determines if this client asked for initial history catch-up.
+	 */
+	UPROPERTY()
+	bool IsSyncInProgress = false;
+	/**
+	 * Holds history and all actions received, until this client was fully synchronized.
+	 */
+	UPROPERTY()
+	TArray<FUDActionData> TemporaryActionHolder;
 };

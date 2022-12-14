@@ -6,6 +6,7 @@
 #include "Core/UDGameMode.h"
 #include "Core/UDControllerInterface.h"
 #include "Core/Simulation/UDWorldSimulation.h"
+#include "Core/Simulation/UDActionData.h"
 #include "UDSkirmishGameState.h"
 #include "UDSkirmishHUD.h"
 #include "UDSkirmishAIController.h"
@@ -33,6 +34,13 @@ public:
 	 * This will invoke UUDStartGameAction that handles pre-first turn play.
 	 */
 	virtual void StartGame();
+	/**
+	 * Gathers and sends back requested historic data to specified controller.
+	 * Parameters:
+	 * controllerId
+	 * firstKnwon - optional (0 = all) id of first already owned action.
+	 */
+	virtual void SendPartialHistoricData(int32 controllerId, int32 firstKnown);
 protected:
 	/**
 	 * Handles decision how to propagate action that was successfully executed.
