@@ -83,6 +83,7 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 	{
 		newAction.UniqueId = GetAssignableActionId();
 	}
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Action UID(%d)."), newAction.UniqueId);
 
 	// Saved for future reference
 	ExecutionHistory.Add(newAction);

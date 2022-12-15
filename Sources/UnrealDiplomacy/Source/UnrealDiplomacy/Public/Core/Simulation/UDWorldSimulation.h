@@ -113,13 +113,14 @@ protected:
 	 */
 	int32 GetAssignableActionId()
 	{
-		if (AssignableActionId != 0)
+		++AssignableActionId;
+		while (AssignableActionId == 0)
 		{
-			// returns non 0 value.
-			return AssignableActionId++;
+			// returns can be only non 0 value.
+			++AssignableActionId;
 		}
-		// avoid returning 0 as that would break it.
-		return ++AssignableActionId;
+		// finally returning non 0 value.
+		return AssignableActionId;
 	}
 private:
 	/**
