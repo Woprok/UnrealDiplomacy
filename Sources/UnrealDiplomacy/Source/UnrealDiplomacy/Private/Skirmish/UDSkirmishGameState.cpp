@@ -18,7 +18,7 @@ void AUDSkirmishGameState::RegisterActionMaker(TObjectPtr<IUDActionHandlingInter
 	newListener->OnActionDecidedDelegate.BindUObject(this, &AUDSkirmishGameState::OnServerSendAction);
 }
 
-void AUDSkirmishGameState::OnServerSendAction(FUDActionData& clientData)
+void AUDSkirmishGameState::OnServerSendAction(FUDActionData clientData)
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameState: Received Action for GameMode."));
 	GetCastGameMode()->ProcessAction(clientData);
@@ -42,11 +42,12 @@ void AUDSkirmishGameState::MulticastSendActionToAllClients_Implementation(FUDAct
 	TObjectPtr<AUDSkirmishPlayerController> skirmishController = Cast<AUDSkirmishPlayerController>(controller);
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameState: Multicast can attempt to execute on controller(%d)."), skirmishController->GetControllerUniqueId());
 
-	if (GetNetMode() < ENetMode::NM_Client)
-	{
-		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameState: Multicast halted by being Server (%d)."), skirmishController->GetControllerUniqueId());
-		return;
-	}
+	// TODO potential BUG
+	//if (GetNetMode() < ENetMode::NM_Client)
+	//{
+	//	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameState: Multicast halted by being Server (%d)."), skirmishController->GetControllerUniqueId());
+	//	return;
+	//}
 
 	skirmishController->MulticastReceiveActionFromServer_Local(serverData);
 }

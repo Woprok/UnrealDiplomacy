@@ -5,9 +5,11 @@
 #include "CoreMinimal.h"
 #include "Core/UDPlayerController.h"
 #include "Core/UDControllerInterface.h"
-#include "Core/Simulation/UDWorldSimulation.h"
+#include "Core/Simulation/UDWorldState.h"
 #include "Core/Simulation/UDActionData.h"
+#include "Core/Simulation/UDActionAdministrator.h"
 #include "UDSkirmishGameState.h"
+#include "Core/Simulation/UDWorldSimulation.h"
 #include "UDSkirmishPlayerController.generated.h"
 
 /**
@@ -66,15 +68,34 @@ public:
 	}
 public:
 	/**
+	 * Executed once a client has finished synchronization.
+	 * Allows UI elements to read state and enabled generation of game world from input.
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	void OnSynchronizationFinished();
+public:
+	/**
 	 * Passes received action to world simulation.
 	 * Used whenever Multicast is the sender of an action from the server.
 	 */
 	void MulticastReceiveActionFromServer_Local(FUDActionData& actionData);
 protected:
 	/**
+	 * Initializes Overseer for handling game rules over this player.
+	 */
+	void InitializeAdministrator();
+	/**
+	 * Accessor for blueprints and others to PersonalAdministrator of this controller.
+	 */
+	UFUNCTION(BlueprintCallable)
+	UUDActionAdministrator* GetPersonalAdministrator()
+	{
+		return InternalPersonalAdministrator;
+	}
+		/**
 	 * Initializes all fields and prepares all objects for use.
 	 */
-	void Initialize();
+	void InitializeSimulation();
 	/**
 	 * Lazy access to a WorldSimulation.
 	 * Necessary to prevent early call of uninitialized fields.
@@ -84,7 +105,7 @@ protected:
 		if (!InternalWorldSimulation.IsValid())
 		{
 			UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController: New simulation required."));
-			Initialize();
+			InitializeSimulation();
 		}
 		return InternalWorldSimulation;
 	}
@@ -155,4 +176,9 @@ private:
 	 */
 	UPROPERTY()
 	TArray<FUDActionData> TemporaryActionHolder;
+	/**
+	 * Handles logic verfication and game rules access over the state owned by this controller.
+	 */
+	UPROPERTY()
+	TObjectPtr<UUDActionAdministrator> InternalPersonalAdministrator = nullptr;
 };

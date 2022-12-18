@@ -13,7 +13,7 @@
  * Note: default comparison == is done based purely on UniqueId, if you need complete value comparison
  * use IsValueEqual...
  */
-USTRUCT()
+USTRUCT(BlueprintType)
 struct UNREALDIPLOMACY_API FUDActionData
 {
 	GENERATED_BODY()
@@ -93,37 +93,41 @@ public:
 			ValueParameter == rhs.ValueParameter;
 	}
 public:
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	int32 ActionTypeId = 0;
 	/**
 	 * Player/Ai/Server that created this action and asked for it to be executed.
 	 */
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	int32 InvokerPlayerId = 0;
 	/**
 	 * Player/Ai/Server that are targeted by this action.
 	 */
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	int32 TargetPlayerId = 0;
 	/**
 	 * Simple numerical parameter.
 	 */
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	int32 ValueParameter = 0;
 	/**
 	 * Simple tile parameter, two bundled ints.
 	 */
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	FIntPoint TileParameter = FIntPoint(0);
 	/**
 	 * Unique identifier, that is responsible for acting as a link between different actions.
 	 * By default is assigned by WorldSimulation or copy constructor.
 	 * E.g. Gift and it's eventual confirm/reject action will share this.
 	 */
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	int32 UniqueId = 0;
 };
 
+/**
+ * Wrapper around multiple actions, that are send as package. 
+ * e.g. sending history. 
+ */
 USTRUCT()
 struct UNREALDIPLOMACY_API FUDActionArray
 {

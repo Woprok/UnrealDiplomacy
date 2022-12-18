@@ -26,7 +26,7 @@ public:
 	 * This will cause GameMode to send a response.
 	 */
 	UFUNCTION()
-	void OnServerSendAction(FUDActionData& clientData);
+	void OnServerSendAction(FUDActionData clientData);
 	/**
 	 * This allows AIController to act by using same channel as remote client with PlayerController.
 	 * TODO simplify the register process for controllers.

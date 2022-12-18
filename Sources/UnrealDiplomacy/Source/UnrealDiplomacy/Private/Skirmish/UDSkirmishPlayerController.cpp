@@ -5,12 +5,13 @@
 
 void AUDSkirmishPlayerController::OnRep_SetUniqueControllerId(const int32& oldId)
 {
-	if (GetNetMode() < NM_Client)
-	{
-		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Synchronized Id from original %d. [SERVER]"), GetControllerUniqueId(), oldId);
-		// This should not fire on server...
-		return;
-	}
+	// This might cause issues ? TODO potential BUG
+	//if (GetNetMode() < NM_Client)
+	//{
+	//	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Synchronized Id from original %d. [SERVER]"), GetControllerUniqueId(), oldId);
+	//	// This should not fire on server...
+	//	return;
+	//}
 
 	if (IsLocalPlayerController())
 	{
@@ -56,6 +57,17 @@ void AUDSkirmishPlayerController::FinishSynchronization(FUDActionArray& actionAr
 
 	IsSynchronized = true;
 	TemporaryActionHolder.Reset(0);
+	// This is required and done only here as it requires valid state to exists.
+	InitializeAdministrator();
+	// Call event that is used by UI&World elements.
+	OnSynchronizationFinished();
+}
+
+void AUDSkirmishPlayerController::InitializeAdministrator() 
+{
+	InternalPersonalAdministrator = NewObject<UUDActionAdministrator>();
+	InternalPersonalAdministrator->SetOverseeingState(GetWorldSimulation()->GetSpecificState(GetControllerUniqueId()));
+	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Initialized personal administrator."), GetControllerUniqueId());
 }
 
 void AUDSkirmishPlayerController::VerifySyncInProgress()
@@ -87,7 +99,7 @@ void AUDSkirmishPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimePro
 	DOREPLIFETIME(AUDSkirmishPlayerController, UniqueControllerId);
 }
 
-void AUDSkirmishPlayerController::Initialize()
+void AUDSkirmishPlayerController::InitializeSimulation()
 {
 	InternalWorldSimulation = GetWorld()->SpawnActor<AUDWorldSimulation>();
 

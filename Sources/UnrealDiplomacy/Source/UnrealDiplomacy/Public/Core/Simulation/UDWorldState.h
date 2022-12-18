@@ -133,6 +133,27 @@ public:
 };
 
 /**
+ * Explains the current state of world in relation to state of play.
+ */
+UENUM(BlueprintType)
+enum class EUDWorldSimulationState : uint8
+{
+	/**
+	 * World is being prepared for play.
+	 */
+	INITIALIZING,
+	/**
+	 * Players action are allowed.
+	 */
+	PLAYING,
+	/**
+	 * Players action are no longer be allowed.
+	 */
+	FINISHING,
+	MAX UMETA(Hidden)
+};
+
+/**
  * Holds the state of a world.
  */
 UCLASS()
@@ -187,4 +208,10 @@ public:
 	 */
 	UPROPERTY()
 	int32 CurrentTurn = 0;
+	/**
+	 * Describes what is the state based on simulation changes.
+	 * State is not completely safe to read if it's not yet in PLAYING.
+	 */
+	UPROPERTY()
+	EUDWorldSimulationState WorldSimulationState = EUDWorldSimulationState::INITIALIZING;
 };
