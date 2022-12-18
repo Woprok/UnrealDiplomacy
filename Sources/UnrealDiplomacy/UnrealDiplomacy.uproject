@@ -12,7 +12,8 @@
 				"Engine",
 				"AIModule",
 				"ModularGameplay",
-				"CoreUObject"
+				"CoreUObject",
+				"ModelViewViewModel"
 			]
 		}
 	],
@@ -48,6 +49,10 @@
 		},
 		{
 			"Name": "CommonUI",
+			"Enabled": true
+		},
+		{
+			"Name": "ModelViewViewModel",
 			"Enabled": true
 		}
 	]

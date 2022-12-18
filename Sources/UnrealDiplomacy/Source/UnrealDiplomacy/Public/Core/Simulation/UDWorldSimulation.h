@@ -36,7 +36,12 @@ public:
 	 * Action that was done is passed ?
 	 * TODO reevaluate restraints.
 	 */
-	BroadcastActionExecutedDelegate OnBroadcastActionExecutedDelegate;
+	BroadcastActionExecutedDelegate OnBroadcastVerifiedActionExecutedDelegate;
+	/**
+	 * Simplified version of OnBroadcastVerifiedActionExecutedDelegate
+	 * Invoked by the other execution function, that does no verification NaiveExecuteAction.
+	 */
+	BroadcastActionExecutedDelegate OnBroadcastActionAppliedDelegate;
 	/**
 	 * Creates new state that will be simultenuosly simulated along with all others.
 	 * Note: Player and Ai are both considered player. Only world/gaia is considered non-player.

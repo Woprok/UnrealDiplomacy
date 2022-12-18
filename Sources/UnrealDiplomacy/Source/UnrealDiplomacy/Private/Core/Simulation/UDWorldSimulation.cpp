@@ -58,6 +58,7 @@ void AUDWorldSimulation::NaiveExecuteAction(FUDActionData& trustworthyAction)
 	{
 		Actions[trustworthyAction.ActionTypeId]->Execute(trustworthyAction, pair.Value);
 	}
+	OnBroadcastActionAppliedDelegate.Broadcast(trustworthyAction);
 }
 
 void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
@@ -90,7 +91,7 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 	// Updated all current states with this action.
 	NaiveExecuteAction(newAction);
 	// Notifies everyone about the action.
-	OnBroadcastActionExecutedDelegate.Broadcast(newAction);
+	OnBroadcastVerifiedActionExecutedDelegate.Broadcast(newAction);
 }
 
 void AUDWorldSimulation::SynchronizeNewPlayerState(TObjectPtr<UUDWorldState> newState)

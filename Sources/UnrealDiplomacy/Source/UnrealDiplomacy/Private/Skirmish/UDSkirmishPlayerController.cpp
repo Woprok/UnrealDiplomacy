@@ -63,11 +63,30 @@ void AUDSkirmishPlayerController::FinishSynchronization(FUDActionArray& actionAr
 	OnSynchronizationFinished();
 }
 
+void AUDSkirmishPlayerController::OnUserActionRequested(FUDActionData requestedAction)
+{
+	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Action choosed by user."), GetControllerUniqueId());
+	ServercastSendActionToServer(requestedAction);
+}
+
 void AUDSkirmishPlayerController::InitializeAdministrator() 
 {
 	InternalPersonalAdministrator = NewObject<UUDActionAdministrator>();
 	InternalPersonalAdministrator->SetOverseeingState(GetWorldSimulation()->GetSpecificState(GetControllerUniqueId()));
+	InternalPersonalAdministrator->OnUserActionRequestedDelegate.BindUObject(this, &AUDSkirmishPlayerController::OnUserActionRequested);
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Initialized personal administrator."), GetControllerUniqueId());
+}
+
+void AUDSkirmishPlayerController::OnWorldSimulationUpdated(FUDActionData& actionData)
+{
+	// Currently this has no use for actionData as we are not parsing actions.
+	// We do through propagate the change for anyone who is interested in hearing about it.
+	// Currently only UI elements and World...
+	// TODO revisit this commentary that questions our decisions.
+	if (IsSynchronized)
+	{
+		OnWorldStateUpdated();
+	}
 }
 
 void AUDSkirmishPlayerController::VerifySyncInProgress()
@@ -102,8 +121,8 @@ void AUDSkirmishPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimePro
 void AUDSkirmishPlayerController::InitializeSimulation()
 {
 	InternalWorldSimulation = GetWorld()->SpawnActor<AUDWorldSimulation>();
-
 	GetWorldSimulation()->Initialize();
+	GetWorldSimulation()->OnBroadcastActionAppliedDelegate.AddUObject(this, &AUDSkirmishPlayerController::OnWorldSimulationUpdated);
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Initialized with temporary Id."), GetControllerUniqueId());
 }
 

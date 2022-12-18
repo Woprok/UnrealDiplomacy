@@ -50,6 +50,12 @@ public:
 // Actions might allow giving permission modifier to enemy
 // Action administrator might not allow it as it would not be cool
 #define LOCTEXT_NAMESPACE "ActionAdministrator"
+
+/**
+ * Invoked everytime an action was decided by this controller.
+ */
+DECLARE_DELEGATE_OneParam(UserActionRequestedDelegate, FUDActionData);
+
 /**
  * Overseeing state with many functions for conversion to Info.
  * Allows Player to get easily readable information and confirmations.
@@ -59,6 +65,19 @@ class UNREALDIPLOMACY_API UUDActionAdministrator : public UObject
 {
 	GENERATED_BODY()
 public:
+	/**
+	 * Delegate that is binded by player controller.
+	 * TODO bind also AI controller and merge it with the delegate that is AI using a.t.m.?
+	 */
+	UserActionRequestedDelegate OnUserActionRequestedDelegate;
+	/**
+	 * Request
+	 * TODO refactor all these delegates
+	 */
+	void RequestAction(FUDActionData actionData)
+	{
+		OnUserActionRequestedDelegate.ExecuteIfBound(actionData);
+	}
 	/**
 	 * Defines state that is being monitored and used for determining validity, actions, infos & etc.
 	 */

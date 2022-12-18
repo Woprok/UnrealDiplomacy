@@ -163,5 +163,5 @@ void AUDSkirmishGameMode::SendPartialHistoricData(int32 controllerId, int32 firs
 
 void AUDSkirmishGameMode::RegisterAsListenerToWorldSimulation()
 {
-	GetWorldSimulation()->OnBroadcastActionExecutedDelegate.AddUObject(this, &AUDSkirmishGameMode::ActionExecutionFinished);
+	GetWorldSimulation()->OnBroadcastVerifiedActionExecutedDelegate.AddUObject(this, &AUDSkirmishGameMode::ActionExecutionFinished);
 }

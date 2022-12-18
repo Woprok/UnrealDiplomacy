@@ -13,7 +13,9 @@
 #include "UDSkirmishPlayerController.generated.h"
 
 /**
- * 
+ * Primarily a communication device with GameMode / GameState and User Inputs. 
+ * HUD is similiarly just a bridge between Model and ViewModel.
+ * State is not used a.t.m.
  */
 UCLASS()
 class UNREALDIPLOMACY_API AUDSkirmishPlayerController : public AUDPlayerController, public IUDControllerInterface
@@ -32,7 +34,7 @@ public:
 	 * Sends action to server from this client.
 	 * Owned by invoking client with Client RPC invoked from a client -> Runs on server.
 	 */
-	UFUNCTION(Server, Reliable)
+	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void ServercastSendActionToServer(FUDActionData clientData);
 	/**
 	 * Receives sync data from server.
@@ -68,11 +70,21 @@ public:
 	}
 public:
 	/**
+	 * Called by whoever is responsible for propagating UI requests.
+	 */
+	void OnUserActionRequested(FUDActionData requestedAction);
+	/**
 	 * Executed once a client has finished synchronization.
 	 * Allows UI elements to read state and enabled generation of game world from input.
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void OnSynchronizationFinished();
+	/**
+	 * Invoked by simulation finishing processing incoming change.
+	 * All Widgets and World needs to check if they can update themselves from the state change.
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	void OnWorldStateUpdated();
 public:
 	/**
 	 * Passes received action to world simulation.
@@ -80,6 +92,10 @@ public:
 	 */
 	void MulticastReceiveActionFromServer_Local(FUDActionData& actionData);
 protected:
+	/**
+	 * Binding to delegate of WorldSimulation.
+	 */
+	void OnWorldSimulationUpdated(FUDActionData& actionData);
 	/**
 	 * Initializes Overseer for handling game rules over this player.
 	 */
