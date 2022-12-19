@@ -63,7 +63,7 @@ public:
 	{
 		UniqueControllerId = uniqueControllerId;
 	}
-	UFUNCTION()
+	UFUNCTION(BlueprintPure)
 	virtual int32 GetControllerUniqueId() override
 	{
 		return UniqueControllerId;

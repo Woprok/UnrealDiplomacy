@@ -4,14 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "MVVMViewModelBase.h"
+#include "Core/UserInterfaces/UDViewModelBase.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "UDEndTurnViewModel.generated.h"
 
 /**
- * TODO check if someone found or implemented function binding to events
+ * End Turn Widget
  */
 UCLASS(BlueprintType, Blueprintable)
-class UNREALDIPLOMACY_API UUDEndTurnViewModel : public UMVVMViewModelBase
+class UNREALDIPLOMACY_API UUDEndTurnViewModel : public UUDViewModelBase
 {
 	GENERATED_BODY()
 public:
@@ -31,19 +32,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool CanEndTurn;
 public:
-	/**
-	 * Sets reference to Model (this tries follow principle MVVM[ActionAdministrator<->ViewModel<->View])
-	 */
-	UFUNCTION(BlueprintCallable)
-	void SetAuthority(UUDActionAdministrator* model)
-	{
-		ActionModel = model;
-	}
-	/**
-	 * Public handle for notifying view model to update it's binded values from model.
-	 */
-	UFUNCTION(BlueprintCallable)
-	void OnUpdate()
+	virtual void OnUpdate() override
 	{
 		if (ActionModel->IsGameInProgress())
 		{
@@ -75,8 +64,6 @@ protected:
 		SetPlayer(turnInfo.Player);
 		SetCanEndTurn(isAbleToEndTurn);
 	}
-	UPROPERTY()
-	TObjectPtr<UUDActionAdministrator> ActionModel = nullptr;
 private:
 	/**
 	 * MVVM Binding.

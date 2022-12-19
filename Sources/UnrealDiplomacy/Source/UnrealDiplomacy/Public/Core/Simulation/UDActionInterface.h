@@ -125,13 +125,25 @@ class UNREALDIPLOMACY_API UUDStartGameAction : public UObject, public IUDActionI
 {
 	GENERATED_BODY()
 public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
 public:
 	static 	const int32 ActionTypeId = 2;
-protected:
-	bool IsGameStarted = false;
+};
+
+UCLASS()
+class UNREALDIPLOMACY_API UUDEndGameAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
+	static 	const int32 ActionTypeId = 3;
 };
 
 /**
@@ -147,7 +159,7 @@ public:
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
 public:
-	static const int32 ActionTypeId = 3;
+	static const int32 ActionTypeId = 4;
 };
 
 /**

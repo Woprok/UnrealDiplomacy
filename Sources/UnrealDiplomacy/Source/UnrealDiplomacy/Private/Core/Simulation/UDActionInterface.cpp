@@ -52,12 +52,18 @@ void UUDAddPlayerAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldSt
 
 #pragma region UUDStartGameAction
 
+bool UUDStartGameAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+		targetWorldState->WorldSimulationState == EUDWorldSimulationState::INITIALIZING;
+}
+
 void UUDStartGameAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
 	UE_LOG(LogTemp, Log,
 		TEXT("INSTANCE(%d): StartGameAction invoked."),
 		targetWorldState->PerspectivePlayerId);
-	IsGameStarted = true;
+	targetWorldState->WorldSimulationState = EUDWorldSimulationState::PLAYING;
 }
 
 void UUDStartGameAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
@@ -65,7 +71,33 @@ void UUDStartGameAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldSt
 	UE_LOG(LogTemp, Log,
 		TEXT("INSTANCE(%d): StartGame was reverted."),
 		targetWorldState->PerspectivePlayerId);
-	IsGameStarted = false;
+	targetWorldState->WorldSimulationState = EUDWorldSimulationState::INITIALIZING;
+}
+
+#pragma endregion
+
+#pragma region UUDEndGameAction
+
+bool UUDEndGameAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+		targetWorldState->WorldSimulationState == EUDWorldSimulationState::PLAYING;
+}
+
+void UUDEndGameAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d): EndGameAction invoked."),
+		targetWorldState->PerspectivePlayerId);
+	targetWorldState->WorldSimulationState = EUDWorldSimulationState::FINISHING;
+}
+
+void UUDEndGameAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d): EndGame was reverted."),
+		targetWorldState->PerspectivePlayerId);
+	targetWorldState->WorldSimulationState = EUDWorldSimulationState::PLAYING;
 }
 
 #pragma endregion
