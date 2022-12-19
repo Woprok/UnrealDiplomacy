@@ -25,6 +25,11 @@ public:
 	 */
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	int32 Player;
+	/**
+	 * MVVM Field.
+	 */
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool CanEndTurn;
 public:
 	/**
 	 * Sets reference to Model (this tries follow principle MVVM[ActionAdministrator<->ViewModel<->View])
@@ -68,6 +73,7 @@ protected:
 	{
 		SetTurn(turnInfo.Turn);
 		SetPlayer(turnInfo.Player);
+		SetCanEndTurn(isAbleToEndTurn);
 	}
 	UPROPERTY()
 	TObjectPtr<UUDActionAdministrator> ActionModel = nullptr;
@@ -91,6 +97,14 @@ private:
 	/**
 	 * MVVM Binding.
 	 */
+	void SetCanEndTurn(bool newCanEndTurn)
+	{
+		// Set checks if value changed.
+		UE_MVVM_SET_PROPERTY_VALUE(CanEndTurn, newCanEndTurn);
+	}
+	/**
+	 * MVVM Binding.
+	 */
 	int32 GetTurn() const
 	{
 		return Turn;
@@ -101,5 +115,12 @@ private:
 	int32 GetPlayer() const
 	{
 		return Player;
+	}
+	/**
+	 * MVVM Binding.
+	 */
+	bool GetCanEndTurn() const
+	{
+		return CanEndTurn;
 	}
 };
