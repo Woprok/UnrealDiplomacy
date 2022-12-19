@@ -141,18 +141,10 @@ public:
 		return FUDTurnInfo(OverseeingState->CurrentTurn, OverseeingState->CurrentTurnPlayerId);
 	}
 	/**
-	 * Retrieves end turn action, that is used for execution in simulation.
-	 */
-	UFUNCTION(BlueprintCallable)
-	FUDActionData GetEndTurnAction()
-	{
-		return FUDActionData(UUDEndTurnAction::ActionTypeId, OverseeingState->PerspectivePlayerId);
-	}
-	/**
 	 * Returns list of players in PlayerInfo format.
 	 */
 	UFUNCTION(BlueprintCallable)
-	TArray<FUDPlayerInfo> GetPlayerList()
+		TArray<FUDPlayerInfo> GetPlayerList()
 	{
 		TArray<FUDPlayerInfo> infos;
 
@@ -164,6 +156,23 @@ public:
 		}
 
 		return infos;
+	}
+public:
+	/**
+	 * Retrieves start game action, that is used for execution in simulation.
+	 */
+	UFUNCTION(BlueprintCallable)
+	FUDActionData GetStartGameAction()
+	{
+		return FUDActionData(UUDStartGameAction::ActionTypeId, OverseeingState->PerspectivePlayerId);
+	}
+	/**
+	 * Retrieves end turn action, that is used for execution in simulation.
+	 */
+	UFUNCTION(BlueprintCallable)
+	FUDActionData GetEndTurnAction()
+	{
+		return FUDActionData(UUDEndTurnAction::ActionTypeId, OverseeingState->PerspectivePlayerId);
 	}
 protected:
 	UFUNCTION()

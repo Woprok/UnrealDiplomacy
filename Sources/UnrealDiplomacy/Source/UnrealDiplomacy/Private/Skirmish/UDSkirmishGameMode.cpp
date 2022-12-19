@@ -96,20 +96,32 @@ void AUDSkirmishGameMode::AssignToSimulation(TObjectPtr<IUDControllerInterface> 
 	worldSim->CreateStateAndSynchronize(controller->GetControllerUniqueId(), isPlayerOrAi);
 }
 
-void AUDSkirmishGameMode::StartGame()
+void AUDSkirmishGameMode::StartGame(FUDActionData& startAction)
 {
-	// Test map gen action
-	// TODO implement lobby setting passover
+	// TODO implement lobby functionality
+	// TODO really do something about this
+	// Start game requires mapGen to be done before it as everything after it depends on it.
 	FUDActionData mapGen(UUDCreateWorldMapAction::ActionTypeId, 4, FIntPoint(5,5));
 	GetWorldSimulation()->ExecuteAction(mapGen);
 
-	FUDActionData startGame(UUDStartGameAction::ActionTypeId);
-	GetWorldSimulation()->ExecuteAction(startGame);
+	GetWorldSimulation()->ExecuteAction(startAction);
 }
 
 void AUDSkirmishGameMode::ProcessAction(FUDActionData& actionData)
 {
-	GetWorldSimulation()->ExecuteAction(actionData);
+	// Certain action require additional calls
+	// TODO merge this additional calls to action execution.
+	// This would require additional way for creating merged actions or
+	// allowing actions to invoke additional actions.
+	if (actionData.ActionTypeId == UUDStartGameAction::ActionTypeId)
+	{
+		StartGame(actionData);
+	}
+	// Execute action as obtained.
+	else 
+	{
+		GetWorldSimulation()->ExecuteAction(actionData);
+	}
 }
 
 void AUDSkirmishGameMode::ActionExecutionFinished(FUDActionData& actionData)

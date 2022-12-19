@@ -178,16 +178,11 @@ void AUDWorldSimulation::RegisterAction(TScriptInterface<IUDActionInterface> new
 void AUDWorldSimulation::LoadCoreActions()
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering Actions."));
-	LogAction = NewObject<UUDLogAction>(this);
-	RegisterAction(LogAction);
-	//AddPlayerAction = NewObject<UUDAddPlayerAction>(this);
-	//RegisterAction(AddPlayerAction);
-	StartGameAction = NewObject<UUDStartGameAction>(this);
-	RegisterAction(StartGameAction);
-	EndTurnAction = NewObject<UUDEndTurnAction>(this);
-	RegisterAction(EndTurnAction);
+	RegisterAction(NewObject<UUDLogAction>(this));
 	RegisterAction(NewObject<UUDAddPlayerAction>(this));
-	
+	RegisterAction(NewObject<UUDStartGameAction>(this));
+	RegisterAction(NewObject<UUDEndGameAction>(this));
+	RegisterAction(NewObject<UUDEndTurnAction>(this));
 	// Gaia 100+
 	RegisterAction(NewObject<UUDGenerateIncomeAction>(this));
 	// Player 1000+

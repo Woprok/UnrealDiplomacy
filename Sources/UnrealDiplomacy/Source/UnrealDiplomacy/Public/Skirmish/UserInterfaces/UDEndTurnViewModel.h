@@ -20,17 +20,17 @@ public:
 	 * MVVM Field.
 	 */
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	int32 Turn;
+	int32 Turn = -1;
 	/**
 	 * MVVM Field.
 	 */
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	int32 Player;
+	int32 Player = -1;
 	/**
 	 * MVVM Field.
 	 */
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	bool CanEndTurn;
+	bool CanEndTurn = false;
 public:
 	virtual void OnUpdate() override
 	{

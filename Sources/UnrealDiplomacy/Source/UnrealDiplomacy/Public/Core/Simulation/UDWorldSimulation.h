@@ -168,13 +168,4 @@ private:
 	 */
 	UPROPERTY()
 	int32 AssignableActionId = 0;
-public:
-	UPROPERTY()
-	TObjectPtr<UUDLogAction> LogAction = nullptr;
-	UPROPERTY()
-	TObjectPtr<UUDAddPlayerAction> AddPlayerAction = nullptr;
-	UPROPERTY()
-	TObjectPtr<UUDStartGameAction> StartGameAction = nullptr;
-	UPROPERTY()
-	TObjectPtr<UUDEndTurnAction> EndTurnAction = nullptr;
 };

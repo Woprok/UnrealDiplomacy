@@ -24,14 +24,6 @@ void AUDDevelopmentGameMode::Tick(float DeltaTime)
 	{
 		UE_LOG(LogTemp, Log, TEXT("AUDDevelopmentGameMode: Tick detected invalid world."));
 	}
-	if (IsValid(sim->LogAction))
-	{
-		UE_LOG(LogTemp, Log, TEXT("AUDDevelopmentGameMode: Tick detected valid action."));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Log, TEXT("AUDDevelopmentGameMode: Tick detected invalid action."));
-	}
 	//if (!GetWorldSimulation().IsValid())
 	//{
 	//	UE_LOG(LogTemp, Log, TEXT("AUDDevelopmentGameMode: Tick detected invalid world."));

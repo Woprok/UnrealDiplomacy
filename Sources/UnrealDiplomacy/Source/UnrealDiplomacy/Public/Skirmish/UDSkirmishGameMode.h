@@ -33,7 +33,7 @@ public:
 	 * Required to be called as last thing during game setup.
 	 * This will invoke UUDStartGameAction that handles pre-first turn play.
 	 */
-	virtual void StartGame();
+	virtual void StartGame(FUDActionData& actionData);
 	/**
 	 * Gathers and sends back requested historic data to specified controller.
 	 * Parameters:
