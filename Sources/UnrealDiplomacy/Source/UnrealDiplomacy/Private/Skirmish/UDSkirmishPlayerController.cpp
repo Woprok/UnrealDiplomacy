@@ -59,8 +59,15 @@ void AUDSkirmishPlayerController::FinishSynchronization(FUDActionArray& actionAr
 	TemporaryActionHolder.Reset(0);
 	// This is required and done only here as it requires valid state to exists.
 	InitializeAdministrator();
+	InitializeGrid();
 	// Call event that is used by UI&World elements.
 	OnSynchronizationFinished();
+}
+
+void AUDSkirmishPlayerController::InitializeGrid()
+{
+	SquareGrid = GetWorld()->SpawnActor<AUDSquareGrid>(GridBlueprintClass, FVector(0, 0, 0), FRotator::ZeroRotator);
+	SquareGrid->SetAuthority(GetPersonalAdministrator());
 }
 
 void AUDSkirmishPlayerController::OnUserActionRequested(FUDActionData requestedAction)

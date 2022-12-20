@@ -121,6 +121,14 @@ public:
 		return false;
 	}
 	/**
+	 * Validates if the state has map generated and ready to use.
+	 */
+	UFUNCTION(BlueprintCallable)
+	bool IsMapStateReady()
+	{
+		return IsValid(OverseeingState->Map) && OverseeingState->Map->Tiles.Num() > 0;
+	}
+	/**
 	 * Validate if the owning player can end turn.
 	 */
 	UFUNCTION(BlueprintCallable)
@@ -173,6 +181,10 @@ public:
 	FUDActionData GetEndTurnAction()
 	{
 		return FUDActionData(UUDEndTurnAction::ActionTypeId, OverseeingState->PerspectivePlayerId);
+	}
+	TObjectPtr<UUDMapState> GetMapState()
+	{
+		return OverseeingState->Map;
 	}
 protected:
 	UFUNCTION()

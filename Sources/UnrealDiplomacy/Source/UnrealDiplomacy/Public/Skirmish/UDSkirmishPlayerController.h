@@ -8,6 +8,7 @@
 #include "Core/Simulation/UDWorldState.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDActionAdministrator.h"
+#include "Core/Tiles/UDSquareGrid.h"
 #include "UDSkirmishGameState.h"
 #include "Core/Simulation/UDWorldSimulation.h"
 #include "UDSkirmishPlayerController.generated.h"
@@ -158,6 +159,10 @@ protected:
 	 * Process all data received...
 	 */
 	void FinishSynchronization(FUDActionArray& actionArray);
+	/**
+	 * Creates instance and setups all relevant links to players controller.
+	 */
+	void InitializeGrid();
 private:
 	UPROPERTY(ReplicatedUsing = OnRep_SetUniqueControllerId)
 	int32 UniqueControllerId;
@@ -197,4 +202,15 @@ private:
 	 */
 	UPROPERTY()
 	TObjectPtr<UUDActionAdministrator> InternalPersonalAdministrator = nullptr;
+protected:
+	/**
+	 * World representation.
+	 */
+	UPROPERTY(BlueprintReadOnly)
+	TWeakObjectPtr<AUDSquareGrid> SquareGrid = nullptr;
+	/**
+	 * Grid blueprint used by this controller.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SkirmishController|Config")
+	TSubclassOf<AUDSquareGrid> GridBlueprintClass;
 };
