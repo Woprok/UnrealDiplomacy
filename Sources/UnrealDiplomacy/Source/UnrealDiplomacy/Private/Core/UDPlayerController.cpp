@@ -6,5 +6,9 @@ void AUDPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	// Overrides default input mode to be Game & UI allowing player to use cursor & navigate the world.
-	AUDPlayerController::SetInputMode(FInputModeGameAndUI());
+	FInputModeGameAndUI inputMode = FInputModeGameAndUI();
+	inputMode.SetHideCursorDuringCapture(false);
+	inputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+	AUDPlayerController::SetInputMode(inputMode);
+	SetShowMouseCursor(true);
 }
