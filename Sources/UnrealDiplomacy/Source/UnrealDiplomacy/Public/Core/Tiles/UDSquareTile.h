@@ -53,7 +53,7 @@ public:
 	/**
 	 * Retrieves position of this tile inside of the grid.
 	 */
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	FIntPoint GetTilePosition()
 	{
 		return TilePosition;

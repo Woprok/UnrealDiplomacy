@@ -101,6 +101,8 @@ void AUDSkirmishGameMode::StartGame(FUDActionData& startAction)
 	// TODO implement lobby functionality
 	// TODO really do something about this
 	// Start game requires mapGen to be done before it as everything after it depends on it.
+	CreateAiPlayers(2);
+
 	FUDActionData mapGen(UUDCreateWorldMapAction::ActionTypeId, 4, FIntPoint(5,5));
 	GetWorldSimulation()->ExecuteAction(mapGen);
 

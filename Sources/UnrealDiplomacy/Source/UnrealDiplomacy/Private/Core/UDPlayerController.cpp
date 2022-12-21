@@ -2,6 +2,11 @@
 
 #include "Core/UDPlayerController.h"
 
+AUDPlayerController::AUDPlayerController()
+{
+	bEnableClickEvents = true;
+}
+
 void AUDPlayerController::BeginPlay()
 {
 	Super::BeginPlay();

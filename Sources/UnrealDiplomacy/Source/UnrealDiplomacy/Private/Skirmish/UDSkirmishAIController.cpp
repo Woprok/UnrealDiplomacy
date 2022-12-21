@@ -39,6 +39,14 @@ void AUDSkirmishAIController::OnActionExecuted(FUDActionData executedAction)
 
 void AUDSkirmishAIController::DoTurn()
 {
+	if (GetPersonalAdministrator()->IsMapStateReady())
+	{
+		FIntPoint tile = GetPersonalAdministrator()->GetFirstNeutralTile();
+		if (tile != FIntPoint(-1, -1))
+		{
+			OnActionDecidedDelegate.ExecuteIfBound(GetPersonalAdministrator()->GetTakeTileAction(tile));
+		}
+	}
 	// Finish this by executing end turn action, thus giving up control.
 	OnActionDecidedDelegate.ExecuteIfBound(GetPersonalAdministrator()->GetEndTurnAction());
 

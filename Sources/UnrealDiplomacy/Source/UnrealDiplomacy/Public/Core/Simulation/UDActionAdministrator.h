@@ -33,6 +33,19 @@ public:
 	FText Name = FText::GetEmpty();
 };
 
+USTRUCT(BlueprintType)
+struct FUDTileInfo
+{
+	GENERATED_BODY()
+public:
+	FUDTileInfo() {}
+	FUDTileInfo(int32 owner, FIntPoint position) : Owner(owner), Position(position) {}
+	UPROPERTY(BlueprintReadOnly)
+	int32 Owner = 0;
+	UPROPERTY(BlueprintReadOnly)
+	FIntPoint Position = FIntPoint(-1,-1);
+};
+
 // GetAvailableActions(NONE|TILE|PLAYER)
 // FUDAtionTemplate
 // - ActionId
@@ -152,7 +165,7 @@ public:
 	 * Returns list of players in PlayerInfo format.
 	 */
 	UFUNCTION(BlueprintCallable)
-		TArray<FUDPlayerInfo> GetPlayerList()
+	TArray<FUDPlayerInfo> GetPlayerList()
 	{
 		TArray<FUDPlayerInfo> infos;
 
@@ -164,6 +177,36 @@ public:
 		}
 
 		return infos;
+	}
+	/**
+	 * Returns TileInfo.
+	 */
+	UFUNCTION(BlueprintCallable)
+	FUDTileInfo GetCurrentTileState(FIntPoint position)
+	{
+		auto tile = OverseeingState->Map->GetTile(position);
+		return FUDTileInfo(tile->OwnerUniqueId, position);
+	}
+	/**
+	 * Returns true if it's owned by world.
+	 */
+	UFUNCTION(BlueprintCallable)
+	bool CanTakeTile(FIntPoint position)
+	{
+		auto tile = OverseeingState->Map->GetTile(position);
+		return tile->OwnerUniqueId == UUDWorldState::GaiaWorldStateId;
+	}
+	UFUNCTION(BlueprintCallable)
+	FIntPoint GetFirstNeutralTile()
+	{
+		for (auto tile : OverseeingState->Map->Tiles)
+		{
+			if (tile->OwnerUniqueId == UUDWorldState::GaiaWorldStateId)
+			{
+				return tile->Position;
+			}
+		}
+		return FIntPoint(-1, -1);
 	}
 public:
 	/**
@@ -181,6 +224,14 @@ public:
 	FUDActionData GetEndTurnAction()
 	{
 		return FUDActionData(UUDEndTurnAction::ActionTypeId, OverseeingState->PerspectivePlayerId);
+	}
+	/**
+	 * Retrieves take tile action, that is used for execution in simulation.
+	 */
+	UFUNCTION(BlueprintCallable)
+	FUDActionData GetTakeTileAction(FIntPoint position)
+	{
+		return FUDActionData(UUDTakeTileAction::ActionTypeId, OverseeingState->PerspectivePlayerId, 0, position);
 	}
 	TObjectPtr<UUDMapState> GetMapState()
 	{
