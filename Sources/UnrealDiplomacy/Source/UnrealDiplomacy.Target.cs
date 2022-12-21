@@ -9,6 +9,7 @@ public class UnrealDiplomacyTarget : TargetRules
 	{
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.AddRange( new string[] { "UnrealDiplomacy" } );
+        IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_1;
+        ExtraModuleNames.AddRange( new string[] { "UnrealDiplomacy" } );
 	}
 }

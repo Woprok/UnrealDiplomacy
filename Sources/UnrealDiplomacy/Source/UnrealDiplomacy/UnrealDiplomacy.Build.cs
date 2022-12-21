@@ -12,13 +12,17 @@ public class UnrealDiplomacy : ModuleRules
             new string[]
             {
                 "Core", "CoreUObject", "Engine", "InputCore",
-				"ModularGameplay", "ModularGameplayActors"
+				"ModularGameplay", "ModularGameplayActors", 
+				"ModelViewViewModel"
             });
 
 		PrivateDependencyModuleNames.AddRange(
             new string[]
             {
-
+                "NetCore",
+                "SlateCore",
+                "Slate",
+                "UMG",
             });
 
 		// Uncomment if you are using Slate UI
