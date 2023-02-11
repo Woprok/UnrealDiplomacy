@@ -124,12 +124,12 @@ public:
 	 * Unique id assigned to the owner.
 	 */
 	UPROPERTY()
-		int32 PlayerUniqueId;
+	int32 PlayerUniqueId;
 	/**
 	 *
 	 */
 	UPROPERTY()
-		int32 ResourceGold = 0;
+	int32 ResourceGold = 0;
 };
 
 /**

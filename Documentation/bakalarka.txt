@@ -1,0 +1,122 @@
+- X size of Action Deck, that each player has
+-> provides unique option for each player
+--> additional layer of strategy
+--> allows shorter games as player options are more limited
+--> allows more interesting mechanics that you might or might not play with
+---> e.g. tech actions, magic actions, dimension actions, etc...
+-> limites player ability to play tradition 4X, but do we want it to be like that ?
+-> is it good for diplomacy ? is pressure of limited turns and actions available going to force more
+pacifistic approach or will war actions overshadow talk & spy action ?
+
+Goals:
+-> Players needs to be incentivized to play both War & Diplo path (or any other, creating archetypes for play)
+-> War path is straightforward map painting game, but is dangerous as diplo trivially counters it.
+-> Diplo path is more complex strategy that needs to do various things to gain advantage.
+-> Spy path si about sabotaging everything your opponents do, creating confusion at the final reveal ?
+-> Economic path is optimization strategy, thus requires access to multiple actions and thus utilize diplo.
+-> Tech & other paths are about creating combos ?
+
+As a result we have rock-paper-scissor way of playing the game, that is easy to understand:
+Spy > Diplo > War > Spy
+(Explenation: Spy makes diplomacy unreliable, Diplomacy prevents war action to be beneficial, War liquidates lies)
+Economic, Technology, Cultural, Magic etc. are interferences into base formula.
+Allowing alternative ways to achieve goal and victory points.
+
+Various ways of play, each playstyle is valid: Warmonger, Jew/Magnate, Peacemaker, Techsupremacy, Magicsupremacy, Mixed...
+
+Bad things:
+-> limites players
+-> creates meta strategies
+-> requires lot of actions etc... to work well
+-> can reduce complexity, but also increase it
+-> makes game more competetive oriented, thus MP focused
+-> reduces city building element to a certain degree
+-> is something that can't be continued to called 4X game / standard turn based strategy
+-> snap mechanic as rising stakes, might not work well ? kinda requires motivation to be there
+if player is confident in winning or being in upper half of rank to get bonus, others might retreat to often ?
+(joke on that, snap players are bad at it, DENIED as valid argument)
+
+Actions:
+-> Trade
+-> Ally
+-> Border Access
+-> Rival
+-> Exploit (for each resource?)
+-> Many more actions that are specific for tile/circumstance
+-> Actions that affect Sea/Mountains/Underground/Land/Sky only ?
+... expected count 30+
+
+GAME-LOOP:
+1. Players select Action Deck Size (6 - all)
+-> Deck Size defines length of the game (turn count)
+-> Deck Size defines amount of available actions per turn
+-> Deck Size defines maximum map size (technically, it's limited by available actions per turn)
+2. Players select/create their own Action Deck
+3. Game is being prepared before the play:
+-> Map is generated
+-> AI & Players Capitals are placed on the map
+-> AI is full player (based on decks we can limit them)
+4. Game Starts
+-> Based on join order, each player gets assigned turn priority
+-> Turn priority can be recalculated based on current score lead
+
+ACTION DECKS:
+-> Contains few ACTIONS. (Determined by the MAP & PLAYER COUNT or GAME MODE/FORMAT)
+-> ACTIONS are either GENERIC, LAND, WATER, UNDERGROUND, SKY based.
+-> GENERIC ACTIONS are core of the DECK.
+-> LAND, WATER, UNDERGROUND, SKY are SPECIAL ACTIONS, that are enabled based on MAP.
+-> SPECIAL ACTIONS are not counting toward the count, they are just single/lobby-set slot count.
+
+ACTIONS RESOLUTION:
+-> PLAYERS choose their ACTIONS.
+-> BASED on TURN PRIORITY all ACTIONS are resolved.
+-> CONFLICTING ACTIONS are either resolved in TURN PRIORITY order or NEGATE each other.
+
+TURN PRIORITY RESOLUTION:
+-> INITIALLY based on JOIN ORDER of PLAYERS.
+-> PLAYERS that used STAKES are moved to front, in order of the STAKES call.
+-> PLAYERS can be reordered based on used ACTIONS or CURRENT VICTORY APPROACH STATE.
+
+VICTORY & LOSS:
+-> Only one NATION can win.
+-> NATION can be composed of multiple PLAYERS.
+-> NATION can't be composed of more then half of all PLAYERS in the LOBBY (EXPECTS 8, so 4 is MAX)
+--> Technically it could be, but the STAKES MECHANIC will not work, it would have to resolve to give only base amount points.
+
+RANK SYSTEM & POINTS: (#just_copy_the_snap)
+-> PLAYERS receives 2 POINTS for VICTORY and loses 2 point on LOSS.
+-> PLAYERS loses 2 POINTS on RETREAT.
+-> STAKES doubles the POINTS investment for all participating PLAYERS, starting next TURN.
+
+STAKES MECHANIC:
+-> PLAYERS can raise STAKES and declare himself candidate for VICTORY.
+-> STAKES increase the amount of RANK POINTS won or loss at the end of the game.
+-> REQUIRES MMR and MULTIPLAYER. Irrelevant for unreleased game, but can be interesting as PROOF OF CONCEPT.
+-> ADVANTAGES:
+--> Can be used for a BLUFF.
+--> Makes each game matter more and loosing doesn't feel so bad.
+--> It's possible for half of PLAYERS to win, thus encourages more cooperative approach.
+-> DISADVANTAGES:
+--> Copy of other game mechanic, might not work well in the end...
+
+GAME-STORY:
+-> It happened at the new year eve all around the world. Mysterious entity appeared in the sky's and claimed
+that it will end all but one nation in the world, the one that he would deem worthy of living on. Thus he gave all
+rulers one year to prove their nation worth. Can you use remaining resources and wits available to you and become
+the one who will prevail in this situation ? Will you try to find another way to survive ? How low are you willing to
+go to be the last standing ?
+
+VICTORY CONDITIONS:
+-> PLAYERS can choose different paths to get VICTORY.
+-> STANDARD VICTORY is to be most worthy NATION at the end of the GAME.
+-> Or fullfil any other VICTORY CONDITIONS.
+--> DOMINATION VICTORY by controlling more then HALF/TWO-THIRDS of the MAP.
+--> DIPLOMATIC VICTORY by forming most powerful ALLIANCE.
+--> ESPIONAGE VICTORY by completely controlling flow of INFORMATIONS in the WORLD and knowing the complete TRUTH.
+
+WAYS OF PLAY:
+-> WARFARE is classic straightforward military/domination.
+-> ESPIONAGE is sneaky way of play using all tricks in the book. Obscuring the real truth.
+-> DIPLOMATIC is way of persuading other PLAYERS to slowly get advantage over them.
+-> GENERALIST is approach by combining everything in less focused way.
+-> SPECIALIST is enabled by using special mechanics, like TECHNOLOGY, CULTURE, MAGIC...

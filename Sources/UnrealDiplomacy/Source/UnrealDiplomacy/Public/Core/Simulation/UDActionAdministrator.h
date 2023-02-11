@@ -162,6 +162,14 @@ public:
 		return FUDTurnInfo(OverseeingState->CurrentTurn, OverseeingState->CurrentTurnPlayerId);
 	}
 	/**
+	 * Retrieves current gold resource ? TODO this should be converted to generic call for any resource (if we have more then one).
+	 */
+	UFUNCTION(BlueprintCallable)
+	int32 GetCurrentResourceGold()
+	{
+		return OverseeingState->Players[OverseeingState->PerspectivePlayerId]->ResourceGold;
+	}
+	/**
 	 * Returns list of players in PlayerInfo format.
 	 */
 	UFUNCTION(BlueprintCallable)
