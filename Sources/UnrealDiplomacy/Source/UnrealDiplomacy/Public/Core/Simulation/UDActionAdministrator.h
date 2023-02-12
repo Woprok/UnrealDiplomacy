@@ -218,6 +218,14 @@ public:
 	}
 public:
 	/**
+	 * Retrieves generate income action, that is used by Gaia to grant some resources to players.
+	 */
+	UFUNCTION(BlueprintCallable)
+	FUDActionData GetGenerateIncomeAction()
+	{
+		return FUDActionData(UUDGenerateIncomeAction::ActionTypeId, OverseeingState->PerspectivePlayerId);
+	}
+	/**
 	 * Retrieves start game action, that is used for execution in simulation.
 	 */
 	UFUNCTION(BlueprintCallable)

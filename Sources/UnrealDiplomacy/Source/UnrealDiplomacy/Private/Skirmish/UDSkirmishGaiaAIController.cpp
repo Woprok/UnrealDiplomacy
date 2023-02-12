@@ -40,6 +40,8 @@ void AUDSkirmishGaiaAIController::OnActionExecuted(FUDActionData executedAction)
 
 void AUDSkirmishGaiaAIController::DoTurn()
 {
+	OnActionDecidedDelegate.ExecuteIfBound(GetPersonalAdministrator()->GetGenerateIncomeAction());
+
 	// Finish this by executing end turn action, thus giving up control.
 	OnActionDecidedDelegate.ExecuteIfBound(GetPersonalAdministrator()->GetEndTurnAction());
 
