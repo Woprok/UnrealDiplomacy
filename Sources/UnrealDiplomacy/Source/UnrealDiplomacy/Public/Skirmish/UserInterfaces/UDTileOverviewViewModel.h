@@ -8,7 +8,7 @@
 #include "UDTileOverviewViewModel.generated.h"
 
 /**
- * Tile Overview/Managment widget
+ * Tile Overview/Management widget
  */
 UCLASS(BlueprintType, Blueprintable)
 class UNREALDIPLOMACY_API UUDTileOverviewViewModel : public UUDViewModelBase

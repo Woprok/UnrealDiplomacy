@@ -26,11 +26,24 @@ struct FUDPlayerInfo
 	GENERATED_BODY()
 public:
 	FUDPlayerInfo() {}
-	FUDPlayerInfo(int32 Id) : Id(Id) { }
+	FUDPlayerInfo(int32 id) : Id(id) { }
 	UPROPERTY(BlueprintReadOnly)
 	int32 Id = 0;
 	UPROPERTY(BlueprintReadOnly)
 	FText Name = FText::GetEmpty();
+};
+
+USTRUCT(BlueprintType)
+struct FUDNationInfo
+{
+	GENERATED_BODY()
+public:
+	FUDNationInfo() {}
+	FUDNationInfo(int32 id, int32 gold) : Id(id), Gold(gold) {}
+	UPROPERTY(BlueprintReadOnly)
+	int32 Id = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 Gold = 0;
 };
 
 USTRUCT(BlueprintType)
@@ -77,6 +90,8 @@ UCLASS(Blueprintable)
 class UNREALDIPLOMACY_API UUDActionAdministrator : public UObject
 {
 	GENERATED_BODY()
+private:
+	FUDNationInfo FUDNationInfo_INVALID = FUDNationInfo(-1, -1);
 public:
 	/**
 	 * Delegate that is binded by player controller.
@@ -160,6 +175,24 @@ public:
 	FUDTurnInfo GetCurrentTurnState()
 	{
 		return FUDTurnInfo(OverseeingState->CurrentTurn, OverseeingState->CurrentTurnPlayerId);
+	}
+	/**
+	 * Checks if supplied Id belongs to valid nation.
+	 */
+	UFUNCTION(BlueprintCallable)
+	bool IsValidNation(int32 nationId)
+	{
+		return OverseeingState->Players.Contains(nationId);
+	}
+	/**
+	 * Returns NationInfo.
+	 */
+	UFUNCTION(BlueprintCallable)
+	FUDNationInfo GetCurrentNationState(int32 nationId)
+	{
+		if (IsValidNation(nationId))
+			return FUDNationInfo(nationId, OverseeingState->Players[nationId]->ResourceGold);
+		return FUDNationInfo_INVALID;
 	}
 	/**
 	 * Retrieves current gold resource ? TODO this should be converted to generic call for any resource (if we have more then one).
