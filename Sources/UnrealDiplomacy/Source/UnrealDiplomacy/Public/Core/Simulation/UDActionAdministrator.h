@@ -237,6 +237,16 @@ public:
 		auto tile = OverseeingState->Map->GetTile(position);
 		return tile->OwnerUniqueId == UUDWorldState::GaiaWorldStateId;
 	}
+	/**
+	 * Returns true if amount is at least 1 and remains is equal or larger then 0.
+	 */
+	UFUNCTION(BlueprintCallable)
+	bool CanGiveGold(int32 targetId, int32 goldAmount)
+	{
+		return targetId != OverseeingState->PerspectivePlayerId 
+			&& goldAmount > 0 
+			&& OverseeingState->Players[OverseeingState->PerspectivePlayerId]->ResourceGold - goldAmount >= 0;
+	}
 	UFUNCTION(BlueprintCallable)
 	FIntPoint GetFirstNeutralTile()
 	{
@@ -250,6 +260,11 @@ public:
 		return FIntPoint(-1, -1);
 	}
 public:
+	UFUNCTION(BlueprintCallable)
+	FUDActionData GetUnconditionalGiftGoldAction(int32 targetId, int32 amount)
+	{
+		return FUDActionData(UUDUnconditionalGiftAction::ActionTypeId, OverseeingState->PerspectivePlayerId, targetId, amount);
+	}
 	/**
 	 * Retrieves generate income action, that is used by Gaia to grant some resources to players.
 	 */

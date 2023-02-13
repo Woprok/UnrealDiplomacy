@@ -25,6 +25,16 @@ public:
 	 */
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	int32 Gold = -1;
+	/**
+	 * MVVM Field.
+	 */
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	int32 GoldAmount = 50;
+	/**
+	 * MVVM Field.
+	 */
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool CanGiveGold = false;
 public:
 	virtual void OnUpdate() override
 	{
@@ -32,6 +42,8 @@ public:
 		{
 			// This is visible during the game and shows current info
 			UpdateNation(ActionModel->GetCurrentNationState(NationId));
+			// TODO gold amount scale based on user input
+			UpdateGiveGold(ActionModel->CanGiveGold(NationId, GoldAmount));
 		}
 		else
 		{
@@ -44,12 +56,24 @@ public:
 		SetNationId(newNationId);
 		OnUpdate();
 	}
+	/**
+	 * Called by button.
+	 */
+	UFUNCTION(BlueprintCallable)
+	void GiveGold()
+	{
+		ActionModel->RequestAction(ActionModel->GetUnconditionalGiftGoldAction(NationId, GoldAmount));
+	}
 protected:
 	void UpdateNation(FUDNationInfo info)
 	{
 		SetNationId(info.Id);
 		//SetCanTakeTile(isOwnedByWorld);
 		SetGold(info.Gold);
+	}
+	void UpdateGiveGold(bool canGive)
+	{
+		SetCanGiveGold(canGive);
 	}
 private:
 	/**
@@ -71,6 +95,22 @@ private:
 	/**
 	 * MVVM Binding.
 	 */
+	void SetGoldAmount(int32 newGoldAmount)
+	{
+		// Set checks if value changed.
+		UE_MVVM_SET_PROPERTY_VALUE(GoldAmount, newGoldAmount);
+	}
+	/**
+	 * MVVM Binding.
+	 */
+	void SetCanGiveGold(bool newCanGiveGold)
+	{
+		// Set checks if value changed.
+		UE_MVVM_SET_PROPERTY_VALUE(CanGiveGold, newCanGiveGold);
+	}
+	/**
+	 * MVVM Binding.
+	 */
 	int32 GetNationId() const
 	{
 		return NationId;
@@ -81,5 +121,19 @@ private:
 	int32 GetGold() const
 	{
 		return Gold;
+	}
+	/**
+	 * MVVM Binding.
+	 */
+	int32 GetGoldAmount() const
+	{
+		return GoldAmount;
+	}
+	/**
+	 * MVVM Binding.
+	 */
+	bool GetCanGiveGold() const
+	{
+		return CanGiveGold;
 	}
 };
