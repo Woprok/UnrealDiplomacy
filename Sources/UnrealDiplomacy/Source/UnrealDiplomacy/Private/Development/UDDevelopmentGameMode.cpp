@@ -49,12 +49,7 @@ void AUDDevelopmentGameMode::PlayTest()
 	// From perspective of human player as AI is partially automized.
 	//FUDActionData endTurnP1(UUDEndTurnAction::ActionTypeId, 1);
 	//GetCastGameState()->OnServerSendAction(endTurnP1);
-	//FUDActionData unconditionalGiftFrom1To2(UUDUnconditionalGiftAction::ActionTypeId, 1, 2, 69);
-	//GetCastGameState()->OnServerSendAction(unconditionalGiftFrom1To2);
 	//GetWorldSimulation()->RevertAction();
-	//
-	//FUDActionData conditionalGiftFrom1To2(UUDGiftAction::ActionTypeId, 1, 2, 42);
-	//GetCastGameState()->OnServerSendAction(conditionalGiftFrom1To2);
 	//
 	//FIntPoint tile(1, 1);
 	//FUDActionData takeTile(UUDTakeTileAction::ActionTypeId, 1, 0, tile);

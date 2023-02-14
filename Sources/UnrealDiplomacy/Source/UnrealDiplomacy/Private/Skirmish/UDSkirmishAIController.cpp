@@ -47,6 +47,12 @@ void AUDSkirmishAIController::DoTurn()
 			OnActionDecidedDelegate.ExecuteIfBound(GetPersonalAdministrator()->GetTakeTileAction(tile));
 		}
 	}
+
+	if (GetPersonalAdministrator()->GetCurrentResourceGold() > 100)
+	{
+		OnActionDecidedDelegate.ExecuteIfBound(GetPersonalAdministrator()->GetConditionalGiftGoldAction(1, 69));
+	}
+
 	// Finish this by executing end turn action, thus giving up control.
 	OnActionDecidedDelegate.ExecuteIfBound(GetPersonalAdministrator()->GetEndTurnAction());
 

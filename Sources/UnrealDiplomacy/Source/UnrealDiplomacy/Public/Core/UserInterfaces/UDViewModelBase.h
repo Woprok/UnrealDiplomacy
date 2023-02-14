@@ -5,7 +5,31 @@
 #include "CoreMinimal.h"
 #include "MVVMViewModelBase.h"
 #include "Core/Simulation/UDActionAdministrator.h"
+
+#include "Components/SlateWrapperTypes.h"
+
 #include "UDViewModelBase.generated.h"
+
+UCLASS(meta = (BlueprintThreadSafe, ScriptName = "ConvertorsLibrary"))
+class UNREALDIPLOMACY_API UUDViewConvertors : public UBlueprintFunctionLibrary
+{
+	GENERATED_BODY()
+public:
+	UFUNCTION(BlueprintPure, meta = (DisplayName = "Is True > 0 (Integer)", CompactNodeTitle = ">0", BlueprintAutocast), Category = "Convertors|Views")
+	static bool Conv_CheckLargerThan0ToBool(int32 InInteger)
+	{
+		return InInteger > 0;
+	}
+	UFUNCTION(BlueprintPure, meta = (DisplayName = "Is Visible > 0 (Integer)", CompactNodeTitle = ">0", BlueprintAutocast), Category = "Convertors|Views")
+	static ESlateVisibility Conv_CheckLargerThan0ToVisibility(int32 InInteger)
+	{
+		if (InInteger > 0)
+		{
+			return ESlateVisibility::Visible;
+		}
+		return ESlateVisibility::Collapsed;
+	}
+};
 
 /**
  * TODO check if someone found or implemented function binding to events

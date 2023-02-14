@@ -259,7 +259,43 @@ public:
 		}
 		return FIntPoint(-1, -1);
 	}
+
+	/**
+	 * Return list of all currently pending requests that require confirmation...
+	 */
+	UFUNCTION(BlueprintCallable)
+	TArray<FUDActionData> GetPendingRequests()
+	{
+		return OverseeingState->Players[OverseeingState->PerspectivePlayerId]->PendingRequests;
+	}
 public:
+	/**
+	 * Send amount of gold to other player, other player must accept.
+	 */
+	UFUNCTION(BlueprintCallable)
+	FUDActionData GetConditionalGiftGoldAction(int32 targetId, int32 amount)
+	{
+		return FUDActionData(UUDGiftAction::ActionTypeId, OverseeingState->PerspectivePlayerId, targetId, amount);
+	}
+	/**
+	 * Accept amount of gold from other player.
+	 */
+	UFUNCTION(BlueprintCallable)
+	FUDActionData GetConfirmConditionalGiftGoldAction(FUDActionData sourceAction)
+	{
+		return FUDActionData(sourceAction, UUDConfirmGiftAction::ActionTypeId);
+	}
+	/**
+	 * Reject amount of gold to other player.
+	 */
+	UFUNCTION(BlueprintCallable)
+	FUDActionData GetRejectConditionalGiftGoldAction(FUDActionData sourceAction)
+	{
+		return FUDActionData(sourceAction, UUDRejectGiftAction::ActionTypeId);
+	}
+	/**
+	 * Send amount of gold to other player.
+	 */
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetUnconditionalGiftGoldAction(int32 targetId, int32 amount)
 	{
