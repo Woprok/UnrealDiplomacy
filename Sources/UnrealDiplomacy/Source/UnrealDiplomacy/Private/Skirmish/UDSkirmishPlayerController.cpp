@@ -2,6 +2,7 @@
 
 
 #include "Skirmish/UDSkirmishPlayerController.h"
+#include "Net/UnrealNetwork.h"
 
 void AUDSkirmishPlayerController::OnRep_SetUniqueControllerId(const int32& oldId)
 {
