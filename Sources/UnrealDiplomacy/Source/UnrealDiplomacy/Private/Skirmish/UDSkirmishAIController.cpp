@@ -48,9 +48,20 @@ void AUDSkirmishAIController::DoTurn()
 		}
 	}
 
-	if (GetPersonalAdministrator()->GetCurrentResourceGold() > 100)
+	// Naively give first player gold, TODO remove this or replace with some logic
+	if (GetPersonalAdministrator()->GetCurrentResourceGold() > 100 && gifters.Num() > 0)
 	{
-		OnActionDecidedDelegate.ExecuteIfBound(GetPersonalAdministrator()->GetConditionalGiftGoldAction(1, 69));
+		OnActionDecidedDelegate.ExecuteIfBound(GetPersonalAdministrator()->GetConditionalGiftGoldAction(gifters.Pop(), 69));
+	}
+
+	// Resolve requests
+	for (auto request : GetPersonalAdministrator()->GetPendingRequests())
+	{
+		if (request.ActionTypeId == UUDGiftAction::ActionTypeId)
+		{
+			gifters.Add(request.InvokerPlayerId);
+			OnActionDecidedDelegate.ExecuteIfBound(GetPersonalAdministrator()->GetConfirmConditionalGiftGoldAction(request));
+		}
 	}
 
 	// Finish this by executing end turn action, thus giving up control.

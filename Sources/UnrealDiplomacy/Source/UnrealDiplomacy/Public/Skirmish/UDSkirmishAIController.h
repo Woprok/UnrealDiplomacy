@@ -59,4 +59,5 @@ protected:
 private:
 	void DoTurn();
 	bool IsPlaying = false;
+	TArray<int32> gifters;
 };

@@ -64,6 +64,14 @@ public:
 	{
 		ActionModel->RequestAction(ActionModel->GetUnconditionalGiftGoldAction(NationId, GoldAmount));
 	}
+	/**
+	 * Called by button.
+	 */
+	UFUNCTION(BlueprintCallable)
+	void OfferGold()
+	{
+		ActionModel->RequestAction(ActionModel->GetConditionalGiftGoldAction(NationId, GoldAmount));
+	}
 protected:
 	void UpdateNation(FUDNationInfo info)
 	{
