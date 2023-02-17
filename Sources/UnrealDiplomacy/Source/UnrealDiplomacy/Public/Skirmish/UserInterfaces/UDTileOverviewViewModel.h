@@ -30,6 +30,11 @@ public:
 	 */
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FIntPoint Position = FIntPoint(-1, -1);
+	/**
+	 * MVVM Field.
+	 */
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	int32 Type = 0;
 public:
 	virtual void OnUpdate() override
 	{
@@ -63,6 +68,7 @@ protected:
 		SetOwner(info.Owner);
 		SetCanTakeTile(isOwnedByWorld);
 		SetPosition(info.Position);
+		SetType(info.Type);
 	}
 private:
 	/**
@@ -92,6 +98,14 @@ private:
 	/**
 	 * MVVM Binding.
 	 */
+	void SetType(int32 newType)
+	{
+		// Set checks if value changed.
+		UE_MVVM_SET_PROPERTY_VALUE(Type, newType);
+	}
+	/**
+	 * MVVM Binding.
+	 */
 	int32 GetOwner() const
 	{
 		return Owner;
@@ -109,5 +123,12 @@ private:
 	FIntPoint GetPosition() const
 	{
 		return Position;
+	}
+	/**
+	 * MVVM Binding.
+	 */
+	int32 GetType() const
+	{
+		return Type;
 	}
 };

@@ -51,8 +51,21 @@ protected:
 	 * Access in order of [X][Y]
 	 */
 	UPROPERTY()
-	TArray<TObjectPtr<UUDTileState>> Map;
+		TArray<TObjectPtr<UUDTileState>> Map;
 private:
+	/**
+	 * Retrieves generator for current seed, if seed changed or was not set creates new.
+	 */
+	const FRandomStream& GetRandom()
+	{
+		if (Random.GetInitialSeed() != LastSeed)
+		{
+			Random = FRandomStream(LastSeed);			
+		}
+		return Random;
+	}
+	UPROPERTY()
+	FRandomStream Random;
 	UPROPERTY()
 	int32 LastSeed = 0;
 	UPROPERTY()

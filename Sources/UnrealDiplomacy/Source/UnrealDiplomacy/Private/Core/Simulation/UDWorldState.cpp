@@ -8,6 +8,7 @@ TObjectPtr<UUDTileState> UUDTileState::CreateState(int32 x, int32 y)
 	TObjectPtr<UUDTileState> newState = NewObject<UUDTileState>();
 	newState->Position = FIntPoint(x, y);
 	newState->OwnerUniqueId = UUDWorldState::GaiaWorldStateId;
+	newState->Type = 0;
 	return newState;
 }
 
@@ -16,6 +17,7 @@ TObjectPtr<UUDTileState> UUDTileState::Duplicate(TObjectPtr<UUDTileState> existi
 	TObjectPtr<UUDTileState> newState = NewObject<UUDTileState>();
 	newState->Position = FIntPoint(existingState->Position.X, existingState->Position.Y);
 	newState->OwnerUniqueId = existingState->OwnerUniqueId;
+	newState->Type = existingState->Type;
 	return MoveTempIfPossible(newState);
 }
 

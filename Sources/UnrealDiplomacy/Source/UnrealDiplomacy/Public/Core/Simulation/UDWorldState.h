@@ -37,6 +37,14 @@ public:
 	UPROPERTY()
 	int32 OwnerUniqueId;
 	/**
+	 * Type associated with this tile.
+	 * Used by generator and UI to properly convey information (requires proper tile mapping).
+	 * TODO proper tile mapping, see pseudo implementation in UDSqureGrid.
+	 * Useable by Modifiers etc...
+	 */
+	UPROPERTY()
+	int32 Type;
+	/**
 	 * List of all modifiers applied to this tile.
 	 * This are modifiers that are applied to this tile.
 	 */

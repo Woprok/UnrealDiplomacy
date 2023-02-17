@@ -33,13 +33,24 @@ void UUDWorldGenerator::GenerateProperties(int32 mapSeed)
 	// Remember core value.
 	LastSeed = mapSeed;
 
+	const FRandomStream& current = GetRandom();
 	// Generate specific tiles for each available empty tile.
 	for (int32 x = 0; x < LastSizeOfX; x++)
 	{
 		for (int32 y = 0; y < LastSizeOfY; y++)
 		{
-			// TODO add some code for this...
-			//Map[x][y]->MyPropertyTest = PropertyValueTest;
+			auto next = current.RandRange(1, 100);
+			int32 xy = LastSizeOfX * x + y;
+			if (next >= 1 && next <= 50)
+			{
+				Map[xy]->Type = 69;
+			}
+			else
+			{
+				Map[xy]->Type = 42;
+			}
+			// TODO make this properly choose and generate all types of tiles.
+			// TODO added generator that actually does something properly.
 		}
 	}
 }

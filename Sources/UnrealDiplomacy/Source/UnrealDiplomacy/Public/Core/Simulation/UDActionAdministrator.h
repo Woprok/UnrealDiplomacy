@@ -52,11 +52,13 @@ struct FUDTileInfo
 	GENERATED_BODY()
 public:
 	FUDTileInfo() {}
-	FUDTileInfo(int32 owner, FIntPoint position) : Owner(owner), Position(position) {}
+	FUDTileInfo(int32 owner, FIntPoint position, int32 type) : Owner(owner), Position(position), Type(type) {}
 	UPROPERTY(BlueprintReadOnly)
 	int32 Owner = 0;
 	UPROPERTY(BlueprintReadOnly)
 	FIntPoint Position = FIntPoint(-1,-1);
+	UPROPERTY(BlueprintReadOnly)
+	int32 Type = 0;
 };
 
 // GetAvailableActions(NONE|TILE|PLAYER)
@@ -226,7 +228,7 @@ public:
 	FUDTileInfo GetCurrentTileState(FIntPoint position)
 	{
 		auto tile = OverseeingState->Map->GetTile(position);
-		return FUDTileInfo(tile->OwnerUniqueId, position);
+		return FUDTileInfo(tile->OwnerUniqueId, position, tile->Type);
 	}
 	/**
 	 * Returns true if it's owned by world.

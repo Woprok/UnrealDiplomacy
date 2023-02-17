@@ -57,6 +57,11 @@ public:
 			}
 		}
 	}
+	UFUNCTION(BlueprintCallable)
+	virtual void EmplaceTypeMapping(int32 key, int32 target)
+	{
+		TypeToClassMapping.Emplace(key, target);
+	}
 protected:
 	/**
 	 * Creates map from the map state.
@@ -99,6 +104,13 @@ private:
 	}
 	TSubclassOf<AUDSquareTile> RetrieveTileType(TObjectPtr<UUDTileState> tileClass)
 	{
+		if (TypeToClassMapping.Contains(tileClass->Type))
+		{
+			// Returns value in TileTypes based on index mapping of TypeMapping.
+			auto tmp = TypeToClassMapping[tileClass->Type];
+			return TileTypeClasses[tmp];
+		}
+		// Fallback...
 		return TileType;
 	}
 public:
@@ -110,10 +122,18 @@ public:
 	float TileHorizontalOffset = 100;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SquareGrid|Config")
 	float TileVerticalOffset = 100;
-	//UPROPERTY()
-	//TMap<int32, TSubclassOf<AUDSquareTile>> TileTypes;
+	// TODO added a way to give each tile a different spawn chance, spawn rules etc...
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SquareGrid|Config")
+	TArray<TSubclassOf<AUDSquareTile>> TileTypeClasses;
+	/**
+	 * Fallback type for tiles to use.
+	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SquareGrid|Config")
 	TSubclassOf<AUDSquareTile> TileType;
+	/**
+	 * TODO proper tile mapping feature...
+	 */
+	TMap<int32, int32> TypeToClassMapping;
 private:
 	/**
 	 * Current list of tiles present in the world.

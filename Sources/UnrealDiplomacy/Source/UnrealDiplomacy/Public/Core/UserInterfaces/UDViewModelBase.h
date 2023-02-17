@@ -29,6 +29,20 @@ public:
 		}
 		return ESlateVisibility::Collapsed;
 	}
+	UFUNCTION(BlueprintPure, meta = (BlueprintAutocast), Category = "Convertors|Views")
+	static FText Conv_BiomeTypeToText(int32 InInteger)
+	{
+		if (InInteger == 69)
+		{
+			return FText::FromString("GRASSLAND");
+		}
+		if (InInteger == 42)
+		{
+			return FText::FromString("MOUNTAIN");
+		}
+		return FText::FromString("DEBUG");
+	}
+
 };
 
 /**
