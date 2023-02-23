@@ -270,6 +270,14 @@ public:
 	{
 		return OverseeingState->Players[OverseeingState->PerspectivePlayerId]->PendingRequests;
 	}
+	/**
+	 * Return list of all currently pending requests that require confirmation...
+	 */
+	UFUNCTION(BlueprintCallable)
+	int32 GetPendingRequestsCount()
+	{
+		return OverseeingState->Players[OverseeingState->PerspectivePlayerId]->PendingRequests.Num();
+	}
 public:
 	/**
 	 * Send amount of gold to other player, other player must accept.

@@ -42,7 +42,12 @@ public:
 		}
 		return FText::FromString("DEBUG");
 	}
-
+	// TODO PRECOMPILE FORMAT TEXT
+	UFUNCTION(BlueprintPure, meta = (BlueprintAutocast), Category = "Convertors|Views")
+	static FText Conv_AppendIntegerToText(FString InText, int32 InInteger)
+	{
+		return FText::FromString(FString::Format(TEXT("{0} ({1})"), { InText, InInteger }));
+	}
 };
 
 /**
