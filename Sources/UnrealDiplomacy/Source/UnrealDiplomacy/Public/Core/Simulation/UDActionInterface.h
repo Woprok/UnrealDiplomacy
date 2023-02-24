@@ -375,3 +375,89 @@ protected:
 	UPROPERTY()
 	TWeakObjectPtr<UUDModifierManager> ModifierManager = nullptr;
 };
+
+/**
+ * Deal actions between any amount of players.
+ * Core part of the game. Uses 10000-19999 for all subsequent actions.
+ * Creates new deal.
+ * Player that created the deal is considered a participant immediately.
+ * Deals do not have an owner and are stored as part of world state.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDCreateDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
+	static const int32 ActionTypeId = 10000;
+}; 
+
+/**
+ * Invite player to participate, interaction is required for accepting or rejecting.
+ * Player that was invinted is then considered participant.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDInviteParticipantDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	//virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
+	static const int32 ActionTypeId = 10001;
+};
+
+/**
+ * Accept and become a participant in the deal.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDAcceptParticipationDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	//virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
+	static const int32 ActionTypeId = 10002;
+};
+
+/**
+ * Reject and become unable to become a participant in the deal.
+ * Deal can still affect this player, e.g. being target of other action...
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDRejectParticipationDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	//virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
+	static const int32 ActionTypeId = 10003;
+};
+
+/**
+ * Leave deal and loose participation, same as rejecting, but can be done at any point, if player is fed up with it.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDLeaveParticipationDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	//virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
+	static const int32 ActionTypeId = 10004;
+};

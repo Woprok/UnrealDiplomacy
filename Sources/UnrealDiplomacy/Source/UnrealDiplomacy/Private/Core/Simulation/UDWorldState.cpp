@@ -57,6 +57,13 @@ TObjectPtr<UUDNationState> UUDNationState::CreateState(int32 playerId)
 	return newState;
 }
 
+TObjectPtr<UUDDealState> UUDDealState::CreateState()
+{
+	TObjectPtr<UUDDealState> newState = NewObject<UUDDealState>();
+	newState->DealSimulationState = EUDDealSimulationState::ASSEMBLING;
+	return newState;
+}
+
 TObjectPtr<UUDWorldState> UUDWorldState::CreateState(int32 playerId, bool isPlayerPerspectiveOnly)
 {
 	TObjectPtr<UUDWorldState> newState = NewObject<UUDWorldState>();

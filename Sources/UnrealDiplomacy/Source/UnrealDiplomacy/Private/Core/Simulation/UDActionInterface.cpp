@@ -540,3 +540,163 @@ void UUDGrantExploitTilePermissionAction::Revert(FUDActionData& actionData, TObj
 }
 
 #pragma endregion
+
+#pragma region UUDDealAction
+
+/**
+ * Deal can be created only if all other deals are closed.
+ * This currenly allows only single deal to exists by explicitely checking last.
+ * TODO allow any number of deals to be discussed at the same time ?
+ */
+bool UUDCreateDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	bool canCreate = false;
+	if (targetWorldState->DealHistory.Num() > 0)
+	{
+		EUDDealSimulationState state = targetWorldState->DealHistory.Last()->DealSimulationState;
+		if (state == EUDDealSimulationState::PASSED ||
+			state == EUDDealSimulationState::VETOED ||
+			state == EUDDealSimulationState::FALLEN_APART)
+		{
+			canCreate = true;
+		}
+	}
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) && canCreate;
+}
+
+void UUDCreateDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d): CreateDeal was invoked by playerId(%d)."),
+		targetWorldState->PerspectivePlayerId, actionData.InvokerPlayerId);
+	targetWorldState->DealHistory.Add(UUDDealState::CreateState());
+	targetWorldState->DealHistory.Last()->Participants.Add(actionData.InvokerPlayerId);
+}
+
+void UUDCreateDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d): CreateDeal was reverted by playerId(%d)."),
+		targetWorldState->PerspectivePlayerId, actionData.InvokerPlayerId);
+	// Reversing is trivial as we just need to delete the last deal.
+	targetWorldState->DealHistory.Last()->Participants.Remove(actionData.InvokerPlayerId);
+	targetWorldState->DealHistory.Remove(targetWorldState->DealHistory.Last());
+}
+
+void RemoveInviteParticipantDealAction(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d): (%d) unresolved requests."),
+		targetWorldState->PerspectivePlayerId, targetWorldState->Players[actionData.TargetPlayerId]->PendingRequests.Num());
+
+	// Item is simply removed based on comparison
+	targetWorldState->Players[actionData.TargetPlayerId]->PendingRequests.Remove(actionData);
+
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d): (%d) unresolved requests."),
+		targetWorldState->PerspectivePlayerId, targetWorldState->Players[actionData.TargetPlayerId]->PendingRequests.Num());
+}
+
+void UUDInviteParticipantDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	// Unconfirmed request is added to queue.
+	targetWorldState->Players[actionData.TargetPlayerId]->PendingRequests.Add(actionData);
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d): InviteParticipantDeal was invoked by playerId(%d) to playerId(%d)."),
+		targetWorldState->PerspectivePlayerId, actionData.InvokerPlayerId, actionData.TargetPlayerId);
+}
+
+void UUDInviteParticipantDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d): InviteParticipantDeal was reverted by playerId(%d) to playerId(%d)."),
+		targetWorldState->PerspectivePlayerId, actionData.InvokerPlayerId, actionData.TargetPlayerId);
+
+	// Unconfirmed request is removed from queue.
+	RemoveInviteParticipantDealAction(actionData, targetWorldState);
+}
+
+void UUDAcceptParticipationDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	// Action data is copied so we can use them instead of the original one.
+	targetWorldState->DealHistory.Last()->Participants.Add(actionData.TargetPlayerId);
+
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):UUDAcceptParticipationDealAction(%d) applied. (s(%d) invite accepted by t(%d))"),
+		targetWorldState->PerspectivePlayerId, actionData.UniqueId,
+		actionData.InvokerPlayerId,
+		actionData.TargetPlayerId);
+
+	// Request is removed from queue and it's effect is applied.
+	RemoveInviteParticipantDealAction(actionData, targetWorldState);
+}
+
+void UUDAcceptParticipationDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	// Confirmed request is returned to queue, but it has to be changed first.
+	FUDActionData copy(actionData, UUDInviteParticipantDealAction::ActionTypeId);
+	targetWorldState->Players[actionData.TargetPlayerId]->PendingRequests.Add(copy);
+
+	// Action data is copied so we can use them instead of the original one.
+	targetWorldState->DealHistory.Last()->Participants.Remove(actionData.TargetPlayerId);
+
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):UUDAcceptParticipationDealAction(%d) reverted. (s(%d) invite restored by t(%d))"),
+		targetWorldState->PerspectivePlayerId, actionData.UniqueId,
+		actionData.InvokerPlayerId,
+		actionData.TargetPlayerId);
+}
+
+void UUDRejectParticipationDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):UUDRejectParticipationDealAction(%d) applied. (s(%d) invite deny by t(%d))"),
+		targetWorldState->PerspectivePlayerId, actionData.UniqueId,
+		actionData.InvokerPlayerId,
+		actionData.TargetPlayerId);
+
+	// Request is removed from queue, this causes effect to be applied, e.g. player can't join anymore.
+	targetWorldState->DealHistory.Last()->BlockedParticipants.Add(actionData.TargetPlayerId);
+	RemoveInviteParticipantDealAction(actionData, targetWorldState);
+}
+
+void UUDRejectParticipationDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->DealHistory.Last()->BlockedParticipants.Remove(actionData.TargetPlayerId);
+	// Deny request is returned to queue.
+	FUDActionData copy(actionData, UUDInviteParticipantDealAction::ActionTypeId);
+	targetWorldState->Players[actionData.TargetPlayerId]->PendingRequests.Add(copy);
+
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):UUDRejectParticipationDealAction(%d) reverted. (s(%d) invite restored by t(%d))"),
+		targetWorldState->PerspectivePlayerId, actionData.UniqueId,
+		actionData.InvokerPlayerId,
+		actionData.TargetPlayerId);
+}
+
+void UUDLeaveParticipationDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):UUDLeaveParticipationDealAction(%d) left by playerId(%d)."),
+		targetWorldState->PerspectivePlayerId, actionData.UniqueId,
+		actionData.InvokerPlayerId);
+
+	// Request is removed from queue, this causes effect to be applied, e.g. player can't join anymore.
+	targetWorldState->DealHistory.Last()->BlockedParticipants.Add(actionData.TargetPlayerId);
+	RemoveInviteParticipantDealAction(actionData, targetWorldState);
+}
+
+void UUDLeaveParticipationDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->DealHistory.Last()->BlockedParticipants.Remove(actionData.TargetPlayerId);
+	// Deny request is returned to queue.
+	FUDActionData copy(actionData, UUDInviteParticipantDealAction::ActionTypeId);
+	targetWorldState->Players[actionData.TargetPlayerId]->PendingRequests.Add(copy);
+
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):UUDLeaveParticipationDealAction(%d) rejoined by playerId(%d)."),
+		targetWorldState->PerspectivePlayerId, actionData.UniqueId,
+		actionData.InvokerPlayerId);
+}
+
+#pragma endregion

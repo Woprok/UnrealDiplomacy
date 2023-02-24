@@ -162,6 +162,64 @@ enum class EUDWorldSimulationState : uint8
 };
 
 /**
+ * Represents current state of the deal. 
+ * Multiple values can represent state, from which deal can't be changed!
+ */
+UENUM(BlueprintType)
+enum class EUDDealSimulationState : uint8
+{
+	/**
+	 * Initial phase of creation, during which main participants are invited by creator.
+	 */
+	ASSEMBLING,
+	/**
+	 * Deal is finilazed and can't be changed further.
+	 */
+	VOTING,
+	/**
+	 * FINAL STATE!
+	 * Each bullet point of deal is passed and will take effect.
+	 */
+	PASSED,
+	/**
+	 * FINAL STATE!
+	 * Voting ended in failure.
+	 */
+	VETOED,
+	/**
+	 * FINAL STATE!
+	 * Deal failed to keep at least one member and no new member can be invited.
+	 */
+	FALLEN_APART,
+};
+
+/**
+ * Represents state of single deal that is being / was made.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDDealState : public UObject
+{
+	GENERATED_BODY()
+public:
+	/**
+	 * Creates new instance of the deal state.
+	 */
+	static TObjectPtr<UUDDealState> CreateState();
+	UPROPERTY()
+	EUDDealSimulationState DealSimulationState = EUDDealSimulationState::ASSEMBLING;
+	/**
+	 * List of players that is currently participating in the deal.
+	 */
+	UPROPERTY()
+	TArray<int32> Participants;
+	/**
+	 * List of players that can't be invited back to deal.
+	 */
+	UPROPERTY()
+	TArray<int32> BlockedParticipants;
+};
+
+/**
  * Holds the state of a world.
  */
 UCLASS()
@@ -222,4 +280,9 @@ public:
 	 */
 	UPROPERTY()
 	EUDWorldSimulationState WorldSimulationState = EUDWorldSimulationState::INITIALIZING;
+	/**
+	 * All deals that are / were done during the game.
+	 */
+	UPROPERTY()
+	TArray<TObjectPtr<UUDDealState>> DealHistory;
 };
