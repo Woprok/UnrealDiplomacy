@@ -34,6 +34,14 @@ public:
 			// This should not be visible ?
 		}
 	}
+	/**
+	 * Creates new action and send it to server to create new deal...
+	 */
+	UFUNCTION(BlueprintCallable)
+	void CreateDeal()
+	{
+		ActionModel->RequestAction(ActionModel->GetCreateDealAction());
+	}
 protected:
 	void UpdateInteractions(int32 count)
 	{

@@ -61,6 +61,22 @@ public:
 	int32 Type = 0;
 };
 
+USTRUCT(BlueprintType)
+struct FUDDealParticipantsInfo
+{
+	GENERATED_BODY()
+public:
+	FUDDealParticipantsInfo() {}
+	FUDDealParticipantsInfo(TArray<FUDPlayerInfo> active, TArray<FUDPlayerInfo> blocked, TArray<FUDPlayerInfo> available) 
+		: ActiveParticipants(active), BlockedParticipants(blocked), AvailableParticipants(available) {}
+	UPROPERTY(BlueprintReadOnly)
+	TArray<FUDPlayerInfo> ActiveParticipants;
+	UPROPERTY(BlueprintReadOnly)
+	TArray<FUDPlayerInfo> BlockedParticipants;
+	UPROPERTY(BlueprintReadOnly)
+	TArray<FUDPlayerInfo> AvailableParticipants;
+};
+
 // GetAvailableActions(NONE|TILE|PLAYER)
 // FUDAtionTemplate
 // - ActionId
@@ -278,7 +294,54 @@ public:
 	{
 		return OverseeingState->Players[OverseeingState->PerspectivePlayerId]->PendingRequests.Num();
 	}
+	UFUNCTION(BlueprintCallable)
+	bool IsParticipatingInDeal()
+	{
+		if (OverseeingState->DealHistory.Num() == 0)
+		{
+			return false;
+		}
+		TObjectPtr<UUDDealState> lastState = OverseeingState->DealHistory.Last();
+		// verifies if this person is participating in last existing deal.
+		return lastState->Participants.Contains(OverseeingState->PerspectivePlayerId);
+	}
+	/**
+	 * Returns list of active participants, blocked participants, available participants.
+	 */
+	UFUNCTION(BlueprintCallable)
+	FUDDealParticipantsInfo GetDealParticipants()
+	{
+		TObjectPtr<UUDDealState> deal = OverseeingState->DealHistory.Last();
+		TArray<FUDPlayerInfo> players = GetPlayerList();
+		TArray<FUDPlayerInfo> active;
+		TArray<FUDPlayerInfo> blocked;
+		TArray<FUDPlayerInfo> available;
+		for (FUDPlayerInfo info : players)
+		{
+			if (deal->Participants.Contains(info.Id))
+			{
+				active.Add(info);
+			}
+			else if (deal->BlockedParticipants.Contains(info.Id))
+			{
+				blocked.Add(info);
+			}
+			else 
+			{
+				available.Add(info);
+			}
+		}
+		return FUDDealParticipantsInfo(active, blocked, available);
+	}
 public:
+	/**
+	 * Creates new deal that is immediately joined by the creator.
+	 */
+	UFUNCTION(BlueprintCallable)
+	FUDActionData GetCreateDealAction()
+	{
+		return FUDActionData(UUDCreateDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId);
+	}
 	/**
 	 * Send amount of gold to other player, other player must accept.
 	 */

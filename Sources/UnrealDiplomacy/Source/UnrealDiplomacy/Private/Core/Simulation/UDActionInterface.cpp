@@ -550,9 +550,11 @@ void UUDGrantExploitTilePermissionAction::Revert(FUDActionData& actionData, TObj
  */
 bool UUDCreateDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
-	bool canCreate = false;
+	bool canCreate = true;
 	if (targetWorldState->DealHistory.Num() > 0)
 	{
+		// this can potentially prevent new deal
+		canCreate = false;
 		EUDDealSimulationState state = targetWorldState->DealHistory.Last()->DealSimulationState;
 		if (state == EUDDealSimulationState::PASSED ||
 			state == EUDDealSimulationState::VETOED ||
