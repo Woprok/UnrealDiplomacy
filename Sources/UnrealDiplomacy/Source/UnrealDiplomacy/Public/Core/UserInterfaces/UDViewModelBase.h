@@ -48,6 +48,24 @@ public:
 	{
 		return FText::FromString(FString::Format(TEXT("{0} ({1})"), { InText, InInteger }));
 	}
+	UFUNCTION(BlueprintPure, meta = (BlueprintAutocast), Category = "Convertors|Views")
+	static ESlateVisibility Conv_BoolToVisibility(bool InIsVisible)
+	{
+		if (InIsVisible)
+		{
+			return ESlateVisibility::Visible;
+		}
+		return ESlateVisibility::Collapsed;
+	}
+	UFUNCTION(BlueprintPure, meta = (BlueprintAutocast), Category = "Convertors|Views")
+	static ESlateVisibility Conv_BoolToInVisibility(bool InIsVisible)
+	{
+		if (InIsVisible)
+		{
+			return ESlateVisibility::Collapsed;
+		}
+		return ESlateVisibility::Visible;
+	}
 };
 
 /**
@@ -73,6 +91,24 @@ public:
 	virtual void OnUpdate() 
 	{
 		// Executes update on any binded UPROPERTY with NotifyField tag.
+	}
+protected:
+	UPROPERTY()
+	TObjectPtr<UUDActionAdministrator> ActionModel = nullptr;
+};
+
+/**
+ * TODO REMOVE THIS as its useless and we are stuck with needing access to ActionModel for any interaction
+ */
+UCLASS(BlueprintType, Blueprintable)
+class UNREALDIPLOMACY_API UUDStaticViewModelBase : public UMVVMViewModelBase
+{
+	GENERATED_BODY()
+public:
+	UFUNCTION(BlueprintCallable)
+	void SetAuthority(UUDActionAdministrator* model)
+	{
+		ActionModel = model;
 	}
 protected:
 	UPROPERTY()

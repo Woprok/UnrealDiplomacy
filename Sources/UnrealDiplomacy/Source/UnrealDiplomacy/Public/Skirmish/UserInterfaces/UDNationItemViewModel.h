@@ -53,8 +53,7 @@ public:
 		Selected.ExecuteIfBound(NationId);
 	}	
 	/**
-	 * Invoked when this tile is selected.
-	 * Grid is handling what it means to be selected.
+	 * Invoked when this nation is selected.
 	 */
 	NationSelectedDelegate Selected;
 protected:

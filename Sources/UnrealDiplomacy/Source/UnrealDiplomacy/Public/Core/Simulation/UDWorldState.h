@@ -171,26 +171,30 @@ enum class EUDDealSimulationState : uint8
 	/**
 	 * Initial phase of creation, during which main participants are invited by creator.
 	 */
-	ASSEMBLING,
+	ASSEMBLING = 0,
 	/**
 	 * Deal is finilazed and can't be changed further.
 	 */
-	VOTING,
+	VOTING = 10,
 	/**
 	 * FINAL STATE!
 	 * Each bullet point of deal is passed and will take effect.
 	 */
-	PASSED,
+	PASSED = 101,
 	/**
 	 * FINAL STATE!
 	 * Voting ended in failure.
 	 */
-	VETOED,
+	VETOED = 102,
 	/**
 	 * FINAL STATE!
 	 * Deal failed to keep at least one member and no new member can be invited.
 	 */
-	FALLEN_APART,
+	FALLEN_APART = 103,
+	/**
+	 * Informations about last deals are not present, possibly no deal was yet created.
+	 */
+	 MISSING = 104,
 };
 
 /**

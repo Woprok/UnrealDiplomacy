@@ -77,6 +77,17 @@ public:
 	TArray<FUDPlayerInfo> AvailableParticipants;
 };
 
+USTRUCT(BlueprintType)
+struct FUDDealInfo
+{
+	GENERATED_BODY()
+public:
+	FUDDealInfo() {}
+	FUDDealInfo(EUDDealSimulationState state) : State(state) {}
+	UPROPERTY(BlueprintReadOnly)
+	EUDDealSimulationState State;
+};
+
 // GetAvailableActions(NONE|TILE|PLAYER)
 // FUDAtionTemplate
 // - ActionId
@@ -311,11 +322,16 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDDealParticipantsInfo GetDealParticipants()
 	{
-		TObjectPtr<UUDDealState> deal = OverseeingState->DealHistory.Last();
-		TArray<FUDPlayerInfo> players = GetPlayerList();
 		TArray<FUDPlayerInfo> active;
 		TArray<FUDPlayerInfo> blocked;
 		TArray<FUDPlayerInfo> available;
+
+		if (OverseeingState->DealHistory.Num() == 0)
+			return FUDDealParticipantsInfo(active, blocked, available);
+
+		TObjectPtr<UUDDealState> deal = OverseeingState->DealHistory.Last();
+		TArray<FUDPlayerInfo> players = GetPlayerList();
+
 		for (FUDPlayerInfo info : players)
 		{
 			if (deal->Participants.Contains(info.Id))
@@ -333,6 +349,27 @@ public:
 		}
 		return FUDDealParticipantsInfo(active, blocked, available);
 	}
+	/**
+	 * Returns list of active participants, blocked participants, available participants.
+	 */
+	UFUNCTION(BlueprintCallable)
+	FUDDealInfo GetDealInfo()
+	{
+		if (OverseeingState->DealHistory.Num() == 0)
+			return FUDDealInfo(EUDDealSimulationState::MISSING);
+
+		TObjectPtr<UUDDealState> deal = OverseeingState->DealHistory.Last();
+		return FUDDealInfo(deal->DealSimulationState);
+	}
+	UFUNCTION(BlueprintCallable)
+	bool IsParticipantInCurrentDeal(int32 playerId)
+	{
+		if (OverseeingState->DealHistory.Num() == 0)
+			return false;
+		if (OverseeingState->DealHistory.Last()->Participants.Num() == 0)
+			return false;
+		return OverseeingState->DealHistory.Last()->Participants.Contains(playerId);
+	}
 public:
 	/**
 	 * Creates new deal that is immediately joined by the creator.
@@ -341,6 +378,38 @@ public:
 	FUDActionData GetCreateDealAction()
 	{
 		return FUDActionData(UUDCreateDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId);
+	}
+	/**
+	 * Invite participant
+	 */
+	UFUNCTION(BlueprintCallable)
+	FUDActionData GetInviteParticipantDealAction(int32 targetId)
+	{
+		return FUDActionData(UUDInviteParticipantDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId, targetId);
+	}
+	/**
+	 * Confirm
+	 */
+	UFUNCTION(BlueprintCallable)
+	FUDActionData GetAcceptParticipantDealAction(FUDActionData sourceAction)
+	{
+		return FUDActionData(sourceAction, UUDAcceptParticipationDealAction::ActionTypeId);
+	}
+	/**
+	 * Reject
+	 */
+	UFUNCTION(BlueprintCallable)
+	FUDActionData GetRejectParticipantDealAction(FUDActionData sourceAction)
+	{
+		return FUDActionData(sourceAction, UUDRejectParticipationDealAction::ActionTypeId);
+	}
+	/**
+	 * Creates new deal that is immediately joined by the creator.
+	 */
+	UFUNCTION(BlueprintCallable)
+	FUDActionData GetLeaveParticipantDealAction(int32 targetId)
+	{
+		return FUDActionData(UUDLeaveParticipationDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId, targetId);
 	}
 	/**
 	 * Send amount of gold to other player, other player must accept.

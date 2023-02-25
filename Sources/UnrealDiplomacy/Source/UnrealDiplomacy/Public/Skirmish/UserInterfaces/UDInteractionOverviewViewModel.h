@@ -16,28 +16,28 @@ class UNREALDIPLOMACY_API UUDInteractionOverviewViewModel : public UUDViewModelB
 	GENERATED_BODY()
 public:
 	/**
-	* MVVM Field.
-	*/
+	 * MVVM Field.
+	 */
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	int32 PendingCount = -1;
 	/**
-	* MVVM Field.
-	*/
+	 * MVVM Field.
+	 */
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FString CurrentItemName;
 	/**
-	* MVVM Field.
-	*/
+	 * MVVM Field.
+	 */
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FString CurrentItemDescription;
 	/**
-	* MVVM Field.
-	*/
+	 * MVVM Field.
+	 */
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FUDActionData CurrentItem;
 	/**
-	* MVVM Field.
-	*/
+	 * MVVM Field.
+	 */
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	int32 CurrentItemShown;
 private:
@@ -74,7 +74,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ItemReject()
 	{
-		ActionModel->RequestAction(ActionModel->GetRejectConditionalGiftGoldAction(CurrentItem));
+		if (CurrentItem.ActionTypeId == UUDGiftAction::ActionTypeId)		
+			ActionModel->RequestAction(ActionModel->GetRejectConditionalGiftGoldAction(CurrentItem));
+		else
+			ActionModel->RequestAction(ActionModel->GetRejectParticipantDealAction(CurrentItem));
 	}
 	/**
 	 * Called by button.
@@ -82,7 +85,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ItemAccept()
 	{
-		ActionModel->RequestAction(ActionModel->GetConfirmConditionalGiftGoldAction(CurrentItem));
+		if (CurrentItem.ActionTypeId == UUDGiftAction::ActionTypeId)
+			ActionModel->RequestAction(ActionModel->GetConfirmConditionalGiftGoldAction(CurrentItem));
+		else
+			ActionModel->RequestAction(ActionModel->GetAcceptParticipantDealAction(CurrentItem));
+
 	}
 	/**
 	 * Called by button.
@@ -111,7 +118,8 @@ protected:
 		).ToString();
 		SetCurrentItemName(rs1);
 		auto rs2 = FText::Format(
-			LOCTEXT("Gift", "Player {0} offered {1} as gift. Do we accept ?"),
+			LOCTEXT("Gift", "A{0} Player {1} offered {2} as gift. Do we accept ?"),
+			data.ActionTypeId,
 			data.InvokerPlayerId,
 			data.ValueParameter
 		).ToString();

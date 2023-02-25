@@ -203,7 +203,7 @@ void AUDWorldSimulation::LoadCoreActions()
 	RegisterAction(NewObject<UUDRejectTransferTileAction>(this));
 	// Grant exploit permission
 	RegisterAction(NewObject<UUDGrantExploitTilePermissionAction>(this));
-	// Deal actions
+	// Deal actions 10000+
 	RegisterAction(NewObject<UUDCreateDealAction>(this));
 	RegisterAction(NewObject<UUDInviteParticipantDealAction>(this));
 	RegisterAction(NewObject<UUDAcceptParticipationDealAction>(this));

@@ -683,17 +683,16 @@ void UUDLeaveParticipationDealAction::Execute(FUDActionData& actionData, TObject
 		targetWorldState->PerspectivePlayerId, actionData.UniqueId,
 		actionData.InvokerPlayerId);
 
-	// Request is removed from queue, this causes effect to be applied, e.g. player can't join anymore.
+	// Removed from participants.
+	targetWorldState->DealHistory.Last()->Participants.Remove(actionData.TargetPlayerId);
 	targetWorldState->DealHistory.Last()->BlockedParticipants.Add(actionData.TargetPlayerId);
-	RemoveInviteParticipantDealAction(actionData, targetWorldState);
 }
 
 void UUDLeaveParticipationDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
+	// Readded to participants.
 	targetWorldState->DealHistory.Last()->BlockedParticipants.Remove(actionData.TargetPlayerId);
-	// Deny request is returned to queue.
-	FUDActionData copy(actionData, UUDInviteParticipantDealAction::ActionTypeId);
-	targetWorldState->Players[actionData.TargetPlayerId]->PendingRequests.Add(copy);
+	targetWorldState->DealHistory.Last()->Participants.Add(actionData.TargetPlayerId);
 
 	UE_LOG(LogTemp, Log,
 		TEXT("INSTANCE(%d):UUDLeaveParticipationDealAction(%d) rejoined by playerId(%d)."),
