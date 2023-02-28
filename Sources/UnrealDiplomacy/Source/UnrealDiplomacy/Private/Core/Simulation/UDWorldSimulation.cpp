@@ -84,6 +84,14 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 	{
 		newAction.UniqueId = GetAssignableActionId();
 	}
+	// If action has non valid parent Id, then it's parent to self.
+	// Inherited action already have parent from their constructor.
+	// Thus only actions that are new/root do not have parent. And thus their parent is them.
+	if (newAction.ParentUniqueId == 0)
+	{
+		newAction.ParentUniqueId = newAction.UniqueId;
+	}
+
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Action UID(%d)."), newAction.UniqueId);
 
 	// Saved for future reference

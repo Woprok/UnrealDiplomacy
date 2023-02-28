@@ -121,7 +121,7 @@ public:
 	 * that are pending for confirm/reject action from this player.
 	 */
 	UPROPERTY()
-	TArray<FUDActionData> PendingRequests;
+	TMap<int32, FUDActionData> PendingRequests;
 	/**
 	 * List of all modifiers applied to this player.
 	 * This are modifiers that are applied to this player.
@@ -351,5 +351,5 @@ public:
 	 * All deals that are / were done during the game.
 	 */
 	UPROPERTY()
-	TArray<TObjectPtr<UUDDealState>> DealHistory;
+	TMap<int32, TObjectPtr<UUDDealState>> Deals;
 };

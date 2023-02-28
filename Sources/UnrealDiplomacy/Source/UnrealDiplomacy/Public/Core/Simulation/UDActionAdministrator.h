@@ -83,7 +83,10 @@ struct FUDDealInfo
 	GENERATED_BODY()
 public:
 	FUDDealInfo() {}
-	FUDDealInfo(EUDDealSimulationState state, EUDDealSimulationResult result) : State(state), Result(result) {}
+	FUDDealInfo(int32 dealUniqueId, EUDDealSimulationState state, EUDDealSimulationResult result) 
+		: DealUniqueId(dealUniqueId), State(state), Result(result) {}
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealUniqueId = 0;
 	UPROPERTY(BlueprintReadOnly)
 	EUDDealSimulationState State;
 	UPROPERTY(BlueprintReadOnly)
@@ -297,7 +300,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	TArray<FUDActionData> GetPendingRequests()
 	{
-		return OverseeingState->Players[OverseeingState->PerspectivePlayerId]->PendingRequests;
+		TArray<FUDActionData> copy;
+		for (auto& itm : OverseeingState->Players[OverseeingState->PerspectivePlayerId]->PendingRequests)
+		{
+			copy.Add(itm.Value);
+		}
+		return copy;
 	}
 	/**
 	 * Return list of all currently pending requests that require confirmation...
@@ -308,13 +316,13 @@ public:
 		return OverseeingState->Players[OverseeingState->PerspectivePlayerId]->PendingRequests.Num();
 	}
 	UFUNCTION(BlueprintCallable)
-	bool IsParticipatingInDeal()
+	bool IsParticipatingInDeal(int32 dealUniqueId)
 	{
-		if (OverseeingState->DealHistory.Num() == 0)
+		if (OverseeingState->Deals.Num() == 0 || !OverseeingState->Deals.Contains(dealUniqueId))
 		{
 			return false;
 		}
-		TObjectPtr<UUDDealState> lastState = OverseeingState->DealHistory.Last();
+		TObjectPtr<UUDDealState> lastState = OverseeingState->Deals[dealUniqueId];
 		// verifies if this person is participating in last existing deal.
 		return lastState->Participants.Contains(OverseeingState->PerspectivePlayerId);
 	}
@@ -322,16 +330,16 @@ public:
 	 * Returns list of active participants, blocked participants, available participants.
 	 */
 	UFUNCTION(BlueprintCallable)
-	FUDDealParticipantsInfo GetDealParticipants()
+	FUDDealParticipantsInfo GetDealParticipants(int32 dealUniqueId)
 	{
 		TArray<FUDPlayerInfo> active;
 		TArray<FUDPlayerInfo> blocked;
 		TArray<FUDPlayerInfo> available;
 
-		if (OverseeingState->DealHistory.Num() == 0)
+		if (OverseeingState->Deals.Num() == 0 || !OverseeingState->Deals.Contains(dealUniqueId))
 			return FUDDealParticipantsInfo(active, blocked, available);
 
-		TObjectPtr<UUDDealState> deal = OverseeingState->DealHistory.Last();
+		TObjectPtr<UUDDealState> deal = OverseeingState->Deals[dealUniqueId];
 		TArray<FUDPlayerInfo> players = GetPlayerList();
 
 		for (FUDPlayerInfo info : players)
@@ -351,26 +359,39 @@ public:
 		}
 		return FUDDealParticipantsInfo(active, blocked, available);
 	}
+	UFUNCTION(BlueprintCallable)
+	FUDDealInfo GetDealInfoAnyDEBUG()
+	{
+		if (OverseeingState->Deals.Num() != 0)
+		{
+			for (auto& deal : OverseeingState->Deals)
+			{
+				return FUDDealInfo(deal.Key, deal.Value->DealSimulationState, deal.Value->DealSimulationResult);
+			}
+		}
+
+		return GetDealInfo(0);
+	}
 	/**
 	 * Returns list of active participants, blocked participants, available participants.
 	 */
 	UFUNCTION(BlueprintCallable)
-	FUDDealInfo GetDealInfo()
+	FUDDealInfo GetDealInfo(int32 dealUniqueId)
 	{
-		if (OverseeingState->DealHistory.Num() == 0)
-			return FUDDealInfo(EUDDealSimulationState::Undefined, EUDDealSimulationResult::Undefined);
+		if (OverseeingState->Deals.Num() == 0 || !OverseeingState->Deals.Contains(dealUniqueId))
+			return FUDDealInfo(0, EUDDealSimulationState::Undefined, EUDDealSimulationResult::Undefined);
 
-		TObjectPtr<UUDDealState> deal = OverseeingState->DealHistory.Last();
-		return FUDDealInfo(deal->DealSimulationState, deal->DealSimulationResult);
+		TObjectPtr<UUDDealState> deal = OverseeingState->Deals[dealUniqueId];
+		return FUDDealInfo(deal->UniqueDealId, deal->DealSimulationState, deal->DealSimulationResult);
 	}
 	UFUNCTION(BlueprintCallable)
-	bool IsParticipantInCurrentDeal(int32 playerId)
+	bool IsParticipantInCurrentDeal(int32 dealUniqueId, int32 playerId)
 	{
-		if (OverseeingState->DealHistory.Num() == 0)
+		if (OverseeingState->Deals.Num() == 0 || !OverseeingState->Deals.Contains(dealUniqueId))
 			return false;
-		if (OverseeingState->DealHistory.Last()->Participants.Num() == 0)
+		if (OverseeingState->Deals[dealUniqueId]->Participants.Num() == 0)
 			return false;
-		return OverseeingState->DealHistory.Last()->Participants.Contains(playerId);
+		return OverseeingState->Deals[dealUniqueId]->Participants.Contains(playerId);
 	}
 public:
 	/**
@@ -395,7 +416,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetAcceptParticipantDealAction(FUDActionData sourceAction)
 	{
-		return FUDActionData(sourceAction, UUDAcceptParticipationDealAction::ActionTypeId);
+		return FUDActionData::CreateChild(sourceAction, UUDAcceptParticipationDealAction::ActionTypeId);
 	}
 	/**
 	 * Reject
@@ -403,7 +424,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetRejectParticipantDealAction(FUDActionData sourceAction)
 	{
-		return FUDActionData(sourceAction, UUDRejectParticipationDealAction::ActionTypeId);
+		return FUDActionData::CreateChild(sourceAction, UUDRejectParticipationDealAction::ActionTypeId);
 	}
 	/**
 	 * Creates new deal that is immediately joined by the creator.
@@ -427,7 +448,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetConfirmConditionalGiftGoldAction(FUDActionData sourceAction)
 	{
-		return FUDActionData(sourceAction, UUDConfirmGiftAction::ActionTypeId);
+		return FUDActionData::CreateChild(sourceAction, UUDConfirmGiftAction::ActionTypeId);
 	}
 	/**
 	 * Reject amount of gold to other player.
@@ -435,7 +456,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetRejectConditionalGiftGoldAction(FUDActionData sourceAction)
 	{
-		return FUDActionData(sourceAction, UUDRejectGiftAction::ActionTypeId);
+		return FUDActionData::CreateChild(sourceAction, UUDRejectGiftAction::ActionTypeId);
 	}
 	/**
 	 * Send amount of gold to other player.

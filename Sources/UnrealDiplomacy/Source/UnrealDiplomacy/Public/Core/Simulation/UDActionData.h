@@ -23,9 +23,10 @@ public:
 	 */
 	FUDActionData();
 	/**
-	 * Copy constructor used by actions, that require multiple execution steps to carry over data.
+	 * Copy constructor used by UE.
+	 * Please do not copy actions, it will cause errors!
 	 */
-	FUDActionData(const FUDActionData& existingAction, int32 ActionTypeId);
+	FUDActionData(const FUDActionData& existingAction);
 	/**
 	 * Constructor for generic server/automatic use of an action.
 	 * Example: StartGame (only actionTypeId is relevant for execution)
@@ -66,6 +67,20 @@ public:
 		data.TileParameter = tileParameter;
 		return data;
 	}
+
+	/**
+	 * Creates child from its parent. Usefull for action that are responses.
+	 */
+	static FUDActionData CreateChild(const FUDActionData& parentAction, int32 ActionTypeId);
+	/**
+	 * Creates parent from its child. Usefull for action that is reverting it's effect.
+	 */
+	static FUDActionData CreateParent(const FUDActionData& childAction, int32 ActionTypeId);
+private:	
+	 /**
+	  * Copy constructor for static construction of child and parent.
+	  */
+	 static FUDActionData CreateDataCopy(const FUDActionData& existingAction);
 public:
 	/**
 	 * Equality over UniqueId field.
@@ -87,12 +102,17 @@ public:
 	inline bool IsValueEqual(const FUDActionData & rhs)
 	{
 		return UniqueId == rhs.UniqueId &&
+			ParentUniqueId == rhs.ParentUniqueId &&
 			ActionTypeId == rhs.ActionTypeId &&
 			InvokerPlayerId == rhs.InvokerPlayerId &&
 			TargetPlayerId == rhs.TargetPlayerId &&
-			ValueParameter == rhs.ValueParameter;
+			ValueParameter == rhs.ValueParameter &&
+			TileParameter == rhs.TileParameter;
 	}
 public:
+	/**
+	 * Id used by action interface to determine if this action can be resolved by it.
+	 */
 	UPROPERTY(BlueprintReadOnly)
 	int32 ActionTypeId = 0;
 	/**
@@ -125,7 +145,8 @@ public:
 	int32 UniqueId = 0;
 	/**
 	 * UniqueId associated with the parent Action. 
-	 * Default value is 0 (not assigned, has no parent).
+	 * Default value is 0 (not assigned).
+	 * All actions valid for execution will have this assigned to parent or to self.
 	 */
 	UPROPERTY(BlueprintReadOnly)
 	int32 ParentUniqueId = 0;

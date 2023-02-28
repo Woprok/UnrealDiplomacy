@@ -29,7 +29,7 @@ private:
 	FUDPlayerInfo CurrentInfo;
 public:
 	UFUNCTION(BlueprintCallable)
-	void SetBindingTarget(FUDPlayerInfo info)
+	void SetBindingTarget(FUDPlayerInfo info, int32 dealUniqueId)
 	{
 		CurrentInfo = info;
 		auto rs1 = FText::Format(
@@ -37,7 +37,7 @@ public:
 			info.Id
 		).ToString();
 		SetName(rs1);
-		SetIsParticipant(ActionModel->IsParticipantInCurrentDeal(info.Id));
+		SetIsParticipant(ActionModel->IsParticipantInCurrentDeal(dealUniqueId, info.Id));
 	}
 
 	UFUNCTION(BlueprintCallable)
@@ -107,7 +107,7 @@ public:
 	{
 		if (ActionModel->IsGameInProgress())
 		{
-			FUDDealInfo info = ActionModel->GetDealInfo();
+			FUDDealInfo info = ActionModel->GetDealInfoAnyDEBUG();
 			if (info.Result >= EUDDealSimulationResult::Opened)
 			{
 				OnDealPresent(info);
@@ -144,7 +144,7 @@ protected:
 		).ToString();
 		SetSessionDescription(rs1);
 
-		auto data = ActionModel->GetDealParticipants();
+		auto data = ActionModel->GetDealParticipants(info.DealUniqueId);
 		ParticipantsOnUpdated.Broadcast(data);
 
 	}

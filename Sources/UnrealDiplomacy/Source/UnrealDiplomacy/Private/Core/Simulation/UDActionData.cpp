@@ -7,15 +7,52 @@ FUDActionData::FUDActionData()
 
 }
 
-FUDActionData::FUDActionData(const FUDActionData& existingAction, int32 ActionTypeId) 
-	: ActionTypeId(ActionTypeId),
-	InvokerPlayerId(existingAction.InvokerPlayerId),
-	TargetPlayerId(existingAction.TargetPlayerId),
-	ValueParameter(existingAction.ValueParameter),
-	TileParameter(existingAction.TileParameter),
-	UniqueId(existingAction.UniqueId)
+FUDActionData::FUDActionData(const FUDActionData& actionData) 
+	: 
+	ActionTypeId(actionData.ActionTypeId),
+	UniqueId(actionData.UniqueId),
+	ParentUniqueId(actionData.ParentUniqueId),
+	InvokerPlayerId(actionData.InvokerPlayerId),
+	TargetPlayerId(actionData.TargetPlayerId),
+	ValueParameter(actionData.ValueParameter),
+	TileParameter(actionData.TileParameter)
 {
 
+}
+
+FUDActionData FUDActionData::CreateDataCopy(const FUDActionData& existingAction)
+{
+	FUDActionData actionData = FUDActionData();
+	actionData.InvokerPlayerId = existingAction.InvokerPlayerId;
+	actionData.TargetPlayerId = existingAction.TargetPlayerId;
+	actionData.ValueParameter = existingAction.ValueParameter;
+	actionData.TileParameter = existingAction.TileParameter;
+	return actionData;
+}
+
+FUDActionData FUDActionData::CreateChild(const FUDActionData& parentAction, int32 ActionTypeId)
+{
+	FUDActionData child = FUDActionData::CreateDataCopy(parentAction);
+	child.ActionTypeId = ActionTypeId;
+
+	// child inherits UniqueId as ParentUniqueId
+	child.ParentUniqueId = parentAction.UniqueId;
+	// child.UniqueId remains default value 0, so it can be assigned by WorldSimulation
+
+	return child;
+}
+
+FUDActionData FUDActionData::CreateParent(const FUDActionData& childAction, int32 ActionTypeId)
+{
+	FUDActionData parent = FUDActionData::CreateDataCopy(childAction);
+	parent.ActionTypeId = ActionTypeId;
+
+	// Parent retrieves his UniqueId from child ParentUniqueId.
+	parent.UniqueId = childAction.ParentUniqueId;
+	// Parent by default should have both ids same.
+	parent.ParentUniqueId = childAction.ParentUniqueId;
+
+	return parent;
 }
 
 FUDActionData::FUDActionData(int32 actionTypeId) 
