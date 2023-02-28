@@ -83,9 +83,11 @@ struct FUDDealInfo
 	GENERATED_BODY()
 public:
 	FUDDealInfo() {}
-	FUDDealInfo(EUDDealSimulationState state) : State(state) {}
+	FUDDealInfo(EUDDealSimulationState state, EUDDealSimulationResult result) : State(state), Result(result) {}
 	UPROPERTY(BlueprintReadOnly)
 	EUDDealSimulationState State;
+	UPROPERTY(BlueprintReadOnly)
+	EUDDealSimulationResult Result;
 };
 
 // GetAvailableActions(NONE|TILE|PLAYER)
@@ -356,10 +358,10 @@ public:
 	FUDDealInfo GetDealInfo()
 	{
 		if (OverseeingState->DealHistory.Num() == 0)
-			return FUDDealInfo(EUDDealSimulationState::MISSING);
+			return FUDDealInfo(EUDDealSimulationState::Undefined, EUDDealSimulationResult::Undefined);
 
 		TObjectPtr<UUDDealState> deal = OverseeingState->DealHistory.Last();
-		return FUDDealInfo(deal->DealSimulationState);
+		return FUDDealInfo(deal->DealSimulationState, deal->DealSimulationResult);
 	}
 	UFUNCTION(BlueprintCallable)
 	bool IsParticipantInCurrentDeal(int32 playerId)

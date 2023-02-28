@@ -119,9 +119,16 @@ public:
 	 * Unique identifier, that is responsible for acting as a link between different actions.
 	 * By default is assigned by WorldSimulation or copy constructor.
 	 * E.g. Gift and it's eventual confirm/reject action will share this.
+	 * Actually they can't share this like ever...
 	 */
 	UPROPERTY(BlueprintReadOnly)
 	int32 UniqueId = 0;
+	/**
+	 * UniqueId associated with the parent Action. 
+	 * Default value is 0 (not assigned, has no parent).
+	 */
+	UPROPERTY(BlueprintReadOnly)
+	int32 ParentUniqueId = 0;
 };
 
 /**
@@ -141,7 +148,7 @@ public:
 
 	};
 	/**
-	 * Empty constructor used by UE.
+	 * Custom constructor.
 	 */
 	FUDActionArray(TArray<FUDActionData> actions, int32 first, int32 last)
 		: Actions(actions), FirstActionId(first), LastActionId(last)

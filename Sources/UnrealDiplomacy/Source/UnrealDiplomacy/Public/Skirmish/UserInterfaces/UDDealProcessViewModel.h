@@ -108,13 +108,13 @@ public:
 		if (ActionModel->IsGameInProgress())
 		{
 			FUDDealInfo info = ActionModel->GetDealInfo();
-			if (info.State >= EUDDealSimulationState::PASSED)
+			if (info.Result >= EUDDealSimulationResult::Opened)
 			{
-				OnDealEmpty(info);
+				OnDealPresent(info);
 			}
 			else
 			{
-				OnDealPresent(info);
+				OnDealEmpty(info);
 			}
 		}
 		else

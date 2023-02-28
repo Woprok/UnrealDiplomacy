@@ -478,34 +478,34 @@ public:
 	static const int32 ActionTypeId = 10005;
 };
 
-/**
- * Allows extending of the deal with new discussion point.
- */
-UCLASS()
-class UNREALDIPLOMACY_API UUDAddDiscussionPointDealAction : public UObject, public IUDActionInterface
-{
-	GENERATED_BODY()
-public:
-	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual int32 GetActionTypeId() override { return ActionTypeId; };
-public:
-	static const int32 ActionTypeId = 10006;
-};
-
-/**
- * Removes discussion point from the deal.
- */
-UCLASS()
-class UNREALDIPLOMACY_API UUDAddDiscussionPointDealAction : public UObject, public IUDActionInterface
-{
-	GENERATED_BODY()
-public:
-	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual int32 GetActionTypeId() override { return ActionTypeId; };
-public:
-	static const int32 ActionTypeId = 10007;
-};
+///**
+// * Allows extending of the deal with new discussion point.
+// */
+//UCLASS()
+//class UNREALDIPLOMACY_API UUDAddDiscussionPointDealAction : public UObject, public IUDActionInterface
+//{
+//	GENERATED_BODY()
+//public:
+//	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+//	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+//	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+//	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+//public:
+//	static const int32 ActionTypeId = 10006;
+//};
+//
+///**
+// * Removes discussion point from the deal.
+// */
+//UCLASS()
+//class UNREALDIPLOMACY_API UUDAddDiscussionPointDealAction : public UObject, public IUDActionInterface
+//{
+//	GENERATED_BODY()
+//public:
+//	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+//	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+//	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+//	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+//public:
+//	static const int32 ActionTypeId = 10007;
+//};
