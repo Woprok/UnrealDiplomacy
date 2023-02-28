@@ -67,8 +67,11 @@ struct FUDDealParticipantsInfo
 	GENERATED_BODY()
 public:
 	FUDDealParticipantsInfo() {}
-	FUDDealParticipantsInfo(TArray<FUDPlayerInfo> active, TArray<FUDPlayerInfo> blocked, TArray<FUDPlayerInfo> available) 
-		: ActiveParticipants(active), BlockedParticipants(blocked), AvailableParticipants(available) {}
+	FUDDealParticipantsInfo(int32 dealUniqueId, TArray<FUDPlayerInfo> active, TArray<FUDPlayerInfo> blocked, TArray<FUDPlayerInfo> available) 
+		: DealUniqueId(dealUniqueId),
+		ActiveParticipants(active), BlockedParticipants(blocked), AvailableParticipants(available) {}
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealUniqueId = 0;
 	UPROPERTY(BlueprintReadOnly)
 	TArray<FUDPlayerInfo> ActiveParticipants;
 	UPROPERTY(BlueprintReadOnly)
@@ -337,7 +340,7 @@ public:
 		TArray<FUDPlayerInfo> available;
 
 		if (OverseeingState->Deals.Num() == 0 || !OverseeingState->Deals.Contains(dealUniqueId))
-			return FUDDealParticipantsInfo(active, blocked, available);
+			return FUDDealParticipantsInfo(0, active, blocked, available);
 
 		TObjectPtr<UUDDealState> deal = OverseeingState->Deals[dealUniqueId];
 		TArray<FUDPlayerInfo> players = GetPlayerList();
@@ -357,7 +360,7 @@ public:
 				available.Add(info);
 			}
 		}
-		return FUDDealParticipantsInfo(active, blocked, available);
+		return FUDDealParticipantsInfo(dealUniqueId, active, blocked, available);
 	}
 	UFUNCTION(BlueprintCallable)
 	FUDDealInfo GetDealInfoAnyDEBUG()
@@ -406,9 +409,10 @@ public:
 	 * Invite participant
 	 */
 	UFUNCTION(BlueprintCallable)
-	FUDActionData GetInviteParticipantDealAction(int32 targetId)
+		FUDActionData GetInviteParticipantDealAction(int32 dealUniqueId, int32 targetId)
 	{
-		return FUDActionData(UUDInviteParticipantDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId, targetId);
+		FUDActionData raw = FUDActionData(UUDInviteParticipantDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId, targetId);
+		return FUDActionData::AsChildOf(raw, dealUniqueId);
 	}
 	/**
 	 * Confirm
@@ -430,9 +434,10 @@ public:
 	 * Creates new deal that is immediately joined by the creator.
 	 */
 	UFUNCTION(BlueprintCallable)
-	FUDActionData GetLeaveParticipantDealAction(int32 targetId)
+	FUDActionData GetLeaveParticipantDealAction(int32 dealUniqueId, int32 targetId)
 	{
-		return FUDActionData(UUDLeaveParticipationDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId, targetId);
+		FUDActionData raw = FUDActionData(UUDLeaveParticipationDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId, targetId);
+		return FUDActionData::AsChildOf(raw, dealUniqueId);
 	}
 	/**
 	 * Send amount of gold to other player, other player must accept.

@@ -73,6 +73,10 @@ public:
 	 */
 	static FUDActionData CreateChild(const FUDActionData& parentAction, int32 ActionTypeId);
 	/**
+	 * Converts action to child action.
+	 */
+	static FUDActionData AsChildOf(const FUDActionData& parentAction, int32 parentUniqueId);
+	/**
 	 * Creates parent from its child. Usefull for action that is reverting it's effect.
 	 */
 	static FUDActionData CreateParent(const FUDActionData& childAction, int32 ActionTypeId);

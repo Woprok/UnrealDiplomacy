@@ -27,11 +27,13 @@ public:
 	bool IsParticipant;
 private:
 	FUDPlayerInfo CurrentInfo;
+	int32 CurrentDealUniqueId;
 public:
 	UFUNCTION(BlueprintCallable)
 	void SetBindingTarget(FUDPlayerInfo info, int32 dealUniqueId)
 	{
 		CurrentInfo = info;
+		CurrentDealUniqueId = dealUniqueId;
 		auto rs1 = FText::Format(
 			LOCTEXT("Participant", "Player {0}"),
 			info.Id
@@ -43,12 +45,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void InvitePlayer()
 	{
-		ActionModel->RequestAction(ActionModel->GetInviteParticipantDealAction(CurrentInfo.Id));
+		ActionModel->RequestAction(ActionModel->GetInviteParticipantDealAction(CurrentDealUniqueId, CurrentInfo.Id));
 	}
 	UFUNCTION(BlueprintCallable)
 	void LeaveDeal()
 	{
-		ActionModel->RequestAction(ActionModel->GetLeaveParticipantDealAction(CurrentInfo.Id));
+		ActionModel->RequestAction(ActionModel->GetLeaveParticipantDealAction(CurrentDealUniqueId, CurrentInfo.Id));
 	}
 private:
 	/**
