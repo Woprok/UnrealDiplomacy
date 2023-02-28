@@ -57,10 +57,13 @@ TObjectPtr<UUDNationState> UUDNationState::CreateState(int32 playerId)
 	return newState;
 }
 
-TObjectPtr<UUDDealState> UUDDealState::CreateState()
+TObjectPtr<UUDDealState> UUDDealState::CreateState(int32 dealId, int32 ownerId)
 {
 	TObjectPtr<UUDDealState> newState = NewObject<UUDDealState>();
-	newState->DealSimulationState = EUDDealSimulationState::Idea;
+	newState->DealSimulationState = EUDDealSimulationState::CreatingDraft;
+	newState->DealSimulationResult = EUDDealSimulationResult::Opened;
+	newState->UniqueDealId = dealId;
+	newState->OwnerUniqueId = ownerId;
 	return newState;
 }
 

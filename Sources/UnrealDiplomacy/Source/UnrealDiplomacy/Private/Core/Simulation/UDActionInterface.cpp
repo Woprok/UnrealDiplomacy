@@ -555,10 +555,8 @@ bool UUDCreateDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWo
 	{
 		// this can potentially prevent new deal
 		canCreate = false;
-		EUDDealSimulationState state = targetWorldState->DealHistory.Last()->DealSimulationState;
-		if (state == EUDDealSimulationState::PASSED ||
-			state == EUDDealSimulationState::VETOED ||
-			state == EUDDealSimulationState::FALLEN_APART)
+		EUDDealSimulationResult state = targetWorldState->DealHistory.Last()->DealSimulationResult;
+		if (state != EUDDealSimulationResult::Opened)
 		{
 			canCreate = true;
 		}
@@ -571,7 +569,7 @@ void UUDCreateDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorld
 	UE_LOG(LogTemp, Log,
 		TEXT("INSTANCE(%d): CreateDeal was invoked by playerId(%d)."),
 		targetWorldState->PerspectivePlayerId, actionData.InvokerPlayerId);
-	targetWorldState->DealHistory.Add(UUDDealState::CreateState());
+	targetWorldState->DealHistory.Add(UUDDealState::CreateState(actionData.UniqueId, actionData.InvokerPlayerId));
 	targetWorldState->DealHistory.Last()->Participants.Add(actionData.InvokerPlayerId);
 }
 
@@ -696,6 +694,32 @@ void UUDLeaveParticipationDealAction::Revert(FUDActionData& actionData, TObjectP
 
 	UE_LOG(LogTemp, Log,
 		TEXT("INSTANCE(%d):UUDLeaveParticipationDealAction(%d) rejoined by playerId(%d)."),
+		targetWorldState->PerspectivePlayerId, actionData.UniqueId,
+		actionData.InvokerPlayerId);
+}
+
+bool UUDCloseDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) && 
+		targetWorldState->DealHistory.Last()->DealSimulationResult == EUDDealSimulationResult::Opened;
+}
+
+void UUDCloseDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->DealHistory.Last()->DealSimulationResult = EUDDealSimulationResult::Closed;
+
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):UUDCloseDealAction(%d) closed by playerId(%d)."),
+		targetWorldState->PerspectivePlayerId, actionData.UniqueId,
+		actionData.InvokerPlayerId);
+}
+
+void UUDCloseDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->DealHistory.Last()->DealSimulationResult = EUDDealSimulationResult::Opened;
+
+	UE_LOG(LogTemp, Log,
+		TEXT("INSTANCE(%d):UUDCloseDealAction(%d) reopened by playerId(%d)."),
 		targetWorldState->PerspectivePlayerId, actionData.UniqueId,
 		actionData.InvokerPlayerId);
 }

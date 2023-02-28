@@ -163,107 +163,83 @@ enum class EUDWorldSimulationState : uint8
 
 /**
  * Represents current state of the deal. 
- * Multiple values can represent state, from which deal can't be changed!
  */
 UENUM(BlueprintType)
 enum class EUDDealSimulationState : uint8
 {
-	Error = 0,
 	/**
-	 * First phase represents creation of the new deal.
-	 * 
-	 * Step ends automatically as part of internal process. (Transitions to Creation.)
+	 * Error state.
 	 */
-	Idea = 1,
+	Undefined = 0,
 	/**
-	 * Second phase represents created empty deal with owner defined.
-	 * 
-	 * Step ends automatically as part of internal process. (Transitions to Specification.)
+	 * Deal draft is being created.
 	 */
-	Creation = 2,
+	CreatingDraft = 1,
 	/**
-	 * Third phase represents initial demands and/or requests as a primary discussion points.
-	 * 
-	 * This step allows user input.
-	 * Step is always ended by user. (Transitions to Invitations.)
+	 * Players are assembling to discusss deal draft.
 	 */
-	CreatingDraft = 3,
+	Assembling = 2,
 	/**
-	 * Fourth phase represents resolution of other players joining to participate or rejecting any idea of deal.
-	 * Players have two options:
-	 * - Accept/Join (Player will participate in the deal.)
-	 * - Reject/Leave (Player won't participate in the deal.)
-	 * - Players can suggest additional participant in the deal.
-	 * - Owner can based on suggestion invite additional participant to the discussion.
-	 * 
-	 * Step ends once all players are resolved or owner forces and end to waiting time. (Transitions to Extension.)
-	 * Unfinished invitations needs to be canceled.
+	 * Players are able to add additional points to draft.
 	 */
-	InvitePrimaryParticipants = 4,
+	ExtendingDraft = 3,
 	/**
-	 * Fifth phase represents extension of items that are discussed as primary points.
-	 * Each player can choose to add additional primary discussion point.
-	 * Once all players choosed to either add or no. Next step begins.
-	 * 
-	 * Step ends when all players are finished or timer run out.
+	 * Players can demand or request something for being favorable toward the points.
 	 */
-	Extension = 5,
+	DemandsAndRequests = 4,
 	/**
-	 * Sixth phase represents adding additional demands or requests binded to existing primary discussion points.
-	 * 
-	 * Step ends when all players are finished or timer run out.
+	 * Players are trying to appease these that oppose the deal.
 	 */
-	RequestsAndDemands = 6,
+	Bidding = 5,
 	/**
-	 * Seventh phase represents bidding to appease demands and requests, invoked by others.
-	 * Each player can choose if they want to offer something.
-	 * 
-	 * Step ends when all players are finished or timer run out.
+	 * Players select bids they accept in exchange for voting favorably or leave.
 	 */
-	Bidding = 7,
+	FinalizingDraft = 6,
 	/**
-	 * Eight phase represents player finalizing their option, e.g. selecting bids.
-	 * 
-	 * Step ends when all players are finished or timer run out.
+	 * Remaining players vote.
 	 */
-	PreVote = 8,
+	Vote = 7,
 	/**
-	 * Ninth phase represents player voting to pass the deal or reject it.
-	 * 
-	 * Step ends when all players are finished or timer run out.
+	 * Resolution. 
 	 */
-	Vote = 9,
+	Resolution = 8,
 	/**
-	 * Tenth phase represents final result, e.g. deal is finished and it can't be changed further.
-	 * 
-	 * This step never changes to anything else.
+	 * Result.
 	 */
-	Result = 10,
+	Result = 9,
+};
 
-
+/**
+ * Represents current result state of the deal.
+ * Deal is either opened or closed. Close is oen of multiple different reasons.
+ */
+UENUM(BlueprintType)
+enum class EUDDealSimulationResult : uint8
+{
 	/**
-	 * Deal is finilazed and can't be changed further.	 
+	 * Error state.
 	 */
-	VOTING = 100,
+	Undefined = 0,
 	/**
-	 * FINAL STATE!
-	 * Each bullet point of deal is passed and will take effect.
+	 * Deal is being discussed.
 	 */
-	PASSED = 101,
+	Opened = 1,
 	/**
-	 * FINAL STATE!
-	 * Voting ended in failure.
+	 * All voted positively.
 	 */
-	VETOED = 102,
+	Passed = 5,
 	/**
-	 * FINAL STATE!
-	 * Deal failed to keep at least one member and no new member can be invited.
+	 * Someone voted against the final deal form.
 	 */
-	FALLEN_APART = 103,
+	Vetoed = 6,
 	/**
-	 * Informations about last deals are not present, possibly no deal was yet created.
+	 * All other players either did not join or joined and then left.
 	 */
-	 MISSING = 104,
+	Disassembled = 7,
+	/**
+	 * Deal was closed by moderator.
+	 */
+	Closed = 8,
 };
 
 /**
@@ -277,9 +253,17 @@ public:
 	/**
 	 * Creates new instance of the deal state.
 	 */
-	static TObjectPtr<UUDDealState> CreateState();
+	static TObjectPtr<UUDDealState> CreateState(int32 dealId, int32 ownerId);
+	/**
+	 * Current state of the deal process.
+	 */
 	UPROPERTY()
-	EUDDealSimulationState DealSimulationState = EUDDealSimulationState::Idea;
+	EUDDealSimulationState DealSimulationState = EUDDealSimulationState::Undefined;
+	/**
+	 * Current result of the deal process.
+	 */
+	UPROPERTY()
+	EUDDealSimulationResult DealSimulationResult = EUDDealSimulationResult::Undefined;
 	/**
 	 * List of players that is currently participating in the deal.
 	 */
@@ -290,6 +274,16 @@ public:
 	 */
 	UPROPERTY()
 	TArray<int32> BlockedParticipants;
+	/**
+	 * Deal is identifiably by this Id. This Id is same as the Action Id that created this deal.  
+	 */
+	UPROPERTY()
+	int32 UniqueDealId;
+	/**
+	 * Id of a Player that is moderating the deal.
+	 */
+	UPROPERTY()
+	int32 OwnerUniqueId;
 };
 
 /**

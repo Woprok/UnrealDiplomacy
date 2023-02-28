@@ -209,4 +209,5 @@ void AUDWorldSimulation::LoadCoreActions()
 	RegisterAction(NewObject<UUDAcceptParticipationDealAction>(this));
 	RegisterAction(NewObject<UUDRejectParticipationDealAction>(this));
 	RegisterAction(NewObject<UUDLeaveParticipationDealAction>(this));
+	RegisterAction(NewObject<UUDCloseDealAction>(this));
 }
