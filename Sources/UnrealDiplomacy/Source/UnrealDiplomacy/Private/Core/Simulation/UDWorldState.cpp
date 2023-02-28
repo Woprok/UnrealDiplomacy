@@ -60,7 +60,7 @@ TObjectPtr<UUDNationState> UUDNationState::CreateState(int32 playerId)
 TObjectPtr<UUDDealState> UUDDealState::CreateState()
 {
 	TObjectPtr<UUDDealState> newState = NewObject<UUDDealState>();
-	newState->DealSimulationState = EUDDealSimulationState::ASSEMBLING;
+	newState->DealSimulationState = EUDDealSimulationState::Idea;
 	return newState;
 }
 

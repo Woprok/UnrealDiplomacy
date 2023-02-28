@@ -168,14 +168,83 @@ enum class EUDWorldSimulationState : uint8
 UENUM(BlueprintType)
 enum class EUDDealSimulationState : uint8
 {
+	Error = 0,
 	/**
-	 * Initial phase of creation, during which main participants are invited by creator.
+	 * First phase represents creation of the new deal.
+	 * 
+	 * Step ends automatically as part of internal process. (Transitions to Creation.)
 	 */
-	ASSEMBLING = 0,
+	Idea = 1,
 	/**
-	 * Deal is finilazed and can't be changed further.
+	 * Second phase represents created empty deal with owner defined.
+	 * 
+	 * Step ends automatically as part of internal process. (Transitions to Specification.)
 	 */
-	VOTING = 10,
+	Creation = 2,
+	/**
+	 * Third phase represents initial demands and/or requests as a primary discussion points.
+	 * 
+	 * This step allows user input.
+	 * Step is always ended by user. (Transitions to Invitations.)
+	 */
+	CreatingDraft = 3,
+	/**
+	 * Fourth phase represents resolution of other players joining to participate or rejecting any idea of deal.
+	 * Players have two options:
+	 * - Accept/Join (Player will participate in the deal.)
+	 * - Reject/Leave (Player won't participate in the deal.)
+	 * - Players can suggest additional participant in the deal.
+	 * - Owner can based on suggestion invite additional participant to the discussion.
+	 * 
+	 * Step ends once all players are resolved or owner forces and end to waiting time. (Transitions to Extension.)
+	 * Unfinished invitations needs to be canceled.
+	 */
+	InvitePrimaryParticipants = 4,
+	/**
+	 * Fifth phase represents extension of items that are discussed as primary points.
+	 * Each player can choose to add additional primary discussion point.
+	 * Once all players choosed to either add or no. Next step begins.
+	 * 
+	 * Step ends when all players are finished or timer run out.
+	 */
+	Extension = 5,
+	/**
+	 * Sixth phase represents adding additional demands or requests binded to existing primary discussion points.
+	 * 
+	 * Step ends when all players are finished or timer run out.
+	 */
+	RequestsAndDemands = 6,
+	/**
+	 * Seventh phase represents bidding to appease demands and requests, invoked by others.
+	 * Each player can choose if they want to offer something.
+	 * 
+	 * Step ends when all players are finished or timer run out.
+	 */
+	Bidding = 7,
+	/**
+	 * Eight phase represents player finalizing their option, e.g. selecting bids.
+	 * 
+	 * Step ends when all players are finished or timer run out.
+	 */
+	PreVote = 8,
+	/**
+	 * Ninth phase represents player voting to pass the deal or reject it.
+	 * 
+	 * Step ends when all players are finished or timer run out.
+	 */
+	Vote = 9,
+	/**
+	 * Tenth phase represents final result, e.g. deal is finished and it can't be changed further.
+	 * 
+	 * This step never changes to anything else.
+	 */
+	Result = 10,
+
+
+	/**
+	 * Deal is finilazed and can't be changed further.	 
+	 */
+	VOTING = 100,
 	/**
 	 * FINAL STATE!
 	 * Each bullet point of deal is passed and will take effect.
@@ -210,7 +279,7 @@ public:
 	 */
 	static TObjectPtr<UUDDealState> CreateState();
 	UPROPERTY()
-	EUDDealSimulationState DealSimulationState = EUDDealSimulationState::ASSEMBLING;
+	EUDDealSimulationState DealSimulationState = EUDDealSimulationState::Idea;
 	/**
 	 * List of players that is currently participating in the deal.
 	 */
