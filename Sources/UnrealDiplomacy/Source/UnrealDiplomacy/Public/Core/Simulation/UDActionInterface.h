@@ -498,7 +498,22 @@ public:
 // * Removes discussion point from the deal.
 // */
 //UCLASS()
-//class UNREALDIPLOMACY_API UUDAddDiscussionPointDealAction : public UObject, public IUDActionInterface
+//class UNREALDIPLOMACY_API UUDRemoveDiscussionPointDealAction : public UObject, public IUDActionInterface
+//{
+//	GENERATED_BODY()
+//public:
+//	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+//	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+//	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+//	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+//public:
+//	static const int32 ActionTypeId = 10007;
+//};
+///**
+// * Updates discussion point from the deal.
+// */
+//UCLASS()
+//class UNREALDIPLOMACY_API UUDUpdateDiscussionPointDealAction : public UObject, public IUDActionInterface
 //{
 //	GENERATED_BODY()
 //public:

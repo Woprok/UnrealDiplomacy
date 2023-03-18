@@ -243,6 +243,82 @@ enum class EUDDealSimulationResult : uint8
 };
 
 /**
+ * Represents type of discussion point in terms of politeness.
+ */
+UENUM(BlueprintType)
+enum class EUDPointPoliteness : uint8
+{
+	 /**
+	  * Player expects fair deal.
+	  */
+	 Proposal = 0,
+	 /**
+	  * Player expects to benefit from it.
+	  */
+	 Demand = 1,
+	 /**
+	  * Player expects to pay for it.
+	  */
+	 Offer = 2,
+};
+
+/**
+ * Represents type of discussion point in terms of phase.
+ */
+UENUM(BlueprintType)
+enum class EUDDiscussionLevel : uint8
+{
+	/**
+	 * Represents undefined value.
+	 */
+	None = 0,
+	/**
+	 * Represents main talking point of deal.
+	 */
+	PrimaryPoint = 1,
+	/**
+	 * Represents argument's about the deal.
+	 */
+	SecondaryArgument = 2,
+	/**
+	 * Represents bids.
+	 */
+	TerciaryBid = 3,
+};
+
+/**
+ * Represents single discussion point, argument or bid.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDDiscussionItem : public UObject
+{
+	GENERATED_BODY()
+public:
+	 /**
+	  * Who is responsible for editing this point.
+	  */
+	 int32 EditorId;
+	 /**
+	  * Each item has a specific overarching behaviour attached to it.
+	  * Valid options may wary between different levels.
+	  */
+	 EUDPointPoliteness Type = EUDPointPoliteness::Proposal;
+	 /**
+	  *
+	  */
+	 EUDDiscussionLevel Level = EUDDiscussionLevel::None;
+	 /**
+	  * Responses represent direct answer to an Item. Each such item can be once again answered.
+	  * This creates tree like structure, depth is currently limited by EUDDiscussionLevel
+	  */
+	 TArray<TObjectPtr<UUDDiscussionItem>> Responses;
+	 /**
+	  * Complex data representing what is this ?
+	  */
+	 bool ReallyComplexData;
+};
+
+/**
  * Represents state of single deal that is being / was made.
  */
 UCLASS()
@@ -284,6 +360,11 @@ public:
 	 */
 	UPROPERTY()
 	int32 OwnerUniqueId;
+	/**
+	 * List of all discussion points.
+	 */
+	UPROPERTY()
+	TArray<TObjectPtr<UUDDiscussionItem>> Points;
 };
 
 /**
