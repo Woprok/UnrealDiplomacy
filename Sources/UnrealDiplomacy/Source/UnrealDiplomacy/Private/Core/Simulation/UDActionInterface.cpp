@@ -546,20 +546,18 @@ void UUDGrantExploitTilePermissionAction::Revert(FUDActionData& actionData, TObj
 
 /**
  * Deal can be created only if all other deals are closed.
- * This currenly allows only single deal to exists by explicitely checking last.
- * TODO allow any number of deals to be discussed at the same time ?
+ * TODO bugfix issues with mutliple active deals owned by single player?
+ * Currently it prevents only from having multiple deals in opened state...
  */
 bool UUDCreateDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
 	bool canCreate = true;
-	if (targetWorldState->Deals.Num() > 0)
+	for (auto deal : targetWorldState->Deals)
 	{
-		// this can potentially prevent new deal
-		canCreate = false;
-		EUDDealSimulationResult state = targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationResult;
-		if (state != EUDDealSimulationResult::Opened)
+		if (deal.Value->DealSimulationResult == EUDDealSimulationResult::Opened &&
+			deal.Value->OwnerUniqueId == actionData.InvokerPlayerId)
 		{
-			canCreate = true;
+			canCreate = false;
 		}
 	}
 	return IUDActionInterface::CanExecute(actionData, targetWorldState) && canCreate;
@@ -704,7 +702,8 @@ void UUDLeaveParticipationDealAction::Revert(FUDActionData& actionData, TObjectP
 bool UUDCloseDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
 	return IUDActionInterface::CanExecute(actionData, targetWorldState) && 
-		targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationResult == EUDDealSimulationResult::Opened;
+		targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationResult == EUDDealSimulationResult::Opened &&
+		targetWorldState->Deals[actionData.ParentUniqueId]->OwnerUniqueId == actionData.InvokerPlayerId;
 }
 
 void UUDCloseDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)

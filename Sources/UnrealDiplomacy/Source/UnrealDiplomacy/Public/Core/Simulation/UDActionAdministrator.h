@@ -363,6 +363,19 @@ public:
 		return FUDDealParticipantsInfo(dealUniqueId, active, blocked, available);
 	}
 	UFUNCTION(BlueprintCallable)
+	TArray<int32> GetDealIds()
+	{
+		TArray<int32> keys;
+		keys.Empty(0);
+
+		if (OverseeingState->Deals.Num() != 0)
+		{
+			OverseeingState->Deals.GenerateKeyArray(keys);
+			keys.Sort();
+		}
+		return keys;
+	}
+	UFUNCTION(BlueprintCallable)
 	FUDDealInfo GetDealInfoAnyDEBUG()
 	{
 		if (OverseeingState->Deals.Num() != 0)
@@ -404,6 +417,15 @@ public:
 	FUDActionData GetCreateDealAction()
 	{
 		return FUDActionData(UUDCreateDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId);
+	}
+	/**
+	 * Closes deal that is currently opened by the creator.
+	 */
+	UFUNCTION(BlueprintCallable)
+	FUDActionData GetCloseDealAction(int32 dealUniqueId)
+	{
+		FUDActionData raw = FUDActionData(UUDCloseDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId);
+		return FUDActionData::AsChildOf(raw, dealUniqueId);
 	}
 	/**
 	 * Invite participant
