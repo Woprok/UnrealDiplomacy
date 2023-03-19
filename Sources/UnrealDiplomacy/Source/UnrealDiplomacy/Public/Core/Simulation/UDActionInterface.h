@@ -32,6 +32,7 @@ class UNREALDIPLOMACY_API IUDActionInterface
 public:
 	/**
 	 * Checks if this action is valid for current state.
+	 * Validity is in general checked on GaiaWorldState.
 	 */
 	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState);
 	/**
@@ -79,6 +80,22 @@ public:
 	 virtual void SetModifierManager(TObjectPtr<UUDModifierManager> modifierManager)
 	 {
 		 // Default Interface call is empty.
+	 }
+	 /**
+	  * Determines if this action is eligible to execute additional actions.
+	  * Additional actions should never be composite to prevent loop!
+	  */
+	 virtual bool IsComposite()
+	 {
+		 return false;
+	 }
+	 /**
+	  * Additional actions that should be executed after this action, based on input.
+	 * Validity is in general checked on GaiaWorldState.
+	  */
+	 TArray<FUDActionData> GetSubactions(FUDActionData& parentAction, TObjectPtr<UUDWorldState> targetWorldState)
+	 {
+		 return TArray<FUDActionData>();
 	 }
 };
 

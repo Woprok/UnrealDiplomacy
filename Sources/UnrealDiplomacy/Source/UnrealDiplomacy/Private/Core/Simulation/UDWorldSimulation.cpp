@@ -100,6 +100,15 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 	NaiveExecuteAction(newAction);
 	// Notifies everyone about the action.
 	OnBroadcastVerifiedActionExecutedDelegate.Broadcast(newAction);
+	// Continue notifying about the subsequent actions...
+	if (actionExecutor->IsComposite())
+	{
+		auto& subactions = actionExecutor->GetSubactions(newAction, GetSpecificState(UUDWorldState::GaiaWorldStateId));
+		for (auto& action : subactions)
+		{
+			ExecuteAction(newAction);
+		}
+	}
 }
 
 void AUDWorldSimulation::SynchronizeNewPlayerState(TObjectPtr<UUDWorldState> newState)
