@@ -118,6 +118,16 @@ public:
 	 */
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsEnabledNextDeal = 0;
+	/**
+	 * MVVM Field.
+	 */
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	EUDDealSimulationState DealState = EUDDealSimulationState::Undefined;
+	/**
+	 * MVVM Field.
+	 */
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	EUDDealSimulationResult DealResult = EUDDealSimulationResult::Undefined;
 protected:
 	/**
 	 * Deals sorted by time they were created.
@@ -294,6 +304,8 @@ protected:
 		SetIsEnabledPreviousDeal(false);
 		SetIsEnabledNextDeal(false);
 		SetIsSessionActive(false);
+		SetDealState(info.State);
+		SetDealResult(info.Result);
 		auto rs1 = FText(
 			LOCTEXT("DealState", "No deal is currently discussed with you.")
 		).ToString();
@@ -302,6 +314,8 @@ protected:
 	void OnDealPresent(FUDDealInfo info)
 	{
 		SetIsSessionActive(true);
+		SetDealState(info.State);
+		SetDealResult(info.Result);
 		auto rs1 = FText::Format(
 			LOCTEXT("DealState", "Deal is currently discussed with you, ID{0}."),
 			info.DealUniqueId
@@ -356,6 +370,22 @@ private:
 	/**
 	 * MVVM Binding.
 	 */
+	void SetDealState(EUDDealSimulationState newDealState)
+	{
+		// Set checks if value changed.
+		UE_MVVM_SET_PROPERTY_VALUE(DealState, newDealState);
+	}
+	/**
+	 * MVVM Binding.
+	 */
+	void SetDealResult(EUDDealSimulationResult newDealResult)
+	{
+		// Set checks if value changed.
+		UE_MVVM_SET_PROPERTY_VALUE(DealResult, newDealResult);
+	}
+	/**
+	 * MVVM Binding.
+	 */
 	FString GetSessionDescription() const
 	{
 		return SessionDescription;
@@ -387,6 +417,20 @@ private:
 	bool GetIsEnabledNextDeal() const
 	{
 		return IsEnabledNextDeal;
+	}
+	/**
+	 * MVVM Binding.
+	 */
+	EUDDealSimulationState GetDealState() const
+	{
+		return DealState;
+	}
+	/**
+	 * MVVM Binding.
+	 */
+	EUDDealSimulationResult GetDealResult() const
+	{
+		return DealResult;
 	}
 };
 #undef LOCTEXT_NAMESPACE

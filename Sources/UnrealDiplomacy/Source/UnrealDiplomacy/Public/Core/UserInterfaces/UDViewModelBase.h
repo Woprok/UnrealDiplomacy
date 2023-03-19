@@ -66,6 +66,74 @@ public:
 		}
 		return ESlateVisibility::Visible;
 	}
+	UFUNCTION(BlueprintPure, meta = (BlueprintAutocast), Category = "Convertors|Views")
+	static FText Conv_DealStateToText(EUDDealSimulationState InState)
+	{
+		switch (InState)
+		{
+		case EUDDealSimulationState::Undefined:
+			return FText::FromString("Undefined");
+			break;
+		case EUDDealSimulationState::CreatingDraft:
+			return FText::FromString("Creating Draft");
+			break;
+		case EUDDealSimulationState::Assembling:
+			return FText::FromString("Assembling");
+			break;
+		case EUDDealSimulationState::ExtendingDraft:
+			return FText::FromString("Extending Draft");
+			break;
+		case EUDDealSimulationState::DemandsAndRequests:
+			return FText::FromString("Demands And Requests");
+			break;
+		case EUDDealSimulationState::Bidding:
+			return FText::FromString("Bidding");
+			break;
+		case EUDDealSimulationState::FinalizingDraft:
+			return FText::FromString("Finalizing Draft");
+			break;
+		case EUDDealSimulationState::Vote:
+			return FText::FromString("Vote");
+			break;
+		case EUDDealSimulationState::Resolution:
+			return FText::FromString("Resolution");
+			break;
+		case EUDDealSimulationState::Result:
+			return FText::FromString("Result");
+			break;
+		default:
+			return FText::FromString("default");
+			break;
+		}
+	}
+	UFUNCTION(BlueprintPure, meta = (BlueprintAutocast), Category = "Convertors|Views")
+	static FText Conv_DealResultToText(EUDDealSimulationResult InResult)
+	{
+		switch (InResult)
+		{
+		case EUDDealSimulationResult::Undefined:
+			return FText::FromString("Undefined");
+			break;
+		case EUDDealSimulationResult::Opened:
+			return FText::FromString("Opened");
+			break;
+		case EUDDealSimulationResult::Passed:
+			return FText::FromString("Passed");
+			break;
+		case EUDDealSimulationResult::Vetoed:
+			return FText::FromString("Vetoed");
+			break;
+		case EUDDealSimulationResult::Disassembled:
+			return FText::FromString("Disassembled");
+			break;
+		case EUDDealSimulationResult::Closed:
+			return FText::FromString("Closed");
+			break;
+		default:
+			return FText::FromString("default");
+			break;
+		}
+	}
 };
 
 /**
