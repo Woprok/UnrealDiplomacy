@@ -3,6 +3,12 @@
 
 #include "Core/Simulation/UDWorldState.h"
 
+FUDDiscussionDetail::FUDDiscussionDetail()
+{
+
+}
+
+
 TObjectPtr<UUDTileState> UUDTileState::CreateState(int32 x, int32 y)
 {
 	TObjectPtr<UUDTileState> newState = NewObject<UUDTileState>();
@@ -64,6 +70,14 @@ TObjectPtr<UUDDealState> UUDDealState::CreateState(int32 dealId, int32 ownerId)
 	newState->DealSimulationResult = EUDDealSimulationResult::Opened;
 	newState->UniqueDealId = dealId;
 	newState->OwnerUniqueId = ownerId;
+	return newState;
+}
+
+TObjectPtr<UUDDiscussionItem> UUDDiscussionItem::CreateState(int32 ownerId)
+{
+	TObjectPtr<UUDDiscussionItem> newState = NewObject<UUDDiscussionItem>();
+	newState->EditorId = ownerId;
+	newState->Responses.Empty(0);
 	return newState;
 }
 

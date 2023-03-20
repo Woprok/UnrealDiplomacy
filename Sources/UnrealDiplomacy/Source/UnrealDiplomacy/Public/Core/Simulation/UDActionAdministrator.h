@@ -424,7 +424,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetCloseDealAction(int32 dealUniqueId)
 	{
-		FUDActionData raw = FUDActionData(UUDCloseDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId);
+		FUDActionData raw = FUDActionData(UUDAdvanceResultClosedDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId);
 		return FUDActionData::AsChildOf(raw, dealUniqueId);
 	}
 	/**

@@ -154,6 +154,9 @@ public:
 	 */
 	UPROPERTY(BlueprintReadOnly)
 	int32 ParentUniqueId = 0;
+
+	//UPROPERTY(BlueprintReadOnly)
+	//TArray<int32> OptionalValues;
 };
 
 /**

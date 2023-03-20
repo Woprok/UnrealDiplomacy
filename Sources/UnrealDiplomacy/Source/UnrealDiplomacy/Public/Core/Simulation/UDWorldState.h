@@ -287,6 +287,58 @@ enum class EUDDiscussionLevel : uint8
 };
 
 /**
+ * Represents source and target type.
+ */
+UENUM(BlueprintType)
+enum class EUDDiscussionDetailParticipants : uint8
+{
+	/**
+	 * Represents undefined value.
+	 */
+	None = 0,
+	/**
+	 * Take only first participant from Source/Target array..
+	 * Do not use this option, it's not supported to switch to Single from Any.
+	 */
+	Single = 1,
+	/**
+	 * Take all participants from Source/Target array...
+	 */
+	Any = 2,
+	/**
+	 * Always include all participants, ignore Source/Target array...
+	 */
+	All = 3,
+};
+
+/**
+ * Represents single context for discussion point, argument or bid.
+ * E.g. alliance action that will be done between all players.
+ */
+USTRUCT(BlueprintType)
+struct UNREALDIPLOMACY_API FUDDiscussionDetail
+{
+	GENERATED_BODY()
+public:
+	/** 
+	 * Empty constructor used by UE.
+	 */
+	FUDDiscussionDetail();
+	/**
+	 * Invoked action.
+	 */
+	int32 UniqueActionId;
+	/**
+	 * Players that are invoking by action.
+	 */
+	TArray<int32> Source;
+	/**
+	 * Players that are targeted by action.
+	 */
+	TArray<int32> Target;
+};
+
+/**
  * Represents single discussion point, argument or bid.
  */
 UCLASS()
@@ -294,6 +346,10 @@ class UNREALDIPLOMACY_API UUDDiscussionItem : public UObject
 {
 	GENERATED_BODY()
 public:
+	/**
+	 * Creates new instance of the deal state.
+	 */
+	static TObjectPtr<UUDDiscussionItem> CreateState(int32 ownerId);
 	 /**
 	  * Who is responsible for editing this point.
 	  */
@@ -313,9 +369,14 @@ public:
 	  */
 	 TArray<TObjectPtr<UUDDiscussionItem>> Responses;
 	 /**
-	  * Complex data representing what is this ?
+	  * Determines if this item is still used, or is just preserved.
 	  */
-	 bool ReallyComplexData;
+	 bool IsIgnored = false;
+	 /**
+	  * Representation of action.
+	  * This is generic, each action will require specific handle for executing it.
+	  */
+	 FUDDiscussionDetail Detail;
 };
 
 /**

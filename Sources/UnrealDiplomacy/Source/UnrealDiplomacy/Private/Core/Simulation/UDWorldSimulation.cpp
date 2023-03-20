@@ -103,7 +103,7 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 	// Continue notifying about the subsequent actions...
 	if (actionExecutor->IsComposite())
 	{
-		auto& subactions = actionExecutor->GetSubactions(newAction, GetSpecificState(UUDWorldState::GaiaWorldStateId));
+		TArray<FUDActionData> subactions = actionExecutor->GetSubactions(newAction, GetSpecificState(UUDWorldState::GaiaWorldStateId));
 		for (auto& action : subactions)
 		{
 			ExecuteAction(newAction);
@@ -226,5 +226,17 @@ void AUDWorldSimulation::LoadCoreActions()
 	RegisterAction(NewObject<UUDAcceptParticipationDealAction>(this));
 	RegisterAction(NewObject<UUDRejectParticipationDealAction>(this));
 	RegisterAction(NewObject<UUDLeaveParticipationDealAction>(this));
-	RegisterAction(NewObject<UUDCloseDealAction>(this));
+
+	RegisterAction(NewObject<UUDAdvanceStateAssemblingDealAction>(this));
+	RegisterAction(NewObject<UUDAdvanceStateExtendingDraftDealAction>(this));
+	RegisterAction(NewObject<UUDAdvanceStateDemandsAndRequestsDealAction>(this));
+	RegisterAction(NewObject<UUDAdvanceStateBiddingDealAction>(this));
+	RegisterAction(NewObject<UUDAdvanceStateFinalizingDraftDealAction>(this));
+	RegisterAction(NewObject<UUDAdvanceStateVoteDealAction>(this));
+	RegisterAction(NewObject<UUDAdvanceStateResolutionDealAction>(this));
+
+	RegisterAction(NewObject<UUDAdvanceResultPassedDealAction>(this));
+	RegisterAction(NewObject<UUDAdvanceResultVetoedDealAction>(this));
+	RegisterAction(NewObject<UUDAdvanceResultDisassembledDealAction>(this));
+	RegisterAction(NewObject<UUDAdvanceResultClosedDealAction>(this));
 }

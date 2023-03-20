@@ -93,10 +93,7 @@ public:
 	  * Additional actions that should be executed after this action, based on input.
 	 * Validity is in general checked on GaiaWorldState.
 	  */
-	 TArray<FUDActionData> GetSubactions(FUDActionData& parentAction, TObjectPtr<UUDWorldState> targetWorldState)
-	 {
-		 return TArray<FUDActionData>();
-	 }
+	 TArray<FUDActionData> GetSubactions(FUDActionData& parentAction, TObjectPtr<UUDWorldState> targetWorldState);
 };
 
 /**
@@ -480,10 +477,10 @@ public:
 };
 
 /**
- * Moderator is able to close deal, making all actions for it invalid and deak has no result.
+ * Updates states
  */
 UCLASS()
-class UNREALDIPLOMACY_API UUDCloseDealAction : public UObject, public IUDActionInterface
+class UNREALDIPLOMACY_API UUDAdvanceStateAssemblingDealAction : public UObject, public IUDActionInterface
 {
 	GENERATED_BODY()
 public:
@@ -492,45 +489,188 @@ public:
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
 public:
-	static const int32 ActionTypeId = 10005;
+	static const int32 ActionTypeId = 10009;
+};
+UCLASS()
+class UNREALDIPLOMACY_API UUDAdvanceStateExtendingDraftDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
+	static const int32 ActionTypeId = 10010;
+};
+UCLASS()
+class UNREALDIPLOMACY_API UUDAdvanceStateDemandsAndRequestsDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
+	static const int32 ActionTypeId = 10011;
+};
+UCLASS()
+class UNREALDIPLOMACY_API UUDAdvanceStateBiddingDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
+	static const int32 ActionTypeId = 10012;
+};
+UCLASS()
+class UNREALDIPLOMACY_API UUDAdvanceStateFinalizingDraftDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
+	static const int32 ActionTypeId = 10013;
+};
+UCLASS()
+class UNREALDIPLOMACY_API UUDAdvanceStateVoteDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
+	static const int32 ActionTypeId = 10014;
+};
+UCLASS()
+class UNREALDIPLOMACY_API UUDAdvanceStateResolutionDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
+	static const int32 ActionTypeId = 10015;
+};
+UCLASS()
+class UNREALDIPLOMACY_API UUDAdvanceStateResultDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
+	static const int32 ActionTypeId = 10016;
+};
+/**
+ * Updates result
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDAdvanceResultPassedDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
+	static const int32 ActionTypeId = 100017;
+};
+/**
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDAdvanceResultVetoedDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
+	static const int32 ActionTypeId = 100018;
+};
+/**
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDAdvanceResultDisassembledDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
+	static const int32 ActionTypeId = 100019;
+};
+/**
+ * Moderator is able to close deal, making all actions for it invalid and deak has no result.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDAdvanceResultClosedDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
+	static const int32 ActionTypeId = 10020;
 };
 
-///**
-// * Allows extending of the deal with new discussion point.
-// */
-//UCLASS()
-//class UNREALDIPLOMACY_API UUDAddDiscussionPointDealAction : public UObject, public IUDActionInterface
-//{
-//	GENERATED_BODY()
-//public:
-//	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-//	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-//	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-//	virtual int32 GetActionTypeId() override { return ActionTypeId; };
-//public:
-//	static const int32 ActionTypeId = 10006;
-//};
-//
-///**
-// * Removes discussion point from the deal.
-// */
-//UCLASS()
-//class UNREALDIPLOMACY_API UUDRemoveDiscussionPointDealAction : public UObject, public IUDActionInterface
-//{
-//	GENERATED_BODY()
-//public:
-//	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-//	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-//	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-//	virtual int32 GetActionTypeId() override { return ActionTypeId; };
-//public:
-//	static const int32 ActionTypeId = 10007;
-//};
+
+/**
+ * Allows extending of the deal with new discussion point.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDAddDiscussionItemDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
+	static const int32 ActionTypeId = 10030;
+};
+
+/**
+ * Removes discussion point from the deal. Item is still stored and ready to be used, if revert is called.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDIgnoreDiscussionItemDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+public:
+	static const int32 ActionTypeId = 10031;
+};
 ///**
 // * Updates discussion point from the deal.
 // */
 //UCLASS()
-//class UNREALDIPLOMACY_API UUDUpdateDiscussionPointDealAction : public UObject, public IUDActionInterface
+//class UNREALDIPLOMACY_API UUDUpdateDiscussionItemDealAction : public UObject, public IUDActionInterface
 //{
 //	GENERATED_BODY()
 //public:
@@ -539,5 +679,5 @@ public:
 //	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 //	virtual int32 GetActionTypeId() override { return ActionTypeId; };
 //public:
-//	static const int32 ActionTypeId = 10007;
+//	static const int32 ActionTypeId = 10008;
 //};

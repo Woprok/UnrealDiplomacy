@@ -10,12 +10,12 @@ FUDActionData::FUDActionData()
 FUDActionData::FUDActionData(const FUDActionData& actionData) 
 	: 
 	ActionTypeId(actionData.ActionTypeId),
-	UniqueId(actionData.UniqueId),
-	ParentUniqueId(actionData.ParentUniqueId),
 	InvokerPlayerId(actionData.InvokerPlayerId),
 	TargetPlayerId(actionData.TargetPlayerId),
 	ValueParameter(actionData.ValueParameter),
-	TileParameter(actionData.TileParameter)
+	TileParameter(actionData.TileParameter),
+	UniqueId(actionData.UniqueId),
+	ParentUniqueId(actionData.ParentUniqueId)
 {
 
 }

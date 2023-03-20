@@ -9,6 +9,13 @@ bool IUDActionInterface::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWor
 	UE_LOG(LogTemp, Log, TEXT("INSTANCE(%d): Default Can Execute is %d==%d."),
 		targetWorldState->PerspectivePlayerId, actionData.ActionTypeId, GetActionTypeId());
 	return actionData.ActionTypeId == GetActionTypeId();
+}	 
+
+TArray<FUDActionData> IUDActionInterface::GetSubactions(FUDActionData& parentAction, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	TArray<FUDActionData> emptyArray;
+	emptyArray.Empty(0);
+	return emptyArray;
 }
 
 #pragma region UUDLogAction
@@ -699,31 +706,220 @@ void UUDLeaveParticipationDealAction::Revert(FUDActionData& actionData, TObjectP
 		actionData.InvokerPlayerId);
 }
 
-bool UUDCloseDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+#pragma endregion
+
+#pragma region State and Result of Deal Action
+
+bool UUDAdvanceStateAssemblingDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
-	return IUDActionInterface::CanExecute(actionData, targetWorldState) && 
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+		targetWorldState->Deals[actionData.ParentUniqueId]->OwnerUniqueId == actionData.InvokerPlayerId;
+}
+void UUDAdvanceStateAssemblingDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationState = EUDDealSimulationState::Assembling;
+}
+void UUDAdvanceStateAssemblingDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationState = EUDDealSimulationState::CreatingDraft;
+}
+
+bool UUDAdvanceStateExtendingDraftDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+		targetWorldState->Deals[actionData.ParentUniqueId]->OwnerUniqueId == actionData.InvokerPlayerId;
+}
+void UUDAdvanceStateExtendingDraftDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationState = EUDDealSimulationState::ExtendingDraft;
+}
+void UUDAdvanceStateExtendingDraftDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationState = EUDDealSimulationState::Assembling;
+}
+
+bool UUDAdvanceStateDemandsAndRequestsDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+		targetWorldState->Deals[actionData.ParentUniqueId]->OwnerUniqueId == actionData.InvokerPlayerId;
+}
+void UUDAdvanceStateDemandsAndRequestsDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationState = EUDDealSimulationState::DemandsAndRequests;
+}
+void UUDAdvanceStateDemandsAndRequestsDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationState = EUDDealSimulationState::ExtendingDraft;
+}
+
+bool UUDAdvanceStateBiddingDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+		targetWorldState->Deals[actionData.ParentUniqueId]->OwnerUniqueId == actionData.InvokerPlayerId;
+}
+void UUDAdvanceStateBiddingDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationState = EUDDealSimulationState::Bidding;
+}
+void UUDAdvanceStateBiddingDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationState = EUDDealSimulationState::DemandsAndRequests;
+}
+
+bool UUDAdvanceStateFinalizingDraftDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+		targetWorldState->Deals[actionData.ParentUniqueId]->OwnerUniqueId == actionData.InvokerPlayerId;
+}
+void UUDAdvanceStateFinalizingDraftDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationState = EUDDealSimulationState::FinalizingDraft;
+}
+void UUDAdvanceStateFinalizingDraftDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationState = EUDDealSimulationState::Bidding;
+}
+
+bool UUDAdvanceStateVoteDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+		targetWorldState->Deals[actionData.ParentUniqueId]->OwnerUniqueId == actionData.InvokerPlayerId;
+}
+void UUDAdvanceStateVoteDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationState = EUDDealSimulationState::Vote;
+}
+void UUDAdvanceStateVoteDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationState = EUDDealSimulationState::FinalizingDraft;
+}
+
+bool UUDAdvanceStateResolutionDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+		targetWorldState->Deals[actionData.ParentUniqueId]->OwnerUniqueId == actionData.InvokerPlayerId;
+}
+void UUDAdvanceStateResolutionDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationState = EUDDealSimulationState::Resolution;
+}
+void UUDAdvanceStateResolutionDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationState = EUDDealSimulationState::Vote;
+}
+
+bool UUDAdvanceStateResultDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+		targetWorldState->Deals[actionData.ParentUniqueId]->OwnerUniqueId == actionData.InvokerPlayerId;
+}
+void UUDAdvanceStateResultDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationState = EUDDealSimulationState::Result;
+}
+void UUDAdvanceStateResultDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationState = EUDDealSimulationState::Resolution;
+}
+
+bool UUDAdvanceResultPassedDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
 		targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationResult == EUDDealSimulationResult::Opened &&
 		targetWorldState->Deals[actionData.ParentUniqueId]->OwnerUniqueId == actionData.InvokerPlayerId;
 }
-
-void UUDCloseDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDAdvanceResultPassedDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
-	targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationResult = EUDDealSimulationResult::Closed;
-
-	UE_LOG(LogTemp, Log,
-		TEXT("INSTANCE(%d):UUDCloseDealAction(%d) closed by playerId(%d)."),
-		targetWorldState->PerspectivePlayerId, actionData.UniqueId,
-		actionData.InvokerPlayerId);
+	targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationResult = EUDDealSimulationResult::Passed;
 }
-
-void UUDCloseDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDAdvanceResultPassedDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
 	targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationResult = EUDDealSimulationResult::Opened;
+}
 
-	UE_LOG(LogTemp, Log,
-		TEXT("INSTANCE(%d):UUDCloseDealAction(%d) reopened by playerId(%d)."),
-		targetWorldState->PerspectivePlayerId, actionData.UniqueId,
-		actionData.InvokerPlayerId);
+bool UUDAdvanceResultVetoedDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+		targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationResult == EUDDealSimulationResult::Opened &&
+		targetWorldState->Deals[actionData.ParentUniqueId]->OwnerUniqueId == actionData.InvokerPlayerId;
+}
+void UUDAdvanceResultVetoedDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationResult = EUDDealSimulationResult::Vetoed;
+}
+void UUDAdvanceResultVetoedDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationResult = EUDDealSimulationResult::Opened;
+}
+
+bool UUDAdvanceResultDisassembledDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+		targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationResult == EUDDealSimulationResult::Opened &&
+		targetWorldState->Deals[actionData.ParentUniqueId]->OwnerUniqueId == actionData.InvokerPlayerId;
+}
+void UUDAdvanceResultDisassembledDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationResult = EUDDealSimulationResult::Disassembled;
+}
+void UUDAdvanceResultDisassembledDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationResult = EUDDealSimulationResult::Opened;
+}
+
+bool UUDAdvanceResultClosedDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+		targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationResult == EUDDealSimulationResult::Opened &&
+		targetWorldState->Deals[actionData.ParentUniqueId]->OwnerUniqueId == actionData.InvokerPlayerId;
+}
+void UUDAdvanceResultClosedDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationResult = EUDDealSimulationResult::Closed;
+}
+void UUDAdvanceResultClosedDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationResult = EUDDealSimulationResult::Opened;
+}
+
+#pragma endregion
+
+#pragma region Discussion Point
+
+bool UUDAddDiscussionItemDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+		targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationState <= EUDDealSimulationState::FinalizingDraft &&
+		targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
+}
+void UUDAddDiscussionItemDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Deals[actionData.ParentUniqueId]->Points.Add(
+		UUDDiscussionItem::CreateState(actionData.InvokerPlayerId));
+}
+void UUDAddDiscussionItemDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	// This can always remove last item as that's only time this action makes any sense to be called.
+	auto& refLast = targetWorldState->Deals[actionData.ParentUniqueId]->Points[
+		targetWorldState->Deals[actionData.ParentUniqueId]->Points.Num() - 1];
+
+	targetWorldState->Deals[actionData.ParentUniqueId]->Points.Remove(refLast);
+}
+
+bool UUDIgnoreDiscussionItemDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+		targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationState <= EUDDealSimulationState::FinalizingDraft &&
+		targetWorldState->Deals[actionData.ParentUniqueId]->DealSimulationResult <= EUDDealSimulationResult::Opened &&
+		targetWorldState->Deals[actionData.ParentUniqueId]->Points[actionData.ValueParameter]->IsIgnored == false;
+}
+void UUDIgnoreDiscussionItemDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Deals[actionData.ParentUniqueId]->Points[actionData.ValueParameter]->IsIgnored = true;
+}
+void UUDIgnoreDiscussionItemDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	targetWorldState->Deals[actionData.ParentUniqueId]->Points[actionData.ValueParameter]->IsIgnored = false;
 }
 
 #pragma endregion
