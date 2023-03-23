@@ -5,11 +5,224 @@
 #include "CoreMinimal.h"
 #include "UDActionData.generated.h"
 
+#pragma region DataWrappers
 /**
- * Defines data passed to a an action.
- * TODO maybe change this to class, so we can use inheritance/variants.
- * TODO consider array of Imodifier that have variable implementations of fields for future data access
- *
+ * Transforms action parameters to properly named fields.
+ * @param FUDActionData.ValueParameters
+ */
+USTRUCT(BlueprintType)
+struct FUDTargetData
+{
+	GENERATED_BODY()
+public:
+	FUDTargetData() {}
+	FUDTargetData(TArray<int32> valueParameters)
+	{
+		TargetId = valueParameters[0];
+	}
+	UPROPERTY(BlueprintReadOnly)
+	int32 TargetId = 0;
+};
+
+/**
+ * Transforms action parameters to properly named fields.
+ * @param FUDActionData.ValueParameters
+ */
+USTRUCT(BlueprintType)
+struct FUDValueData
+{
+	GENERATED_BODY()
+public:
+	FUDValueData() {}
+	FUDValueData(TArray<int32> valueParameters)
+	{
+		Value = valueParameters[0];
+	}
+	UPROPERTY(BlueprintReadOnly)
+	int32 Value = 0;
+};
+
+/**
+ * Transforms action parameters to properly named fields.
+ * @param FUDActionData.ValueParameters
+ */
+USTRUCT(BlueprintType)
+struct FUDDealData
+{
+	GENERATED_BODY()
+public:
+	FUDDealData() {}
+	FUDDealData(TArray<int32> valueParameters)
+	{
+		DealId = valueParameters[0];
+	}
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealId = 0;
+};
+
+/**
+ * Transforms action parameters to properly named fields.
+ * @param FUDActionData.ValueParameters
+ */
+USTRUCT(BlueprintType)
+struct FUDDealPointData
+{
+	GENERATED_BODY()
+public:
+	FUDDealPointData() {}
+	FUDDealPointData(TArray<int32> valueParameters)
+	{
+		DealId = valueParameters[0];
+	}
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 Point = 0;
+};
+
+/**
+ * Transforms action parameters to properly named fields.
+ * @param FUDActionData.ValueParameters
+ */
+USTRUCT(BlueprintType)
+struct FUDDealTargetData
+{
+	GENERATED_BODY()
+public:
+	FUDDealTargetData() {}
+	FUDDealTargetData(TArray<int32> valueParameters)
+	{
+		DealId = valueParameters[0];
+		TargetId = valueParameters[1];
+	}
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 TargetId = 0;
+};
+
+/**
+ * Transforms action parameters to properly named fields.
+ * @param FUDActionData.ValueParameters
+ */
+USTRUCT(BlueprintType)
+struct FUDTargetValueData
+{
+	GENERATED_BODY()
+public:
+	FUDTargetValueData() {}
+	FUDTargetValueData(TArray<int32> valueParameters)
+	{
+		TargetId = valueParameters[0];
+		Value = valueParameters[1];
+	}
+	UPROPERTY(BlueprintReadOnly)
+	int32 TargetId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 Value = 0;
+};
+
+/**
+ * Transforms action parameters to properly named fields.
+ * @param FUDActionData.ValueParameters
+ */
+USTRUCT(BlueprintType)
+struct FUDTargetTileData
+{
+	GENERATED_BODY()
+public:
+	FUDTargetTileData() {}
+	FUDTargetTileData(TArray<int32> valueParameters)
+	{
+		TargetId = valueParameters[0];
+		X = valueParameters[1];
+		Y = valueParameters[2];
+	}
+	UPROPERTY(BlueprintReadOnly)
+	int32 TargetId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 X = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 Y = 0;
+};
+
+/**
+ * Transforms action parameters to properly named fields.
+ * @param FUDActionData.ValueParameters
+ */
+USTRUCT(BlueprintType)
+struct FUDTileData
+{
+	GENERATED_BODY()
+public:
+	FUDTileData() {}
+	FUDTileData(TArray<int32> valueParameters)
+	{
+		X = valueParameters[0];
+		Y = valueParameters[1];
+	}
+	UPROPERTY(BlueprintReadOnly)
+	int32 X = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 Y = 0;
+};
+
+/**
+ * Transforms action parameters to properly named fields.
+ * @param FUDActionData.ValueParameters
+ */
+USTRUCT(BlueprintType)
+struct FUDTileValueData
+{
+	GENERATED_BODY()
+public:
+	FUDTileValueData() {}
+	FUDTileValueData(TArray<int32> valueParameters)
+	{
+		X = valueParameters[0];
+		Y = valueParameters[1];
+		Value = valueParameters[2];
+	}
+	UPROPERTY(BlueprintReadOnly)
+	int32 X = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 Y = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 Value = 0;
+};
+
+/**
+ * Transforms action parameters to properly named fields.
+ * @param FUDActionData.ValueParameters
+ */
+USTRUCT(BlueprintType)
+struct FUDMapSettingsData
+{
+	GENERATED_BODY()
+public:
+	FUDMapSettingsData() {}
+	FUDMapSettingsData(TArray<int32> valueParameters)
+	{
+		Seed = valueParameters[0];
+		SizeX = valueParameters[1];
+		SizeY = valueParameters[2];
+	}
+	UPROPERTY(BlueprintReadOnly)
+	int32 Seed = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 SizeX = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 SizeY = 0;
+};
+
+#pragma endregion
+
+/**
+ * Actions are passed between Client and Server as pure data of an absolute change.
+ * Struct is used to comply with default serialization and avoid further complexity with pointers.
+ * Most weight is carried by ActionTypeId and InvokerPlayerId.
+ * Remaning data are filled whenever they are needed. UniqueId is set by Server. Client set value is ignored!
+ * 
  * Note: default comparison == is done based purely on UniqueId, if you need complete value comparison
  * use IsValueEqual...
  */
@@ -28,58 +241,39 @@ public:
 	 */
 	FUDActionData(const FUDActionData& existingAction);
 	/**
-	 * Constructor for generic server/automatic use of an action.
-	 * Example: StartGame (only actionTypeId is relevant for execution)
-	 */
-	FUDActionData(int32 actionTypeId);
-	/**
-	 * Constructor for generic use.
+	 * Default constructor used for actions that require no additional parameters.
+	 * Example: Simple actions like end turn.
 	 */
 	FUDActionData(int32 actionTypeId, int32 invokerPlayerId);
 	/**
-	 * Constructor for generic target use.
+	 * Constructor used for actions that require additional value parameters.
+	 * Example: Most actions such as these that requires target, value etc.
 	 */
-	FUDActionData(int32 actionTypeId, int32 invokerPlayerId, int32 targetPlayerId);
+	FUDActionData(int32 actionTypeId, int32 invokerPlayerId, TArray<int32> valuePrameters);
 	/**
-	 * Constructor for target use with value attached.
+	 * Constructor used for actions that require additional text parameter.
+	 * Example: Changing faction name.
 	 */
-	FUDActionData(int32 actionTypeId, int32 invokerPlayerId, int32 targetPlayerId, int32 valueParameter);
+	FUDActionData(int32 actionTypeId, int32 invokerPlayerId, FString textPrameters);
 	/**
-	 * Constructor for target use with value attached and tile.
-	 * TODO rethink how to pass the parameters...
+	 * Constructor used for actions that require additional value parameters and text parameter.
+	 * Example: Chat messages inside of an deal.
 	 */
-	FUDActionData(int32 actionTypeId, int32 valueParameter, FIntPoint tileParameter);
-	/**
-	 * Constructor for source and target as well as Tile.
-	 * TODO rethink how to pass the parameters...
-	 */
-	FUDActionData(int32 actionTypeId, int32 invokerPlayerId, int32 targetPlayerId, FIntPoint tileParameter);
-	/**
-	 * Unique specifier for each action type is defined by implementation.
-	 * This specifier is used by IUDAction interface to determine, which one is
-	 * supposed to execute this data.
-	 */
-	static FUDActionData Create(int32 actionTypeId, int32 invokerPLayerId, FIntPoint tileParameter)
-	{
-		FUDActionData data;
-		data.ActionTypeId = actionTypeId;
-		data.InvokerPlayerId = invokerPLayerId;
-		data.TileParameter = tileParameter;
-		return data;
-	}
+	FUDActionData(int32 actionTypeId, int32 invokerPlayerId, TArray<int32> valuePrameters, FString textPrameters);
 
 	/**
 	 * Creates child from its parent. Usefull for action that are responses.
 	 */
-	static FUDActionData CreateChild(const FUDActionData& parentAction, int32 ActionTypeId);
+	static FUDActionData AsSuccessorOf(const FUDActionData& parentAction, int32 ActionTypeId);
 	/**
 	 * Converts action to child action.
+	 * Note: existance of this is purely toxic for code health.
 	 */
-	static FUDActionData AsChildOf(const FUDActionData& parentAction, int32 parentUniqueId);
+	//static FUDActionData AsChildOf(const FUDActionData& parentAction, int32 parentUniqueId);
 	/**
 	 * Creates parent from its child. Usefull for action that is reverting it's effect.
 	 */
-	static FUDActionData CreateParent(const FUDActionData& childAction, int32 ActionTypeId);
+	static FUDActionData AsPredecessorOf(const FUDActionData& childAction, int32 ActionTypeId);
 private:	
 	 /**
 	  * Copy constructor for static construction of child and parent.
@@ -105,13 +299,13 @@ public:
 	 */
 	inline bool IsValueEqual(const FUDActionData & rhs)
 	{
-		return UniqueId == rhs.UniqueId &&
-			ParentUniqueId == rhs.ParentUniqueId &&
-			ActionTypeId == rhs.ActionTypeId &&
+		return 
+			ActionTypeId == rhs.ActionTypeId && 
+			UniqueId == rhs.UniqueId &&
+			SourceUniqueId == rhs.SourceUniqueId &&
 			InvokerPlayerId == rhs.InvokerPlayerId &&
-			TargetPlayerId == rhs.TargetPlayerId &&
-			ValueParameter == rhs.ValueParameter &&
-			TileParameter == rhs.TileParameter;
+			ValueParameters == rhs.ValueParameters &&
+			TextParameter == rhs.TextParameter;
 	}
 public:
 	/**
@@ -119,26 +313,6 @@ public:
 	 */
 	UPROPERTY(BlueprintReadOnly)
 	int32 ActionTypeId = 0;
-	/**
-	 * Player/Ai/Server that created this action and asked for it to be executed.
-	 */
-	UPROPERTY(BlueprintReadOnly)
-	int32 InvokerPlayerId = 0;
-	/**
-	 * Player/Ai/Server that are targeted by this action.
-	 */
-	UPROPERTY(BlueprintReadOnly)
-	int32 TargetPlayerId = 0;
-	/**
-	 * Simple numerical parameter.
-	 */
-	UPROPERTY(BlueprintReadOnly)
-	int32 ValueParameter = 0;
-	/**
-	 * Simple tile parameter, two bundled ints.
-	 */
-	UPROPERTY(BlueprintReadOnly)
-	FIntPoint TileParameter = FIntPoint(0);
 	/**
 	 * Unique identifier, that is responsible for acting as a link between different actions.
 	 * By default is assigned by WorldSimulation or copy constructor.
@@ -148,15 +322,30 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	int32 UniqueId = 0;
 	/**
-	 * UniqueId associated with the parent Action. 
-	 * Default value is 0 (not assigned).
+	 * Associates this action with its predecessor.
+	 * Otherwise this is same as UniqueId.
 	 * All actions valid for execution will have this assigned to parent or to self.
+	 * This is used along with UniqueId in certain cases to provide identification for objects add
+	 * to the WorldState.
 	 */
 	UPROPERTY(BlueprintReadOnly)
-	int32 ParentUniqueId = 0;
-
-	//UPROPERTY(BlueprintReadOnly)
-	//TArray<int32> OptionalValues;
+	int32 SourceUniqueId = 0;
+	/**
+	 * Player/Ai/Server that created this action and asked for it to be executed.
+	 * This is required to be filled by creator of the action or filled for him.
+	 */
+	UPROPERTY(BlueprintReadOnly)
+	int32 InvokerPlayerId = 0;
+	/**
+	 * Optional parameters, e.g. target player id, tile, amount...
+	 */
+	UPROPERTY(BlueprintReadOnly)
+	TArray<int32> ValueParameters;
+	/**
+	 * Optional string, e.g. player country name, chat message...
+	 */
+	UPROPERTY(BlueprintReadOnly)
+	FString TextParameter;
 };
 
 /**

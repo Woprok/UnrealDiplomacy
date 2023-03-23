@@ -424,8 +424,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetCloseDealAction(int32 dealUniqueId)
 	{
-		FUDActionData raw = FUDActionData(UUDAdvanceResultClosedDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId);
-		return FUDActionData::AsChildOf(raw, dealUniqueId);
+		return FUDActionData(UUDAdvanceResultClosedDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId, { dealUniqueId });
 	}
 	/**
 	 * Invite participant
@@ -433,8 +432,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 		FUDActionData GetInviteParticipantDealAction(int32 dealUniqueId, int32 targetId)
 	{
-		FUDActionData raw = FUDActionData(UUDInviteParticipantDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId, targetId);
-		return FUDActionData::AsChildOf(raw, dealUniqueId);
+		return FUDActionData(UUDInviteParticipantDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId, { dealUniqueId, targetId });
 	}
 	/**
 	 * Confirm
@@ -442,7 +440,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetAcceptParticipantDealAction(FUDActionData sourceAction)
 	{
-		return FUDActionData::CreateChild(sourceAction, UUDAcceptParticipationDealAction::ActionTypeId);
+		return FUDActionData::AsSuccessorOf(sourceAction, UUDAcceptParticipationDealAction::ActionTypeId);
 	}
 	/**
 	 * Reject
@@ -450,7 +448,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetRejectParticipantDealAction(FUDActionData sourceAction)
 	{
-		return FUDActionData::CreateChild(sourceAction, UUDRejectParticipationDealAction::ActionTypeId);
+		return FUDActionData::AsSuccessorOf(sourceAction, UUDRejectParticipationDealAction::ActionTypeId);
 	}
 	/**
 	 * Creates new deal that is immediately joined by the creator.
@@ -458,8 +456,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetLeaveParticipantDealAction(int32 dealUniqueId, int32 targetId)
 	{
-		FUDActionData raw = FUDActionData(UUDLeaveParticipationDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId, targetId);
-		return FUDActionData::AsChildOf(raw, dealUniqueId);
+		return FUDActionData(UUDLeaveParticipationDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId, { dealUniqueId, targetId });
 	}
 	/**
 	 * Send amount of gold to other player, other player must accept.
@@ -475,7 +472,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetConfirmConditionalGiftGoldAction(FUDActionData sourceAction)
 	{
-		return FUDActionData::CreateChild(sourceAction, UUDConfirmGiftAction::ActionTypeId);
+		return FUDActionData::AsSuccessorOf(sourceAction, UUDConfirmGiftAction::ActionTypeId);
 	}
 	/**
 	 * Reject amount of gold to other player.
@@ -483,7 +480,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetRejectConditionalGiftGoldAction(FUDActionData sourceAction)
 	{
-		return FUDActionData::CreateChild(sourceAction, UUDRejectGiftAction::ActionTypeId);
+		return FUDActionData::AsSuccessorOf(sourceAction, UUDRejectGiftAction::ActionTypeId);
 	}
 	/**
 	 * Send amount of gold to other player.
@@ -499,7 +496,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetGenerateIncomeAction()
 	{
-		return FUDActionData(UUDGenerateIncomeAction::ActionTypeId, OverseeingState->PerspectivePlayerId);
+		return FUDActionData(UUDGenerateIncomeAction::ActionTypeId, OverseeingState->PerspectivePlayerId, { 100 });
 	}
 	/**
 	 * Retrieves start game action, that is used for execution in simulation.

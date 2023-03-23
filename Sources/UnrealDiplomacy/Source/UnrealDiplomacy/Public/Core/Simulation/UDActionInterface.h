@@ -38,18 +38,12 @@ public:
 	/**
 	 * This applies action over the UUDWorldState.
 	 */
-	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
-	{
-		// Default Interface call is empty.
-	}
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState);
 	 /**
 	  * If possible action should be able to revert, whatever kind of operation it did,
 	  * if it's provided with the same data.
 	  */
-	 virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
-	 {
-		 // Default Interface call is empty.
-	 }
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState);
 	 /**
 	  * Unique action id that is provided for each action.
 	  * This is directly referenced by FUDActionData to determine,
@@ -57,6 +51,11 @@ public:
 	  * This has to be overriden, otherwise the action will be discarded (valid values are 0 - int32.MAX).
 	  */
 	 virtual int32 GetActionTypeId()
+	 {
+		 // Default Interface call returns invalid value, e.g. -1.
+		 return -1;
+	 }
+	 virtual int32 GetRequiredParametersCount()
 	 {
 		 // Default Interface call returns invalid value, e.g. -1.
 		 return -1;
@@ -107,13 +106,16 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 0;
+	static const int32 RequiredParametersCount = 0;
 };
 
 /**
  * Notification for new Player/Ai being part of the game.
  * This allows new player to receive history and create list of all players.
+ * Note: Invoker is always the new player, even, if he was added by someone esle AI by server.
  */
 UCLASS()
 class UNREALDIPLOMACY_API UUDAddPlayerAction : public UObject, public IUDActionInterface
@@ -123,8 +125,10 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 1;
+	static const int32 RequiredParametersCount = 0;
 };
 
 /**
@@ -143,8 +147,10 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static 	const int32 ActionTypeId = 2;
+	static const int32 RequiredParametersCount = 0;
 };
 
 UCLASS()
@@ -156,12 +162,14 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static 	const int32 ActionTypeId = 3;
+	static const int32 RequiredParametersCount = 0;
 };
 
 /**
- * End of turn action that is called as action.
+ * End of turn action that is called as action by clients or AIs.
  */
 UCLASS()
 class UNREALDIPLOMACY_API UUDEndTurnAction : public UObject, public IUDActionInterface
@@ -172,13 +180,40 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 4;
+	static const int32 RequiredParametersCount = 0;
+};
+
+
+/**
+ * End of turn action that is called as action by server only.
+ * Requires TargetParameter that contains the Player that was forced to end the turn.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDForceEndTurnAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
+public:
+	static const int32 ActionTypeId = 5;
+	static const int32 RequiredParametersCount = 1;
+	static FUDTargetData ConvertData(FUDActionData& data)
+	{
+		return FUDTargetData(data.ValueParameters);
+	}
 };
 
 /**
  * Generates income for all players. 
  * Called only on GAIA turn.
+ * Requires ValueParameter to determine amount to generate for all players.
  */
 UCLASS()
 class UNREALDIPLOMACY_API UUDGenerateIncomeAction : public UObject, public IUDActionInterface
@@ -189,8 +224,14 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 100;
+	static const int32 RequiredParametersCount = 1;
+	static FUDValueData ConvertData(FUDActionData& data)
+	{
+		return FUDValueData(data.ValueParameters);
+	}
 };
 
 /**
@@ -205,8 +246,14 @@ class UNREALDIPLOMACY_API UUDUnconditionalGiftAction : public UObject, public IU
 	 virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	 virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	 virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	 virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
  public:
 	 static const int32 ActionTypeId = 1000;
+	 static const int32 RequiredParametersCount = 2;
+	 static FUDTargetValueData ConvertData(FUDActionData& data)
+	 {
+		 return FUDTargetValueData(data.ValueParameters);
+	 }
  };
 
 
@@ -221,8 +268,14 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 1001;
+	static const int32 RequiredParametersCount = 2;
+	static FUDTargetValueData ConvertData(FUDActionData& data)
+	{
+		return FUDTargetValueData(data.ValueParameters);
+	}
 };
 
 /**
@@ -237,8 +290,10 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 1002;
+	static const int32 RequiredParametersCount = 2;
 };
 
 /**
@@ -253,8 +308,10 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 1003;
+	static const int32 RequiredParametersCount = 2;
 };
 
 /**
@@ -268,12 +325,18 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 	virtual void SetWorldGenerator(TObjectPtr<UUDWorldGenerator> worldGenerator) override
 	{
 		WorldGenerator = worldGenerator;
 	}
 public:
 	static const int32 ActionTypeId = 66600;
+	static const int32 RequiredParametersCount = 3;
+	static FUDMapSettingsData ConvertData(FUDActionData& data)
+	{
+		return FUDMapSettingsData(data.ValueParameters);
+	}
 protected:
 	UPROPERTY()
 	TWeakObjectPtr<UUDWorldGenerator> WorldGenerator = nullptr;
@@ -292,8 +355,14 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 5004;
+	static const int32 RequiredParametersCount = 3;
+	static FUDTargetTileData ConvertData(FUDActionData& data)
+	{
+		return FUDTargetTileData(data.ValueParameters);
+	}
 };
 
 /**
@@ -308,12 +377,18 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 	virtual void SetModifierManager(TObjectPtr<UUDModifierManager> modifierManager) override
 	{
 		ModifierManager = modifierManager;
 	}
 public:
 	static const int32 ActionTypeId = 5008;
+	static const int32 RequiredParametersCount = 3;
+	static FUDTileValueData ConvertData(FUDActionData& data)
+	{
+		return FUDTileValueData(data.ValueParameters);
+	}
 protected:
 	UPROPERTY()
 	TWeakObjectPtr<UUDModifierManager> ModifierManager = nullptr;
@@ -330,8 +405,14 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 1004;
+	static const int32 RequiredParametersCount = 3;
+	static FUDTargetTileData ConvertData(FUDActionData& data)
+	{
+		return FUDTargetTileData(data.ValueParameters);
+	}
 };
 
 /**
@@ -346,8 +427,10 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 1005;
+	static const int32 RequiredParametersCount = 3;
 };
 
 /**
@@ -362,8 +445,10 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 1006;
+	static const int32 RequiredParametersCount = 3;
 };
 
 /**
@@ -379,12 +464,18 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 	virtual void SetModifierManager(TObjectPtr<UUDModifierManager> modifierManager) override
 	{
 		ModifierManager = modifierManager;
 	}
 public:
 	static const int32 ActionTypeId = 1007;
+	static const int32 RequiredParametersCount = 3;
+	static FUDTargetTileData ConvertData(FUDActionData& data)
+	{
+		return FUDTargetTileData(data.ValueParameters);
+	}
 protected:
 	UPROPERTY()
 	TWeakObjectPtr<UUDModifierManager> ModifierManager = nullptr;
@@ -406,8 +497,10 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 10000;
+	static const int32 RequiredParametersCount = 0;
 }; 
 
 /**
@@ -423,8 +516,14 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 10001;
+	static const int32 RequiredParametersCount = 2;
+	static FUDDealTargetData ConvertData(FUDActionData& data)
+	{
+		return FUDDealTargetData(data.ValueParameters);
+	}
 };
 
 /**
@@ -439,8 +538,10 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 10002;
+	static const int32 RequiredParametersCount = 2;
 };
 
 /**
@@ -456,8 +557,10 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 10003;
+	static const int32 RequiredParametersCount = 2;
 };
 
 /**
@@ -472,8 +575,14 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 10004;
+	static const int32 RequiredParametersCount = 1;
+	static FUDDealData ConvertData(FUDActionData& data)
+	{
+		return FUDDealData(data.ValueParameters);
+	}
 };
 
 /**
@@ -488,8 +597,14 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 10009;
+	static const int32 RequiredParametersCount = 1;
+	static FUDDealData ConvertData(FUDActionData& data)
+	{
+		return FUDDealData(data.ValueParameters);
+	}
 };
 UCLASS()
 class UNREALDIPLOMACY_API UUDAdvanceStateExtendingDraftDealAction : public UObject, public IUDActionInterface
@@ -500,8 +615,14 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 10010;
+	static const int32 RequiredParametersCount = 1;
+	static FUDDealData ConvertData(FUDActionData& data)
+	{
+		return FUDDealData(data.ValueParameters);
+	}
 };
 UCLASS()
 class UNREALDIPLOMACY_API UUDAdvanceStateDemandsAndRequestsDealAction : public UObject, public IUDActionInterface
@@ -512,8 +633,14 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 10011;
+	static const int32 RequiredParametersCount = 1;
+	static FUDDealData ConvertData(FUDActionData& data)
+	{
+		return FUDDealData(data.ValueParameters);
+	}
 };
 UCLASS()
 class UNREALDIPLOMACY_API UUDAdvanceStateBiddingDealAction : public UObject, public IUDActionInterface
@@ -524,8 +651,14 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 10012;
+	static const int32 RequiredParametersCount = 1;
+	static FUDDealData ConvertData(FUDActionData& data)
+	{
+		return FUDDealData(data.ValueParameters);
+	}
 };
 UCLASS()
 class UNREALDIPLOMACY_API UUDAdvanceStateFinalizingDraftDealAction : public UObject, public IUDActionInterface
@@ -536,8 +669,14 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 10013;
+	static const int32 RequiredParametersCount = 1;
+	static FUDDealData ConvertData(FUDActionData& data)
+	{
+		return FUDDealData(data.ValueParameters);
+	}
 };
 UCLASS()
 class UNREALDIPLOMACY_API UUDAdvanceStateVoteDealAction : public UObject, public IUDActionInterface
@@ -548,8 +687,14 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 10014;
+	static const int32 RequiredParametersCount = 1;
+	static FUDDealData ConvertData(FUDActionData& data)
+	{
+		return FUDDealData(data.ValueParameters);
+	}
 };
 UCLASS()
 class UNREALDIPLOMACY_API UUDAdvanceStateResolutionDealAction : public UObject, public IUDActionInterface
@@ -560,8 +705,14 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 10015;
+	static const int32 RequiredParametersCount = 1;
+	static FUDDealData ConvertData(FUDActionData& data)
+	{
+		return FUDDealData(data.ValueParameters);
+	}
 };
 UCLASS()
 class UNREALDIPLOMACY_API UUDAdvanceStateResultDealAction : public UObject, public IUDActionInterface
@@ -572,8 +723,14 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 10016;
+	static const int32 RequiredParametersCount = 1;
+	static FUDDealData ConvertData(FUDActionData& data)
+	{
+		return FUDDealData(data.ValueParameters);
+	}
 };
 /**
  * Updates result
@@ -587,8 +744,14 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 100017;
+	static const int32 RequiredParametersCount = 1;
+	static FUDDealData ConvertData(FUDActionData& data)
+	{
+		return FUDDealData(data.ValueParameters);
+	}
 };
 /**
  */
@@ -601,8 +764,14 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 100018;
+	static const int32 RequiredParametersCount = 1;
+	static FUDDealData ConvertData(FUDActionData& data)
+	{
+		return FUDDealData(data.ValueParameters);
+	}
 };
 /**
  */
@@ -615,8 +784,14 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 100019;
+	static const int32 RequiredParametersCount = 1;
+	static FUDDealData ConvertData(FUDActionData& data)
+	{
+		return FUDDealData(data.ValueParameters);
+	}
 };
 /**
  * Moderator is able to close deal, making all actions for it invalid and deak has no result.
@@ -630,8 +805,14 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 10020;
+	static const int32 RequiredParametersCount = 1;
+	static FUDDealData ConvertData(FUDActionData& data)
+	{
+		return FUDDealData(data.ValueParameters);
+	}
 };
 
 
@@ -647,8 +828,14 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 10030;
+	static const int32 RequiredParametersCount = 1;
+	static FUDDealData ConvertData(FUDActionData& data)
+	{
+		return FUDDealData(data.ValueParameters);
+	}
 };
 
 /**
@@ -663,8 +850,14 @@ public:
 	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 10031;
+	static const int32 RequiredParametersCount = 1;
+	static FUDDealPointData ConvertData(FUDActionData& data) 
+	{
+		return FUDDealPointData(data.ValueParameters);
+	}
 };
 ///**
 // * Updates discussion point from the deal.

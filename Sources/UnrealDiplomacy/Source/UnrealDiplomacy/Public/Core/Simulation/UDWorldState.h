@@ -119,6 +119,7 @@ public:
 	/**
 	 * List of unresolved requests created by actions 
 	 * that are pending for confirm/reject action from this player.
+	 * key is Source / BySource
 	 */
 	UPROPERTY()
 	TMap<int32, FUDActionData> PendingRequests;
@@ -491,6 +492,7 @@ public:
 	EUDWorldSimulationState WorldSimulationState = EUDWorldSimulationState::INITIALIZING;
 	/**
 	 * All deals that are / were done during the game.
+	 * key is Source / BySource
 	 */
 	UPROPERTY()
 	TMap<int32, TObjectPtr<UUDDealState>> Deals;
