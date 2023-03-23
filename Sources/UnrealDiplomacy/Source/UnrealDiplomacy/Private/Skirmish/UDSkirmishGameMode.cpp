@@ -103,7 +103,7 @@ void AUDSkirmishGameMode::StartGame(FUDActionData& startAction)
 	// Start game requires mapGen to be done before it as everything after it depends on it.
 	CreateAiPlayers(2);
 
-	FUDActionData mapGen(UUDCreateWorldMapAction::ActionTypeId, 4, FIntPoint(5,5));
+	FUDActionData mapGen(UUDCreateWorldMapAction::ActionTypeId, UUDWorldState::GaiaWorldStateId, { 4, 5, 5 });
 	GetWorldSimulation()->ExecuteAction(mapGen);
 
 	GetWorldSimulation()->ExecuteAction(startAction);

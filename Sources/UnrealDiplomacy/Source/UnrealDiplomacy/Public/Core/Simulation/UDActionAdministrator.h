@@ -456,7 +456,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetLeaveParticipantDealAction(int32 dealUniqueId, int32 targetId)
 	{
-		return FUDActionData(UUDLeaveParticipationDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId, { dealUniqueId, targetId });
+		return FUDActionData(UUDKickParticipantDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId, { dealUniqueId, targetId });
 	}
 	/**
 	 * Send amount of gold to other player, other player must accept.
@@ -464,7 +464,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetConditionalGiftGoldAction(int32 targetId, int32 amount)
 	{
-		return FUDActionData(UUDGiftAction::ActionTypeId, OverseeingState->PerspectivePlayerId, targetId, amount);
+		return FUDActionData(UUDGiftAction::ActionTypeId, OverseeingState->PerspectivePlayerId, { targetId, amount });
 	}
 	/**
 	 * Accept amount of gold from other player.
@@ -488,7 +488,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetUnconditionalGiftGoldAction(int32 targetId, int32 amount)
 	{
-		return FUDActionData(UUDUnconditionalGiftAction::ActionTypeId, OverseeingState->PerspectivePlayerId, targetId, amount);
+		return FUDActionData(UUDUnconditionalGiftAction::ActionTypeId, OverseeingState->PerspectivePlayerId, { targetId, amount });
 	}
 	/**
 	 * Retrieves generate income action, that is used by Gaia to grant some resources to players.
@@ -520,7 +520,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetTakeTileAction(FIntPoint position)
 	{
-		return FUDActionData(UUDTakeTileAction::ActionTypeId, OverseeingState->PerspectivePlayerId, 0, position);
+		return FUDActionData(UUDTakeTileAction::ActionTypeId, OverseeingState->PerspectivePlayerId, { 0, position.X, position.Y } );
 	}
 	TObjectPtr<UUDMapState> GetMapState()
 	{

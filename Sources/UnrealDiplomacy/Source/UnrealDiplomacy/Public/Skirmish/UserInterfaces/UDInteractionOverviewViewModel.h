@@ -118,10 +118,9 @@ protected:
 		).ToString();
 		SetCurrentItemName(rs1);
 		auto rs2 = FText::Format(
-			LOCTEXT("Gift", "A{0} Player {1} offered {2} as gift. Do we accept ?"),
+			LOCTEXT("Gift", "A{0} Player {1} offered gift. Do we accept ?"),
 			data.ActionTypeId,
-			data.InvokerPlayerId,
-			data.ValueParameter
+			data.InvokerPlayerId
 		).ToString();
 		SetCurrentItemDescription(rs2);
 	}

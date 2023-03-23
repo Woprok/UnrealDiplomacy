@@ -225,7 +225,7 @@ void AUDWorldSimulation::LoadCoreActions()
 	RegisterAction(NewObject<UUDInviteParticipantDealAction>(this));
 	RegisterAction(NewObject<UUDAcceptParticipationDealAction>(this));
 	RegisterAction(NewObject<UUDRejectParticipationDealAction>(this));
-	RegisterAction(NewObject<UUDLeaveParticipationDealAction>(this));
+	RegisterAction(NewObject<UUDKickParticipantDealAction>(this));
 
 	RegisterAction(NewObject<UUDAdvanceStateAssemblingDealAction>(this));
 	RegisterAction(NewObject<UUDAdvanceStateExtendingDraftDealAction>(this));
