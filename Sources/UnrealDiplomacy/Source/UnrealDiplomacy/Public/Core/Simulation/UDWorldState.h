@@ -247,96 +247,24 @@ enum class EUDDealSimulationResult : uint8
  * Represents type of discussion point in terms of politeness.
  */
 UENUM(BlueprintType)
-enum class EUDPointPoliteness : uint8
+enum class EUDPointType : uint8
 {
+	/**
+	 * Invalid state.
+	 */
+	Error = 0,
 	 /**
 	  * Player expects fair deal.
 	  */
-	 Proposal = 0,
+	 Proposal = 1,
 	 /**
 	  * Player expects to benefit from it.
 	  */
-	 Demand = 1,
+	 Demand = 2,
 	 /**
 	  * Player expects to pay for it.
 	  */
-	 Offer = 2,
-};
-
-/**
- * Represents type of discussion point in terms of phase.
- */
-UENUM(BlueprintType)
-enum class EUDDiscussionLevel : uint8
-{
-	/**
-	 * Represents undefined value.
-	 */
-	None = 0,
-	/**
-	 * Represents main talking point of deal.
-	 */
-	PrimaryPoint = 1,
-	/**
-	 * Represents argument's about the deal.
-	 */
-	SecondaryArgument = 2,
-	/**
-	 * Represents bids.
-	 */
-	TerciaryBid = 3,
-};
-
-/**
- * Represents source and target type.
- */
-UENUM(BlueprintType)
-enum class EUDDiscussionDetailParticipants : uint8
-{
-	/**
-	 * Represents undefined value.
-	 */
-	None = 0,
-	/**
-	 * Take only first participant from Source/Target array..
-	 * Do not use this option, it's not supported to switch to Single from Any.
-	 */
-	Single = 1,
-	/**
-	 * Take all participants from Source/Target array...
-	 */
-	Any = 2,
-	/**
-	 * Always include all participants, ignore Source/Target array...
-	 */
-	All = 3,
-};
-
-/**
- * Represents single context for discussion point, argument or bid.
- * E.g. alliance action that will be done between all players.
- */
-USTRUCT(BlueprintType)
-struct UNREALDIPLOMACY_API FUDDiscussionDetail
-{
-	GENERATED_BODY()
-public:
-	/** 
-	 * Empty constructor used by UE.
-	 */
-	FUDDiscussionDetail();
-	/**
-	 * Invoked action.
-	 */
-	int32 UniqueActionId;
-	/**
-	 * Players that are invoking by action.
-	 */
-	TArray<int32> Source;
-	/**
-	 * Players that are targeted by action.
-	 */
-	TArray<int32> Target;
+	 Offer = 3,
 };
 
 /**
@@ -356,28 +284,36 @@ public:
 	  */
 	 int32 EditorId;
 	 /**
-	  * Each item has a specific overarching behaviour attached to it.
-	  * Valid options may wary between different levels.
+	  * Consequencies represent direct answer to this item. 
+	  * Result is tree-like structure between Point->Arguments->Bids.
 	  */
-	 EUDPointPoliteness Type = EUDPointPoliteness::Proposal;
+	 TArray<int32> Consequencies;
 	 /**
-	  *
-	  */
-	 EUDDiscussionLevel Level = EUDDiscussionLevel::None;
-	 /**
-	  * Responses represent direct answer to an Item. Each such item can be once again answered.
-	  * This creates tree like structure, depth is currently limited by EUDDiscussionLevel
-	  */
-	 TArray<TObjectPtr<UUDDiscussionItem>> Responses;
-	 /**
-	  * Determines if this item is still used, or is just preserved.
+	  * Determines if this item is still used, or is just preserved for consistency of reverting actions.
 	  */
 	 bool IsIgnored = false;
 	 /**
-	  * Representation of action.
-	  * This is generic, each action will require specific handle for executing it.
+	  * Invoked action.
 	  */
-	 FUDDiscussionDetail Detail;
+	 int32 ActionId;
+	 /**
+	  * Each item has a specific overarching behaviour attached to it.
+	  * Valid options may wary between different levels.
+	  */
+	 EUDPointType Type = EUDPointType::Proposal;
+	 /**
+	  * Players that are affected by this action, this covers primarily case such as alliance.
+	  * In case of alliance it makes no sense to distinguish between them.
+	  */
+	 TArray<int32> Participants;
+	 /**
+	  * Players that are invoking by action, so these are on left side of an action.
+	  */
+	 TArray<int32> Invokers;
+	 /**
+	  * Players that are targeted by action, so these are on right side of an action.
+	  */
+	 TArray<int32> Targets;
 };
 
 /**
@@ -426,7 +362,12 @@ public:
 	 * List of all discussion points.
 	 */
 	UPROPERTY()
-	TArray<TObjectPtr<UUDDiscussionItem>> Points;
+	TMap<int32, TObjectPtr<UUDDiscussionItem>> Points;
+	/**
+	 * Server received history of chat messages.
+	 */
+	UPROPERTY()
+	TArray<FString> ChatHistory;
 };
 
 /**

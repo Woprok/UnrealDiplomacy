@@ -70,6 +70,17 @@ TArray<FUDActionData> IUDActionInterface::GetSubactions(FUDActionData& parentAct
 	return emptyArray;
 }
 
+bool IUDActionInterface::RequiresBackup()
+{
+	// Default interface call always returns false as it does no backup.
+	return false;
+}
+
+void IUDActionInterface::Backup(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	// Default interface call is empty and should never be invoked by correctly defined action.
+}
+
 /**
  * Removes pending request associated with action and specified target.
  */
@@ -1101,16 +1112,14 @@ void UUDAddDiscussionItemDealAction::Execute(FUDActionData& actionData, TObjectP
 	IUDActionInterface::Execute(actionData, targetWorldState);
 	// Creates new point.
 	FUDDealData data = UUDAddDiscussionItemDealAction::ConvertData(actionData);
-	targetWorldState->Deals[data.DealId]->Points.Add(UUDDiscussionItem::CreateState(actionData.InvokerPlayerId));
+	targetWorldState->Deals[data.DealId]->Points.Add(actionData.SourceUniqueId, UUDDiscussionItem::CreateState(actionData.InvokerPlayerId));
 }
 void UUDAddDiscussionItemDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
 	IUDActionInterface::Revert(actionData, targetWorldState);
 	// Deletes created point that is currently located at the end.
 	FUDDealData data = UUDAddDiscussionItemDealAction::ConvertData(actionData);
-	int32 lastIndex = targetWorldState->Deals[data.DealId]->Points.Num() - 1;
-	auto& refLast = targetWorldState->Deals[data.DealId]->Points[lastIndex];
-	targetWorldState->Deals[data.DealId]->Points.Remove(refLast);
+	targetWorldState->Deals[data.DealId]->Points.Remove(actionData.SourceUniqueId);
 }
 
 bool UUDIgnoreDiscussionItemDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
@@ -1142,4 +1151,302 @@ void UUDIgnoreDiscussionItemDealAction::Revert(FUDActionData& actionData, TObjec
 	targetWorldState->Deals[data.DealId]->Points[data.Point]->IsIgnored = false;
 }
 
+bool UUDSendMessageDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	if (result)
+	{
+		FUDDealData data = UUDSendMessageDealAction::ConvertData(actionData);
+		bool isNotEmpty = actionData.TextParameter.Len() > 0;
+		result = result && isNotEmpty;
+	}
+	return result;
+}
+void UUDSendMessageDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	// Add to history.
+	FUDDealData data = UUDSendMessageDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->ChatHistory.Add(actionData.TextParameter);
+}
+void UUDSendMessageDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);
+	// Remove last add message from the history.
+	FUDDealData data = UUDSendMessageDealAction::ConvertData(actionData);
+	int32 lastItem = targetWorldState->Deals[data.DealId]->ChatHistory.Num() - 1;
+	targetWorldState->Deals[data.DealId]->ChatHistory.RemoveAt(lastItem);
+}
+
+bool UUDAddChildDiscussionItemDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	if (result)
+	{
+		FUDDealPointData data = UUDAddChildDiscussionItemDealAction::ConvertData(actionData);
+		bool isStateOpen = targetWorldState->Deals[data.DealId]->DealSimulationState <= EUDDealSimulationState::FinalizingDraft;
+		bool isResultOpen = targetWorldState->Deals[data.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
+		result = result && isStateOpen && isResultOpen;
+	}
+	return result;
+}
+void UUDAddChildDiscussionItemDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	// Creates new sub-point for a specified Point with current SourceUniqueId.
+	FUDDealPointData data = UUDAddChildDiscussionItemDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->Points.Add(actionData.SourceUniqueId, UUDDiscussionItem::CreateState(actionData.InvokerPlayerId));
+	targetWorldState->Deals[data.DealId]->Points[data.Point]->Consequencies.Add(actionData.SourceUniqueId);
+}
+void UUDAddChildDiscussionItemDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);
+	// Deletes created sub-point that is saved with this action SourceUniqueId.
+	FUDDealPointData data = UUDAddChildDiscussionItemDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->Points.Remove(actionData.SourceUniqueId);
+	targetWorldState->Deals[data.DealId]->Points[data.Point]->Consequencies.Remove(actionData.SourceUniqueId);
+}
+
+#pragma endregion
+
+#pragma region Deal Item Updates
+
+bool UUDDefineActionDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	if (result)
+	{
+		FUDDealPointValueData data = UUDDefineActionDealAction::ConvertData(actionData);
+		bool isStateOpen = targetWorldState->Deals[data.DealId]->DealSimulationState <= EUDDealSimulationState::FinalizingDraft;
+		bool isResultOpen = targetWorldState->Deals[data.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
+		result = result && isStateOpen && isResultOpen;
+	}
+	return result;
+}
+void UUDDefineActionDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	// Change to new value.
+	FUDDealPointValueData newData = UUDDefineActionDealAction::ConvertData(actionData);
+	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->ActionId = newData.Value;
+}
+void UUDDefineActionDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);
+	// Change to old value.
+	FUDDealPointValueData oldData = UUDDefineActionDealAction::ConvertBackupData(actionData);
+	targetWorldState->Deals[oldData.DealId]->Points[oldData.Point]->ActionId = oldData.Value;
+}
+bool UUDDefineActionDealAction::RequiresBackup()
+{
+	return true;
+}
+void UUDDefineActionDealAction::Backup(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	// Old action is backuped for future revert use.
+	FUDDealPointValueData data = UUDDefineActionDealAction::ConvertData(actionData);
+	actionData.BackupValueParameters.Empty(0);
+	actionData.BackupValueParameters.Add(targetWorldState->Deals[data.DealId]->Points[data.Point]->ActionId);
+}
+
+int32 PointTypeToInteger(EUDPointType type)
+{
+	return static_cast<int32>(static_cast<uint8>(type));
+}
+EUDPointType IntegerToPointType(int32 type)
+{
+	if (0 > type || type > UINT8_MAX)
+		return EUDPointType::Error;
+	return static_cast<EUDPointType>(type);
+}
+bool UUDDefinePointTypeDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	if (result)
+	{
+		FUDDealPointValueData data = UUDDefinePointTypeDealAction::ConvertData(actionData);
+		bool isStateOpen = targetWorldState->Deals[data.DealId]->DealSimulationState <= EUDDealSimulationState::FinalizingDraft;
+		bool isResultOpen = targetWorldState->Deals[data.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
+		result = result && isStateOpen && isResultOpen;
+	}
+	return result;
+}
+void UUDDefinePointTypeDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	// Change to new value.
+	FUDDealPointValueData newData = UUDDefinePointTypeDealAction::ConvertData(actionData);
+	EUDPointType pointType = IntegerToPointType(newData.Value);
+	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->Type = pointType;
+}
+void UUDDefinePointTypeDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);	
+	// Change to old value.
+	FUDDealPointValueData oldData = UUDDefinePointTypeDealAction::ConvertBackupData(actionData);
+	EUDPointType pointType = IntegerToPointType(oldData.Value);
+	targetWorldState->Deals[oldData.DealId]->Points[oldData.Point]->Type = pointType;
+}
+bool UUDDefinePointTypeDealAction::RequiresBackup()
+{
+	return true;
+}
+void UUDDefinePointTypeDealAction::Backup(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	// Old action is backuped for future revert use.
+	FUDDealPointValueData data = UUDDefinePointTypeDealAction::ConvertData(actionData);
+	actionData.BackupValueParameters.Empty(0);
+	int32 pointType = PointTypeToInteger(targetWorldState->Deals[data.DealId]->Points[data.Point]->Type);
+	actionData.BackupValueParameters.Add(pointType);
+}
+
+bool UUDAddParticipantDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	if (result)
+	{
+		FUDDealPointValueData data = UUDAddParticipantDealAction::ConvertData(actionData);
+		bool isStateOpen = targetWorldState->Deals[data.DealId]->DealSimulationState <= EUDDealSimulationState::FinalizingDraft;
+		bool isResultOpen = targetWorldState->Deals[data.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
+		result = result && isStateOpen && isResultOpen;
+	}
+	return result;
+}
+void UUDAddParticipantDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	FUDDealPointValueData data = UUDAddParticipantDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->Points[data.Point]->Participants.Add(data.Value);
+}
+void UUDAddParticipantDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);
+	FUDDealPointValueData data = UUDAddParticipantDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->Points[data.Point]->Participants.Remove(data.Value);
+}
+
+bool UUDRemoveParticipantDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	if (result)
+	{
+		FUDDealPointValueData data = UUDRemoveParticipantDealAction::ConvertData(actionData);
+		bool isStateOpen = targetWorldState->Deals[data.DealId]->DealSimulationState <= EUDDealSimulationState::FinalizingDraft;
+		bool isResultOpen = targetWorldState->Deals[data.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
+		result = result && isStateOpen && isResultOpen;
+	}
+	return result;
+}
+void UUDRemoveParticipantDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	FUDDealPointValueData data = UUDRemoveParticipantDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->Points[data.Point]->Participants.Remove(data.Value);
+}
+void UUDRemoveParticipantDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);
+	FUDDealPointValueData data = UUDRemoveParticipantDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->Points[data.Point]->Participants.Add(data.Value);
+}
+
+bool UUDAddInvokerDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	if (result)
+	{
+		FUDDealPointValueData data = UUDAddInvokerDealAction::ConvertData(actionData);
+		bool isStateOpen = targetWorldState->Deals[data.DealId]->DealSimulationState <= EUDDealSimulationState::FinalizingDraft;
+		bool isResultOpen = targetWorldState->Deals[data.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
+		result = result && isStateOpen && isResultOpen;
+	}
+	return result;
+}
+void UUDAddInvokerDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	FUDDealPointValueData data = UUDAddInvokerDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->Points[data.Point]->Invokers.Add(data.Value);
+}
+void UUDAddInvokerDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);
+	FUDDealPointValueData data = UUDAddInvokerDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->Points[data.Point]->Invokers.Remove(data.Value);
+}
+
+bool UUDRemoveInvokerDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	if (result)
+	{
+		FUDDealPointValueData data = UUDRemoveInvokerDealAction::ConvertData(actionData);
+		bool isStateOpen = targetWorldState->Deals[data.DealId]->DealSimulationState <= EUDDealSimulationState::FinalizingDraft;
+		bool isResultOpen = targetWorldState->Deals[data.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
+		result = result && isStateOpen && isResultOpen;
+	}
+	return result;
+}
+void UUDRemoveInvokerDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	FUDDealPointValueData data = UUDRemoveInvokerDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->Points[data.Point]->Invokers.Remove(data.Value);
+}
+void UUDRemoveInvokerDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);
+	FUDDealPointValueData data = UUDRemoveInvokerDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->Points[data.Point]->Invokers.Add(data.Value);
+}
+
+bool UUDAddTargetDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	if (result)
+	{
+		FUDDealPointValueData data = UUDAddTargetDealAction::ConvertData(actionData);
+		bool isStateOpen = targetWorldState->Deals[data.DealId]->DealSimulationState <= EUDDealSimulationState::FinalizingDraft;
+		bool isResultOpen = targetWorldState->Deals[data.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
+		result = result && isStateOpen && isResultOpen;
+	}
+	return result;
+}
+void UUDAddTargetDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	FUDDealPointValueData data = UUDAddTargetDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->Points[data.Point]->Targets.Add(data.Value);
+}
+void UUDAddTargetDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);
+	FUDDealPointValueData data = UUDAddTargetDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->Points[data.Point]->Targets.Remove(data.Value);
+}
+
+bool UUDRemoveTargetDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	if (result)
+	{
+		FUDDealPointValueData data = UUDRemoveTargetDealAction::ConvertData(actionData);
+		bool isStateOpen = targetWorldState->Deals[data.DealId]->DealSimulationState <= EUDDealSimulationState::FinalizingDraft;
+		bool isResultOpen = targetWorldState->Deals[data.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
+		result = result && isStateOpen && isResultOpen;
+	}
+	return result;
+}
+void UUDRemoveTargetDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	FUDDealPointValueData data = UUDRemoveTargetDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->Points[data.Point]->Targets.Remove(data.Value);
+}
+void UUDRemoveTargetDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);
+	FUDDealPointValueData data = UUDRemoveTargetDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->Points[data.Point]->Targets.Add(data.Value);
+}
 #pragma endregion

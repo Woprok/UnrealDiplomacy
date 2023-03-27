@@ -93,6 +93,14 @@ public:
 	 * Validity is in general checked on GaiaWorldState.
 	  */
 	 TArray<FUDActionData> GetSubactions(FUDActionData& parentAction, TObjectPtr<UUDWorldState> targetWorldState);
+	 /**
+	  * Indicates if this action requires additional backup before being applied.
+	  */
+	 virtual bool RequiresBackup();
+	 /** 
+	  * Backups specific data into provided action data so they can be restored on revert to original state.
+	  */
+	 virtual void Backup(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState);
 };
 
 /**
@@ -881,18 +889,210 @@ public:
 		return FUDDealPointData(data.ValueParameters);
 	}
 };
-///**
-// * Updates discussion point from the deal.
-// */
-//UCLASS()
-//class UNREALDIPLOMACY_API UUDUpdateDiscussionItemDealAction : public UObject, public IUDActionInterface
-//{
-//	GENERATED_BODY()
-//public:
-//	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-//	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-//	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-//	virtual int32 GetActionTypeId() override { return ActionTypeId; };
-//public:
-//	static const int32 ActionTypeId = 10008;
-//};
+
+/**
+ * Updates discussion point from the deal.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDSendMessageDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
+public:
+	static const int32 ActionTypeId = 10032;
+	static const int32 RequiredParametersCount = 1;
+	static FUDDealData ConvertData(FUDActionData& data)
+	{
+		return FUDDealData(data.ValueParameters);
+	}
+};
+
+/**
+ * Allows extending of the deal with new discussion point.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDAddChildDiscussionItemDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
+public:
+	static const int32 ActionTypeId = 10033;
+	static const int32 RequiredParametersCount = 2;
+	static FUDDealPointData ConvertData(FUDActionData& data)
+	{
+		return FUDDealPointData(data.ValueParameters);
+	}
+};
+
+
+#pragma region  UpdateDealItem
+
+UCLASS()
+class UNREALDIPLOMACY_API UUDDefineActionDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
+	bool RequiresBackup() override;
+	void Backup(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+public:
+	static const int32 ActionTypeId = 10034;
+	static const int32 RequiredParametersCount = 3;
+	static FUDDealPointValueData ConvertData(FUDActionData& data)
+	{
+		return FUDDealPointValueData(data.ValueParameters);
+	}
+	static FUDDealPointValueData ConvertBackupData(FUDActionData& data)
+	{
+		return FUDDealPointValueData(data.BackupValueParameters);
+	}
+};
+
+UCLASS()
+class UNREALDIPLOMACY_API UUDDefinePointTypeDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
+	bool RequiresBackup() override;
+	void Backup(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+public:
+	static const int32 ActionTypeId = 10035;
+	static const int32 RequiredParametersCount = 3;
+	static FUDDealPointValueData ConvertData(FUDActionData& data)
+	{
+		return FUDDealPointValueData(data.ValueParameters);
+	}
+	static FUDDealPointValueData ConvertBackupData(FUDActionData& data)
+	{
+		return FUDDealPointValueData(data.BackupValueParameters);
+	}
+};
+
+UCLASS()
+class UNREALDIPLOMACY_API UUDAddParticipantDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
+public:
+	static const int32 ActionTypeId = 10036;
+	static const int32 RequiredParametersCount = 3;
+	static FUDDealPointValueData ConvertData(FUDActionData& data)
+	{
+		return FUDDealPointValueData(data.ValueParameters);
+	}
+};
+UCLASS()
+class UNREALDIPLOMACY_API UUDRemoveParticipantDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
+public:
+	static const int32 ActionTypeId = 10037;
+	static const int32 RequiredParametersCount = 3;
+	static FUDDealPointValueData ConvertData(FUDActionData& data)
+	{
+		return FUDDealPointValueData(data.ValueParameters);
+	}
+};
+UCLASS()
+class UNREALDIPLOMACY_API UUDAddInvokerDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
+public:
+	static const int32 ActionTypeId = 10038;
+	static const int32 RequiredParametersCount = 3;
+	static FUDDealPointValueData ConvertData(FUDActionData& data)
+	{
+		return FUDDealPointValueData(data.ValueParameters);
+	}
+};
+UCLASS()
+class UNREALDIPLOMACY_API UUDRemoveInvokerDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
+public:
+	static const int32 ActionTypeId = 10039;
+	static const int32 RequiredParametersCount = 3;
+	static FUDDealPointValueData ConvertData(FUDActionData& data)
+	{
+		return FUDDealPointValueData(data.ValueParameters);
+	}
+};
+UCLASS()
+class UNREALDIPLOMACY_API UUDAddTargetDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
+public:
+	static const int32 ActionTypeId = 10040;
+	static const int32 RequiredParametersCount = 3;
+	static FUDDealPointValueData ConvertData(FUDActionData& data)
+	{
+		return FUDDealPointValueData(data.ValueParameters);
+	}
+};
+UCLASS()
+class UNREALDIPLOMACY_API UUDRemoveTargetDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
+public:
+	static const int32 ActionTypeId = 10041;
+	static const int32 RequiredParametersCount = 3;
+	static FUDDealPointValueData ConvertData(FUDActionData& data)
+	{
+		return FUDDealPointValueData(data.ValueParameters);
+	}
+};
+#pragma endregion

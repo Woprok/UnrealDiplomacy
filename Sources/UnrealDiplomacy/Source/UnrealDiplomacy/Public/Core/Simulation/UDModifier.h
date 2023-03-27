@@ -44,10 +44,10 @@ public:
 	 */
 	virtual int32 GetAssociatedActionUniqueId()
 	{
-		return UniqueActionId;
+		return ActionId;
 	}
 protected:
-	int32 UniqueActionId;
+	int32 ActionId;
 };
 
 /**
@@ -63,7 +63,7 @@ public:
 	{
 		TObjectPtr<UUDExploitTilePermissionModifier> modifier = NewObject<UUDExploitTilePermissionModifier>();
 		//modifier->AddToRoot();
-		modifier->UniqueActionId = uniqueActionId;
+		modifier->ActionId = uniqueActionId;
 		modifier->PlayerId = playerId;
 		return modifier;
 	};

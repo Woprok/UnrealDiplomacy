@@ -73,11 +73,60 @@ public:
 	FUDDealPointData(TArray<int32> valueParameters)
 	{
 		DealId = valueParameters[0];
+		Point = valueParameters[1];
 	}
 	UPROPERTY(BlueprintReadOnly)
 	int32 DealId = 0;
 	UPROPERTY(BlueprintReadOnly)
 	int32 Point = 0;
+};
+
+/**
+ * Transforms action parameters to properly named fields.
+ * @param FUDActionData.ValueParameters
+ */
+USTRUCT(BlueprintType)
+struct FUDDealPointValueData
+{
+	GENERATED_BODY()
+public:
+	FUDDealPointValueData() {}
+	FUDDealPointValueData(TArray<int32> valueParameters)
+	{
+		DealId = valueParameters[0];
+		DealId = valueParameters[1];
+		DealId = valueParameters[2];
+	}
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 Point = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 Value = 0;
+};
+
+/**
+ * Transforms action parameters to properly named fields.
+ * @param FUDActionData.ValueParameters
+ */
+USTRUCT(BlueprintType)
+struct FUDDealTypeChangeData
+{
+	GENERATED_BODY()
+public:
+	FUDDealTypeChangeData() {}
+	FUDDealTypeChangeData(TArray<int32> valueParameters)
+	{
+		DealId = valueParameters[0];
+		NewType = valueParameters[1];
+		OldType = valueParameters[2];
+	}
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 NewType = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 OldType = 0;
 };
 
 /**
@@ -322,8 +371,8 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	int32 UniqueId = 0;
 	/**
-	 * Associates this action with its predecessor.
-	 * Otherwise this is same as UniqueId.
+	 * By default this is same as UniqueId. 
+	 * For composite action this will contain UniqueId of the original action.
 	 * All actions valid for execution will have this assigned to parent or to self.
 	 * This is used along with UniqueId in certain cases to provide identification for objects add
 	 * to the WorldState.
@@ -341,6 +390,13 @@ public:
 	 */
 	UPROPERTY(BlueprintReadOnly)
 	TArray<int32> ValueParameters;
+	/**
+	 * For all actions that need to backup previous state value for revert.
+	 * This generally happens only if they are making numeric value change.
+	 * Server is only one authorized to fill this.
+	 */
+	UPROPERTY(BlueprintReadOnly)
+	TArray<int32> BackupValueParameters;
 	/**
 	 * Optional string, e.g. player country name, chat message...
 	 */
