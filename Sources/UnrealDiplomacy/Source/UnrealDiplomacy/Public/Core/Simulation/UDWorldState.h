@@ -300,7 +300,7 @@ public:
 	  * Each item has a specific overarching behaviour attached to it.
 	  * Valid options may wary between different levels.
 	  */
-	 EUDPointType Type = EUDPointType::Proposal;
+	 EUDPointType Type = EUDPointType::Error;
 	 /**
 	  * Players that are affected by this action, this covers primarily case such as alliance.
 	  * In case of alliance it makes no sense to distinguish between them.

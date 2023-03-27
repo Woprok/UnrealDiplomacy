@@ -206,6 +206,7 @@ void AUDWorldSimulation::LoadCoreActions()
 	RegisterAction(NewObject<UUDStartGameAction>(this));
 	RegisterAction(NewObject<UUDEndGameAction>(this));
 	RegisterAction(NewObject<UUDEndTurnAction>(this));
+	RegisterAction(NewObject<UUDForceEndTurnAction>(this));
 	// Gaia 100+
 	RegisterAction(NewObject<UUDGenerateIncomeAction>(this));
 	// Player 1000+
@@ -232,6 +233,7 @@ void AUDWorldSimulation::LoadCoreActions()
 	RegisterAction(NewObject<UUDAcceptParticipationDealAction>(this));
 	RegisterAction(NewObject<UUDRejectParticipationDealAction>(this));
 	RegisterAction(NewObject<UUDKickParticipantDealAction>(this));
+	RegisterAction(NewObject<UUDLeaveParticipationDealAction>(this));
 
 	RegisterAction(NewObject<UUDAdvanceStateAssemblingDealAction>(this));
 	RegisterAction(NewObject<UUDAdvanceStateExtendingDraftDealAction>(this));
