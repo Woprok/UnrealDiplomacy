@@ -368,6 +368,12 @@ public:
 	 */
 	UPROPERTY()
 	TArray<FString> ChatHistory;
+	/**
+	 * List of players that selected ready in current phase.
+	 * This will be automatically resent on phase change.
+	 */
+	UPROPERTY()
+	TArray<int32> IsReadyPlayerList;
 };
 
 /**

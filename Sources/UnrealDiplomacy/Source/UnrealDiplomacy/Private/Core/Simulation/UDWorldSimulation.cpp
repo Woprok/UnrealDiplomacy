@@ -92,6 +92,12 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 		newAction.SourceUniqueId = newAction.UniqueId;
 	}
 
+	if (actionExecutor->RequiresBackup())
+	{
+		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Backup by UID(%d)."), newAction.UniqueId);
+		actionExecutor->Backup(newAction, GetSpecificState(UUDWorldState::GaiaWorldStateId));
+	}
+
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Action UID(%d)."), newAction.UniqueId);
 
 	// Saved for future reference
@@ -239,4 +245,19 @@ void AUDWorldSimulation::LoadCoreActions()
 	RegisterAction(NewObject<UUDAdvanceResultVetoedDealAction>(this));
 	RegisterAction(NewObject<UUDAdvanceResultDisassembledDealAction>(this));
 	RegisterAction(NewObject<UUDAdvanceResultClosedDealAction>(this));
+	// Deal action update
+	RegisterAction(NewObject<UUDAddDiscussionItemDealAction>(this));
+	RegisterAction(NewObject<UUDIgnoreDiscussionItemDealAction>(this));
+	RegisterAction(NewObject<UUDSendMessageDealAction>(this));
+	RegisterAction(NewObject<UUDAddChildDiscussionItemDealAction>(this));
+	RegisterAction(NewObject<UUDDefineActionDealAction>(this));
+	RegisterAction(NewObject<UUDDefinePointTypeDealAction>(this));
+	RegisterAction(NewObject<UUDReadyDealAction>(this));
+	RegisterAction(NewObject<UUDNotReadyDealAction>(this));
+	RegisterAction(NewObject<UUDAddParticipantDealAction>(this));
+	RegisterAction(NewObject<UUDRemoveParticipantDealAction>(this));
+	RegisterAction(NewObject<UUDAddInvokerDealAction>(this));
+	RegisterAction(NewObject<UUDRemoveInvokerDealAction>(this));
+	RegisterAction(NewObject<UUDAddTargetDealAction>(this));
+	RegisterAction(NewObject<UUDRemoveTargetDealAction>(this));
 }

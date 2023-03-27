@@ -1249,16 +1249,6 @@ void UUDDefineActionDealAction::Backup(FUDActionData& actionData, TObjectPtr<UUD
 	actionData.BackupValueParameters.Add(targetWorldState->Deals[data.DealId]->Points[data.Point]->ActionId);
 }
 
-int32 PointTypeToInteger(EUDPointType type)
-{
-	return static_cast<int32>(static_cast<uint8>(type));
-}
-EUDPointType IntegerToPointType(int32 type)
-{
-	if (0 > type || type > UINT8_MAX)
-		return EUDPointType::Error;
-	return static_cast<EUDPointType>(type);
-}
 bool UUDDefinePointTypeDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
 	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
@@ -1276,7 +1266,7 @@ void UUDDefinePointTypeDealAction::Execute(FUDActionData& actionData, TObjectPtr
 	IUDActionInterface::Execute(actionData, targetWorldState);
 	// Change to new value.
 	FUDDealPointValueData newData = UUDDefinePointTypeDealAction::ConvertData(actionData);
-	EUDPointType pointType = IntegerToPointType(newData.Value);
+	EUDPointType pointType = UUDDefinePointTypeDealAction::IntegerToPointType(newData.Value);
 	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->Type = pointType;
 }
 void UUDDefinePointTypeDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
@@ -1284,7 +1274,7 @@ void UUDDefinePointTypeDealAction::Revert(FUDActionData& actionData, TObjectPtr<
 	IUDActionInterface::Revert(actionData, targetWorldState);	
 	// Change to old value.
 	FUDDealPointValueData oldData = UUDDefinePointTypeDealAction::ConvertBackupData(actionData);
-	EUDPointType pointType = IntegerToPointType(oldData.Value);
+	EUDPointType pointType = UUDDefinePointTypeDealAction::IntegerToPointType(oldData.Value);
 	targetWorldState->Deals[oldData.DealId]->Points[oldData.Point]->Type = pointType;
 }
 bool UUDDefinePointTypeDealAction::RequiresBackup()
@@ -1296,7 +1286,7 @@ void UUDDefinePointTypeDealAction::Backup(FUDActionData& actionData, TObjectPtr<
 	// Old action is backuped for future revert use.
 	FUDDealPointValueData data = UUDDefinePointTypeDealAction::ConvertData(actionData);
 	actionData.BackupValueParameters.Empty(0);
-	int32 pointType = PointTypeToInteger(targetWorldState->Deals[data.DealId]->Points[data.Point]->Type);
+	int32 pointType = UUDDefinePointTypeDealAction::PointTypeToInteger(targetWorldState->Deals[data.DealId]->Points[data.Point]->Type);
 	actionData.BackupValueParameters.Add(pointType);
 }
 
@@ -1448,5 +1438,53 @@ void UUDRemoveTargetDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUD
 	IUDActionInterface::Revert(actionData, targetWorldState);
 	FUDDealPointValueData data = UUDRemoveTargetDealAction::ConvertData(actionData);
 	targetWorldState->Deals[data.DealId]->Points[data.Point]->Targets.Add(data.Value);
+}
+
+
+bool UUDReadyDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	if (result)
+	{
+		FUDDealData data = UUDReadyDealAction::ConvertData(actionData);
+		result = result;
+	}
+	return result;
+}
+void UUDReadyDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	FUDDealData data = UUDReadyDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->IsReadyPlayerList.Add(actionData.InvokerPlayerId);
+}
+void UUDReadyDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);
+	FUDDealData data = UUDReadyDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->IsReadyPlayerList.Remove(actionData.InvokerPlayerId);
+}
+
+bool UUDNotReadyDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	if (result)
+	{
+		FUDDealData data = UUDNotReadyDealAction::ConvertData(actionData);
+		bool isReady = targetWorldState->Deals[data.DealId]->IsReadyPlayerList.Contains(actionData.InvokerPlayerId);
+		result = result && isReady;
+	}
+	return result;
+}
+void UUDNotReadyDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	FUDDealData data = UUDNotReadyDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->IsReadyPlayerList.Remove(actionData.InvokerPlayerId);
+}
+void UUDNotReadyDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);
+	FUDDealData data = UUDNotReadyDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->IsReadyPlayerList.Add(actionData.InvokerPlayerId);
 }
 #pragma endregion
