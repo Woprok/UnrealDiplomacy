@@ -10,9 +10,9 @@ FUDActionData::FUDActionData()
 FUDActionData::FUDActionData(const FUDActionData& actionData) 
 	: 
 	ActionTypeId(actionData.ActionTypeId),
-	InvokerPlayerId(actionData.InvokerPlayerId),
 	UniqueId(actionData.UniqueId),
 	SourceUniqueId(actionData.SourceUniqueId),
+	InvokerPlayerId(actionData.InvokerPlayerId),
 	ValueParameters(actionData.ValueParameters),
 	TextParameter(actionData.TextParameter)
 {

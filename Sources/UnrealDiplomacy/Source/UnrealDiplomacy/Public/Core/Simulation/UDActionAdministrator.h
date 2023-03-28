@@ -388,6 +388,12 @@ public:
 
 		return GetDealInfo(0);
 	}
+	UFUNCTION(BlueprintCallable)
+	bool IsModerator(int32 uniqueDealId)
+	{
+		return OverseeingState->Deals[uniqueDealId]->OwnerUniqueId == OverseeingState->PerspectivePlayerId;
+
+	}
 	/**
 	 * Returns list of active participants, blocked participants, available participants.
 	 */
@@ -409,7 +415,32 @@ public:
 			return false;
 		return OverseeingState->Deals[dealUniqueId]->Participants.Contains(playerId);
 	}
+	UFUNCTION(BlueprintCallable)
+	TArray<FString> GetDealMessages(int32 uniqueDealId)
+	{
+		if (OverseeingState->Deals.Num() == 0 || !OverseeingState->Deals.Contains(uniqueDealId))
+			return TArray<FString>();
+		return OverseeingState->Deals[uniqueDealId]->ChatHistory;
+	}
 public:
+	UFUNCTION(BlueprintCallable)
+	FUDActionData CreateDiscussionPointAction(int32 dealUniqueId)
+	{
+		return FUDActionData(UUDAddDiscussionItemDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+			{ dealUniqueId });
+	}
+	UFUNCTION(BlueprintCallable)
+	FUDActionData CreateChildDiscussionPointAction(int32 dealUniqueId, int32 parentPointId)
+	{
+		return FUDActionData(UUDAddChildDiscussionItemDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+			{ dealUniqueId, parentPointId });
+	}
+	UFUNCTION(BlueprintCallable)
+	FUDActionData CreateChatMessageAction(int32 dealUniqueId, FString chatMessage)
+	{
+		return FUDActionData(UUDSendMessageDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+			{ dealUniqueId }, chatMessage);
+	}
 	/**
 	 * Creates new deal that is immediately joined by the creator.
 	 */

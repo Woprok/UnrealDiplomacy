@@ -9,6 +9,7 @@
 #define LOCTEXT_NAMESPACE "ActionUI"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUDParticipantsUpdated, FUDDealParticipantsInfo, infos);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDChatUpdated);
 
 UCLASS(BlueprintType, Blueprintable)
 class UNREALDIPLOMACY_API UUDParticipantViewModel : public UUDStaticViewModelBase
@@ -93,41 +94,25 @@ class UNREALDIPLOMACY_API UUDDealProcessViewModel : public UUDViewModelBase
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * MVVM Field.
-  	 */
+	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FString SessionDescription;
-	/**
-	 * MVVM Field.
-	 */
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsSessionActive;
-	/**
-	 * MVVM Field.
-	 */
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	int32 CurrentDeal = 0;
-	/**
-	 * MVVM Field.
-	 */
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsEnabledPreviousDeal = 0;
-	/**
-	 * MVVM Field.
-	 */
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsEnabledNextDeal = 0;
-	/**
-	 * MVVM Field.
-	 */
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool IsModerator = false;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	EUDDealSimulationState DealState = EUDDealSimulationState::Undefined;
-	/**
-	 * MVVM Field.
-	 */
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	EUDDealSimulationResult DealResult = EUDDealSimulationResult::Undefined;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FString CurrentChatMessage;
 protected:
 	/**
 	 * Deals sorted by time they were created.
@@ -168,6 +153,11 @@ public:
 	 */
 	UPROPERTY(BlueprintAssignable)
 	FUDParticipantsUpdated ParticipantsOnUpdated;
+	/**
+	 * Invoked when this requires view to rebind.
+	 */
+	UPROPERTY(BlueprintAssignable)
+	FUDChatUpdated ChatOnUpdated;
 
 	/**
 	 * Called by button.
@@ -222,6 +212,23 @@ public:
 	void ItemClose()
 	{
 		ActionModel->RequestAction(ActionModel->GetCloseDealAction(CurrentDealItem.DealUniqueId));
+	}
+	UFUNCTION(BlueprintCallable)
+	void ItemAddPoint()
+	{
+		ActionModel->RequestAction(ActionModel->CreateDiscussionPointAction(CurrentDealItem.DealUniqueId));
+	}
+	UFUNCTION(BlueprintCallable)
+	void ItemAddMessage()
+	{
+		ActionModel->RequestAction(ActionModel->CreateChatMessageAction(CurrentDealItem.DealUniqueId, CurrentChatMessage));
+		SetCurrentChatMessage(FString());
+	}
+
+	UFUNCTION(BlueprintCallable)
+	TArray<FString> GetRecentChatMessages()
+	{
+		return ActionModel->GetDealMessages(CurrentDealItem.DealUniqueId);
 	}
 
 protected:
@@ -306,6 +313,7 @@ protected:
 		SetIsSessionActive(false);
 		SetDealState(info.State);
 		SetDealResult(info.Result);
+		SetIsModerator(false);
 		auto rs1 = FText(
 			LOCTEXT("DealState", "No deal is currently discussed with you.")
 		).ToString();
@@ -321,116 +329,86 @@ protected:
 			info.DealUniqueId
 		).ToString();
 		SetSessionDescription(rs1);
+		SetIsModerator(ActionModel->IsModerator(info.DealUniqueId));
 
 		auto data = ActionModel->GetDealParticipants(info.DealUniqueId);
 		ParticipantsOnUpdated.Broadcast(data);
+		ChatOnUpdated.Broadcast();
 
 	}
 private:
-	/**
-	 * MVVM Binding.
-	 */
+	// MVVM Setters & Getters
 	void SetSessionDescription(FString newSessionDescription)
 	{
-		// Set checks if value changed.
 		UE_MVVM_SET_PROPERTY_VALUE(SessionDescription, newSessionDescription);
 	}
-	/**
-	 * MVVM Binding.
-	 */
-	void SetIsSessionActive(bool newIsSessionActive)
-	{
-		// Set checks if value changed.
-		UE_MVVM_SET_PROPERTY_VALUE(IsSessionActive, newIsSessionActive);
-	}
-	/**
-	 * MVVM Binding.
-	 */
-	void SetCurrentDeal(int32 newCurrentDeal)
-	{
-		// Set checks if value changed.
-		UE_MVVM_SET_PROPERTY_VALUE(CurrentDeal, newCurrentDeal);
-	}
-	/**
-	 * MVVM Binding.
-	 */
-	void SetIsEnabledPreviousDeal(bool newIsEnabledPreviousDeal)
-	{
-		// Set checks if value changed.
-		UE_MVVM_SET_PROPERTY_VALUE(IsEnabledPreviousDeal, newIsEnabledPreviousDeal);
-	}
-	/**
-	 * MVVM Binding.
-	 */
-	void SetIsEnabledNextDeal(bool newIsEnabledNextDeal)
-	{
-		// Set checks if value changed.
-		UE_MVVM_SET_PROPERTY_VALUE(IsEnabledNextDeal, newIsEnabledNextDeal);
-	}
-	/**
-	 * MVVM Binding.
-	 */
-	void SetDealState(EUDDealSimulationState newDealState)
-	{
-		// Set checks if value changed.
-		UE_MVVM_SET_PROPERTY_VALUE(DealState, newDealState);
-	}
-	/**
-	 * MVVM Binding.
-	 */
-	void SetDealResult(EUDDealSimulationResult newDealResult)
-	{
-		// Set checks if value changed.
-		UE_MVVM_SET_PROPERTY_VALUE(DealResult, newDealResult);
-	}
-	/**
-	 * MVVM Binding.
-	 */
 	FString GetSessionDescription() const
 	{
 		return SessionDescription;
-	}	
-	/**
-	 * MVVM Binding.
-	 */
+	}
+	void SetIsSessionActive(bool newIsSessionActive)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(IsSessionActive, newIsSessionActive);
+	}
 	bool GetIsSessionActive() const
 	{
 		return IsSessionActive;
 	}
-	/**
-	 * MVVM Binding.
-	 */
+	void SetCurrentDeal(int32 newCurrentDeal)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(CurrentDeal, newCurrentDeal);
+	}
 	int32 GetCurrentDeal() const
 	{
 		return CurrentDeal;
 	}
-	/**
-	 * MVVM Binding.
-	 */
+	void SetIsEnabledPreviousDeal(bool newIsEnabledPreviousDeal)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(IsEnabledPreviousDeal, newIsEnabledPreviousDeal);
+	}
 	bool GetIsEnabledPreviousDeal() const
 	{
 		return IsEnabledPreviousDeal;
 	}
-	/**
-	 * MVVM Binding.
-	 */
+	void SetIsEnabledNextDeal(bool newIsEnabledNextDeal)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(IsEnabledNextDeal, newIsEnabledNextDeal);
+	}
 	bool GetIsEnabledNextDeal() const
 	{
 		return IsEnabledNextDeal;
 	}
-	/**
-	 * MVVM Binding.
-	 */
+	void SetDealState(EUDDealSimulationState newDealState)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(DealState, newDealState);
+	}
 	EUDDealSimulationState GetDealState() const
 	{
 		return DealState;
 	}
-	/**
-	 * MVVM Binding.
-	 */
+	void SetDealResult(EUDDealSimulationResult newDealResult)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(DealResult, newDealResult);
+	}
 	EUDDealSimulationResult GetDealResult() const
 	{
 		return DealResult;
+	}
+	void SetIsModerator(bool newIsModerator)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(IsModerator, newIsModerator);
+	}
+	bool GetIsModerator() const
+	{
+		return IsModerator;
+	}
+	void SetCurrentChatMessage(FString newCurrentChatMessage)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(CurrentChatMessage, newCurrentChatMessage);
+	}
+	FString GetCurrentChatMessage() const
+	{
+		return CurrentChatMessage;
 	}
 };
 #undef LOCTEXT_NAMESPACE
