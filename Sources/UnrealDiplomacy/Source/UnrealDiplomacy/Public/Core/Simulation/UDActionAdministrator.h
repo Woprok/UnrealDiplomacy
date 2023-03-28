@@ -96,6 +96,25 @@ public:
 	EUDDealSimulationResult Result;
 };
 
+
+USTRUCT(BlueprintType)
+struct FUDDealPointInfo
+{
+	GENERATED_BODY()
+public:
+	FUDDealPointInfo() {}
+	FUDDealPointInfo(int32 dealUniqueId, int32 pointUniqueId, EUDPointType type, TArray<int32> subPoints) 
+		: DealUniqueId(dealUniqueId), PointUniqueId(pointUniqueId), Type(type), SubPoints(subPoints) {}
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealUniqueId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 PointUniqueId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	EUDPointType Type;
+	UPROPERTY(BlueprintReadOnly)
+	TArray<int32> SubPoints;
+};
+
 // GetAvailableActions(NONE|TILE|PLAYER)
 // FUDAtionTemplate
 // - ActionId

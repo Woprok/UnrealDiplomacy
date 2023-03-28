@@ -11,19 +11,66 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUDParticipantsUpdated, FUDDealParticipantsInfo, infos);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDChatUpdated);
 
+
+
+UCLASS(BlueprintType, Blueprintable)
+class UNREALDIPLOMACY_API UUDPointViewModel : public UUDStaticViewModelBase
+{
+	GENERATED_BODY()
+public:
+	// MVVM Field.
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FString Title;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FString Description;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FString ParticipantList;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FString InvokerList;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FString TargetList;
+private:
+	FUDDealPointInfo CurrentPoint;
+public:
+	UFUNCTION(BlueprintCallable)
+	void SetBindingTarget(FUDDealPointInfo info)
+	{
+
+	}
+
+	UFUNCTION(BlueprintCallable)
+	TArray<FUDDealPointInfo> GetSubPoints()
+	{
+		// returns list of all subpoints converted to infos
+	}
+private:
+	// MVVM Setters & Getters
+};
+
+UCLASS(BlueprintType, Blueprintable)
+class UNREALDIPLOMACY_API UUDPointEditorViewModel : public UUDStaticViewModelBase
+{
+	GENERATED_BODY()
+public:
+	// MVVM Field.
+public:
+	void SetBindingTarget(FUDDealPointInfo info)
+	{
+
+	}
+private:
+	// MVVM Setters & Getters
+};
+
+
 UCLASS(BlueprintType, Blueprintable)
 class UNREALDIPLOMACY_API UUDParticipantViewModel : public UUDStaticViewModelBase
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * MVVM Field.
-	 */
+	 // MVVM Field.
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FString Name;
-	/**
-	 * MVVM Field.
-	 */
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsParticipant;
 private:
@@ -54,32 +101,19 @@ public:
 		ActionModel->RequestAction(ActionModel->GetLeaveParticipantDealAction(CurrentDealUniqueId, CurrentInfo.Id));
 	}
 private:
-	/**
-	 * MVVM Binding.
-	 */
+	// MVVM Setters & Getters
 	void SetName(FString newName)
 	{
-		// Set checks if value changed.
 		UE_MVVM_SET_PROPERTY_VALUE(Name, newName);
 	}
-	/**
-	 * MVVM Binding.
-	 */
-	void SetIsParticipant(bool newIsParticipant)
-	{
-		// Set checks if value changed.
-		UE_MVVM_SET_PROPERTY_VALUE(IsParticipant, newIsParticipant);
-	}
-	/**
-	 * MVVM Binding.
-	 */
 	FString GetName() const
 	{
 		return Name;
 	}
-	/**
-	 * MVVM Binding.
-	 */
+	void SetIsParticipant(bool newIsParticipant)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(IsParticipant, newIsParticipant);
+	}
 	bool GetIsParticipant() const
 	{
 		return IsParticipant;
