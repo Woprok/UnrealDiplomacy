@@ -364,6 +364,11 @@ public:
 	UPROPERTY()
 	TMap<int32, TObjectPtr<UUDDiscussionItem>> Points;
 	/**
+	 * List of all primary points. This are the starting points for further evaluation and filters.
+	 */
+	UPROPERTY()
+	TArray<int32> PrimaryPoints;
+	/**
 	 * Server received history of chat messages.
 	 */
 	UPROPERTY()

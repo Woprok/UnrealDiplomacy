@@ -96,6 +96,19 @@ public:
 	EUDDealSimulationResult Result;
 };
 
+USTRUCT(BlueprintType)
+struct FUDDealPointTreeInfo
+{
+	GENERATED_BODY()
+public:
+	FUDDealPointTreeInfo() {}
+	FUDDealPointTreeInfo(int32 dealUniqueId, TArray<int32> points)
+		: DealUniqueId(dealUniqueId), Points(points) {}
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealUniqueId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	TArray<int32> Points;
+};
 
 USTRUCT(BlueprintType)
 struct FUDDealPointInfo
@@ -103,16 +116,16 @@ struct FUDDealPointInfo
 	GENERATED_BODY()
 public:
 	FUDDealPointInfo() {}
-	FUDDealPointInfo(int32 dealUniqueId, int32 pointUniqueId, EUDPointType type, TArray<int32> subPoints) 
-		: DealUniqueId(dealUniqueId), PointUniqueId(pointUniqueId), Type(type), SubPoints(subPoints) {}
+	FUDDealPointInfo(int32 dealUniqueId, int32 pointUniqueId, EUDPointType type) 
+		: DealUniqueId(dealUniqueId), PointUniqueId(pointUniqueId), Type(type) {}
 	UPROPERTY(BlueprintReadOnly)
 	int32 DealUniqueId = 0;
 	UPROPERTY(BlueprintReadOnly)
 	int32 PointUniqueId = 0;
 	UPROPERTY(BlueprintReadOnly)
 	EUDPointType Type;
-	UPROPERTY(BlueprintReadOnly)
-	TArray<int32> SubPoints;
+	//UPROPERTY(BlueprintReadOnly)
+	//TArray<int32> SubPoints;
 };
 
 // GetAvailableActions(NONE|TILE|PLAYER)
@@ -408,9 +421,9 @@ public:
 		return GetDealInfo(0);
 	}
 	UFUNCTION(BlueprintCallable)
-	bool IsModerator(int32 uniqueDealId)
+	bool IsModerator(int32 dealUniqueId)
 	{
-		return OverseeingState->Deals[uniqueDealId]->OwnerUniqueId == OverseeingState->PerspectivePlayerId;
+		return OverseeingState->Deals[dealUniqueId]->OwnerUniqueId == OverseeingState->PerspectivePlayerId;
 
 	}
 	/**
@@ -435,11 +448,46 @@ public:
 		return OverseeingState->Deals[dealUniqueId]->Participants.Contains(playerId);
 	}
 	UFUNCTION(BlueprintCallable)
-	TArray<FString> GetDealMessages(int32 uniqueDealId)
+	TArray<FString> GetDealMessages(int32 dealUniqueId)
 	{
-		if (OverseeingState->Deals.Num() == 0 || !OverseeingState->Deals.Contains(uniqueDealId))
+		if (OverseeingState->Deals.Num() == 0 || !OverseeingState->Deals.Contains(dealUniqueId))
 			return TArray<FString>();
-		return OverseeingState->Deals[uniqueDealId]->ChatHistory;
+		return OverseeingState->Deals[dealUniqueId]->ChatHistory;
+	}
+	UFUNCTION(BlueprintCallable)
+	TArray<FUDDealPointInfo> GetDealPointSubPoints(int32 dealUniqueId, int32 pointUniqueId)
+	{
+		// Avoid invalid Deal, Point or empty list of childs.
+		if (OverseeingState->Deals.Num() == 0 || 
+			!OverseeingState->Deals.Contains(dealUniqueId) || 
+			!OverseeingState->Deals[dealUniqueId]->Points.Contains(pointUniqueId) ||
+			OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->Consequencies.Num() == 0)
+			return TArray<FUDDealPointInfo>();
+		TArray<FUDDealPointInfo> subPoints;
+		subPoints.Empty(0);
+		for (auto pointId : OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->Consequencies)
+		{
+			auto& point = OverseeingState->Deals[dealUniqueId]->Points[pointId];
+			subPoints.Add(FUDDealPointInfo(dealUniqueId, point->ActionId, point->Type));
+		}
+		return subPoints;
+	}
+	UFUNCTION(BlueprintCallable)
+	FUDDealPointTreeInfo GetDealPoints(int32 dealUniqueId)
+	{
+		if (OverseeingState->Deals.Num() == 0 ||
+			!OverseeingState->Deals.Contains(dealUniqueId))
+			return FUDDealPointTreeInfo(0, { });
+		return FUDDealPointTreeInfo(dealUniqueId, OverseeingState->Deals[dealUniqueId]->PrimaryPoints);
+	}
+	UFUNCTION(BlueprintCallable)
+	FUDDealPointInfo GetDealPointInfo(int32 dealUniqueId, int32 pointUniqueId)
+	{
+		if (OverseeingState->Deals.Num() == 0 ||
+			!OverseeingState->Deals.Contains(dealUniqueId) ||
+			!OverseeingState->Deals[dealUniqueId]->Points.Contains(pointUniqueId))
+			return FUDDealPointInfo(0, 0, EUDPointType::Error);
+		return FUDDealPointInfo(dealUniqueId, pointUniqueId, OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->Type);
 	}
 public:
 	UFUNCTION(BlueprintCallable)

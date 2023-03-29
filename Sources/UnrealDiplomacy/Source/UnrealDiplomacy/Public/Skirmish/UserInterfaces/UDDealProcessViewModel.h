@@ -9,8 +9,19 @@
 #define LOCTEXT_NAMESPACE "ActionUI"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUDParticipantsUpdated, FUDDealParticipantsInfo, infos);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUDPDealPointUpdated, FUDDealPointTreeInfo, dealRoot);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDChatUpdated);
 
+UCLASS(BlueprintType, Blueprintable)
+class UNREALDIPLOMACY_API UUDPointParticipantViewModel : public UUDStaticViewModelBase
+{
+	GENERATED_BODY()
+public:
+	// MVVM Field.
+
+private:
+	// MVVM Setters & Getters
+};
 
 
 UCLASS(BlueprintType, Blueprintable)
@@ -33,18 +44,65 @@ private:
 	FUDDealPointInfo CurrentPoint;
 public:
 	UFUNCTION(BlueprintCallable)
-	void SetBindingTarget(FUDDealPointInfo info)
+	void SetBindingTarget(int32 dealId, int32 pointId)
 	{
-
+		CurrentPoint = ActionModel->GetDealPointInfo(dealId, pointId);
+		auto rs1 = FText::Format(
+			LOCTEXT("Participant", "Point of {0} identified as {1}"),
+			CurrentPoint.DealUniqueId,
+			CurrentPoint.PointUniqueId
+		).ToString();
+		SetTitle(rs1);
 	}
 
 	UFUNCTION(BlueprintCallable)
 	TArray<FUDDealPointInfo> GetSubPoints()
 	{
+		return ActionModel->GetDealPointSubPoints(CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId);
 		// returns list of all subpoints converted to infos
 	}
 private:
 	// MVVM Setters & Getters
+	void SetTitle(FString newTitle)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(Title, newTitle);
+	}
+	FString GetTitle() const
+	{
+		return Title;
+	}
+	void SetDescription(FString newDescription)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(Description, newDescription);
+	}
+	FString GetDescription() const
+	{
+		return Description;
+	}
+	void SetParticipantList(FString newParticipantList)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(ParticipantList, newParticipantList);
+	}
+	FString GetParticipantList() const
+	{
+		return ParticipantList;
+	}
+	void SetInvokerList(FString newInvokerList)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(InvokerList, newInvokerList);
+	}
+	FString GetInvokerList() const
+	{
+		return InvokerList;
+	}
+	void SetTargetList(FString newTargetList)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(TargetList, newTargetList);
+	}
+	FString GetTargetList() const
+	{
+		return TargetList;
+	}
 };
 
 UCLASS(BlueprintType, Blueprintable)
@@ -53,6 +111,11 @@ class UNREALDIPLOMACY_API UUDPointEditorViewModel : public UUDStaticViewModelBas
 	GENERATED_BODY()
 public:
 	// MVVM Field.
+	int32 SelectedActionId;
+	TArray<int32> ActionList;
+	EUDPointType SelectedType;
+	TArray<EUDPointType> Types;
+
 public:
 	void SetBindingTarget(FUDDealPointInfo info)
 	{
@@ -187,6 +250,11 @@ public:
 	 */
 	UPROPERTY(BlueprintAssignable)
 	FUDParticipantsUpdated ParticipantsOnUpdated;
+	/**
+	 * Invoked when this requires view to rebind.
+	 */
+	UPROPERTY(BlueprintAssignable)
+	FUDPDealPointUpdated PointsOnUpdated;
 	/**
 	 * Invoked when this requires view to rebind.
 	 */
@@ -368,6 +436,7 @@ protected:
 		auto data = ActionModel->GetDealParticipants(info.DealUniqueId);
 		ParticipantsOnUpdated.Broadcast(data);
 		ChatOnUpdated.Broadcast();
+		PointsOnUpdated.Broadcast(ActionModel->GetDealPoints(info.DealUniqueId));
 
 	}
 private:

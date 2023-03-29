@@ -1113,6 +1113,7 @@ void UUDAddDiscussionItemDealAction::Execute(FUDActionData& actionData, TObjectP
 	// Creates new point.
 	FUDDealData data = UUDAddDiscussionItemDealAction::ConvertData(actionData);
 	targetWorldState->Deals[data.DealId]->Points.Add(actionData.SourceUniqueId, UUDDiscussionItem::CreateState(actionData.InvokerPlayerId));
+	targetWorldState->Deals[data.DealId]->PrimaryPoints.Add(actionData.SourceUniqueId);
 }
 void UUDAddDiscussionItemDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
@@ -1120,6 +1121,7 @@ void UUDAddDiscussionItemDealAction::Revert(FUDActionData& actionData, TObjectPt
 	// Deletes created point that is currently located at the end.
 	FUDDealData data = UUDAddDiscussionItemDealAction::ConvertData(actionData);
 	targetWorldState->Deals[data.DealId]->Points.Remove(actionData.SourceUniqueId);
+	targetWorldState->Deals[data.DealId]->PrimaryPoints.Remove(actionData.SourceUniqueId);
 }
 
 bool UUDIgnoreDiscussionItemDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
