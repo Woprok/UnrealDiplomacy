@@ -97,17 +97,33 @@ public:
 };
 
 USTRUCT(BlueprintType)
+struct FUDDealPointChildInfo
+{
+	GENERATED_BODY()
+public:
+	FUDDealPointChildInfo() {}
+	FUDDealPointChildInfo(int32 dealUniqueId, int32 pointUniqueId)
+		: DealUniqueId(dealUniqueId), PointUniqueId(pointUniqueId) {}
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealUniqueId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 PointUniqueId = 0;
+};
+
+USTRUCT(BlueprintType)
 struct FUDDealPointTreeInfo
 {
 	GENERATED_BODY()
 public:
 	FUDDealPointTreeInfo() {}
-	FUDDealPointTreeInfo(int32 dealUniqueId, TArray<int32> points)
-		: DealUniqueId(dealUniqueId), Points(points) {}
+	FUDDealPointTreeInfo(int32 dealUniqueId, int32 pointCount, TArray<FUDDealPointChildInfo> childPoints)
+		: DealUniqueId(dealUniqueId), TotalPointCount(pointCount), PrimaryPoints(childPoints) {}
 	UPROPERTY(BlueprintReadOnly)
 	int32 DealUniqueId = 0;
 	UPROPERTY(BlueprintReadOnly)
-	TArray<int32> Points;
+	int32 TotalPointCount = 0;
+	UPROPERTY(BlueprintReadOnly)
+	TArray<FUDDealPointChildInfo> PrimaryPoints;
 };
 
 USTRUCT(BlueprintType)
@@ -472,13 +488,41 @@ public:
 		}
 		return subPoints;
 	}
+	// structs do not support recursion so we need to make it little less recursive...
 	UFUNCTION(BlueprintCallable)
-	FUDDealPointTreeInfo GetDealPoints(int32 dealUniqueId)
+	TArray<FUDDealPointChildInfo> GetDealPointChildTree(int32 dealUniqueId, int32 pointUniqueId)
+	{
+		if (OverseeingState->Deals.Num() == 0 ||
+			!OverseeingState->Deals.Contains(dealUniqueId) ||
+			OverseeingState->Deals[dealUniqueId]->Points.Num() == 0 ||
+			!OverseeingState->Deals[dealUniqueId]->Points.Contains(pointUniqueId))
+			return TArray<FUDDealPointChildInfo>();
+
+		TArray<FUDDealPointChildInfo> childs;
+
+		for (auto consequencePointId : OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->Consequencies)
+		{
+			childs.Add(FUDDealPointChildInfo(dealUniqueId, consequencePointId));
+		}
+
+		return childs;
+	}
+
+	UFUNCTION(BlueprintCallable)
+	FUDDealPointTreeInfo GetDealPointsTree(int32 dealUniqueId)
 	{
 		if (OverseeingState->Deals.Num() == 0 ||
 			!OverseeingState->Deals.Contains(dealUniqueId))
-			return FUDDealPointTreeInfo(0, { });
-		return FUDDealPointTreeInfo(dealUniqueId, OverseeingState->Deals[dealUniqueId]->PrimaryPoints);
+			return FUDDealPointTreeInfo(0, 0, {});
+
+		TArray<FUDDealPointChildInfo> childs;
+
+		for (auto primaryPointId : OverseeingState->Deals[dealUniqueId]->PrimaryPoints)
+		{
+			childs.Add(FUDDealPointChildInfo(dealUniqueId, primaryPointId));
+		}
+		int32 totalCount = OverseeingState->Deals[dealUniqueId]->Points.Num();
+		return FUDDealPointTreeInfo(dealUniqueId, totalCount, childs);
 	}
 	UFUNCTION(BlueprintCallable)
 	FUDDealPointInfo GetDealPointInfo(int32 dealUniqueId, int32 pointUniqueId)

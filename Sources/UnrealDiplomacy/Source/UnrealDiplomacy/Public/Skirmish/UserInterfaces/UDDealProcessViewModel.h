@@ -44,22 +44,31 @@ private:
 	FUDDealPointInfo CurrentPoint;
 public:
 	UFUNCTION(BlueprintCallable)
-	void SetBindingTarget(int32 dealId, int32 pointId)
+	void SetBindingTarget(FUDDealPointChildInfo info)
 	{
-		CurrentPoint = ActionModel->GetDealPointInfo(dealId, pointId);
+		CurrentPoint = ActionModel->GetDealPointInfo(info.DealUniqueId, info.PointUniqueId);
 		auto rs1 = FText::Format(
 			LOCTEXT("Participant", "Point of {0} identified as {1}"),
-			CurrentPoint.DealUniqueId,
-			CurrentPoint.PointUniqueId
+			info.DealUniqueId,
+			info.PointUniqueId
 		).ToString();
 		SetTitle(rs1);
 	}
 
+	/**
+	 * Returns array of child points, that can be used for setting additional viewmodels that 
+	 * are starting from this viewmodel.
+	 */
 	UFUNCTION(BlueprintCallable)
-	TArray<FUDDealPointInfo> GetSubPoints()
+	TArray<FUDDealPointChildInfo> GetChildPoints()
 	{
-		return ActionModel->GetDealPointSubPoints(CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId);
-		// returns list of all subpoints converted to infos
+		return ActionModel->GetDealPointChildTree(CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId);
+		// returns list of all subpoints converted for tree construction
+	}
+	UFUNCTION(BlueprintCallable)
+	void ItemAddChildPoint()
+	{
+		ActionModel->RequestAction(ActionModel->CreateChildDiscussionPointAction(CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId));
 	}
 private:
 	// MVVM Setters & Getters
@@ -436,7 +445,7 @@ protected:
 		auto data = ActionModel->GetDealParticipants(info.DealUniqueId);
 		ParticipantsOnUpdated.Broadcast(data);
 		ChatOnUpdated.Broadcast();
-		PointsOnUpdated.Broadcast(ActionModel->GetDealPoints(info.DealUniqueId));
+		PointsOnUpdated.Broadcast(ActionModel->GetDealPointsTree(info.DealUniqueId));
 
 	}
 private:
