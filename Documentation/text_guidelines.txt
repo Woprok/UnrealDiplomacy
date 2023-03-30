@@ -1,0 +1,12 @@
+Text hint
+
+uvod
+- co to je 
+
+pravidla hry
+- popis 
+
+popis implementacie
+
+
+ve stredu 11:00

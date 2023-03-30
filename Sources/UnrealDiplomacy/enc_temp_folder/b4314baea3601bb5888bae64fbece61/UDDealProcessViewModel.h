@@ -40,10 +40,8 @@ public:
 	FString InvokerList;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FString TargetList;
-	// Public Field
-	UPROPERTY(BlueprintReadOnly)
-	FUDDealPointInfo CurrentPoint;
 private:
+	FUDDealPointInfo CurrentPoint;
 public:
 	UFUNCTION(BlueprintCallable)
 	void SetBindingTarget(FUDDealPointChildInfo info)
