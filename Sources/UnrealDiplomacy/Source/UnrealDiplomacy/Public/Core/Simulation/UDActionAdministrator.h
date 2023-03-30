@@ -132,16 +132,16 @@ struct FUDDealPointInfo
 	GENERATED_BODY()
 public:
 	FUDDealPointInfo() {}
-	FUDDealPointInfo(int32 dealUniqueId, int32 pointUniqueId, EUDPointType type) 
-		: DealUniqueId(dealUniqueId), PointUniqueId(pointUniqueId), Type(type) {}
+	FUDDealPointInfo(int32 dealUniqueId, int32 pointUniqueId, EUDPointType type, int32 actionId) 
+		: DealUniqueId(dealUniqueId), PointUniqueId(pointUniqueId), Type(type), ActionId(actionId) {}
 	UPROPERTY(BlueprintReadOnly)
 	int32 DealUniqueId = 0;
 	UPROPERTY(BlueprintReadOnly)
 	int32 PointUniqueId = 0;
 	UPROPERTY(BlueprintReadOnly)
 	EUDPointType Type;
-	//UPROPERTY(BlueprintReadOnly)
-	//TArray<int32> SubPoints;
+	UPROPERTY(BlueprintReadOnly)
+	int32 ActionId;
 };
 
 // GetAvailableActions(NONE|TILE|PLAYER)
@@ -470,24 +470,7 @@ public:
 			return TArray<FString>();
 		return OverseeingState->Deals[dealUniqueId]->ChatHistory;
 	}
-	UFUNCTION(BlueprintCallable)
-	TArray<FUDDealPointInfo> GetDealPointSubPoints(int32 dealUniqueId, int32 pointUniqueId)
-	{
-		// Avoid invalid Deal, Point or empty list of childs.
-		if (OverseeingState->Deals.Num() == 0 || 
-			!OverseeingState->Deals.Contains(dealUniqueId) || 
-			!OverseeingState->Deals[dealUniqueId]->Points.Contains(pointUniqueId) ||
-			OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->Consequencies.Num() == 0)
-			return TArray<FUDDealPointInfo>();
-		TArray<FUDDealPointInfo> subPoints;
-		subPoints.Empty(0);
-		for (auto pointId : OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->Consequencies)
-		{
-			auto& point = OverseeingState->Deals[dealUniqueId]->Points[pointId];
-			subPoints.Add(FUDDealPointInfo(dealUniqueId, point->ActionId, point->Type));
-		}
-		return subPoints;
-	}
+
 	// structs do not support recursion so we need to make it little less recursive...
 	UFUNCTION(BlueprintCallable)
 	TArray<FUDDealPointChildInfo> GetDealPointChildTree(int32 dealUniqueId, int32 pointUniqueId)
@@ -530,10 +513,27 @@ public:
 		if (OverseeingState->Deals.Num() == 0 ||
 			!OverseeingState->Deals.Contains(dealUniqueId) ||
 			!OverseeingState->Deals[dealUniqueId]->Points.Contains(pointUniqueId))
-			return FUDDealPointInfo(0, 0, EUDPointType::Error);
-		return FUDDealPointInfo(dealUniqueId, pointUniqueId, OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->Type);
+			return FUDDealPointInfo(0, 0, EUDPointType::Error, 0);
+		return FUDDealPointInfo(dealUniqueId, pointUniqueId, 
+			OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->Type,
+			OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->ActionId);
 	}
 public:
+	UFUNCTION(BlueprintCallable)
+	FUDActionData UpdateActionDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 actionId)
+	{
+		return FUDActionData(UUDDefineActionDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+			{ dealUniqueId, pointUniqueId, actionId });
+	}
+	UFUNCTION(BlueprintCallable)
+		FUDActionData UpdateTypeDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, EUDPointType type)
+	{
+		return FUDActionData(UUDDefinePointTypeDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+			{ dealUniqueId, pointUniqueId, UUDDefinePointTypeDealAction::PointTypeToInteger(type)});
+	}
+
+
+
 	UFUNCTION(BlueprintCallable)
 	FUDActionData CreateDiscussionPointAction(int32 dealUniqueId)
 	{

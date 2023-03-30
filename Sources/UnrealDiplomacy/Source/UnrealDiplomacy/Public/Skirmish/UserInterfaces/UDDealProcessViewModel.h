@@ -122,18 +122,72 @@ class UNREALDIPLOMACY_API UUDPointEditorViewModel : public UUDStaticViewModelBas
 	GENERATED_BODY()
 public:
 	// MVVM Field.
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	int32 SelectedActionId;
-	TArray<int32> ActionList;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	EUDPointType SelectedType;
-	TArray<EUDPointType> Types;
 
+	FUDDealPointInfo CurrentPoint;
 public:
+	UFUNCTION(BlueprintCallable)
 	void SetBindingTarget(FUDDealPointInfo info)
 	{
-
+		CurrentPoint = info;
+		SetSelectedActionId(CurrentPoint.ActionId);
+		SetSelectedType(CurrentPoint.Type);
 	}
+
+	UFUNCTION(BlueprintCallable)
+	TArray<int32> GetAvailableActions()
+	{
+		return {
+			UUDUnconditionalGiftAction::ActionTypeId,
+		};
+	}
+	UFUNCTION(BlueprintCallable)
+	TArray<EUDPointType> GetAvailableTypes()
+	{
+		return {
+			EUDPointType::Proposal,
+			EUDPointType::Demand,
+			EUDPointType::Offer,
+		};
+	}
+	UFUNCTION(BlueprintCallable)
+	void UpdatePointAction(int32 actionId)
+	{
+		ActionModel->RequestAction(
+			ActionModel->UpdateActionDiscussionPointAction(
+				CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, actionId));
+	}
+	UFUNCTION(BlueprintCallable)
+	void UpdatePointType(EUDPointType type) 
+	{
+		ActionModel->RequestAction(
+			ActionModel->UpdateTypeDiscussionPointAction(
+				CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, type));
+	}
+
 private:
 	// MVVM Setters & Getters
+	void SetSelectedActionId(int32 newSelectedActionId)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(SelectedActionId, newSelectedActionId);
+	}
+	int32 GetSelectedActionId() const
+	{
+		return SelectedActionId;
+	}
+
+	void SetSelectedType(EUDPointType newSelectedType)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(SelectedType, newSelectedType);
+	}
+	EUDPointType GetSelectedType() const
+	{
+		return SelectedType;
+	}
+
 };
 
 
