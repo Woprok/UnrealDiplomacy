@@ -94,8 +94,8 @@ public:
 	FUDDealPointValueData(TArray<int32> valueParameters)
 	{
 		DealId = valueParameters[0];
-		DealId = valueParameters[1];
-		DealId = valueParameters[2];
+		Point = valueParameters[1];
+		Value = valueParameters[2];
 	}
 	UPROPERTY(BlueprintReadOnly)
 	int32 DealId = 0;

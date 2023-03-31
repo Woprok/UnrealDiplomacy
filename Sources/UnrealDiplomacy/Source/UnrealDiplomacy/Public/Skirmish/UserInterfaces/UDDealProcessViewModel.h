@@ -18,7 +18,25 @@ class UNREALDIPLOMACY_API UUDPointParticipantViewModel : public UUDStaticViewMod
 	GENERATED_BODY()
 public:
 	// MVVM Field.
+public:
+	UFUNCTION(BlueprintCallable)
+	void SetBindingTarget()
+	{
 
+	}
+	UFUNCTION(BlueprintCallable)
+	void ChangeToInvoker()
+	{
+
+	}
+	void ChangeToParticipant()
+	{
+
+	}
+	void ChangeToTarget()
+	{
+
+	}
 private:
 	// MVVM Setters & Getters
 };
@@ -155,6 +173,7 @@ public:
 	TArray<FUDNamedOption> GetAvailableActions()
 	{
 		return {
+			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "UNDEFINED")), 0),
 			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Give Gift")), UUDUnconditionalGiftAction::ActionTypeId),
 			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Transfer Tile")), UUDTransferTileAction::ActionTypeId),
 			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Grant Exploit Tile")), UUDGrantExploitTilePermissionAction::ActionTypeId),
@@ -183,6 +202,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UpdatePointAction(FUDNamedOption option)
 	{
+		if (option.OptionCode == 0)
+			return;
 		int32 actionId = option.OptionCode;
 		ActionModel->RequestAction(
 			ActionModel->UpdateActionDiscussionPointAction(
