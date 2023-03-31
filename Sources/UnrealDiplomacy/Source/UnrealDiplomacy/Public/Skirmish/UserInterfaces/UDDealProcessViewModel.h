@@ -116,6 +116,20 @@ private:
 	}
 };
 
+USTRUCT(BlueprintType)
+struct FUDNamedOption
+{
+	GENERATED_BODY()
+public:
+	FUDNamedOption() {}
+	FUDNamedOption(FText name, int32 optionCode) 
+		: Name(name), OptionCode(optionCode) {}
+	UPROPERTY(BlueprintReadOnly)
+	FText Name;
+	UPROPERTY(BlueprintReadOnly)
+	int32 OptionCode;
+};
+
 UCLASS(BlueprintType, Blueprintable)
 class UNREALDIPLOMACY_API UUDPointEditorViewModel : public UUDStaticViewModelBase
 {
@@ -138,31 +152,46 @@ public:
 	}
 
 	UFUNCTION(BlueprintCallable)
-	TArray<int32> GetAvailableActions()
+	TArray<FUDNamedOption> GetAvailableActions()
 	{
 		return {
-			UUDUnconditionalGiftAction::ActionTypeId,
+			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Give Gift")), UUDUnconditionalGiftAction::ActionTypeId),
+			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Transfer Tile")), UUDTransferTileAction::ActionTypeId),
+			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Grant Exploit Tile")), UUDGrantExploitTilePermissionAction::ActionTypeId),
+		};
+	}
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetSelectedActionCode()
+	{
+		return GetSelectedActionId();
+	}
+	UFUNCTION(BlueprintCallable)
+	TArray<FUDNamedOption> GetAvailableTypes()
+	{
+		return {
+			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Propose")), UUDDefinePointTypeDealAction::PointTypeToInteger(EUDPointType::Proposal)),
+			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Demand")), UUDDefinePointTypeDealAction::PointTypeToInteger(EUDPointType::Demand)),
+			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Offer")), UUDDefinePointTypeDealAction::PointTypeToInteger(EUDPointType::Offer)),
 		};
 	}
 	UFUNCTION(BlueprintCallable)
-	TArray<EUDPointType> GetAvailableTypes()
+	int32 GetSelectedTypeCode()
 	{
-		return {
-			EUDPointType::Proposal,
-			EUDPointType::Demand,
-			EUDPointType::Offer,
-		};
+		return UUDDefinePointTypeDealAction::PointTypeToInteger(GetSelectedType());
 	}
 	UFUNCTION(BlueprintCallable)
-	void UpdatePointAction(int32 actionId)
+	void UpdatePointAction(FUDNamedOption option)
 	{
+		int32 actionId = option.OptionCode;
 		ActionModel->RequestAction(
 			ActionModel->UpdateActionDiscussionPointAction(
 				CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, actionId));
 	}
 	UFUNCTION(BlueprintCallable)
-	void UpdatePointType(EUDPointType type) 
+	void UpdatePointType(FUDNamedOption option) 
 	{
+		EUDPointType type = UUDDefinePointTypeDealAction::IntegerToPointType(option.OptionCode);
 		ActionModel->RequestAction(
 			ActionModel->UpdateTypeDiscussionPointAction(
 				CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, type));
