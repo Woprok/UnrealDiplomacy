@@ -578,13 +578,20 @@ public:
 				// at the moment there is no way for actions to target multiple players
 				// and for very sensible reason it will probably remain like that ?
 				// also executing one action for each pair is expected to be same as one action for 1 : N group
-				for (auto target : point.Value->Invokers)
+				if (point.Value->Targets.Num() > 0)
 				{
-					actions.Add(FUDActionData(actionId, invoker, 
-						{ 
-							target 
-						}					
-					));
+					for (auto target : point.Value->Targets)
+					{
+						actions.Add(FUDActionData(actionId, invoker,
+							{
+								target
+							}
+						));
+					}
+				}
+				else
+				{
+					actions.Add(FUDActionData(actionId, invoker));
 				}
 			}
 		}

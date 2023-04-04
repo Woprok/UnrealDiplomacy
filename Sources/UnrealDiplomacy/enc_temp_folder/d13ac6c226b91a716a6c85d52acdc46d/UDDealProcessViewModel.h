@@ -202,7 +202,7 @@ public:
 		for (auto player : targets)
 		{
 			tarList.Append(FString::FromInt(player.Id));
-			tarList.Append(",");
+			invList.Append(",");
 		}
 		SetTargetList(tarList.ToString());
 	}
