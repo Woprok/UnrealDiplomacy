@@ -11,6 +11,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUDParticipantsUpdated, FUDDealParticipantsInfo, infos);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUDPDealPointUpdated, FUDDealPointTreeInfo, dealRoot);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDChatUpdated);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDEditedDealUpdated);
 
 UCLASS(BlueprintType, Blueprintable)
 class UNREALDIPLOMACY_API UUDPointParticipantViewModel : public UUDStaticViewModelBase
@@ -18,27 +19,87 @@ class UNREALDIPLOMACY_API UUDPointParticipantViewModel : public UUDStaticViewMod
 	GENERATED_BODY()
 public:
 	// MVVM Field.
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FString Name;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool IsInvoker;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool IsTarget;
+	// Fields.
+	FUDPlayerInfo CurrentPlayer;
+	FUDDealPointInfo CurrentPoint;
 public:
 	UFUNCTION(BlueprintCallable)
-	void SetBindingTarget()
+	void SetBindingTarget(FUDDealPointInfo dealInfo, FUDPlayerInfo playerInfo)
 	{
+		CurrentPoint = dealInfo;
+		CurrentPlayer = playerInfo;
+
+		auto rs1 = FText::Format(
+			LOCTEXT("Participant", "Player {0}"),
+			CurrentPlayer.Id
+		).ToString();
+		SetName(rs1);
+		bool isInv = ActionModel->IsDealPointInvoker(CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, CurrentPlayer.Id);
+		SetIsInvoker(isInv);
+		bool isTar = ActionModel->IsDealPointTarget(CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, CurrentPlayer.Id);
+		SetIsTarget(isTar);
 
 	}
 	UFUNCTION(BlueprintCallable)
-	void ChangeToInvoker()
+	void AddToInvokers()
 	{
-
+		ActionModel->RequestAction(
+			ActionModel->UpdateAddInvokerDiscussionPointAction(
+				CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, CurrentPlayer.Id));
 	}
-	void ChangeToParticipant()
+	UFUNCTION(BlueprintCallable)
+	void RemoveFromInvokers()
 	{
-
+		ActionModel->RequestAction(
+			ActionModel->UpdateRemoveInvokerDiscussionPointAction(
+				CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, CurrentPlayer.Id));
 	}
-	void ChangeToTarget()
+	UFUNCTION(BlueprintCallable)
+	void AddToTargets()
 	{
-
+		ActionModel->RequestAction(
+			ActionModel->UpdateAddTargetDiscussionPointAction(
+				CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, CurrentPlayer.Id));
+	}
+	UFUNCTION(BlueprintCallable)
+	void RemoveFromTargets()
+	{
+		ActionModel->RequestAction(
+			ActionModel->UpdateRemoveTargetDiscussionPointAction(
+				CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, CurrentPlayer.Id));
 	}
 private:
 	// MVVM Setters & Getters
+	void SetName(FString newName)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(Name, newName);
+	}
+	FString GetName() const
+	{
+		return Name;
+	}
+	void SetIsInvoker(bool newIsInvoker)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(IsInvoker, newIsInvoker);
+	}
+	bool GetIsInvoker() const
+	{
+		return IsInvoker;
+	}
+	void SetIsTarget(bool newIsTarget)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(IsTarget, newIsTarget);
+	}
+	bool GetIsTarget() const
+	{
+		return IsTarget;
+	}
 };
 
 
@@ -149,7 +210,7 @@ public:
 };
 
 UCLASS(BlueprintType, Blueprintable)
-class UNREALDIPLOMACY_API UUDPointEditorViewModel : public UUDStaticViewModelBase
+class UNREALDIPLOMACY_API UUDPointEditorViewModel : public UUDViewModelBase
 {
 	GENERATED_BODY()
 public:
@@ -158,7 +219,8 @@ public:
 	int32 SelectedActionId;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	EUDPointType SelectedType;
-
+	// Fields.
+	UPROPERTY(BlueprintReadOnly)
 	FUDDealPointInfo CurrentPoint;
 public:
 	UFUNCTION(BlueprintCallable)
@@ -167,7 +229,30 @@ public:
 		CurrentPoint = info;
 		SetSelectedActionId(CurrentPoint.ActionId);
 		SetSelectedType(CurrentPoint.Type);
+		EditedDealUpdated.Broadcast();
 	}
+
+	virtual void OnUpdate() override
+	{
+		if (ActionModel->IsGameInProgress())
+		{
+			// HACK for forcing updating this.
+			if (CurrentPoint.DealUniqueId != 0)
+			{
+				SetBindingTarget(CurrentPoint);
+			}
+		}
+		else
+		{
+			// This should not be visible ?
+		}
+	}
+
+	/**
+	 * Invoked when this requires subviews to rebind.
+	 */
+	UPROPERTY(BlueprintAssignable)
+	FUDEditedDealUpdated EditedDealUpdated;
 
 	UFUNCTION(BlueprintCallable)
 	TArray<FUDNamedOption> GetAvailableActions()
@@ -218,6 +303,11 @@ public:
 				CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, type));
 	}
 
+	UFUNCTION(BlueprintCallable)
+	TArray<FUDPlayerInfo> GetAllPlayers()
+	{
+		return ActionModel->GetPlayerList();
+	}
 private:
 	// MVVM Setters & Getters
 	void SetSelectedActionId(int32 newSelectedActionId)

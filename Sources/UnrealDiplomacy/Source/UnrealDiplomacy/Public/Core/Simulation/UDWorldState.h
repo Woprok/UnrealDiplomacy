@@ -302,11 +302,6 @@ public:
 	  */
 	 EUDPointType Type = EUDPointType::Error;
 	 /**
-	  * Players that are affected by this action, this covers primarily case such as alliance.
-	  * In case of alliance it makes no sense to distinguish between them.
-	  */
-	 TArray<int32> Participants;
-	 /**
 	  * Players that are invoking by action, so these are on left side of an action.
 	  */
 	 TArray<int32> Invokers;

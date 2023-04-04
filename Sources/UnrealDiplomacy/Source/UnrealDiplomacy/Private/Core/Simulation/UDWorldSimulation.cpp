@@ -256,8 +256,6 @@ void AUDWorldSimulation::LoadCoreActions()
 	RegisterAction(NewObject<UUDDefinePointTypeDealAction>(this));
 	RegisterAction(NewObject<UUDReadyDealAction>(this));
 	RegisterAction(NewObject<UUDNotReadyDealAction>(this));
-	RegisterAction(NewObject<UUDAddParticipantDealAction>(this));
-	RegisterAction(NewObject<UUDRemoveParticipantDealAction>(this));
 	RegisterAction(NewObject<UUDAddInvokerDealAction>(this));
 	RegisterAction(NewObject<UUDRemoveInvokerDealAction>(this));
 	RegisterAction(NewObject<UUDAddTargetDealAction>(this));

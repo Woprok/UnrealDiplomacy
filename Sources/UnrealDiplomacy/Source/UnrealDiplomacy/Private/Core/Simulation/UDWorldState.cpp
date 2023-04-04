@@ -80,7 +80,6 @@ TObjectPtr<UUDDiscussionItem> UUDDiscussionItem::CreateState(int32 ownerId)
 	newState->Type = EUDPointType::Proposal;
 	newState->IsIgnored = false;
 	newState->Consequencies.Empty(0);
-	newState->Participants.Empty(0);
 	newState->Invokers.Empty(0);
 	newState->Targets.Empty(0);
 	return newState;

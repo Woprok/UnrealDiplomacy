@@ -518,6 +518,17 @@ public:
 			OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->Type,
 			OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->ActionId);
 	}
+
+	UFUNCTION(BlueprintCallable)
+	bool IsDealPointInvoker(int32 dealUniqueId, int32 pointUniqueId, int32 playerId)
+	{
+		return OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->Invokers.Contains(playerId);
+	}
+	UFUNCTION(BlueprintCallable)
+	bool IsDealPointTarget(int32 dealUniqueId, int32 pointUniqueId, int32 playerId)
+	{
+		return OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->Targets.Contains(playerId);
+	}
 public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData UpdateActionDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 actionId)
@@ -526,13 +537,36 @@ public:
 			{ dealUniqueId, pointUniqueId, actionId });
 	}
 	UFUNCTION(BlueprintCallable)
-		FUDActionData UpdateTypeDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, EUDPointType type)
+	FUDActionData UpdateTypeDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, EUDPointType type)
 	{
 		return FUDActionData(UUDDefinePointTypeDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
 			{ dealUniqueId, pointUniqueId, UUDDefinePointTypeDealAction::PointTypeToInteger(type)});
 	}
 
-
+	UFUNCTION(BlueprintCallable)
+	FUDActionData UpdateAddInvokerDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 playerId)
+	{
+		return FUDActionData(UUDAddInvokerDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+			{ dealUniqueId, pointUniqueId, playerId });
+	}
+	UFUNCTION(BlueprintCallable)
+		FUDActionData UpdateRemoveInvokerDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 playerId)
+	{
+		return FUDActionData(UUDRemoveInvokerDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+			{ dealUniqueId, pointUniqueId, playerId });
+	}
+	UFUNCTION(BlueprintCallable)
+		FUDActionData UpdateAddTargetDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 playerId)
+	{
+		return FUDActionData(UUDAddTargetDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+			{ dealUniqueId, pointUniqueId, playerId });
+	}
+	UFUNCTION(BlueprintCallable)
+		FUDActionData UpdateRemoveTargetDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 playerId)
+	{
+		return FUDActionData(UUDRemoveTargetDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+			{ dealUniqueId, pointUniqueId, playerId });
+	}
 
 	UFUNCTION(BlueprintCallable)
 	FUDActionData CreateDiscussionPointAction(int32 dealUniqueId)

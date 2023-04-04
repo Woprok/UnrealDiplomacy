@@ -134,6 +134,24 @@ public:
 			break;
 		}
 	}
+	//UFUNCTION(BlueprintPure, meta = (BlueprintAutocast), Category = "Convertors|Views")
+	//static FSlateColor Conv_BoolToColour(bool InIs)
+	//{
+	//	if (InIs)
+	//	{
+	//		return FSlateColor;
+	//	}
+	//	return FSlateColor;
+	//}
+	//UFUNCTION(BlueprintPure, meta = (BlueprintAutocast), Category = "Convertors|Views")
+	//static FSlateColor Conv_BoolToInverseColour(bool InIsNot)
+	//{
+	//	if (InIsNot)
+	//	{
+	//		return FSlateColor;
+	//	}
+	//	return FSlateColor;
+	//}
 };
 
 /**
