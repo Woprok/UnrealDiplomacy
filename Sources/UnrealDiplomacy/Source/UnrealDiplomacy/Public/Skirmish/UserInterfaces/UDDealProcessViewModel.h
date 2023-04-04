@@ -13,6 +13,54 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUDPDealPointUpdated, FUDDealPointTr
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDChatUpdated);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDEditedDealUpdated);
 
+
+UCLASS(BlueprintType, Blueprintable)
+class UNREALDIPLOMACY_API UUDPointActionPreviewViewModel : public UUDStaticViewModelBase
+{
+	GENERATED_BODY()
+public:
+	// MVVM Field.
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FString Description;
+	// Fields.
+public:
+	UFUNCTION(BlueprintCallable)
+		void SetBindingTarget(FUDActionData actionData)
+	{
+		TStringBuilder<64> desc;
+		desc.Append(FText::Format(LOCTEXT("ActionPreview", "Action: {0}. "),
+			actionData.ActionTypeId).ToString()
+		);
+		desc.Append(FText::Format(LOCTEXT("ActionPreview", "Invoked by: {0}. "),
+			actionData.InvokerPlayerId).ToString()
+		);
+		desc.Append(FText(LOCTEXT("ActionPreview", "Text param: ")).ToString());
+		desc.Append(actionData.TextParameter);
+		desc.Append(FText(LOCTEXT("ActionPreview", ".\n")).ToString());
+
+		desc.Append(FText::Format(LOCTEXT("ActionPreview", "Value param count: {0} Params:\n"), 
+			actionData.ValueParameters.Num()).ToString()
+		);
+		for (auto param : actionData.ValueParameters)
+		{
+			desc.Append(FText::Format(LOCTEXT("ActionPreview", "Prm: {0}. "), 
+				param).ToString()
+			);
+		}
+		SetDescription(desc.ToString());
+	}
+private:
+	// MVVM Setters & Getters
+	void SetDescription(FString newDescription)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(Description, newDescription);
+	}
+	FString GetDescription() const
+	{
+		return Description;
+	}
+};
+
 UCLASS(BlueprintType, Blueprintable)
 class UNREALDIPLOMACY_API UUDPointParticipantViewModel : public UUDStaticViewModelBase
 {
@@ -114,8 +162,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FString Description;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FString ParticipantList;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FString InvokerList;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FString TargetList;
@@ -129,11 +175,35 @@ public:
 	{
 		CurrentPoint = ActionModel->GetDealPointInfo(info.DealUniqueId, info.PointUniqueId);
 		auto rs1 = FText::Format(
-			LOCTEXT("Participant", "Point of {0} identified as {1}"),
-			info.DealUniqueId,
-			info.PointUniqueId
+			LOCTEXT("Participant", "Discussed item {0} for deal {1}"),
+			info.PointUniqueId,
+			info.DealUniqueId
 		).ToString();
 		SetTitle(rs1);
+		auto rs2 = FText::Format(
+			LOCTEXT("Participant", "Type {0}: Action {1} will be applied to all targets."),
+			(int32)CurrentPoint.Type,
+			CurrentPoint.ActionId
+		).ToString();
+		SetDescription(rs2);
+
+		auto invokers = ActionModel->GetInvokerPointPlayerList(info.DealUniqueId, info.PointUniqueId);
+		TStringBuilder<64> invList;
+		for (auto player : invokers)
+		{
+			invList.Append(FString::FromInt(player.Id));
+			invList.Append(",");
+		}
+		SetInvokerList(invList.ToString());
+
+		auto targets = ActionModel->GetTargetPointPlayerList(info.DealUniqueId, info.PointUniqueId);
+		TStringBuilder<64> tarList;
+		for (auto player : targets)
+		{
+			tarList.Append(FString::FromInt(player.Id));
+			invList.Append(",");
+		}
+		SetTargetList(tarList.ToString());
 	}
 
 	/**
@@ -168,14 +238,6 @@ private:
 	FString GetDescription() const
 	{
 		return Description;
-	}
-	void SetParticipantList(FString newParticipantList)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(ParticipantList, newParticipantList);
-	}
-	FString GetParticipantList() const
-	{
-		return ParticipantList;
 	}
 	void SetInvokerList(FString newInvokerList)
 	{
@@ -538,6 +600,11 @@ public:
 		return ActionModel->GetDealMessages(CurrentDealItem.DealUniqueId);
 	}
 
+	UFUNCTION(BlueprintCallable)
+	TArray<FUDActionData> GetCurrentActionPreviewList()
+	{
+		return ActionModel->GetDealPointsAsUnfoldedActions(CurrentDealItem.DealUniqueId);
+	}
 protected:
 	void UpdateView(int32 dealHistoryCount, int32 dealUniqueId, int32 arrayPosition)
 	{

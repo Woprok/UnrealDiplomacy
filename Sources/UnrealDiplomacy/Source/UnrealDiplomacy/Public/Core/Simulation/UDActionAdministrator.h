@@ -519,6 +519,78 @@ public:
 			OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->ActionId);
 	}
 
+	/**
+	 * Returns list of players in PlayerInfo format.
+	 */
+	UFUNCTION(BlueprintCallable)
+	TArray<FUDPlayerInfo> GetInvokerPointPlayerList(int32 dealUniqueId, int32 pointUniqueId)
+	{
+		TArray<FUDPlayerInfo> infos;
+
+		for (auto playerId : OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->Invokers)
+		{
+			auto state = OverseeingState->Players[playerId];
+
+			FUDPlayerInfo player = FUDPlayerInfo(state->PlayerUniqueId);
+			player.Name = FText::Format(LOCTEXT("Player", "Player {0}"), state->PlayerUniqueId);
+			infos.Add(player);
+		}
+
+		return infos;
+	}
+	/**
+	 * Returns list of players in PlayerInfo format.
+	 */
+	UFUNCTION(BlueprintCallable)
+	TArray<FUDPlayerInfo> GetTargetPointPlayerList(int32 dealUniqueId, int32 pointUniqueId)
+	{
+		TArray<FUDPlayerInfo> infos;
+
+		for (auto playerId : OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->Targets)
+		{
+			auto state = OverseeingState->Players[playerId];
+
+			FUDPlayerInfo player = FUDPlayerInfo(state->PlayerUniqueId);
+			player.Name = FText::Format(LOCTEXT("Player", "Player {0}"), state->PlayerUniqueId);
+			infos.Add(player);
+		}
+
+		return infos;
+	}
+
+	/**
+	 * Returns list of actions that will be created from this deal, without any filter.
+	 */
+	UFUNCTION(BlueprintCallable)
+	TArray<FUDActionData> GetDealPointsAsUnfoldedActions(int32 dealUniqueId)
+	{
+		TArray<FUDActionData> actions;
+		auto deal = OverseeingState->Deals[dealUniqueId];
+		for (auto point : deal->Points)
+		{
+			auto actionId = point.Value->ActionId;
+			// TODO figure out what this field is supposed to do in actions.
+			auto type = point.Value->Type;
+			// TODO params
+			for (auto invoker : point.Value->Invokers)
+			{
+				// for each invoker and each target create a pair for actions
+				// at the moment there is no way for actions to target multiple players
+				// and for very sensible reason it will probably remain like that ?
+				// also executing one action for each pair is expected to be same as one action for 1 : N group
+				for (auto target : point.Value->Invokers)
+				{
+					actions.Add(FUDActionData(actionId, invoker, 
+						{ 
+							target 
+						}					
+					));
+				}
+			}
+		}
+		return actions;
+	}
+
 	UFUNCTION(BlueprintCallable)
 	bool IsDealPointInvoker(int32 dealUniqueId, int32 pointUniqueId, int32 playerId)
 	{
