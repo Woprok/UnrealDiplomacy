@@ -1400,7 +1400,8 @@ bool UUDReadyDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWor
 	if (result)
 	{
 		FUDDealData data = UUDReadyDealAction::ConvertData(actionData);
-		result = result;
+		bool isNotReady = !targetWorldState->Deals[data.DealId]->IsReadyPlayerList.Contains(actionData.InvokerPlayerId);
+		result = result && isNotReady;
 	}
 	return result;
 }

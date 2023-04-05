@@ -49,6 +49,11 @@ public:
 		return FText::FromString(FString::Format(TEXT("{0} ({1})"), { InText, InInteger }));
 	}
 	UFUNCTION(BlueprintPure, meta = (BlueprintAutocast), Category = "Convertors|Views")
+	static FText Conv_IntegerPairCurrentMaxToText(int32 InCurrent, int32 InMax)
+	{
+		return FText::FromString(FString::Format(TEXT("{0} / {1}"), { InCurrent, InMax }));
+	}
+	UFUNCTION(BlueprintPure, meta = (BlueprintAutocast), Category = "Convertors|Views")
 	static ESlateVisibility Conv_BoolToVisibility(bool InIsVisible)
 	{
 		if (InIsVisible)

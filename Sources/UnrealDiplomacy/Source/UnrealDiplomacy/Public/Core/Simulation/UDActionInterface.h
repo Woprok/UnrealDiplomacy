@@ -1082,7 +1082,7 @@ public:
 	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 10042;
-	static const int32 RequiredParametersCount = 2;
+	static const int32 RequiredParametersCount = 1;
 	static FUDDealData ConvertData(FUDActionData& data)
 	{
 		return FUDDealData(data.ValueParameters);
@@ -1100,8 +1100,8 @@ public:
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
 	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
-	static const int32 ActionTypeId = 10042;
-	static const int32 RequiredParametersCount = 2;
+	static const int32 ActionTypeId = 10043;
+	static const int32 RequiredParametersCount = 1;
 	static FUDDealData ConvertData(FUDActionData& data)
 	{
 		return FUDDealData(data.ValueParameters);

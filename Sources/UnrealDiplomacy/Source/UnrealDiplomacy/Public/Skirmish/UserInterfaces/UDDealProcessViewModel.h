@@ -404,6 +404,8 @@ public:
 	FString Name;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsParticipant;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool IsReady;
 private:
 	FUDPlayerInfo CurrentInfo;
 	int32 CurrentDealUniqueId;
@@ -419,6 +421,7 @@ public:
 		).ToString();
 		SetName(rs1);
 		SetIsParticipant(ActionModel->IsParticipantInCurrentDeal(dealUniqueId, info.Id));
+		SetIsReady(ActionModel->IsReadyInCurrentDeal(dealUniqueId, info.Id));
 	}
 
 	UFUNCTION(BlueprintCallable)
@@ -430,6 +433,16 @@ public:
 	void LeaveDeal()
 	{
 		ActionModel->RequestAction(ActionModel->GetLeaveParticipantDealAction(CurrentDealUniqueId, CurrentInfo.Id));
+	}
+	UFUNCTION(BlueprintCallable)
+	void ChangeToReady()
+	{
+		ActionModel->RequestAction(ActionModel->GetReadyDealAction(CurrentDealUniqueId));
+	}
+	UFUNCTION(BlueprintCallable)
+	void ChangeToNotReady()
+	{
+		ActionModel->RequestAction(ActionModel->GetNotReadyDealAction(CurrentDealUniqueId));
 	}
 private:
 	// MVVM Setters & Getters
@@ -448,6 +461,14 @@ private:
 	bool GetIsParticipant() const
 	{
 		return IsParticipant;
+	}
+	void SetIsReady(bool newIsReady)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(IsReady, newIsReady);
+	}
+	bool GetIsReady() const
+	{
+		return IsReady;
 	}
 };
 
@@ -478,6 +499,10 @@ public:
 	EUDDealSimulationResult DealResult = EUDDealSimulationResult::Undefined;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FString CurrentChatMessage;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	int32 CurrentReady;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	int32 MaxReady;
 protected:
 	/**
 	 * Deals sorted by time they were created.
@@ -705,6 +730,8 @@ protected:
 		).ToString();
 		SetSessionDescription(rs1);
 		SetIsModerator(ActionModel->IsModerator(info.DealUniqueId));
+		SetCurrentReady(ActionModel->GetReadyParticipantCount(info.DealUniqueId));
+		SetMaxReady(ActionModel->GetParticipantCount(info.DealUniqueId));
 
 		auto data = ActionModel->GetDealParticipants(info.DealUniqueId);
 		ParticipantsOnUpdated.Broadcast(data);
@@ -785,6 +812,22 @@ private:
 	FString GetCurrentChatMessage() const
 	{
 		return CurrentChatMessage;
+	}
+	void SetCurrentReady(int32 newCurrentReady)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(CurrentReady, newCurrentReady);
+	}
+	int32 GetCurrentReady() const
+	{
+		return CurrentReady;
+	}
+	void SetMaxReady(int32 newMaxReady)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(MaxReady, newMaxReady);
+	}
+	int32 GetMaxReady() const
+	{
+		return MaxReady;
 	}
 };
 #undef LOCTEXT_NAMESPACE

@@ -463,6 +463,37 @@ public:
 			return false;
 		return OverseeingState->Deals[dealUniqueId]->Participants.Contains(playerId);
 	}
+
+	UFUNCTION(BlueprintCallable)
+	bool IsReadyInCurrentDeal(int32 dealUniqueId, int32 playerId)
+	{
+		if (OverseeingState->Deals.Num() == 0 || !OverseeingState->Deals.Contains(dealUniqueId))
+			return false;
+		if (OverseeingState->Deals[dealUniqueId]->IsReadyPlayerList.Num() == 0)
+			return false;
+		return OverseeingState->Deals[dealUniqueId]->IsReadyPlayerList.Contains(playerId);
+	}
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetReadyParticipantCount(int32 dealUniqueId)
+	{
+		if (OverseeingState->Deals.Num() == 0 || !OverseeingState->Deals.Contains(dealUniqueId))
+			return false;
+		if (OverseeingState->Deals[dealUniqueId]->IsReadyPlayerList.Num() == 0)
+			return false;
+		return OverseeingState->Deals[dealUniqueId]->IsReadyPlayerList.Num();
+	}
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetParticipantCount(int32 dealUniqueId)
+	{
+		if (OverseeingState->Deals.Num() == 0 || !OverseeingState->Deals.Contains(dealUniqueId))
+			return false;
+		if (OverseeingState->Deals[dealUniqueId]->Participants.Num() == 0)
+			return false;
+		return OverseeingState->Deals[dealUniqueId]->Participants.Num();
+	}
+
 	UFUNCTION(BlueprintCallable)
 	TArray<FString> GetDealMessages(int32 dealUniqueId)
 	{
@@ -609,6 +640,19 @@ public:
 		return OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->Targets.Contains(playerId);
 	}
 public:
+	UFUNCTION(BlueprintCallable)
+	FUDActionData GetReadyDealAction(int32 dealUniqueId)
+	{
+		return FUDActionData(UUDReadyDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+			{ dealUniqueId });
+	}
+	UFUNCTION(BlueprintCallable)
+	FUDActionData GetNotReadyDealAction(int32 dealUniqueId)
+	{
+		return FUDActionData(UUDNotReadyDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+			{ dealUniqueId });
+	}
+
 	UFUNCTION(BlueprintCallable)
 	FUDActionData UpdateActionDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 actionId)
 	{
