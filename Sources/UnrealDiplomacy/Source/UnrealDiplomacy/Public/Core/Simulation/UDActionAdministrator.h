@@ -485,6 +485,26 @@ public:
 	}
 
 	UFUNCTION(BlueprintCallable)
+	bool IsPositiveVotingCurrentDeal(int32 dealUniqueId, int32 playerId)
+	{
+		if (OverseeingState->Deals.Num() == 0 || !OverseeingState->Deals.Contains(dealUniqueId))
+			return false;
+		if (OverseeingState->Deals[dealUniqueId]->PositiveVotePlayerList.Num() == 0)
+			return false;
+		return OverseeingState->Deals[dealUniqueId]->PositiveVotePlayerList.Contains(playerId);
+	}
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetPositiveVoteCurrentDealCount(int32 dealUniqueId)
+	{
+		if (OverseeingState->Deals.Num() == 0 || !OverseeingState->Deals.Contains(dealUniqueId))
+			return false;
+		if (OverseeingState->Deals[dealUniqueId]->PositiveVotePlayerList.Num() == 0)
+			return false;
+		return OverseeingState->Deals[dealUniqueId]->PositiveVotePlayerList.Num();
+	}
+
+	UFUNCTION(BlueprintCallable)
 	int32 GetParticipantCount(int32 dealUniqueId)
 	{
 		if (OverseeingState->Deals.Num() == 0 || !OverseeingState->Deals.Contains(dealUniqueId))
@@ -640,6 +660,19 @@ public:
 		return OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->Targets.Contains(playerId);
 	}
 public:
+	UFUNCTION(BlueprintCallable)
+	FUDActionData GetPositiveVoteDealAction(int32 dealUniqueId)
+	{
+		return FUDActionData(UUDPositiveVoteDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+			{ dealUniqueId });
+	}
+	UFUNCTION(BlueprintCallable)
+	FUDActionData GetNegativeVoteDealAction(int32 dealUniqueId)
+	{
+		return FUDActionData(UUDNegativeVoteDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+			{ dealUniqueId });
+	}
+
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetReadyDealAction(int32 dealUniqueId)
 	{

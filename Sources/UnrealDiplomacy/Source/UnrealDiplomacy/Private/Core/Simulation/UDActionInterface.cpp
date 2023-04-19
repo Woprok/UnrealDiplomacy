@@ -1441,4 +1441,53 @@ void UUDNotReadyDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorl
 	FUDDealData data = UUDNotReadyDealAction::ConvertData(actionData);
 	targetWorldState->Deals[data.DealId]->IsReadyPlayerList.Add(actionData.InvokerPlayerId);
 }
+
+
+bool UUDPositiveVoteDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	if (result)
+	{
+		FUDDealData data = UUDPositiveVoteDealAction::ConvertData(actionData);
+		bool isNotReady = !targetWorldState->Deals[data.DealId]->PositiveVotePlayerList.Contains(actionData.InvokerPlayerId);
+		result = result && isNotReady;
+	}
+	return result;
+}
+void UUDPositiveVoteDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	FUDDealData data = UUDPositiveVoteDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->PositiveVotePlayerList.Add(actionData.InvokerPlayerId);
+}
+void UUDPositiveVoteDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);
+	FUDDealData data = UUDPositiveVoteDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->PositiveVotePlayerList.Remove(actionData.InvokerPlayerId);
+}
+
+bool UUDNegativeVoteDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	if (result)
+	{
+		FUDDealData data = UUDNegativeVoteDealAction::ConvertData(actionData);
+		bool isReady = targetWorldState->Deals[data.DealId]->PositiveVotePlayerList.Contains(actionData.InvokerPlayerId);
+		result = result && isReady;
+	}
+	return result;
+}
+void UUDNegativeVoteDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	FUDDealData data = UUDNegativeVoteDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->PositiveVotePlayerList.Remove(actionData.InvokerPlayerId);
+}
+void UUDNegativeVoteDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);
+	FUDDealData data = UUDNegativeVoteDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->PositiveVotePlayerList.Add(actionData.InvokerPlayerId);
+}
 #pragma endregion

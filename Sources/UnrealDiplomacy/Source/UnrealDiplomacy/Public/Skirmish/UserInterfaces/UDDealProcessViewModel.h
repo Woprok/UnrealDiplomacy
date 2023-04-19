@@ -406,6 +406,8 @@ public:
 	bool IsParticipant;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsReady;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool IsPositiveVote;
 private:
 	FUDPlayerInfo CurrentInfo;
 	int32 CurrentDealUniqueId;
@@ -422,6 +424,7 @@ public:
 		SetName(rs1);
 		SetIsParticipant(ActionModel->IsParticipantInCurrentDeal(dealUniqueId, info.Id));
 		SetIsReady(ActionModel->IsReadyInCurrentDeal(dealUniqueId, info.Id));
+		SetIsPositiveVote(ActionModel->IsPositiveVotingCurrentDeal(dealUniqueId, info.Id));
 	}
 
 	UFUNCTION(BlueprintCallable)
@@ -443,6 +446,16 @@ public:
 	void ChangeToNotReady()
 	{
 		ActionModel->RequestAction(ActionModel->GetNotReadyDealAction(CurrentDealUniqueId));
+	}
+	UFUNCTION(BlueprintCallable)
+	void ChangeToYes()
+	{
+		ActionModel->RequestAction(ActionModel->GetPositiveVoteDealAction(CurrentDealUniqueId));
+	}
+	UFUNCTION(BlueprintCallable)
+	void ChangeToNo()
+	{
+		ActionModel->RequestAction(ActionModel->GetNegativeVoteDealAction(CurrentDealUniqueId));
 	}
 private:
 	// MVVM Setters & Getters
@@ -469,6 +482,14 @@ private:
 	bool GetIsReady() const
 	{
 		return IsReady;
+	}
+	void SetIsPositiveVote(bool newIsPositiveVote)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(IsPositiveVote, newIsPositiveVote);
+	}
+	bool GetIsPositiveVote() const
+	{
+		return IsPositiveVote;
 	}
 };
 
@@ -503,6 +524,10 @@ public:
 	int32 CurrentReady;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	int32 MaxReady;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	int32 CurrentPositiveVote;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	int32 MaxVote;
 protected:
 	/**
 	 * Deals sorted by time they were created.
@@ -732,6 +757,8 @@ protected:
 		SetIsModerator(ActionModel->IsModerator(info.DealUniqueId));
 		SetCurrentReady(ActionModel->GetReadyParticipantCount(info.DealUniqueId));
 		SetMaxReady(ActionModel->GetParticipantCount(info.DealUniqueId));
+		SetCurrentPositiveVote(ActionModel->GetPositiveVoteCurrentDealCount(info.DealUniqueId));
+		SetMaxVote(ActionModel->GetParticipantCount(info.DealUniqueId));
 
 		auto data = ActionModel->GetDealParticipants(info.DealUniqueId);
 		ParticipantsOnUpdated.Broadcast(data);
@@ -829,5 +856,22 @@ private:
 	{
 		return MaxReady;
 	}
+	void SetCurrentPositiveVote(int32 newCurrentPositiveVote)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(CurrentPositiveVote, newCurrentPositiveVote);
+	}
+	int32 GetCurrentPositiveVote() const
+	{
+		return CurrentPositiveVote;
+	}
+	void SetMaxVote(int32 newMaxVote)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(MaxVote, newMaxVote);
+	}
+	int32 GetMaxVote() const
+	{
+		return MaxVote;
+	}
+	
 };
 #undef LOCTEXT_NAMESPACE

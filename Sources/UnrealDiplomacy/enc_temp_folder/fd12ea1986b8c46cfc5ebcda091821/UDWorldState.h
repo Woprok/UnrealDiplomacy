@@ -382,21 +382,6 @@ public:
 	 */
 	UPROPERTY()
 	TArray<int32> PositiveVotePlayerList;
-	/*
-	 * All actions that are required to be executed.
-	 */
-	UPROPERTY()
-	TArray<FUDActionData> FinalDealBody;
-	/*
-	 * All actions that are accepeted.
-	 */
-	UPROPERTY()
-	TArray<FUDActionData> FinalAcceptedDealBody;
-	/*
-	 * All actions that are denied.
-	 */
-	UPROPERTY()
-	TArray<FUDActionData> FinalDeniedDealBody;
 };
 
 /**

@@ -260,4 +260,6 @@ void AUDWorldSimulation::LoadCoreActions()
 	RegisterAction(NewObject<UUDRemoveTargetDealAction>(this));
 	RegisterAction(NewObject<UUDReadyDealAction>(this));
 	RegisterAction(NewObject<UUDNotReadyDealAction>(this));
+	RegisterAction(NewObject<UUDPositiveVoteDealAction>(this));
+	RegisterAction(NewObject<UUDNegativeVoteDealAction>(this));
 }

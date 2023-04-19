@@ -69,6 +69,7 @@ TObjectPtr<UUDDealState> UUDDealState::CreateState(int32 dealId, int32 ownerId)
 	newState->Points.Empty(0);
 	newState->ChatHistory.Empty(0);
 	newState->IsReadyPlayerList.Empty(0);
+	newState->PositiveVotePlayerList.Empty(0);
 	return newState;
 }
 
