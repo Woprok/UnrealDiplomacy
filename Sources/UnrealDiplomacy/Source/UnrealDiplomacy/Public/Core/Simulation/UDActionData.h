@@ -65,6 +65,27 @@ public:
  * @param FUDActionData.ValueParameters
  */
 USTRUCT(BlueprintType)
+struct FUDDealValueData
+{
+	GENERATED_BODY()
+public:
+	FUDDealValueData() {}
+	FUDDealValueData(TArray<int32> valueParameters)
+	{
+		DealId = valueParameters[0];
+		Value = valueParameters[1];
+	}
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 Value = 0;
+};
+
+/**
+ * Transforms action parameters to properly named fields.
+ * @param FUDActionData.ValueParameters
+ */
+USTRUCT(BlueprintType)
 struct FUDDealPointData
 {
 	GENERATED_BODY()

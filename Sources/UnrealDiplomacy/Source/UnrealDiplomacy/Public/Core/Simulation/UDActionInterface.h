@@ -90,7 +90,7 @@ public:
 	 }
 	 /**
 	  * Additional actions that should be executed after this action, based on input.
-	 * Validity is in general checked on GaiaWorldState.
+	  * Validity is in general checked on GaiaWorldState.
 	  */
 	 TArray<FUDActionData> GetSubactions(FUDActionData& parentAction, TObjectPtr<UUDWorldState> targetWorldState);
 	 /**
@@ -1146,4 +1146,146 @@ public:
 	}
 };
 
+/**
+ * This action transforms preview of actions to final actions.
+ * After this players can choose if they honour this deal.
+ * This is executed on clients as well. The order is strictly determined for all actions.
+ * for each invoker in ascending order, then for each target in ascending order.
+ * The order must remain same as the actions are temporatily assigned array index as their Id.
+ * Actions can't receive Id unless they are being executed and this would also mean that
+ * simulation has to receive all actions from server. Which might be taxing!
+ * Single item can easily result in exponential amount of actions.
+ * TODO change this to receive from server might be in the end safer for sync. 
+ * Current version does not support partial information about the result.
+ * In theory there is no way to have player believe that something did happen.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDFinalizeItemsDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
+public:
+	static const int32 ActionTypeId = 10046;
+	static const int32 RequiredParametersCount = 1;
+	static FUDDealData ConvertData(FUDActionData& data)
+	{
+		return FUDDealData(data.ValueParameters);
+	}
+	static TArray<FUDActionData> FinalizeActions(TObjectPtr<UUDWorldState> targetWorldState, int32 dealUniqueId);
+	static TArray<FUDDiscsussionAction> WrapActions(TArray<FUDActionData> actionData);
+};
+
+/**
+ * Accepts the action.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDAcceptFinalItemDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
+public:
+	static const int32 ActionTypeId = 10047;
+	static const int32 RequiredParametersCount = 2;
+	static FUDDealValueData ConvertData(FUDActionData& data)
+	{
+		return FUDDealValueData(data.ValueParameters);
+	}
+};
+/**
+ * Deny the action.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDDenyFinalItemDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
+public:
+	static const int32 ActionTypeId = 10048;
+	static const int32 RequiredParametersCount = 2;
+	static FUDDealValueData ConvertData(FUDActionData& data)
+	{
+		return FUDDealValueData(data.ValueParameters);
+	}
+};
+/**
+ * Change the action.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDAlterFinalItemDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
+public:
+	static const int32 ActionTypeId = 10049;
+	static const int32 RequiredParametersCount = 2;
+	static FUDDealValueData ConvertData(FUDActionData& data)
+	{
+		return FUDDealValueData(data.ValueParameters);
+	}
+};
+/**
+ * Sabotage the action.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDSabotageFinalItemDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
+public:
+	static const int32 ActionTypeId = 10050;
+	static const int32 RequiredParametersCount = 2;
+	static FUDDealValueData ConvertData(FUDActionData& data)
+	{
+		return FUDDealValueData(data.ValueParameters);
+	}
+};
+/*
+ * Executes all actions in the deal, based on players final believe.
+ */
+UCLASS()
+class UNREALDIPLOMACY_API UUDExecuteAllActionsDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
+	virtual bool IsComposite() override { return true; }
+	virtual TArray<FUDActionData> GetSubactions(FUDActionData& parentAction, TObjectPtr<UUDWorldState> targetWorldState);
+public:
+	static const int32 ActionTypeId = 10051;
+	static const int32 RequiredParametersCount = 1;
+	static FUDDealData ConvertData(FUDActionData& data)
+	{
+		return FUDDealData(data.ValueParameters);
+	}
+	static bool AreAllActionsPrepared(TObjectPtr<UUDWorldState> targetWorldState, int32 dealUniqueId);
+};
 #pragma endregion

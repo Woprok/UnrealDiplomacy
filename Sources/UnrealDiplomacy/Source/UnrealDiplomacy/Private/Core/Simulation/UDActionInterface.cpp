@@ -1491,3 +1491,232 @@ void UUDNegativeVoteDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUD
 	targetWorldState->Deals[data.DealId]->PositiveVotePlayerList.Add(actionData.InvokerPlayerId);
 }
 #pragma endregion
+
+#pragma region FinalDeal Updates
+
+TArray<FUDActionData> UUDFinalizeItemsDealAction::FinalizeActions(TObjectPtr<UUDWorldState> targetWorldState, int32 dealUniqueId)
+{
+	TArray<FUDActionData> actions;
+	auto deal = targetWorldState->Deals[dealUniqueId];
+	for (auto point : deal->Points)
+	{
+		auto actionId = point.Value->ActionId;
+		// TODO figure out what this field is supposed to do in actions.
+		auto type = point.Value->Type;
+		// TODO params
+		// We require Invoker for all actions.
+		for (auto invoker : point.Value->Invokers)
+		{
+			// for each invoker and each target create a pair for actions
+			// at the moment there is no way for actions to target multiple players
+			// and for very sensible reason it will probably remain like that ?
+			// also executing one action for each pair is expected to be same as one action for 1 : N group
+			if (point.Value->Targets.Num() > 0)
+			{
+				for (auto target : point.Value->Targets)
+				{
+					actions.Add(FUDActionData(actionId, invoker,
+						{
+							target
+						}
+					));
+				}
+			}
+			else
+			{
+				actions.Add(FUDActionData(actionId, invoker));
+			}
+		}
+	}
+	return actions;
+}
+
+TArray<FUDDiscsussionAction> UUDFinalizeItemsDealAction::WrapActions(TArray<FUDActionData> actionData)
+{
+	TArray<FUDDiscsussionAction> dealActions;
+	for (auto action : actionData)
+	{
+		dealActions.Add(FUDDiscsussionAction(
+			action,
+			EUDDealActionResult::Unresolved,
+			false)
+		);
+	}
+	return dealActions;
+}
+
+bool UUDFinalizeItemsDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	if (result)
+	{
+		FUDDealData data = UUDFinalizeItemsDealAction::ConvertData(actionData);
+		bool isEmpty = !targetWorldState->Deals[data.DealId]->DealActionList.IsEmpty();
+		result = result && isEmpty;
+	}
+	return result;
+}
+void UUDFinalizeItemsDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	FUDDealData data = UUDFinalizeItemsDealAction::ConvertData(actionData);
+	TArray<FUDActionData> actions = UUDFinalizeItemsDealAction::FinalizeActions(targetWorldState, data.DealId);
+	targetWorldState->Deals[data.DealId]->DealActionList = UUDFinalizeItemsDealAction::WrapActions(actions);
+}
+void UUDFinalizeItemsDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);
+	FUDDealData data = UUDFinalizeItemsDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->DealActionList.Empty();
+}
+
+bool UUDAcceptFinalItemDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	if (result)
+	{
+		FUDDealValueData data = UUDAcceptFinalItemDealAction::ConvertData(actionData);
+		bool unresolved = targetWorldState->Deals[data.DealId]->DealActionList[data.Value].SelectedResult == EUDDealActionResult::Unresolved;
+		result = result && unresolved;
+	}
+	return result;
+}
+void UUDAcceptFinalItemDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	FUDDealValueData data = UUDAcceptFinalItemDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->DealActionList[data.Value].SelectedResult = EUDDealActionResult::Accepted;
+}
+void UUDAcceptFinalItemDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);
+	FUDDealValueData data = UUDAcceptFinalItemDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->DealActionList[data.Value].SelectedResult = EUDDealActionResult::Unresolved;
+}
+
+bool UUDDenyFinalItemDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	if (result)
+	{
+		FUDDealValueData data = UUDDenyFinalItemDealAction::ConvertData(actionData);
+		bool unresolved = targetWorldState->Deals[data.DealId]->DealActionList[data.Value].SelectedResult == EUDDealActionResult::Unresolved;
+		result = result && unresolved;
+	}
+	return result;
+}
+void UUDDenyFinalItemDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	FUDDealValueData data = UUDDenyFinalItemDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->DealActionList[data.Value].SelectedResult = EUDDealActionResult::Denied;
+}
+void UUDDenyFinalItemDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);
+	FUDDealValueData data = UUDDenyFinalItemDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->DealActionList[data.Value].SelectedResult = EUDDealActionResult::Unresolved;
+}
+
+bool UUDAlterFinalItemDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	if (result)
+	{
+		FUDDealValueData data = UUDAlterFinalItemDealAction::ConvertData(actionData);
+		bool unresolved = targetWorldState->Deals[data.DealId]->DealActionList[data.Value].SelectedResult == EUDDealActionResult::Unresolved;
+		result = result && unresolved;
+	}
+	return result;
+}
+void UUDAlterFinalItemDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	FUDDealValueData data = UUDAlterFinalItemDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->DealActionList[data.Value].SelectedResult = EUDDealActionResult::Changed;
+}
+void UUDAlterFinalItemDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);
+	FUDDealValueData data = UUDAlterFinalItemDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->DealActionList[data.Value].SelectedResult = EUDDealActionResult::Unresolved;
+}
+
+bool UUDSabotageFinalItemDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	if (result)
+	{
+		FUDDealValueData data = UUDSabotageFinalItemDealAction::ConvertData(actionData);
+		bool unresolved = !targetWorldState->Deals[data.DealId]->DealActionList[data.Value].WasSabotaged;
+		result = result && unresolved;
+	}
+	return result;
+}
+void UUDSabotageFinalItemDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	FUDDealValueData data = UUDSabotageFinalItemDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->DealActionList[data.Value].WasSabotaged = true;
+}
+void UUDSabotageFinalItemDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);
+	FUDDealValueData data = UUDSabotageFinalItemDealAction::ConvertData(actionData);
+	targetWorldState->Deals[data.DealId]->DealActionList[data.Value].WasSabotaged = false;
+}
+
+bool UUDExecuteAllActionsDealAction::AreAllActionsPrepared(TObjectPtr<UUDWorldState> targetWorldState, int32 dealUniqueId)
+{
+	for (auto actionWrapper : targetWorldState->Deals[dealUniqueId]->DealActionList)
+	{
+		if (actionWrapper.SelectedResult < EUDDealActionResult::Accepted)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+bool UUDExecuteAllActionsDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	if (result)
+	{
+		FUDDealData data = UUDExecuteAllActionsDealAction::ConvertData(actionData);
+		bool unresolved = UUDExecuteAllActionsDealAction::AreAllActionsPrepared(targetWorldState, data.DealId);
+		result = result && unresolved;
+	}
+	return result;
+}
+void UUDExecuteAllActionsDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	// Execution is empty as this action only invokes other.
+}
+void UUDExecuteAllActionsDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);
+	// Execution is always reverted if all subactions were revoked.
+}
+
+TArray<FUDActionData> UUDExecuteAllActionsDealAction::GetSubactions(FUDActionData& parentAction, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	TArray<FUDActionData> finalActionList;
+	FUDDealData data = UUDExecuteAllActionsDealAction::ConvertData(parentAction);
+	for (auto wrappedAction : targetWorldState->Deals[data.DealId]->DealActionList)
+	{
+		if (!wrappedAction.WasSabotaged && 
+				(
+					wrappedAction.SelectedResult == EUDDealActionResult::Accepted ||
+					wrappedAction.SelectedResult == EUDDealActionResult::Changed
+				)
+			)
+		{
+			finalActionList.Add(wrappedAction.Action);
+		}
+	}
+	return finalActionList;
+}
+
+#pragma endregion

@@ -109,11 +109,13 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 	// Continue notifying about the subsequent actions...
 	if (actionExecutor->IsComposite())
 	{
+		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Composite Action UID(%d) Started."), newAction.UniqueId);
 		TArray<FUDActionData> subactions = actionExecutor->GetSubactions(newAction, GetSpecificState(UUDWorldState::GaiaWorldStateId));
 		for (auto& action : subactions)
 		{
 			ExecuteAction(newAction);
 		}
+		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Composite Action UID(%d) Finished."), newAction.UniqueId);
 	}
 }
 
@@ -262,4 +264,11 @@ void AUDWorldSimulation::LoadCoreActions()
 	RegisterAction(NewObject<UUDNotReadyDealAction>(this));
 	RegisterAction(NewObject<UUDPositiveVoteDealAction>(this));
 	RegisterAction(NewObject<UUDNegativeVoteDealAction>(this));
+	// Deal action finalizations
+	RegisterAction(NewObject<UUDFinalizeItemsDealAction>(this));
+	RegisterAction(NewObject<UUDAcceptFinalItemDealAction>(this));
+	RegisterAction(NewObject<UUDDenyFinalItemDealAction>(this));
+	RegisterAction(NewObject<UUDAlterFinalItemDealAction>(this));
+	RegisterAction(NewObject<UUDSabotageFinalItemDealAction>(this));
+	RegisterAction(NewObject<UUDExecuteAllActionsDealAction>(this));
 }

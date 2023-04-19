@@ -615,38 +615,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	TArray<FUDActionData> GetDealPointsAsUnfoldedActions(int32 dealUniqueId)
 	{
-		TArray<FUDActionData> actions;
-		auto deal = OverseeingState->Deals[dealUniqueId];
-		for (auto point : deal->Points)
-		{
-			auto actionId = point.Value->ActionId;
-			// TODO figure out what this field is supposed to do in actions.
-			auto type = point.Value->Type;
-			// TODO params
-			for (auto invoker : point.Value->Invokers)
-			{
-				// for each invoker and each target create a pair for actions
-				// at the moment there is no way for actions to target multiple players
-				// and for very sensible reason it will probably remain like that ?
-				// also executing one action for each pair is expected to be same as one action for 1 : N group
-				if (point.Value->Targets.Num() > 0)
-				{
-					for (auto target : point.Value->Targets)
-					{
-						actions.Add(FUDActionData(actionId, invoker,
-							{
-								target
-							}
-						));
-					}
-				}
-				else
-				{
-					actions.Add(FUDActionData(actionId, invoker));
-				}
-			}
-		}
-		return actions;
+		return UUDFinalizeItemsDealAction::FinalizeActions(OverseeingState, dealUniqueId);
 	}
 
 	UFUNCTION(BlueprintCallable)

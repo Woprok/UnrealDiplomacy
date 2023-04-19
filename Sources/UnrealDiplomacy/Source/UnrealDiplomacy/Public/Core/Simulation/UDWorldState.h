@@ -311,6 +311,64 @@ public:
 	 TArray<int32> Targets;
 };
 
+
+/**
+ * Represents discussion action selected outcome.
+ */
+UENUM(BlueprintType)
+enum class EUDDealActionResult : uint8
+{
+	/**
+	 * Invalid state.
+	 */
+	Error = 0,
+	/**
+	 * This conditions were not yet accepted.
+	 */
+	Unresolved = 1,
+	/**
+	* Player accepted conditions.
+	*/
+	Accepted = 2,
+	/**
+	 * Player denied conditions.
+	 */
+	Denied = 3,
+	/**
+	 * Player altered parameters and accepted altered version.
+	 * TODO PROVIDE UI SUPPORT FOR THIS.
+	 */
+	Changed = 4,
+	/**
+	 * Other player used sabotage.
+	 * UNUSED. This state would require Sabotage action to be queued.
+	 */
+	//Sabotaged = 5,
+};
+
+/**
+ * Represents single action created from discussion item.
+ */
+USTRUCT(BlueprintType)
+struct UNREALDIPLOMACY_API FUDDiscsussionAction
+{
+	GENERATED_BODY()
+public:
+	FUDDiscsussionAction() {}
+	FUDDiscsussionAction(FUDActionData action, EUDDealActionResult result, bool isSabotaged) 
+		: Action(action), SelectedResult(result), WasSabotaged(isSabotaged) {}
+	UPROPERTY(BlueprintReadOnly)
+	FUDActionData Action;
+	UPROPERTY(BlueprintReadOnly)
+	EUDDealActionResult SelectedResult;
+	/**
+	 * This has to be outside of Result, even if it is result.
+	 * We are still required to track original player action.
+	 */
+	UPROPERTY(BlueprintReadOnly)
+	bool WasSabotaged;
+};
+
 /**
  * Represents state of single deal that is being / was made.
  */
@@ -383,20 +441,13 @@ public:
 	UPROPERTY()
 	TArray<int32> PositiveVotePlayerList;
 	/*
-	 * All actions that are required to be executed.
+	 * All actions that are required to be executed and their current state.
+	 * This is filled by an action and then updated by invoker for each action.
+	 * In some cases it can be flagged as sabotaged.
+	 * Actions are executed once all players determined their actions.
 	 */
 	UPROPERTY()
-	TArray<FUDActionData> FinalDealBody;
-	/*
-	 * All actions that are accepeted.
-	 */
-	UPROPERTY()
-	TArray<FUDActionData> FinalAcceptedDealBody;
-	/*
-	 * All actions that are denied.
-	 */
-	UPROPERTY()
-	TArray<FUDActionData> FinalDeniedDealBody;
+	TArray<FUDDiscsussionAction> DealActionList;
 };
 
 /**
