@@ -1539,7 +1539,8 @@ TArray<FUDDiscsussionAction> UUDFinalizeItemsDealAction::WrapActions(TArray<FUDA
 		dealActions.Add(FUDDiscsussionAction(
 			action,
 			EUDDealActionResult::Unresolved,
-			false)
+			false,
+			UUDWorldState::GaiaWorldStateId)
 		);
 	}
 	return dealActions;
@@ -1551,7 +1552,7 @@ bool UUDFinalizeItemsDealAction::CanExecute(FUDActionData& actionData, TObjectPt
 	if (result)
 	{
 		FUDDealData data = UUDFinalizeItemsDealAction::ConvertData(actionData);
-		bool isEmpty = !targetWorldState->Deals[data.DealId]->DealActionList.IsEmpty();
+		bool isEmpty = targetWorldState->Deals[data.DealId]->DealActionList.IsEmpty();
 		result = result && isEmpty;
 	}
 	return result;
@@ -1658,12 +1659,14 @@ void UUDSabotageFinalItemDealAction::Execute(FUDActionData& actionData, TObjectP
 	IUDActionInterface::Execute(actionData, targetWorldState);
 	FUDDealValueData data = UUDSabotageFinalItemDealAction::ConvertData(actionData);
 	targetWorldState->Deals[data.DealId]->DealActionList[data.Value].WasSabotaged = true;
+	targetWorldState->Deals[data.DealId]->DealActionList[data.Value].SabotageId = actionData.InvokerPlayerId;
 }
 void UUDSabotageFinalItemDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
 	IUDActionInterface::Revert(actionData, targetWorldState);
 	FUDDealValueData data = UUDSabotageFinalItemDealAction::ConvertData(actionData);
 	targetWorldState->Deals[data.DealId]->DealActionList[data.Value].WasSabotaged = false;
+	targetWorldState->Deals[data.DealId]->DealActionList[data.Value].SabotageId = UUDWorldState::GaiaWorldStateId;
 }
 
 bool UUDExecuteAllActionsDealAction::AreAllActionsPrepared(TObjectPtr<UUDWorldState> targetWorldState, int32 dealUniqueId)

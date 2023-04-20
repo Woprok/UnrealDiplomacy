@@ -113,7 +113,7 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 		TArray<FUDActionData> subactions = actionExecutor->GetSubactions(newAction, GetSpecificState(UUDWorldState::GaiaWorldStateId));
 		for (auto& action : subactions)
 		{
-			ExecuteAction(newAction);
+			ExecuteAction(action);
 		}
 		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Composite Action UID(%d) Finished."), newAction.UniqueId);
 	}

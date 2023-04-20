@@ -83,6 +83,8 @@ TObjectPtr<UUDDiscussionItem> UUDDiscussionItem::CreateState(int32 ownerId)
 	newState->Consequencies.Empty(0);
 	newState->Invokers.Empty(0);
 	newState->Targets.Empty(0);
+	newState->ValueParameters.Empty(0);
+	newState->TextParameter.Empty(0);
 	return newState;
 }
 

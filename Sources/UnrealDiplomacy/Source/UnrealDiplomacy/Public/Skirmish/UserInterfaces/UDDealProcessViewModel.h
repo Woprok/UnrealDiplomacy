@@ -12,7 +12,127 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUDParticipantsUpdated, FUDDealParti
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUDPDealPointUpdated, FUDDealPointTreeInfo, dealRoot);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDChatUpdated);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDEditedDealUpdated);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDActionInfoUpdated);
 
+
+UCLASS(BlueprintType, Blueprintable)
+class UNREALDIPLOMACY_API UUDPointActionFinalViewModel : public UUDStaticViewModelBase
+{
+	GENERATED_BODY()
+public:
+	// MVVM Field.
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FString Description;
+	// Resolved actions can't be updated by owner.
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool IsResolved;
+	// Sabotaged actions can't be sabotaged again.
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool IsSabotaged;
+	// Actions are different based on perspective.
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool IsExecutor;
+	// Fields.
+	FUDDealActionInfo CurrentData;
+public:
+	UFUNCTION(BlueprintCallable)
+	void SetBindingTarget(FUDDealActionInfo data, bool isOwner)
+	{
+		CurrentData = data;
+		FUDActionData actionData = data.ActionBody.Action;
+		TStringBuilder<64> desc;
+		desc.Append(FText::Format(LOCTEXT("ActionPreview", "Action: {0}. "),
+			actionData.ActionTypeId).ToString()
+		);
+		desc.Append(FText::Format(LOCTEXT("ActionPreview", "Invoked by: {0}. "),
+			actionData.InvokerPlayerId).ToString()
+
+		);
+		desc.Append(FText(LOCTEXT("ActionPreview", "Text param: ")).ToString());
+		desc.Append(actionData.TextParameter);
+		desc.Append(FText(LOCTEXT("ActionPreview", ".\n")).ToString());
+
+		desc.Append(FText::Format(LOCTEXT("ActionPreview", "Value param count: {0} Params:\n"),
+			actionData.ValueParameters.Num()).ToString()
+		);
+		for (auto param : actionData.ValueParameters)
+		{
+			desc.Append(FText::Format(LOCTEXT("ActionPreview", "Prm: {0}. "),
+				param).ToString()
+			);
+		}
+		SetDescription(desc.ToString());
+		SetIsResolved(data.ActionBody.SelectedResult != EUDDealActionResult::Unresolved);
+		SetIsSabotaged(data.ActionBody.WasSabotaged);
+		SetIsExecutor(isOwner);
+	}
+
+	UFUNCTION(BlueprintCallable)
+	void AcceptAction()
+	{
+		ActionModel->RequestAction(
+			ActionModel->GetAcceptFinalItemDealAction(
+				CurrentData.DealUniqueId, CurrentData.ActionIndex));
+	}
+
+	UFUNCTION(BlueprintCallable)
+	void ChangeAction()
+	{
+		ActionModel->RequestAction(
+			ActionModel->GetAlterFinalItemDealAction(
+				CurrentData.DealUniqueId, CurrentData.ActionIndex));
+	}
+
+	UFUNCTION(BlueprintCallable)
+	void DenyAction()
+	{
+		ActionModel->RequestAction(
+			ActionModel->GetDenyFinalItemDealAction(
+				CurrentData.DealUniqueId, CurrentData.ActionIndex));
+	}
+
+	UFUNCTION(BlueprintCallable)
+	void SabotageAction()
+	{
+		ActionModel->RequestAction(
+			ActionModel->GetSabotageFinalItemDealAction(
+				CurrentData.DealUniqueId, CurrentData.ActionIndex));
+	}
+private:
+	// MVVM Setters & Getters
+	void SetDescription(FString newDescription)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(Description, newDescription);
+	}
+	FString GetDescription() const
+	{
+		return Description;
+	}
+	void SetIsResolved(bool newIsResolved)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(IsResolved, newIsResolved);
+	}
+	bool GetIsResolved() const
+	{
+		return IsResolved;
+	}
+	void SetIsSabotaged(bool newIsSabotaged)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(IsSabotaged, newIsSabotaged);
+	}
+	bool GetIsSabotaged() const
+	{
+		return IsSabotaged;
+	}
+	void SetIsExecutor(bool newIsExecutor)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(IsExecutor, newIsExecutor);
+	}
+	bool GetIsExecutor() const
+	{
+		return IsExecutor;
+	}
+};
 
 UCLASS(BlueprintType, Blueprintable)
 class UNREALDIPLOMACY_API UUDPointActionPreviewViewModel : public UUDStaticViewModelBase
@@ -578,6 +698,11 @@ public:
 	 */
 	UPROPERTY(BlueprintAssignable)
 	FUDChatUpdated ChatOnUpdated;
+	/**
+	 * Invoked when this requires view to rebind.
+	 */
+	UPROPERTY(BlueprintAssignable)
+	FUDActionInfoUpdated ActionInfoUpdated;
 
 	/**
 	 * Called by button.
@@ -643,6 +768,27 @@ public:
 	{
 		ActionModel->RequestAction(ActionModel->CreateChatMessageAction(CurrentDealItem.DealUniqueId, CurrentChatMessage));
 		SetCurrentChatMessage(FString());
+	}
+
+	UFUNCTION(BlueprintCallable)
+	void ItemForceResolution()
+	{
+		ActionModel->RequestAction(ActionModel->GetFinalizeItemsDealAction(CurrentDealItem.DealUniqueId));
+	}
+	UFUNCTION(BlueprintCallable)
+	void ItemForceExecution()
+	{
+		ActionModel->RequestAction(ActionModel->GetExecuteAllActionsDealAction(CurrentDealItem.DealUniqueId));
+	}
+	UFUNCTION(BlueprintCallable)
+	TArray<FUDDealActionInfo> GetAllActionForCurrentPlayer()
+	{
+		return ActionModel->GetAllActionForCurrentPlayer(CurrentDealItem.DealUniqueId);
+	}
+	UFUNCTION(BlueprintCallable)
+	TArray<FUDDealActionInfo> GetAllActionForOtherPlayers()
+	{
+		return ActionModel->GetAllActionForOtherPlayers(CurrentDealItem.DealUniqueId);
 	}
 
 	UFUNCTION(BlueprintCallable)
@@ -764,7 +910,7 @@ protected:
 		ParticipantsOnUpdated.Broadcast(data);
 		ChatOnUpdated.Broadcast();
 		PointsOnUpdated.Broadcast(ActionModel->GetDealPointsTree(info.DealUniqueId));
-
+		ActionInfoUpdated.Broadcast();
 	}
 private:
 	// MVVM Setters & Getters

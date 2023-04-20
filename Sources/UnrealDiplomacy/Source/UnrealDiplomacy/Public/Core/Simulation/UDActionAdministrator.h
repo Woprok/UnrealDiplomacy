@@ -144,6 +144,22 @@ public:
 	int32 ActionId;
 };
 
+USTRUCT(BlueprintType)
+struct FUDDealActionInfo
+{
+	GENERATED_BODY()
+public:
+	FUDDealActionInfo() {}
+	FUDDealActionInfo(int32 dealUniqueId, int32 actionIndex, FUDDiscsussionAction actionBody)
+		: DealUniqueId(dealUniqueId), ActionIndex(actionIndex), ActionBody(actionBody) {}
+	UPROPERTY(BlueprintReadOnly)
+		int32 DealUniqueId;
+	UPROPERTY(BlueprintReadOnly)
+		int32 ActionIndex;
+	UPROPERTY(BlueprintReadOnly)
+		FUDDiscsussionAction ActionBody;
+};
+
 // GetAvailableActions(NONE|TILE|PLAYER)
 // FUDAtionTemplate
 // - ActionId
@@ -619,6 +635,38 @@ public:
 	}
 
 	UFUNCTION(BlueprintCallable)
+	TArray<FUDDealActionInfo> GetAllActionForCurrentPlayer(int32 dealUniqueId)
+	{
+		TArray<FUDDealActionInfo> actions;
+		
+		for (size_t index = 0; index < OverseeingState->Deals[dealUniqueId]->DealActionList.Num(); index++)
+		{
+			FUDDiscsussionAction action = OverseeingState->Deals[dealUniqueId]->DealActionList[index];
+			if (action.Action.InvokerPlayerId == OverseeingState->PerspectivePlayerId) {
+				actions.Add(FUDDealActionInfo(dealUniqueId, index, action));
+			}
+		}
+
+		return actions;
+	}
+
+	UFUNCTION(BlueprintCallable)
+	TArray<FUDDealActionInfo> GetAllActionForOtherPlayers(int32 dealUniqueId)
+	{
+		TArray<FUDDealActionInfo> actions;
+
+		for (size_t index = 0; index < OverseeingState->Deals[dealUniqueId]->DealActionList.Num(); index++)
+		{
+			FUDDiscsussionAction action = OverseeingState->Deals[dealUniqueId]->DealActionList[index];
+			if (action.Action.InvokerPlayerId != OverseeingState->PerspectivePlayerId) {
+				actions.Add(FUDDealActionInfo(dealUniqueId, index, action));
+			}
+		}
+
+		return actions;
+	}
+
+	UFUNCTION(BlueprintCallable)
 	bool IsDealPointInvoker(int32 dealUniqueId, int32 pointUniqueId, int32 playerId)
 	{
 		return OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->Invokers.Contains(playerId);
@@ -629,6 +677,46 @@ public:
 		return OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->Targets.Contains(playerId);
 	}
 public:
+
+	UFUNCTION(BlueprintCallable)
+	FUDActionData GetFinalizeItemsDealAction(int32 dealUniqueId)
+	{
+		return FUDActionData(UUDFinalizeItemsDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+			{ dealUniqueId });
+	}
+	UFUNCTION(BlueprintCallable)
+	FUDActionData GetExecuteAllActionsDealAction(int32 dealUniqueId)
+	{
+		return FUDActionData(UUDExecuteAllActionsDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+			{ dealUniqueId });
+	}
+
+	UFUNCTION(BlueprintCallable)
+	FUDActionData GetAcceptFinalItemDealAction(int32 dealUniqueId, int32 actionIndex)
+	{
+		return FUDActionData(UUDAcceptFinalItemDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+			{ dealUniqueId, actionIndex });
+	}
+	UFUNCTION(BlueprintCallable)
+	FUDActionData GetDenyFinalItemDealAction(int32 dealUniqueId, int32 actionIndex)
+	{
+		return FUDActionData(UUDDenyFinalItemDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+			{ dealUniqueId, actionIndex });
+	}
+	UFUNCTION(BlueprintCallable)
+	FUDActionData GetAlterFinalItemDealAction(int32 dealUniqueId, int32 actionIndex)
+	{
+		return FUDActionData(UUDAlterFinalItemDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+			{ dealUniqueId, actionIndex });
+	}
+	UFUNCTION(BlueprintCallable)
+	FUDActionData GetSabotageFinalItemDealAction(int32 dealUniqueId, int32 actionIndex)
+	{
+		return FUDActionData(UUDSabotageFinalItemDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+			{ dealUniqueId, actionIndex });
+	}
+
+
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetPositiveVoteDealAction(int32 dealUniqueId)
 	{

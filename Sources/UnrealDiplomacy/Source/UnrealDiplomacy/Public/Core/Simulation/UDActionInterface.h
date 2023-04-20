@@ -92,7 +92,7 @@ public:
 	  * Additional actions that should be executed after this action, based on input.
 	  * Validity is in general checked on GaiaWorldState.
 	  */
-	 TArray<FUDActionData> GetSubactions(FUDActionData& parentAction, TObjectPtr<UUDWorldState> targetWorldState);
+	 virtual TArray<FUDActionData> GetSubactions(FUDActionData& parentAction, TObjectPtr<UUDWorldState> targetWorldState);
 	 /**
 	  * Indicates if this action requires additional backup before being applied.
 	  */
@@ -1278,7 +1278,7 @@ public:
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
 	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 	virtual bool IsComposite() override { return true; }
-	virtual TArray<FUDActionData> GetSubactions(FUDActionData& parentAction, TObjectPtr<UUDWorldState> targetWorldState);
+	virtual TArray<FUDActionData> GetSubactions(FUDActionData& parentAction, TObjectPtr<UUDWorldState> targetWorldState) override;
 public:
 	static const int32 ActionTypeId = 10051;
 	static const int32 RequiredParametersCount = 1;

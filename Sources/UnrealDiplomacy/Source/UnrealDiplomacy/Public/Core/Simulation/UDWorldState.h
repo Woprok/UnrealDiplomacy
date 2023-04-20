@@ -309,6 +309,14 @@ public:
 	  * Players that are targeted by action, so these are on right side of an action.
 	  */
 	 TArray<int32> Targets;
+	 /**
+	  * Same as FUDActionData definition.
+	  */
+	 TArray<int32> ValueParameters;
+	 /**
+	  * Same as FUDActionData definition.
+	  */
+	 FString TextParameter;
 };
 
 
@@ -355,8 +363,8 @@ struct UNREALDIPLOMACY_API FUDDiscsussionAction
 	GENERATED_BODY()
 public:
 	FUDDiscsussionAction() {}
-	FUDDiscsussionAction(FUDActionData action, EUDDealActionResult result, bool isSabotaged) 
-		: Action(action), SelectedResult(result), WasSabotaged(isSabotaged) {}
+	FUDDiscsussionAction(FUDActionData action, EUDDealActionResult result, bool isSabotaged, int32 sabotageId) 
+		: Action(action), SelectedResult(result), WasSabotaged(isSabotaged), SabotageId(sabotageId) {}
 	UPROPERTY(BlueprintReadOnly)
 	FUDActionData Action;
 	UPROPERTY(BlueprintReadOnly)
@@ -367,6 +375,8 @@ public:
 	 */
 	UPROPERTY(BlueprintReadOnly)
 	bool WasSabotaged;
+	UPROPERTY(BlueprintReadOnly)
+	int32 SabotageId;
 };
 
 /**
