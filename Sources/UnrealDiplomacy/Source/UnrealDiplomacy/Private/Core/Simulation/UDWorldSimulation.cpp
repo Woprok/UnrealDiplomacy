@@ -255,6 +255,10 @@ void AUDWorldSimulation::LoadCoreActions()
 	RegisterAction(NewObject<UUDSendMessageDealAction>(this));
 	RegisterAction(NewObject<UUDAddChildDiscussionItemDealAction>(this));
 	RegisterAction(NewObject<UUDDefineActionDealAction>(this));
+	RegisterAction(NewObject<UUDCleanParametersPointDealAction>(this));
+	RegisterAction(NewObject<UUDChangeValueParameterPointDealAction>(this));
+	RegisterAction(NewObject<UUDChangeTileParameterPointDealAction>(this));
+	RegisterAction(NewObject<UUDChangeTileValueParameterPointDealAction>(this));
 	RegisterAction(NewObject<UUDDefinePointTypeDealAction>(this));
 	RegisterAction(NewObject<UUDAddInvokerDealAction>(this));
 	RegisterAction(NewObject<UUDRemoveInvokerDealAction>(this));

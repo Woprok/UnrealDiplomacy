@@ -750,6 +750,24 @@ public:
 			{ dealUniqueId, pointUniqueId, actionId });
 	}
 	UFUNCTION(BlueprintCallable)
+	FUDActionData UpdateChangeValueParameterDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 valueParameter)
+	{
+		return FUDActionData(UUDChangeValueParameterPointDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+			{ dealUniqueId, pointUniqueId, valueParameter });
+	}
+	UFUNCTION(BlueprintCallable)
+	FUDActionData UpdateChangeTileParameterDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 x, int32 y)
+	{
+		return FUDActionData(UUDChangeTileParameterPointDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+			{ dealUniqueId, pointUniqueId, x, y });
+	}
+	UFUNCTION(BlueprintCallable)
+	FUDActionData UpdateChangeTileValueParameterDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 x, int32 y, int32 valueParameter)
+	{
+		return FUDActionData(UUDChangeTileValueParameterPointDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+			{ dealUniqueId, pointUniqueId, x, y, valueParameter });
+	}
+	UFUNCTION(BlueprintCallable)
 	FUDActionData UpdateTypeDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, EUDPointType type)
 	{
 		return FUDActionData(UUDDefinePointTypeDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
@@ -763,19 +781,19 @@ public:
 			{ dealUniqueId, pointUniqueId, playerId });
 	}
 	UFUNCTION(BlueprintCallable)
-		FUDActionData UpdateRemoveInvokerDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 playerId)
+	FUDActionData UpdateRemoveInvokerDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 playerId)
 	{
 		return FUDActionData(UUDRemoveInvokerDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
 			{ dealUniqueId, pointUniqueId, playerId });
 	}
 	UFUNCTION(BlueprintCallable)
-		FUDActionData UpdateAddTargetDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 playerId)
+	FUDActionData UpdateAddTargetDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 playerId)
 	{
 		return FUDActionData(UUDAddTargetDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
 			{ dealUniqueId, pointUniqueId, playerId });
 	}
 	UFUNCTION(BlueprintCallable)
-		FUDActionData UpdateRemoveTargetDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 playerId)
+	FUDActionData UpdateRemoveTargetDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 playerId)
 	{
 		return FUDActionData(UUDRemoveTargetDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
 			{ dealUniqueId, pointUniqueId, playerId });
@@ -871,6 +889,25 @@ public:
 	{
 		return FUDActionData::AsSuccessorOf(sourceAction, UUDRejectGiftAction::ActionTypeId);
 	}
+
+
+	/**
+	 * Accept tile from other player.
+	 */
+	UFUNCTION(BlueprintCallable)
+		FUDActionData GetConfirmTransferTileAction(FUDActionData sourceAction)
+	{
+		return FUDActionData::AsSuccessorOf(sourceAction, UUDConfirmTransferTileAction::ActionTypeId);
+	}
+	/**
+	 * Reject tile from other player.
+	 */
+	UFUNCTION(BlueprintCallable)
+		FUDActionData GetRejectTransferTileAction(FUDActionData sourceAction)
+	{
+		return FUDActionData::AsSuccessorOf(sourceAction, UUDRejectTransferTileAction::ActionTypeId);
+	}
+
 	/**
 	 * Send amount of gold to other player.
 	 */

@@ -472,10 +472,37 @@ public:
 	{
 		if (option.OptionCode == 0)
 			return;
+		int32 dealId = CurrentPoint.DealUniqueId;
+		int32 pointId = CurrentPoint.PointUniqueId;
 		int32 actionId = option.OptionCode;
 		ActionModel->RequestAction(
 			ActionModel->UpdateActionDiscussionPointAction(
-				CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, actionId));
+				dealId, pointId, actionId));
+		// TODO add dynamic editable parameters
+		// TODO remove this before finishing
+		// HACK: please do not crash
+		// forces parameter to value based on predefined options for testing
+		switch (actionId)
+		{
+		case UUDUnconditionalGiftAction::ActionTypeId:
+			ActionModel->RequestAction(
+				ActionModel->UpdateChangeValueParameterDiscussionPointAction(
+					dealId, pointId, 42));
+			break;
+		case UUDTransferTileAction::ActionTypeId:
+			ActionModel->RequestAction(
+				ActionModel->UpdateChangeTileParameterDiscussionPointAction(
+					dealId, pointId, 3, 3));
+			break;
+		case UUDGrantExploitTilePermissionAction::ActionTypeId:
+			ActionModel->RequestAction(
+				ActionModel->UpdateChangeTileParameterDiscussionPointAction(
+					dealId, pointId, 2, 2));
+			break;
+		default:
+			// safely ignore the fake actions
+			break;
+		}
 	}
 	UFUNCTION(BlueprintCallable)
 	void UpdatePointType(FUDNamedOption option) 

@@ -1236,8 +1236,9 @@ void UUDDefineActionDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUD
 {
 	IUDActionInterface::Revert(actionData, targetWorldState);
 	// Change to old value.
-	FUDDealPointValueData oldData = UUDDefineActionDealAction::ConvertBackupData(actionData);
-	targetWorldState->Deals[oldData.DealId]->Points[oldData.Point]->ActionId = oldData.Value;
+	FUDDealPointValueData newData = UUDDefineActionDealAction::ConvertData(actionData);
+	FUDValueData oldData = UUDDefineActionDealAction::ConvertBackupData(actionData);
+	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->ActionId = oldData.Value;
 }
 bool UUDDefineActionDealAction::RequiresBackup()
 {
@@ -1250,6 +1251,222 @@ void UUDDefineActionDealAction::Backup(FUDActionData& actionData, TObjectPtr<UUD
 	actionData.BackupValueParameters.Empty(0);
 	actionData.BackupValueParameters.Add(targetWorldState->Deals[data.DealId]->Points[data.Point]->ActionId);
 }
+
+TArray<FUDActionData> UUDDefineActionDealAction::GetSubactions(FUDActionData& parentAction, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	FUDDealPointValueData data = UUDDefineActionDealAction::ConvertData(parentAction);
+	return {
+		FUDActionData(
+			UUDCleanParametersPointDealAction::ActionTypeId,
+			parentAction.InvokerPlayerId,
+			{ data.DealId, data.Point }
+		)
+	};
+}
+
+bool UUDCleanParametersPointDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	if (result)
+	{
+		FUDDealPointData data = UUDCleanParametersPointDealAction::ConvertData(actionData);
+		bool isStateOpen = targetWorldState->Deals[data.DealId]->DealSimulationState <= EUDDealSimulationState::FinalizingDraft;
+		bool isResultOpen = targetWorldState->Deals[data.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
+		result = result && isStateOpen && isResultOpen;
+	}
+	return result;
+}
+void UUDCleanParametersPointDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	// Change to new value.
+	FUDDealPointData newData = UUDCleanParametersPointDealAction::ConvertData(actionData);
+	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->ValueParameters.Empty(0);
+	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->TextParameter.Empty(0);
+}
+void UUDCleanParametersPointDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);
+	// Change to old values.
+	FUDDealPointData newData = UUDCleanParametersPointDealAction::ConvertData(actionData);
+	// Old data are just pasted as only original action would be able to determine what they were.
+	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->ValueParameters.Append(actionData.BackupValueParameters);
+	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->TextParameter.Append(actionData.TextParameter);
+}
+bool UUDCleanParametersPointDealAction::RequiresBackup()
+{
+	return true;
+}
+void UUDCleanParametersPointDealAction::Backup(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	// Old action is backuped for future revert use.
+	FUDDealPointData data = UUDCleanParametersPointDealAction::ConvertData(actionData);
+	actionData.BackupValueParameters.Empty(0);
+	actionData.BackupValueParameters.Append(targetWorldState->Deals[data.DealId]->Points[data.Point]->ValueParameters);
+	actionData.TextParameter.Append(targetWorldState->Deals[data.DealId]->Points[data.Point]->TextParameter);
+}
+
+
+bool UUDChangeValueParameterPointDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	if (result)
+	{
+		FUDDealPointValueData data = UUDChangeValueParameterPointDealAction::ConvertData(actionData);
+		bool isStateOpen = targetWorldState->Deals[data.DealId]->DealSimulationState <= EUDDealSimulationState::FinalizingDraft;
+		bool isResultOpen = targetWorldState->Deals[data.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
+		result = result && isStateOpen && isResultOpen;
+	}
+	return result;
+}
+void UUDChangeValueParameterPointDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	// Change to new value, we expect it to be empty due to cleanup sequence.
+	FUDDealPointValueData newData = UUDChangeValueParameterPointDealAction::ConvertData(actionData);
+	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->ValueParameters.Empty(0);
+	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->ValueParameters.Add(newData.Value);
+}
+void UUDChangeValueParameterPointDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);
+	// Change to old values.
+	FUDDealPointValueData newData = UUDChangeValueParameterPointDealAction::ConvertData(actionData);
+	FUDValueData oldData = UUDChangeValueParameterPointDealAction::ConvertBackupData(actionData);
+	// Old data are replacing the new.
+	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->ValueParameters.Empty(0);
+	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->ValueParameters.Add(oldData.Value);
+}
+bool UUDChangeValueParameterPointDealAction::RequiresBackup()
+{
+	return true;
+}
+void UUDChangeValueParameterPointDealAction::Backup(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	// Old param is backuped for future revert use.
+	FUDDealPointValueData data = UUDChangeValueParameterPointDealAction::ConvertData(actionData);
+	actionData.BackupValueParameters.Empty(0);
+	if (targetWorldState->Deals[data.DealId]->Points[data.Point]->ValueParameters.Num() == 0)
+	{
+		actionData.BackupValueParameters.Append( { 0 } );
+	}
+	else
+	{
+		actionData.BackupValueParameters.Append(targetWorldState->Deals[data.DealId]->Points[data.Point]->ValueParameters);
+	}
+}
+
+bool UUDChangeTileParameterPointDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	if (result)
+	{
+		FUDDealPointTileData data = UUDChangeTileParameterPointDealAction::ConvertData(actionData);
+		bool isStateOpen = targetWorldState->Deals[data.DealId]->DealSimulationState <= EUDDealSimulationState::FinalizingDraft;
+		bool isResultOpen = targetWorldState->Deals[data.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
+		result = result && isStateOpen && isResultOpen;
+	}
+	return result;
+}
+void UUDChangeTileParameterPointDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	// Change to new value.
+	FUDDealPointTileData newData = UUDChangeTileParameterPointDealAction::ConvertData(actionData);
+	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->ValueParameters.Empty(0);
+	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->ValueParameters.Add(newData.X);
+	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->ValueParameters.Add(newData.Y);
+}
+void UUDChangeTileParameterPointDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);
+	// Change to old values.
+	FUDDealPointTileData newData = UUDChangeTileParameterPointDealAction::ConvertData(actionData);
+	FUDTileData oldData = UUDChangeTileParameterPointDealAction::ConvertBackupData(actionData);
+	// Old data are replacing the new.
+	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->ValueParameters.Empty(0);
+	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->ValueParameters.Add(oldData.X);
+	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->ValueParameters.Add(oldData.Y);
+}
+bool UUDChangeTileParameterPointDealAction::RequiresBackup()
+{
+	return true;
+}
+void UUDChangeTileParameterPointDealAction::Backup(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	// Old param is backuped for future revert use.
+	FUDDealPointTileData data = UUDChangeTileParameterPointDealAction::ConvertData(actionData);	
+	actionData.BackupValueParameters.Empty(0);
+	if (targetWorldState->Deals[data.DealId]->Points[data.Point]->ValueParameters.Num() == 0)
+	{
+		actionData.BackupValueParameters.Append({ 0, 0 });
+	}
+	else
+	{
+		actionData.BackupValueParameters.Append(targetWorldState->Deals[data.DealId]->Points[data.Point]->ValueParameters);
+	}
+}
+
+bool UUDChangeTileValueParameterPointDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	if (result)
+	{
+		FUDDealPointTileValueData data = UUDChangeTileValueParameterPointDealAction::ConvertData(actionData);
+		bool isStateOpen = targetWorldState->Deals[data.DealId]->DealSimulationState <= EUDDealSimulationState::FinalizingDraft;
+		bool isResultOpen = targetWorldState->Deals[data.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
+		result = result && isStateOpen && isResultOpen;
+	}
+	return result;
+}
+void UUDChangeTileValueParameterPointDealAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	// Change to new value.
+	FUDDealPointTileValueData newData = UUDChangeTileValueParameterPointDealAction::ConvertData(actionData);
+	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->ValueParameters.Empty(0);
+	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->ValueParameters.Add(newData.X);
+	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->ValueParameters.Add(newData.Y);
+	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->ValueParameters.Add(newData.Value);
+}
+void UUDChangeTileValueParameterPointDealAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);
+	// Change to old values.
+	FUDDealPointTileValueData newData = UUDChangeTileValueParameterPointDealAction::ConvertData(actionData);
+	FUDTileValueData oldData = UUDChangeTileValueParameterPointDealAction::ConvertBackupData(actionData);
+	// Old data are replacing the new.
+	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->ValueParameters.Empty(0);
+	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->ValueParameters.Add(oldData.X);
+	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->ValueParameters.Add(oldData.Y);
+	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->ValueParameters.Add(oldData.Value);
+}
+bool UUDChangeTileValueParameterPointDealAction::RequiresBackup()
+{
+	return true;
+}
+void UUDChangeTileValueParameterPointDealAction::Backup(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	// Old param is backuped for future revert use.
+	FUDDealPointTileValueData data = UUDChangeTileValueParameterPointDealAction::ConvertData(actionData);
+	actionData.BackupValueParameters.Empty(0);
+	if (targetWorldState->Deals[data.DealId]->Points[data.Point]->ValueParameters.Num() == 0)
+	{
+		actionData.BackupValueParameters.Append({ 0, 0, 0 });
+	}
+	else
+	{
+		actionData.BackupValueParameters.Append(targetWorldState->Deals[data.DealId]->Points[data.Point]->ValueParameters);
+	}
+}
+
+
+
+
+
+
+
+
 
 bool UUDDefinePointTypeDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
@@ -1275,9 +1492,10 @@ void UUDDefinePointTypeDealAction::Revert(FUDActionData& actionData, TObjectPtr<
 {
 	IUDActionInterface::Revert(actionData, targetWorldState);	
 	// Change to old value.
-	FUDDealPointValueData oldData = UUDDefinePointTypeDealAction::ConvertBackupData(actionData);
+	FUDDealPointValueData newData = UUDDefinePointTypeDealAction::ConvertData(actionData);
+	FUDValueData oldData = UUDDefinePointTypeDealAction::ConvertBackupData(actionData);
 	EUDPointType pointType = UUDDefinePointTypeDealAction::IntegerToPointType(oldData.Value);
-	targetWorldState->Deals[oldData.DealId]->Points[oldData.Point]->Type = pointType;
+	targetWorldState->Deals[newData.DealId]->Points[newData.Point]->Type = pointType;
 }
 bool UUDDefinePointTypeDealAction::RequiresBackup()
 {
@@ -1291,7 +1509,6 @@ void UUDDefinePointTypeDealAction::Backup(FUDActionData& actionData, TObjectPtr<
 	int32 pointType = UUDDefinePointTypeDealAction::PointTypeToInteger(targetWorldState->Deals[data.DealId]->Points[data.Point]->Type);
 	actionData.BackupValueParameters.Add(pointType);
 }
-
 
 bool UUDAddInvokerDealAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
@@ -1515,16 +1732,15 @@ TArray<FUDActionData> UUDFinalizeItemsDealAction::FinalizeActions(TObjectPtr<UUD
 			{
 				for (auto target : point.Value->Targets)
 				{
-					actions.Add(FUDActionData(actionId, invoker,
-						{
-							target
-						}
-					));
+					TArray<int> valueParameters = { target };
+					valueParameters.Append(point.Value->ValueParameters);
+					actions.Add(FUDActionData(actionId, invoker, valueParameters, point.Value->TextParameter));
 				}
 			}
 			else
 			{
-				actions.Add(FUDActionData(actionId, invoker));
+				TArray<int> valueParameters = point.Value->ValueParameters;
+				actions.Add(FUDActionData(actionId, invoker, valueParameters, point.Value->TextParameter));
 			}
 		}
 	}

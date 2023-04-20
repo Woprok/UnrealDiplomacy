@@ -76,8 +76,11 @@ public:
 	{
 		if (CurrentItem.ActionTypeId == UUDGiftAction::ActionTypeId)		
 			ActionModel->RequestAction(ActionModel->GetRejectConditionalGiftGoldAction(CurrentItem));
-		else
+		else if (CurrentItem.ActionTypeId == UUDInviteParticipantDealAction::ActionTypeId)
 			ActionModel->RequestAction(ActionModel->GetRejectParticipantDealAction(CurrentItem));
+		else if (CurrentItem.ActionTypeId == UUDTransferTileAction::ActionTypeId)
+			ActionModel->RequestAction(ActionModel->GetRejectTransferTileAction(CurrentItem));
+
 	}
 	/**
 	 * Called by button.
@@ -87,8 +90,10 @@ public:
 	{
 		if (CurrentItem.ActionTypeId == UUDGiftAction::ActionTypeId)
 			ActionModel->RequestAction(ActionModel->GetConfirmConditionalGiftGoldAction(CurrentItem));
-		else
+		else if (CurrentItem.ActionTypeId == UUDInviteParticipantDealAction::ActionTypeId)
 			ActionModel->RequestAction(ActionModel->GetAcceptParticipantDealAction(CurrentItem));
+		else if (CurrentItem.ActionTypeId == UUDTransferTileAction::ActionTypeId)
+			ActionModel->RequestAction(ActionModel->GetConfirmTransferTileAction(CurrentItem));
 
 	}
 	/**

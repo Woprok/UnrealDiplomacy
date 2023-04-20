@@ -131,6 +131,61 @@ public:
  * @param FUDActionData.ValueParameters
  */
 USTRUCT(BlueprintType)
+struct FUDDealPointTileData
+{
+	GENERATED_BODY()
+public:
+	FUDDealPointTileData() {}
+	FUDDealPointTileData(TArray<int32> valueParameters)
+	{
+		DealId = valueParameters[0];
+		Point = valueParameters[1];
+		X = valueParameters[2];
+		Y = valueParameters[3];
+	}
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 Point = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 X = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 Y = 0;
+};
+/**
+ * Transforms action parameters to properly named fields.
+ * @param FUDActionData.ValueParameters
+ */
+USTRUCT(BlueprintType)
+struct FUDDealPointTileValueData
+{
+	GENERATED_BODY()
+public:
+	FUDDealPointTileValueData() {}
+	FUDDealPointTileValueData(TArray<int32> valueParameters)
+	{
+		DealId = valueParameters[0];
+		Point = valueParameters[1];
+		X = valueParameters[2];
+		Y = valueParameters[3];
+		Value = valueParameters[4];
+	}
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 Point = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 Value = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 X = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 Y = 0;
+};
+/**
+ * Transforms action parameters to properly named fields.
+ * @param FUDActionData.ValueParameters
+ */
+USTRUCT(BlueprintType)
 struct FUDDealTypeChangeData
 {
 	GENERATED_BODY()
@@ -415,6 +470,7 @@ public:
 	 * For all actions that need to backup previous state value for revert.
 	 * This generally happens only if they are making numeric value change.
 	 * Server is only one authorized to fill this.
+	 * This should hold smallest subset of values to enable lossless revert.
 	 */
 	UPROPERTY(BlueprintReadOnly)
 	TArray<int32> BackupValueParameters;

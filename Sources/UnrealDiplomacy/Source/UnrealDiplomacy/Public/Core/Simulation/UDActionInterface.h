@@ -949,6 +949,9 @@ public:
 	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 	bool RequiresBackup() override;
 	void Backup(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual bool IsComposite() override { return true; }
+	// This action needs to clear all parameters. Clean all parameters is exclusively made for this.
+	virtual TArray<FUDActionData> GetSubactions(FUDActionData& parentAction, TObjectPtr<UUDWorldState> targetWorldState) override;
 public:
 	static const int32 ActionTypeId = 10034;
 	static const int32 RequiredParametersCount = 3;
@@ -956,9 +959,108 @@ public:
 	{
 		return FUDDealPointValueData(data.ValueParameters);
 	}
-	static FUDDealPointValueData ConvertBackupData(FUDActionData& data)
+	static FUDValueData ConvertBackupData(FUDActionData& data)
 	{
-		return FUDDealPointValueData(data.BackupValueParameters);
+		return FUDValueData(data.BackupValueParameters);
+	}
+};
+
+UCLASS()
+class UNREALDIPLOMACY_API UUDCleanParametersPointDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
+	bool RequiresBackup() override;
+	void Backup(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+public:
+	static const int32 ActionTypeId = 10051;
+	static const int32 RequiredParametersCount = 2;
+	static FUDDealPointData ConvertData(FUDActionData& data)
+	{
+		return FUDDealPointData(data.ValueParameters);
+	}
+};
+
+// Covers single value parameter actions
+UCLASS()
+class UNREALDIPLOMACY_API UUDChangeValueParameterPointDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
+	bool RequiresBackup() override;
+	void Backup(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+public:
+	static const int32 ActionTypeId = 10052;
+	static const int32 RequiredParametersCount = 3;
+	static FUDDealPointValueData ConvertData(FUDActionData& data)
+	{
+		return FUDDealPointValueData(data.ValueParameters);
+	}
+	static FUDValueData ConvertBackupData(FUDActionData& data)
+	{
+		return FUDValueData(data.BackupValueParameters);
+	}
+};
+
+// Covers single tile parameter actions
+UCLASS()
+class UNREALDIPLOMACY_API UUDChangeTileParameterPointDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
+	bool RequiresBackup() override;
+	void Backup(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+public:
+	static const int32 ActionTypeId = 10053;
+	static const int32 RequiredParametersCount = 4;
+	static FUDDealPointTileData ConvertData(FUDActionData& data)
+	{
+		return FUDDealPointTileData(data.ValueParameters);
+	}
+	static FUDTileData ConvertBackupData(FUDActionData& data)
+	{
+		return FUDTileData(data.BackupValueParameters);
+	}
+};
+
+// Covers single tile & additional single value actions
+UCLASS()
+class UNREALDIPLOMACY_API UUDChangeTileValueParameterPointDealAction : public UObject, public IUDActionInterface
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+	virtual int32 GetActionTypeId() override { return ActionTypeId; };
+	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
+	bool RequiresBackup() override;
+	void Backup(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
+public:
+	static const int32 ActionTypeId = 10054;
+	static const int32 RequiredParametersCount = 5;
+	static FUDDealPointTileValueData ConvertData(FUDActionData& data)
+	{
+		return FUDDealPointTileValueData(data.ValueParameters);
+	}
+	static FUDTileValueData ConvertBackupData(FUDActionData& data)
+	{
+		return FUDTileValueData(data.BackupValueParameters);
 	}
 };
 
@@ -981,9 +1083,9 @@ public:
 	{
 		return FUDDealPointValueData(data.ValueParameters);
 	}
-	static FUDDealPointValueData ConvertBackupData(FUDActionData& data)
+	static FUDValueData ConvertBackupData(FUDActionData& data)
 	{
-		return FUDDealPointValueData(data.BackupValueParameters);
+		return FUDValueData(data.BackupValueParameters);
 	}
 	static int32 PointTypeToInteger(EUDPointType type)
 	{
@@ -1280,7 +1382,7 @@ public:
 	virtual bool IsComposite() override { return true; }
 	virtual TArray<FUDActionData> GetSubactions(FUDActionData& parentAction, TObjectPtr<UUDWorldState> targetWorldState) override;
 public:
-	static const int32 ActionTypeId = 10051;
+	static const int32 ActionTypeId = 10055;
 	static const int32 RequiredParametersCount = 1;
 	static FUDDealData ConvertData(FUDActionData& data)
 	{
