@@ -86,8 +86,9 @@ protected:
 			int32 mostGold = -1;
 			for (auto& player : gaiaWorldState->Players)
 			{
-				if (player.Value->ResourceGold > mostGold)
+				if (player.Value->ResourceGold > mostGold && player.Value->PlayerUniqueId != UUDWorldState::GaiaWorldStateId)
 				{
+					mostGold = player.Value->ResourceGold;
 					CrownableRuler = player.Value->PlayerUniqueId;
 				}
 			}
@@ -95,7 +96,7 @@ protected:
 	}
 	FUDActionData DetermineNewRuler()
 	{
-		return FUDActionData(UUDEndGameAction::ActionTypeId, UUDWorldState::GaiaWorldStateId, { CrownableRuler });
+		return FUDActionData(UUDCrownGrantedAction::ActionTypeId, UUDWorldState::GaiaWorldStateId, { CrownableRuler });
 	}
 	FUDActionData CreateEndGame()
 	{
