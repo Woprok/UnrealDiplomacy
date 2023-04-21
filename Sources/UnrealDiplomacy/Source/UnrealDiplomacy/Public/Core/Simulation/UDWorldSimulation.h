@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Core/UDActor.h"
 #include "UDActionData.h"
+#include "UDWorldArbiter.h"
 #include "UDWorldGenerator.h"
 #include "UDModifierManager.h"
 #include "UDActionInterface.h"
@@ -161,6 +162,11 @@ private:
 	 */
 	UPROPERTY()
 	TObjectPtr<UUDModifierManager> ModifierManager = nullptr;
+	/**
+	 * Current modifier manager used by this simulation.
+	 */
+	UPROPERTY()
+	TObjectPtr<UUDWorldArbiter> Arbiter = nullptr;
 	/**
 	 * Id assigned to actions, that were passed for execution. If action already has an id,
 	 * it will not get new id.

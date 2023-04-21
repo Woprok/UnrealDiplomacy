@@ -64,10 +64,16 @@ void AUDSkirmishAIController::DoTurn()
 		}
 	}
 
+	// AI can take throne, that's completely natural thing to do!
+	if (GetPersonalAdministrator()->GetCurrentResourceGold() >= 500 && GetPersonalAdministrator()->CanUsurpThrone())
+	{
+		OnActionDecidedDelegate.ExecuteIfBound(GetPersonalAdministrator()->GetUsurpThroneAction());
+	}
+
 	// Finish this by executing end turn action, thus giving up control.
 	OnActionDecidedDelegate.ExecuteIfBound(GetPersonalAdministrator()->GetEndTurnAction());
 
-	// This should contain decisions, or alternatively if we reach a point where behaviour tree is implemented
+	// This should contain decisions, or alternatively if we reach a point where behaviour tree is used
 	// this should be left empty :)
 	// TODO behaviour tree
 

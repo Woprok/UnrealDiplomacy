@@ -8,6 +8,7 @@ void AUDWorldSimulation::Initialize()
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Initializing."));
 	WorldGenerator = NewObject<UUDWorldGenerator>(this);
 	ModifierManager = NewObject<UUDModifierManager>(this);
+	Arbiter = NewObject<UUDWorldArbiter>(this);
 	LoadCoreActions();
 }
 
@@ -72,10 +73,10 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 	}
 	// Obtained executor for this action.
 	auto& actionExecutor = Actions[newAction.ActionTypeId];
-	
+
 	if (!actionExecutor->CanExecute(newAction, GetSpecificState(UUDWorldState::GaiaWorldStateId)))
 	{
-		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Action executor was halted for action id(%d) due to executor id(%d)."), 
+		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Action executor was halted for action id(%d) due to executor id(%d)."),
 			newAction.ActionTypeId, actionExecutor->GetActionTypeId());
 		return;
 	}
@@ -116,6 +117,15 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 			ExecuteAction(action);
 		}
 		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Composite Action UID(%d) Finished."), newAction.UniqueId);
+	}
+	// This is basically required to check after every action due to current structure.
+	// In return we are only checking actions we think can end the game.
+	if (Arbiter->OnActionExecutionFinished(actionExecutor->GetActionTypeId(), GetSpecificState(UUDWorldState::GaiaWorldStateId)))
+	{
+		for (auto& action : Arbiter->EndGame())
+		{
+			ExecuteAction(action);
+		}
 	}
 }
 
@@ -277,5 +287,6 @@ void AUDWorldSimulation::LoadCoreActions()
 	RegisterAction(NewObject<UUDExecuteAllActionsDealAction>(this));
 	// Win conditions
 	RegisterAction(NewObject<UUDUsurpTheThroneAction>(this));
+	RegisterAction(NewObject<UUDCrownGrantedAction>(this));
 	RegisterAction(NewObject<UUDAbdicateTheThroneAction>(this));
 }

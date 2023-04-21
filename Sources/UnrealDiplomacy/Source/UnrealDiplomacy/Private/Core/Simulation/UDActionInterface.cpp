@@ -1965,6 +1965,30 @@ void UUDUsurpTheThroneAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWo
 	targetWorldState->ImperialThrone.Ruler = UUDWorldState::GaiaWorldStateId;
 }
 
+bool UUDCrownGrantedAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+		// Throne must be empty.
+		targetWorldState->ImperialThrone.Ruler == UUDWorldState::GaiaWorldStateId &&
+		// Crown can be granted only be the world
+		actionData.InvokerPlayerId == targetWorldState->GaiaWorldStateId;
+}
+
+void UUDCrownGrantedAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	// Takeover the empty throne.
+	FUDTargetData data = UUDCrownGrantedAction::ConvertData(actionData);
+	targetWorldState->ImperialThrone.Ruler = data.TargetId;
+}
+
+void UUDCrownGrantedAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);
+	// Rollback to the empty throne.
+	targetWorldState->ImperialThrone.Ruler = UUDWorldState::GaiaWorldStateId;
+}
+
 bool UUDAbdicateTheThroneAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {
 	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&

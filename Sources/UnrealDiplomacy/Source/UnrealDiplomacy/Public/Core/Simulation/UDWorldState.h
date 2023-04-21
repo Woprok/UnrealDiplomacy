@@ -463,7 +463,7 @@ public:
 /**
  * Stores all information related to victory and loss conditions.
  */
-USTRUCT()
+USTRUCT(BlueprintType)
 struct UNREALDIPLOMACY_API FUDThroneState
 {
 	GENERATED_BODY()
@@ -473,6 +473,7 @@ public:
 	/*
 	 * Current Usurper. 0 is invalid/empty. Generally invalid when owned by World.
 	 */
+	UPROPERTY(BlueprintReadOnly)
 	int32 Ruler = 0;
 };
 

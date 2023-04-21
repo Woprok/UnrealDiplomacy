@@ -174,6 +174,20 @@ public:
 	FText UsurperName = FText::GetEmpty();
 };
 
+
+USTRUCT(BlueprintType)
+struct FUDGameStateInfo
+{
+	GENERATED_BODY()
+public:
+	FUDGameStateInfo() {}
+	FUDGameStateInfo(bool isGameOver, int32 winnerId) : IsGameFinished(isGameOver), WinnerId(winnerId) {}
+	UPROPERTY(BlueprintReadOnly)
+	bool IsGameFinished = false;
+	UPROPERTY(BlueprintReadOnly)
+	int32 WinnerId = 0;
+};
+
 // GetAvailableActions(NONE|TILE|PLAYER)
 // FUDAtionTemplate
 // - ActionId
@@ -709,6 +723,24 @@ public:
 			info.UsurperName = FText::Format(LOCTEXT("Player", "Player {0}"), info.UsurperId);
 		}
 		return info;
+	}
+
+	UFUNCTION(BlueprintCallable)
+	FUDGameStateInfo GetGameStateInfo()
+	{
+		return FUDGameStateInfo(
+			OverseeingState->WorldSimulationState == EUDWorldSimulationState::FINISHING,
+			OverseeingState->ImperialThrone.Ruler
+		);
+	}
+
+
+	UFUNCTION(BlueprintCallable)
+	bool IsLocalPlayerWinner()
+	{
+		return 
+			OverseeingState->WorldSimulationState == EUDWorldSimulationState::FINISHING &&
+			OverseeingState->ImperialThrone.Ruler == OverseeingState->PerspectivePlayerId;
 	}
 
 
