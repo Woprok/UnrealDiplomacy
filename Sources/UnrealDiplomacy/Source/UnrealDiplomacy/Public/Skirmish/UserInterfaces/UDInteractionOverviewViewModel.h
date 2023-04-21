@@ -80,7 +80,6 @@ public:
 			ActionModel->RequestAction(ActionModel->GetRejectParticipantDealAction(CurrentItem));
 		else if (CurrentItem.ActionTypeId == UUDTransferTileAction::ActionTypeId)
 			ActionModel->RequestAction(ActionModel->GetRejectTransferTileAction(CurrentItem));
-
 	}
 	/**
 	 * Called by button.

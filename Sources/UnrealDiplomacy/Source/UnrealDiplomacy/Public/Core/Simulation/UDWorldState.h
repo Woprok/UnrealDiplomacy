@@ -461,6 +461,22 @@ public:
 };
 
 /**
+ * Stores all information related to victory and loss conditions.
+ */
+USTRUCT()
+struct UNREALDIPLOMACY_API FUDThroneState
+{
+	GENERATED_BODY()
+public:
+	FUDThroneState() {}
+	FUDThroneState(int32 currentUsurper) : Ruler(currentUsurper) {}
+	/*
+	 * Current Usurper. 0 is invalid/empty. Generally invalid when owned by World.
+	 */
+	int32 Ruler = 0;
+};
+
+/**
  * Holds the state of a world.
  */
 UCLASS()
@@ -527,4 +543,11 @@ public:
 	 */
 	UPROPERTY()
 	TMap<int32, TObjectPtr<UUDDealState>> Deals;
+	/**
+	 * Represents current state of imperial throne. 
+	 * Winnerr is determined by the owner of the throne at the end of the game.
+	 * If there is no throne owner player legitimacy will be acknowledged.
+	 */
+	UPROPERTY()
+	FUDThroneState ImperialThrone;
 };

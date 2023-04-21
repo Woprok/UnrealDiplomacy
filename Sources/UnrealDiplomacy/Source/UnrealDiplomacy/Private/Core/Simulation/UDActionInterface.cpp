@@ -1939,3 +1939,51 @@ TArray<FUDActionData> UUDExecuteAllActionsDealAction::GetSubactions(FUDActionDat
 }
 
 #pragma endregion
+
+#pragma region Conditions
+
+bool UUDUsurpTheThroneAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+		// Throne must be empty.
+		targetWorldState->ImperialThrone.Ruler == UUDWorldState::GaiaWorldStateId &&
+		// Player should be the one who is currently playing his turn.
+		actionData.InvokerPlayerId == targetWorldState->CurrentTurnPlayerId;
+}
+
+void UUDUsurpTheThroneAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	// Takeover the empty throne.
+	targetWorldState->ImperialThrone.Ruler = actionData.InvokerPlayerId;
+}
+
+void UUDUsurpTheThroneAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);
+	// Rollback to the empty throne.
+	targetWorldState->ImperialThrone.Ruler = UUDWorldState::GaiaWorldStateId;
+}
+
+bool UUDAbdicateTheThroneAction::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+		// Invoker must be current throne owner. No other conditions are requried for abdication.
+		targetWorldState->ImperialThrone.Ruler == actionData.InvokerPlayerId;
+}
+
+void UUDAbdicateTheThroneAction::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Execute(actionData, targetWorldState);
+	// Player is removed from the throne..
+	targetWorldState->ImperialThrone.Ruler = UUDWorldState::GaiaWorldStateId;
+}
+
+void UUDAbdicateTheThroneAction::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+{
+	IUDActionInterface::Revert(actionData, targetWorldState);
+	// Player is returned to throne.
+	targetWorldState->ImperialThrone.Ruler = actionData.InvokerPlayerId;
+}
+
+#pragma endregion

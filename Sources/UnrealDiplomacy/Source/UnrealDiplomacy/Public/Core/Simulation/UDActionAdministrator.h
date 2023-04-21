@@ -153,11 +153,25 @@ public:
 	FUDDealActionInfo(int32 dealUniqueId, int32 actionIndex, FUDDiscsussionAction actionBody)
 		: DealUniqueId(dealUniqueId), ActionIndex(actionIndex), ActionBody(actionBody) {}
 	UPROPERTY(BlueprintReadOnly)
-		int32 DealUniqueId;
+	int32 DealUniqueId;
 	UPROPERTY(BlueprintReadOnly)
-		int32 ActionIndex;
+	int32 ActionIndex;
 	UPROPERTY(BlueprintReadOnly)
-		FUDDiscsussionAction ActionBody;
+	FUDDiscsussionAction ActionBody;
+};
+
+
+USTRUCT(BlueprintType)
+struct FUDThroneInfo
+{
+	GENERATED_BODY()
+public:
+	FUDThroneInfo() {}
+	FUDThroneInfo(int32 id) : UsurperId(id) { }
+	UPROPERTY(BlueprintReadOnly)
+	int32 UsurperId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	FText UsurperName = FText::GetEmpty();
 };
 
 // GetAvailableActions(NONE|TILE|PLAYER)
@@ -676,7 +690,51 @@ public:
 	{
 		return OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->Targets.Contains(playerId);
 	}
+
+	/**
+	 * Returns ThroneInfo that holds id and name of current player on throne..
+	 */
+	UFUNCTION(BlueprintCallable)
+	FUDThroneInfo GetThroneInfo()
+	{
+		FUDThroneInfo info = FUDThroneInfo(OverseeingState->ImperialThrone.Ruler);
+		
+		if (info.UsurperId == UUDWorldState::GaiaWorldStateId)
+		{
+			info.UsurperName = FText::Format(LOCTEXT("Player", "Throne is empty. ({0})"), info.UsurperId);
+		}
+		else
+		{
+			// TODO transform this to full player name...
+			info.UsurperName = FText::Format(LOCTEXT("Player", "Player {0}"), info.UsurperId);
+		}
+		return info;
+	}
+
+
+	UFUNCTION(BlueprintCallable)
+	bool CanUsurpThrone()
+	{
+		return OverseeingState->ImperialThrone.Ruler == UUDWorldState::GaiaWorldStateId;
+	}
+
+	UFUNCTION(BlueprintCallable)
+	bool CanAbdicateThrone()
+	{
+		return OverseeingState->ImperialThrone.Ruler == OverseeingState->PerspectivePlayerId;
+	}
+
 public:
+	UFUNCTION(BlueprintCallable)
+	FUDActionData GetUsurpThroneAction()
+	{
+		return FUDActionData(UUDUsurpTheThroneAction::ActionTypeId, OverseeingState->PerspectivePlayerId);
+	}
+	UFUNCTION(BlueprintCallable)
+	FUDActionData GetAbdicateThroneAction()
+	{
+		return FUDActionData(UUDAbdicateTheThroneAction::ActionTypeId, OverseeingState->PerspectivePlayerId);
+	}
 
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetFinalizeItemsDealAction(int32 dealUniqueId)

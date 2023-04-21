@@ -275,4 +275,7 @@ void AUDWorldSimulation::LoadCoreActions()
 	RegisterAction(NewObject<UUDAlterFinalItemDealAction>(this));
 	RegisterAction(NewObject<UUDSabotageFinalItemDealAction>(this));
 	RegisterAction(NewObject<UUDExecuteAllActionsDealAction>(this));
+	// Win conditions
+	RegisterAction(NewObject<UUDUsurpTheThroneAction>(this));
+	RegisterAction(NewObject<UUDAbdicateTheThroneAction>(this));
 }

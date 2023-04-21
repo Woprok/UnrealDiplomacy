@@ -445,6 +445,7 @@ public:
 			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Give Gift")), UUDUnconditionalGiftAction::ActionTypeId),
 			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Transfer Tile")), UUDTransferTileAction::ActionTypeId),
 			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Grant Exploit Tile")), UUDGrantExploitTilePermissionAction::ActionTypeId),
+			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Abdicate")), UUDAbdicateTheThroneAction::ActionTypeId),
 		};
 	}
 
@@ -500,7 +501,7 @@ public:
 					dealId, pointId, 2, 2));
 			break;
 		default:
-			// safely ignore the fake actions
+			// safely ignore the fake actions or actions that don't need parameter.
 			break;
 		}
 	}

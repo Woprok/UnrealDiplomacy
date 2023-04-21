@@ -93,5 +93,6 @@ TObjectPtr<UUDWorldState> UUDWorldState::CreateState(int32 playerId, bool isPlay
 	TObjectPtr<UUDWorldState> newState = NewObject<UUDWorldState>();
 	newState->IsPlayerPerspectiveOnly = isPlayerPerspectiveOnly;
 	newState->PerspectivePlayerId = playerId;
+	newState->ImperialThrone = FUDThroneState(UUDWorldState::GaiaWorldStateId);
 	return newState;
 }
