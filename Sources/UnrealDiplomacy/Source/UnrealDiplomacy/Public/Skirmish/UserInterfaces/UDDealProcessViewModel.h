@@ -378,7 +378,7 @@ private:
 	}
 };
 
-USTRUCT(BlueprintType)
+USTRUCT(BlueprintType, Blueprintable)
 struct FUDNamedOption
 {
 	GENERATED_BODY()
@@ -386,12 +386,160 @@ public:
 	FUDNamedOption() {}
 	FUDNamedOption(FText name, int32 optionCode) 
 		: Name(name), OptionCode(optionCode) {}
+	FUDNamedOption(FText name, int32 optionCode, int32 optionCode2)
+		: Name(name), OptionCode(optionCode), OptionCode2(optionCode2) {}
 	UPROPERTY(BlueprintReadOnly)
 	FText Name;
 	UPROPERTY(BlueprintReadOnly)
 	int32 OptionCode;
+	UPROPERTY(BlueprintReadOnly)
+	int32 OptionCode2;
 };
 
+/**
+ * Represents parameter type
+ */
+UENUM(BlueprintType)
+enum class EUDParameterCountType : uint8
+{
+	None = 0,
+	SingleValue = 1,
+	SingleTile = 2,
+	TileValue = 3,
+};
+
+/**
+ * Each parameter type that is supported for actions
+ * TODO Make this modular.
+ */
+UCLASS(BlueprintType, Blueprintable)
+class UNREALDIPLOMACY_API UUDActionParameterEditorViewModel : public UUDStaticViewModelBase
+{
+	GENERATED_BODY()
+public:
+	// MVVM Field.
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	int32 ValueParameter;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FIntPoint TileParameter;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FString TextParameter;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool HasValueParameter;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool HasTileParameter;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool HasTextParameter;
+	UPROPERTY(BlueprintReadOnly)
+	EUDParameterCountType InvokeType;
+public:
+	UFUNCTION(BlueprintCallable)
+	void UpdateSelection(EUDParameterCountType inInvokeType)
+	{
+		InvokeType = inInvokeType;
+		switch (inInvokeType)
+		{
+		case EUDParameterCountType::None:
+			SetHasTileParameter(false);
+			SetHasValueParameter(false);
+			SetHasTextParameter(false);
+			break;
+		case EUDParameterCountType::SingleValue:
+			SetHasTileParameter(false);
+			SetHasValueParameter(true);
+			SetHasTextParameter(false);
+			break;
+		case EUDParameterCountType::SingleTile:
+			SetHasTileParameter(true);
+			SetHasValueParameter(false);
+			SetHasTextParameter(false);
+			break;
+		case EUDParameterCountType::TileValue:
+			SetHasTileParameter(true);
+			SetHasValueParameter(true);
+			SetHasTextParameter(false);
+			break;
+		default:
+			SetHasTileParameter(false);
+			SetHasValueParameter(false);
+			SetHasTextParameter(false);
+			break;
+		}
+	}
+	UFUNCTION(BlueprintCallable)
+	void UpdateParameters(FIntPoint tile, int32 value)
+	{
+		switch (InvokeType)
+		{
+		case EUDParameterCountType::None:
+			break;
+		case EUDParameterCountType::SingleValue:
+			SetValueParameter(value);
+			break;
+		case EUDParameterCountType::SingleTile:
+			SetTileParameter(tile);
+			break;
+		case EUDParameterCountType::TileValue:
+			SetTileParameter(tile);
+			SetValueParameter(value);
+			break;
+		default:
+			break;
+		}
+	}
+private:
+	// MVVM Setters & Getters
+	void SetValueParameter(int32 newValueParameter)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(ValueParameter, newValueParameter);
+	}
+	int32 GetValueParameter() const
+	{
+		return ValueParameter;
+	}
+	void SetTileParameter(FIntPoint newTileParameter)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(TileParameter, newTileParameter);
+	}
+	FIntPoint GetTileParameter() const
+	{
+		return TileParameter;
+	}
+	void SetTextParameter(FString newTextParameter)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(TextParameter, newTextParameter);
+	}
+	FString GetTextParameter() const
+	{
+		return TextParameter;
+	}
+	void SetHasValueParameter(bool newHasValueParameter)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(HasValueParameter, newHasValueParameter);
+	}
+	bool GetHasValueParameter() const
+	{
+		return HasValueParameter;
+	}
+	void SetHasTileParameter(bool newHasTileParameter)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(HasTileParameter, newHasTileParameter);
+	}
+	bool GetHasTileParameter() const
+	{
+		return HasTileParameter;
+	}
+	void SetHasTextParameter(bool newHasTextParameter)
+	{
+		UE_MVVM_SET_PROPERTY_VALUE(HasTextParameter, newHasTextParameter);
+	}
+	bool GetHasTextParameter() const
+	{
+		return HasTextParameter;
+	}
+};
+
+// TODO make this modular
 UCLASS(BlueprintType, Blueprintable)
 class UNREALDIPLOMACY_API UUDPointEditorViewModel : public UUDViewModelBase
 {
@@ -436,6 +584,60 @@ public:
 	 */
 	UPROPERTY(BlueprintAssignable)
 	FUDEditedDealUpdated EditedDealUpdated;
+
+	UFUNCTION(BlueprintCallable)
+	TArray<FUDNamedOption> GetAvailableTiles()
+	{
+		return {
+			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "-x-")), -1, -1),
+			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "0x0")), 0, 0),
+			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "0x1")), 0, 1),
+			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "0x2")), 0, 2),
+			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "1x0")), 1, 0),
+			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "1x1")), 1, 1),
+			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "1x2")), 1, 2),
+			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "2x0")), 2, 0),
+			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "2x1")), 2, 1),
+			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "2x2")), 2, 2),
+		};
+	}
+
+	UFUNCTION(BlueprintCallable)
+	EUDParameterCountType GetCurrentForAction()
+	{
+		switch (CurrentPoint.ActionId)
+		{
+		case UUDUnconditionalGiftAction::ActionTypeId:
+			return EUDParameterCountType::SingleValue;
+		case UUDTransferTileAction::ActionTypeId:
+			return EUDParameterCountType::TileValue;
+		case UUDGrantExploitTilePermissionAction::ActionTypeId:
+			return EUDParameterCountType::TileValue;
+		case UUDAbdicateTheThroneAction::ActionTypeId:
+			return EUDParameterCountType::None;
+		default:
+			return EUDParameterCountType::None;
+			break;
+		}
+	}
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetSelectedValue()
+	{
+		if (CurrentPoint.ValueParameters.Num() == 1)
+			return CurrentPoint.ValueParameters[0];
+		if (CurrentPoint.ValueParameters.Num() == 3)
+			return CurrentPoint.ValueParameters[2];
+		return 0;
+	}
+
+	UFUNCTION(BlueprintCallable)
+	FIntPoint GetSelectedTile()
+	{
+		if (CurrentPoint.ValueParameters.Num() >= 2)
+			return FIntPoint(CurrentPoint.ValueParameters[0], CurrentPoint.ValueParameters[1]);
+		return FIntPoint(-1, -1);
+	}
 
 	UFUNCTION(BlueprintCallable)
 	TArray<FUDNamedOption> GetAvailableActions()
@@ -505,6 +707,34 @@ public:
 			break;
 		}
 	}
+	UFUNCTION(BlueprintCallable)
+	void ItemUpdateValue(int32 value)
+	{
+		int32 dealId = CurrentPoint.DealUniqueId;
+		int32 pointId = CurrentPoint.PointUniqueId;
+		ActionModel->RequestAction(
+			ActionModel->UpdateChangeValueParameterDiscussionPointAction(
+				dealId, pointId, value));
+	}
+	UFUNCTION(BlueprintCallable)
+	void ItemUpdateTile(FIntPoint tile)
+	{
+		int32 dealId = CurrentPoint.DealUniqueId;
+		int32 pointId = CurrentPoint.PointUniqueId;
+		ActionModel->RequestAction(
+			ActionModel->UpdateChangeTileParameterDiscussionPointAction(
+				dealId, pointId, tile.X, tile.Y));
+	}
+	UFUNCTION(BlueprintCallable)
+	void ItemUpdateTileValue(FIntPoint tile, int32 value)
+	{
+		int32 dealId = CurrentPoint.DealUniqueId;
+		int32 pointId = CurrentPoint.PointUniqueId;
+		ActionModel->RequestAction(
+			ActionModel->UpdateChangeTileValueParameterDiscussionPointAction(
+				dealId, pointId, tile.X, tile.Y, value));
+	}
+
 	UFUNCTION(BlueprintCallable)
 	void UpdatePointType(FUDNamedOption option) 
 	{

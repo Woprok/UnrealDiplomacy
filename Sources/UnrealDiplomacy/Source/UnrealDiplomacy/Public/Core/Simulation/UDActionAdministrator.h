@@ -134,6 +134,10 @@ public:
 	FUDDealPointInfo() {}
 	FUDDealPointInfo(int32 dealUniqueId, int32 pointUniqueId, EUDPointType type, int32 actionId) 
 		: DealUniqueId(dealUniqueId), PointUniqueId(pointUniqueId), Type(type), ActionId(actionId) {}
+	FUDDealPointInfo(int32 dealUniqueId, int32 pointUniqueId, EUDPointType type, int32 actionId,
+		TArray<int32> valueParameters, FString textParameter)
+		: DealUniqueId(dealUniqueId), PointUniqueId(pointUniqueId), Type(type), ActionId(actionId),
+		ValueParameters(valueParameters), TextParameter(textParameter) {}
 	UPROPERTY(BlueprintReadOnly)
 	int32 DealUniqueId = 0;
 	UPROPERTY(BlueprintReadOnly)
@@ -142,6 +146,10 @@ public:
 	EUDPointType Type;
 	UPROPERTY(BlueprintReadOnly)
 	int32 ActionId;
+	UPROPERTY(BlueprintReadOnly)
+	TArray<int32> ValueParameters = {};
+	UPROPERTY(BlueprintReadOnly)
+	FString TextParameter;
 };
 
 USTRUCT(BlueprintType)
@@ -611,7 +619,9 @@ public:
 			return FUDDealPointInfo(0, 0, EUDPointType::Error, 0);
 		return FUDDealPointInfo(dealUniqueId, pointUniqueId, 
 			OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->Type,
-			OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->ActionId);
+			OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->ActionId,
+			OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->ValueParameters,
+			OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->TextParameter);
 	}
 
 	/**
