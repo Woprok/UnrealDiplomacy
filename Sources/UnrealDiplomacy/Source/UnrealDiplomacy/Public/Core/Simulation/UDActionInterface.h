@@ -106,7 +106,7 @@ public:
 /**
  * Simple action example for debugging purposes.
  */ 
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class UNREALDIPLOMACY_API UUDLogAction : public UObject, public IUDActionInterface
 {
 	GENERATED_BODY()

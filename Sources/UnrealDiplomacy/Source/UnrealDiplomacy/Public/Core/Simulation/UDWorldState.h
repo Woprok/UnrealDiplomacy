@@ -450,7 +450,7 @@ public:
 	 */
 	UPROPERTY()
 	TArray<int32> PositiveVotePlayerList;
-	/*
+	/**
 	 * All actions that are required to be executed and their current state.
 	 * This is filled by an action and then updated by invoker for each action.
 	 * In some cases it can be flagged as sabotaged.
@@ -470,7 +470,7 @@ struct UNREALDIPLOMACY_API FUDThroneState
 public:
 	FUDThroneState() {}
 	FUDThroneState(int32 currentUsurper) : Ruler(currentUsurper) {}
-	/*
+	/**
 	 * Current Usurper. 0 is invalid/empty. Generally invalid when owned by World.
 	 */
 	UPROPERTY(BlueprintReadOnly)

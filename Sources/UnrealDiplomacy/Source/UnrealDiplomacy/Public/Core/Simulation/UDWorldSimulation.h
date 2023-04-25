@@ -13,6 +13,8 @@
 #include "UDWorldState.h"
 #include "UDWorldSimulation.generated.h"
 
+class UUDActionManager;
+
 /**
  * Allows controllers to register for incoming messages from the simulation about the state change.
  * Invoked everytime an action was executed by the simulation.
@@ -153,20 +155,12 @@ private:
 	UPROPERTY()
 	TArray<FUDActionData> UndoHistory;
 	/**
-	 * Current world generator used by this simulation.
-	 */
-	UPROPERTY()
-	TObjectPtr<UUDWorldGenerator> WorldGenerator = nullptr;
-	/**
-	 * Current modifier manager used by this simulation.
-	 */
-	UPROPERTY()
-	TObjectPtr<UUDModifierManager> ModifierManager = nullptr;
-	/**
 	 * Current modifier manager used by this simulation.
 	 */
 	UPROPERTY()
 	TObjectPtr<UUDWorldArbiter> Arbiter = nullptr;
+	UPROPERTY()
+	TObjectPtr<UUDActionManager> ActionManager = nullptr;
 	/**
 	 * Id assigned to actions, that were passed for execution. If action already has an id,
 	 * it will not get new id.

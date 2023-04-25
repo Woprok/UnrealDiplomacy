@@ -2,12 +2,12 @@
 
 
 #include "Core/Simulation/UDWorldSimulation.h"
+#include "Core/Simulation/UDActionManager.h"
 
 void AUDWorldSimulation::Initialize()
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Initializing."));
-	WorldGenerator = NewObject<UUDWorldGenerator>(this);
-	ModifierManager = NewObject<UUDModifierManager>(this);
+	ActionManager = NewObject<UUDActionManager>(this);
 	Arbiter = NewObject<UUDWorldArbiter>(this);
 	LoadCoreActions();
 }
@@ -65,14 +65,17 @@ void AUDWorldSimulation::NaiveExecuteAction(FUDActionData& trustworthyAction)
 void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Executing Action."));
-	if (!Actions.Contains(newAction.ActionTypeId))
-	{
-		// Blocked execution of non-existing action.
-		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Action executor for action id(%d) is not defined."), newAction.ActionTypeId);
-		return;
-	}
-	// Obtained executor for this action.
-	auto& actionExecutor = Actions[newAction.ActionTypeId];
+
+	auto actionExecutor = ActionManager->GetAction(newAction.ActionTypeId);
+
+	//if (!Actions.Contains(newAction.ActionTypeId))
+	//{
+	//	// Blocked execution of non-existing action.
+	//	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Action executor for action id(%d) is not defined."), newAction.ActionTypeId);
+	//	return;
+	//}
+	//// Obtained executor for this action.
+	//auto& actionExecutor = Actions[newAction.ActionTypeId];
 
 	if (!actionExecutor->CanExecute(newAction, GetSpecificState(UUDWorldState::GaiaWorldStateId)))
 	{
@@ -205,8 +208,8 @@ void AUDWorldSimulation::RegisterAction(TScriptInterface<IUDActionInterface> new
 		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Duplicate registration of action with id(%d)."), newAction->GetActionTypeId());
 		return;
 	}
-	newAction->SetWorldGenerator(WorldGenerator);
-	newAction->SetModifierManager(ModifierManager);
+	//newAction->SetWorldGenerator(WorldGenerator);
+	//newAction->SetModifierManager(ModifierManager);
 	Actions.Add(newAction->GetActionTypeId(), newAction);
 }
 
@@ -260,9 +263,10 @@ void AUDWorldSimulation::LoadCoreActions()
 	RegisterAction(NewObject<UUDAdvanceResultDisassembledDealAction>(this));
 	RegisterAction(NewObject<UUDAdvanceResultClosedDealAction>(this));
 	// Deal action update
+	RegisterAction(NewObject<UUDSendMessageDealAction>(this));
+	//
 	RegisterAction(NewObject<UUDAddDiscussionItemDealAction>(this));
 	RegisterAction(NewObject<UUDIgnoreDiscussionItemDealAction>(this));
-	RegisterAction(NewObject<UUDSendMessageDealAction>(this));
 	RegisterAction(NewObject<UUDAddChildDiscussionItemDealAction>(this));
 	RegisterAction(NewObject<UUDDefineActionDealAction>(this));
 	RegisterAction(NewObject<UUDCleanParametersPointDealAction>(this));
@@ -274,6 +278,7 @@ void AUDWorldSimulation::LoadCoreActions()
 	RegisterAction(NewObject<UUDRemoveInvokerDealAction>(this));
 	RegisterAction(NewObject<UUDAddTargetDealAction>(this));
 	RegisterAction(NewObject<UUDRemoveTargetDealAction>(this));
+	//
 	RegisterAction(NewObject<UUDReadyDealAction>(this));
 	RegisterAction(NewObject<UUDNotReadyDealAction>(this));
 	RegisterAction(NewObject<UUDPositiveVoteDealAction>(this));
