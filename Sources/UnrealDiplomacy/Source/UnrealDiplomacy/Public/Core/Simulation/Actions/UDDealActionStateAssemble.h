@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Core/Simulation/UDActionInterface.h"
 #include "UDDealActionStateAssemble.generated.h"
+
 /**
  * Updates states
  */

@@ -74,11 +74,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ItemReject()
 	{
-		if (CurrentItem.ActionTypeId == UUDGiftAction::ActionTypeId)		
+		if (CurrentItem.ActionTypeId == UUDGameActionGift::ActionTypeId)		
 			ActionModel->RequestAction(ActionModel->GetRejectConditionalGiftGoldAction(CurrentItem));
-		else if (CurrentItem.ActionTypeId == UUDInviteParticipantDealAction::ActionTypeId)
+		else if (CurrentItem.ActionTypeId == UUDDealActionParticipantInvite::ActionTypeId)
 			ActionModel->RequestAction(ActionModel->GetRejectParticipantDealAction(CurrentItem));
-		else if (CurrentItem.ActionTypeId == UUDTransferTileAction::ActionTypeId)
+		else if (CurrentItem.ActionTypeId == UUDGameActionTileTransfer::ActionTypeId)
 			ActionModel->RequestAction(ActionModel->GetRejectTransferTileAction(CurrentItem));
 	}
 	/**
@@ -87,11 +87,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ItemAccept()
 	{
-		if (CurrentItem.ActionTypeId == UUDGiftAction::ActionTypeId)
+		if (CurrentItem.ActionTypeId == UUDGameActionGift::ActionTypeId)
 			ActionModel->RequestAction(ActionModel->GetConfirmConditionalGiftGoldAction(CurrentItem));
-		else if (CurrentItem.ActionTypeId == UUDInviteParticipantDealAction::ActionTypeId)
+		else if (CurrentItem.ActionTypeId == UUDDealActionParticipantInvite::ActionTypeId)
 			ActionModel->RequestAction(ActionModel->GetAcceptParticipantDealAction(CurrentItem));
-		else if (CurrentItem.ActionTypeId == UUDTransferTileAction::ActionTypeId)
+		else if (CurrentItem.ActionTypeId == UUDGameActionTileTransfer::ActionTypeId)
 			ActionModel->RequestAction(ActionModel->GetConfirmTransferTileAction(CurrentItem));
 
 	}

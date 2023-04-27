@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UDActionInterface.h"
 #include "UDWorldState.h"
+#include "Core/Simulation/Actions/UDActions.h"
 #include "UDActionAdministrator.generated.h"
 
 USTRUCT(BlueprintType)
@@ -669,7 +670,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	TArray<FUDActionData> GetDealPointsAsUnfoldedActions(int32 dealUniqueId)
 	{
-		return UUDFinalizeItemsDealAction::FinalizeActions(OverseeingState, dealUniqueId);
+		return UUDDealActionContractCreate::FinalizeActions(OverseeingState, dealUniqueId);
 	}
 
 	UFUNCTION(BlueprintCallable)
@@ -770,49 +771,49 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetUsurpThroneAction()
 	{
-		return FUDActionData(UUDUsurpTheThroneAction::ActionTypeId, OverseeingState->PerspectivePlayerId);
+		return FUDActionData(UUDGameActionThroneUsurp::ActionTypeId, OverseeingState->PerspectivePlayerId);
 	}
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetAbdicateThroneAction()
 	{
-		return FUDActionData(UUDAbdicateTheThroneAction::ActionTypeId, OverseeingState->PerspectivePlayerId);
+		return FUDActionData(UUDGameActionThroneAbdicate::ActionTypeId, OverseeingState->PerspectivePlayerId);
 	}
 
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetFinalizeItemsDealAction(int32 dealUniqueId)
 	{
-		return FUDActionData(UUDFinalizeItemsDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+		return FUDActionData(UUDDealActionContractCreate::ActionTypeId, OverseeingState->PerspectivePlayerId,
 			{ dealUniqueId });
 	}
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetExecuteAllActionsDealAction(int32 dealUniqueId)
 	{
-		return FUDActionData(UUDExecuteAllActionsDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+		return FUDActionData(UUDDealActionContractExecute::ActionTypeId, OverseeingState->PerspectivePlayerId,
 			{ dealUniqueId });
 	}
 
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetAcceptFinalItemDealAction(int32 dealUniqueId, int32 actionIndex)
 	{
-		return FUDActionData(UUDAcceptFinalItemDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+		return FUDActionData(UUDDealActionContractPointAccept::ActionTypeId, OverseeingState->PerspectivePlayerId,
 			{ dealUniqueId, actionIndex });
 	}
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetDenyFinalItemDealAction(int32 dealUniqueId, int32 actionIndex)
 	{
-		return FUDActionData(UUDDenyFinalItemDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+		return FUDActionData(UUDDealActionContractPointReject::ActionTypeId, OverseeingState->PerspectivePlayerId,
 			{ dealUniqueId, actionIndex });
 	}
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetAlterFinalItemDealAction(int32 dealUniqueId, int32 actionIndex)
 	{
-		return FUDActionData(UUDAlterFinalItemDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+		return FUDActionData(UUDDealActionContractPointTamper::ActionTypeId, OverseeingState->PerspectivePlayerId,
 			{ dealUniqueId, actionIndex });
 	}
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetSabotageFinalItemDealAction(int32 dealUniqueId, int32 actionIndex)
 	{
-		return FUDActionData(UUDSabotageFinalItemDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+		return FUDActionData(UUDDealActionContractPointSabotage::ActionTypeId, OverseeingState->PerspectivePlayerId,
 			{ dealUniqueId, actionIndex });
 	}
 
@@ -820,101 +821,101 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetPositiveVoteDealAction(int32 dealUniqueId)
 	{
-		return FUDActionData(UUDPositiveVoteDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+		return FUDActionData(UUDDealActionVoteYes::ActionTypeId, OverseeingState->PerspectivePlayerId,
 			{ dealUniqueId });
 	}
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetNegativeVoteDealAction(int32 dealUniqueId)
 	{
-		return FUDActionData(UUDNegativeVoteDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+		return FUDActionData(UUDDealActionVoteNo::ActionTypeId, OverseeingState->PerspectivePlayerId,
 			{ dealUniqueId });
 	}
 
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetReadyDealAction(int32 dealUniqueId)
 	{
-		return FUDActionData(UUDReadyDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+		return FUDActionData(UUDDealActionReady::ActionTypeId, OverseeingState->PerspectivePlayerId,
 			{ dealUniqueId });
 	}
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetNotReadyDealAction(int32 dealUniqueId)
 	{
-		return FUDActionData(UUDNotReadyDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+		return FUDActionData(UUDDealActionReadyRevert::ActionTypeId, OverseeingState->PerspectivePlayerId,
 			{ dealUniqueId });
 	}
 
 	UFUNCTION(BlueprintCallable)
 	FUDActionData UpdateActionDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 actionId)
 	{
-		return FUDActionData(UUDDefineActionDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+		return FUDActionData(UUDDealActionPointModifyAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
 			{ dealUniqueId, pointUniqueId, actionId });
 	}
 	UFUNCTION(BlueprintCallable)
 	FUDActionData UpdateChangeValueParameterDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 valueParameter)
 	{
-		return FUDActionData(UUDChangeValueParameterPointDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+		return FUDActionData(UUDDealActionPointModifyValue::ActionTypeId, OverseeingState->PerspectivePlayerId,
 			{ dealUniqueId, pointUniqueId, valueParameter });
 	}
 	UFUNCTION(BlueprintCallable)
 	FUDActionData UpdateChangeTileParameterDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 x, int32 y)
 	{
-		return FUDActionData(UUDChangeTileParameterPointDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+		return FUDActionData(UUDDealActionPointModifyTile::ActionTypeId, OverseeingState->PerspectivePlayerId,
 			{ dealUniqueId, pointUniqueId, x, y });
 	}
 	UFUNCTION(BlueprintCallable)
 	FUDActionData UpdateChangeTileValueParameterDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 x, int32 y, int32 valueParameter)
 	{
-		return FUDActionData(UUDChangeTileValueParameterPointDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+		return FUDActionData(UUDDealActionPointModifyTileValue::ActionTypeId, OverseeingState->PerspectivePlayerId,
 			{ dealUniqueId, pointUniqueId, x, y, valueParameter });
 	}
 	UFUNCTION(BlueprintCallable)
 	FUDActionData UpdateTypeDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, EUDPointType type)
 	{
-		return FUDActionData(UUDDefinePointTypeDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
-			{ dealUniqueId, pointUniqueId, UUDDefinePointTypeDealAction::PointTypeToInteger(type)});
+		return FUDActionData(UUDDealActionPointModifyType::ActionTypeId, OverseeingState->PerspectivePlayerId,
+			{ dealUniqueId, pointUniqueId, UUDDealActionPointModifyType::PointTypeToInteger(type)});
 	}
 
 	UFUNCTION(BlueprintCallable)
 	FUDActionData UpdateAddInvokerDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 playerId)
 	{
-		return FUDActionData(UUDAddInvokerDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+		return FUDActionData(UUDDealActionPointModifyInvokerAdd::ActionTypeId, OverseeingState->PerspectivePlayerId,
 			{ dealUniqueId, pointUniqueId, playerId });
 	}
 	UFUNCTION(BlueprintCallable)
 	FUDActionData UpdateRemoveInvokerDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 playerId)
 	{
-		return FUDActionData(UUDRemoveInvokerDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+		return FUDActionData(UUDDealActionPointModifyInvokerRemove::ActionTypeId, OverseeingState->PerspectivePlayerId,
 			{ dealUniqueId, pointUniqueId, playerId });
 	}
 	UFUNCTION(BlueprintCallable)
 	FUDActionData UpdateAddTargetDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 playerId)
 	{
-		return FUDActionData(UUDAddTargetDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+		return FUDActionData(UUDDealActionPointModifyTargetAdd::ActionTypeId, OverseeingState->PerspectivePlayerId,
 			{ dealUniqueId, pointUniqueId, playerId });
 	}
 	UFUNCTION(BlueprintCallable)
 	FUDActionData UpdateRemoveTargetDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 playerId)
 	{
-		return FUDActionData(UUDRemoveTargetDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+		return FUDActionData(UUDDealActionPointModifyTargetRemove::ActionTypeId, OverseeingState->PerspectivePlayerId,
 			{ dealUniqueId, pointUniqueId, playerId });
 	}
 
 	UFUNCTION(BlueprintCallable)
 	FUDActionData CreateDiscussionPointAction(int32 dealUniqueId)
 	{
-		return FUDActionData(UUDAddDiscussionItemDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+		return FUDActionData(UUDDealActionPointAdd::ActionTypeId, OverseeingState->PerspectivePlayerId,
 			{ dealUniqueId });
 	}
 	UFUNCTION(BlueprintCallable)
 	FUDActionData CreateChildDiscussionPointAction(int32 dealUniqueId, int32 parentPointId)
 	{
-		return FUDActionData(UUDAddChildDiscussionItemDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+		return FUDActionData(UUDDealActionPointChildAdd::ActionTypeId, OverseeingState->PerspectivePlayerId,
 			{ dealUniqueId, parentPointId });
 	}
 	UFUNCTION(BlueprintCallable)
 	FUDActionData CreateChatMessageAction(int32 dealUniqueId, FString chatMessage)
 	{
-		return FUDActionData(UUDSendMessageDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
+		return FUDActionData(UUDDealActionMessageSend::ActionTypeId, OverseeingState->PerspectivePlayerId,
 			{ dealUniqueId }, chatMessage);
 	}
 	/**
@@ -923,7 +924,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetCreateDealAction()
 	{
-		return FUDActionData(UUDCreateDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId);
+		return FUDActionData(UUDDealActionCreate::ActionTypeId, OverseeingState->PerspectivePlayerId);
 	}
 	/**
 	 * Closes deal that is currently opened by the creator.
@@ -931,7 +932,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetCloseDealAction(int32 dealUniqueId)
 	{
-		return FUDActionData(UUDAdvanceResultClosedDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId, { dealUniqueId });
+		return FUDActionData(UUDDealActionResultClose::ActionTypeId, OverseeingState->PerspectivePlayerId, { dealUniqueId });
 	}
 	/**
 	 * Invite participant
@@ -939,7 +940,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 		FUDActionData GetInviteParticipantDealAction(int32 dealUniqueId, int32 targetId)
 	{
-		return FUDActionData(UUDInviteParticipantDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId, { dealUniqueId, targetId });
+		return FUDActionData(UUDDealActionParticipantInvite::ActionTypeId, OverseeingState->PerspectivePlayerId, { dealUniqueId, targetId });
 	}
 	/**
 	 * Confirm
@@ -947,7 +948,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetAcceptParticipantDealAction(FUDActionData sourceAction)
 	{
-		return FUDActionData::AsSuccessorOf(sourceAction, UUDAcceptParticipationDealAction::ActionTypeId);
+		return FUDActionData::AsSuccessorOf(sourceAction, UUDDealActionParticipantInviteAccept::ActionTypeId);
 	}
 	/**
 	 * Reject
@@ -955,7 +956,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetRejectParticipantDealAction(FUDActionData sourceAction)
 	{
-		return FUDActionData::AsSuccessorOf(sourceAction, UUDRejectParticipationDealAction::ActionTypeId);
+		return FUDActionData::AsSuccessorOf(sourceAction, UUDDealActionParticipantInviteReject::ActionTypeId);
 	}
 	/**
 	 * Creates new deal that is immediately joined by the creator.
@@ -963,7 +964,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetLeaveParticipantDealAction(int32 dealUniqueId, int32 targetId)
 	{
-		return FUDActionData(UUDKickParticipantDealAction::ActionTypeId, OverseeingState->PerspectivePlayerId, { dealUniqueId, targetId });
+		return FUDActionData(UUDDealActionParticipantKick::ActionTypeId, OverseeingState->PerspectivePlayerId, { dealUniqueId, targetId });
 	}
 	/**
 	 * Send amount of gold to other player, other player must accept.
@@ -971,7 +972,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetConditionalGiftGoldAction(int32 targetId, int32 amount)
 	{
-		return FUDActionData(UUDGiftAction::ActionTypeId, OverseeingState->PerspectivePlayerId, { targetId, amount });
+		return FUDActionData(UUDGameActionGift::ActionTypeId, OverseeingState->PerspectivePlayerId, { targetId, amount });
 	}
 	/**
 	 * Accept amount of gold from other player.
@@ -979,7 +980,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetConfirmConditionalGiftGoldAction(FUDActionData sourceAction)
 	{
-		return FUDActionData::AsSuccessorOf(sourceAction, UUDConfirmGiftAction::ActionTypeId);
+		return FUDActionData::AsSuccessorOf(sourceAction, UUDGameActionGiftAccept::ActionTypeId);
 	}
 	/**
 	 * Reject amount of gold to other player.
@@ -987,7 +988,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetRejectConditionalGiftGoldAction(FUDActionData sourceAction)
 	{
-		return FUDActionData::AsSuccessorOf(sourceAction, UUDRejectGiftAction::ActionTypeId);
+		return FUDActionData::AsSuccessorOf(sourceAction, UUDGameActionGiftReject::ActionTypeId);
 	}
 
 
@@ -997,7 +998,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 		FUDActionData GetConfirmTransferTileAction(FUDActionData sourceAction)
 	{
-		return FUDActionData::AsSuccessorOf(sourceAction, UUDConfirmTransferTileAction::ActionTypeId);
+		return FUDActionData::AsSuccessorOf(sourceAction, UUDGameActionTileTransferAccept::ActionTypeId);
 	}
 	/**
 	 * Reject tile from other player.
@@ -1005,7 +1006,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 		FUDActionData GetRejectTransferTileAction(FUDActionData sourceAction)
 	{
-		return FUDActionData::AsSuccessorOf(sourceAction, UUDRejectTransferTileAction::ActionTypeId);
+		return FUDActionData::AsSuccessorOf(sourceAction, UUDGameActionTileTransferReject::ActionTypeId);
 	}
 
 	/**
@@ -1014,7 +1015,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetUnconditionalGiftGoldAction(int32 targetId, int32 amount)
 	{
-		return FUDActionData(UUDUnconditionalGiftAction::ActionTypeId, OverseeingState->PerspectivePlayerId, { targetId, amount });
+		return FUDActionData(UUDGameActionGiftIrrevocable::ActionTypeId, OverseeingState->PerspectivePlayerId, { targetId, amount });
 	}
 	/**
 	 * Retrieves generate income action, that is used by Gaia to grant some resources to players.
@@ -1022,7 +1023,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetGenerateIncomeAction()
 	{
-		return FUDActionData(UUDGenerateIncomeAction::ActionTypeId, OverseeingState->PerspectivePlayerId, { 100 });
+		return FUDActionData(UUDGaiaActionResourcesAllAdd::ActionTypeId, OverseeingState->PerspectivePlayerId, { 100 });
 	}
 	/**
 	 * Retrieves start game action, that is used for execution in simulation.
@@ -1030,7 +1031,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetStartGameAction()
 	{
-		return FUDActionData(UUDStartGameAction::ActionTypeId, OverseeingState->PerspectivePlayerId);
+		return FUDActionData(UUDSystemActionGameStart::ActionTypeId, OverseeingState->PerspectivePlayerId);
 	}
 	/**
 	 * Retrieves end turn action, that is used for execution in simulation.
@@ -1038,7 +1039,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetEndTurnAction()
 	{
-		return FUDActionData(UUDEndTurnAction::ActionTypeId, OverseeingState->PerspectivePlayerId);
+		return FUDActionData(UUDSystemActionTurnEnd::ActionTypeId, OverseeingState->PerspectivePlayerId);
 	}
 	/**
 	 * Retrieves take tile action, that is used for execution in simulation.
@@ -1046,7 +1047,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDActionData GetTakeTileAction(FIntPoint position)
 	{
-		return FUDActionData(UUDTakeTileAction::ActionTypeId, OverseeingState->PerspectivePlayerId, { 0, position.X, position.Y } );
+		return FUDActionData(UUDGameActionTileTake::ActionTypeId, OverseeingState->PerspectivePlayerId, { 0, position.X, position.Y } );
 	}
 	TObjectPtr<UUDMapState> GetMapState()
 	{

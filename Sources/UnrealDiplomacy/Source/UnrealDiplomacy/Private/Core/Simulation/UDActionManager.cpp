@@ -6,15 +6,7 @@
 #include "Core/Simulation/UDModifierManager.h"
 #include "Core/UDGlobalData.h"
 // Actions
-#include "Core/Simulation/Actions/UDSystemActionInvalid.h"
-#include "Core/Simulation/Actions/UDSystemActionLog.h"
-#include "Core/Simulation/Actions/UDSystemActionGameStart.h"
-#include "Core/Simulation/Actions/UDSystemActionGameEnd.h"
-#include "Core/Simulation/Actions/UDSystemActionPlayerAdd.h"
-#include "Core/Simulation/Actions/UDSystemActionPlayerRemove.h"
-#include "Core/Simulation/Actions/UDSystemActionTurnEnd.h"
-#include "Core/Simulation/Actions/UDSystemActionTurnForceEnd.h"
-#include "Core/Simulation/Actions/UDSystemActionWorldCreate.h"
+#include "Core/Simulation/Actions/UDActions.h"
 
 TScriptInterface<IUDActionInterface> UUDActionManager::GetAction(int32 actionTypeId)
 {

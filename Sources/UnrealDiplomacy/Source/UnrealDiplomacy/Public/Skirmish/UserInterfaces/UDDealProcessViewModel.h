@@ -4,6 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModelBase.h"
+#include "Core/Simulation/Actions/UDGameActionGiftIrrevocable.h"
+#include "Core/Simulation/Actions/UDGameActionPermitTileExploit.h"
+#include "Core/Simulation/Actions/UDGameActionTileTransfer.h"
+#include "Core/Simulation/Actions/UDGameActionGiftIrrevocable.h"
+#include "Core/Simulation/Actions/UDGameActionThroneAbdicate.h"
+#include "Core/Simulation/Actions/UDDealActionPointModifyType.h"
+
 #include "UDDealProcessViewModel.generated.h"
 
 #define LOCTEXT_NAMESPACE "ActionUI"
@@ -607,13 +614,13 @@ public:
 	{
 		switch (CurrentPoint.ActionId)
 		{
-		case UUDUnconditionalGiftAction::ActionTypeId:
+		case UUDGameActionGiftIrrevocable::ActionTypeId:
 			return EUDParameterCountType::SingleValue;
-		case UUDTransferTileAction::ActionTypeId:
+		case UUDGameActionTileTransfer::ActionTypeId:
 			return EUDParameterCountType::TileValue;
-		case UUDGrantExploitTilePermissionAction::ActionTypeId:
+		case UUDGameActionPermitTileExploit::ActionTypeId:
 			return EUDParameterCountType::TileValue;
-		case UUDAbdicateTheThroneAction::ActionTypeId:
+		case UUDGameActionThroneAbdicate::ActionTypeId:
 			return EUDParameterCountType::None;
 		default:
 			return EUDParameterCountType::None;
@@ -644,10 +651,10 @@ public:
 	{
 		return {
 			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "UNDEFINED")), 0),
-			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Give Gift")), UUDUnconditionalGiftAction::ActionTypeId),
-			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Transfer Tile")), UUDTransferTileAction::ActionTypeId),
-			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Grant Exploit Tile")), UUDGrantExploitTilePermissionAction::ActionTypeId),
-			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Abdicate")), UUDAbdicateTheThroneAction::ActionTypeId),
+			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Give Gift")), UUDGameActionGiftIrrevocable::ActionTypeId),
+			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Transfer Tile")), UUDGameActionTileTransfer::ActionTypeId),
+			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Grant Exploit Tile")), UUDGameActionPermitTileExploit::ActionTypeId),
+			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Abdicate")), UUDGameActionThroneAbdicate::ActionTypeId),
 		};
 	}
 
@@ -660,15 +667,15 @@ public:
 	TArray<FUDNamedOption> GetAvailableTypes()
 	{
 		return {
-			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Propose")), UUDDefinePointTypeDealAction::PointTypeToInteger(EUDPointType::Proposal)),
-			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Demand")), UUDDefinePointTypeDealAction::PointTypeToInteger(EUDPointType::Demand)),
-			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Offer")), UUDDefinePointTypeDealAction::PointTypeToInteger(EUDPointType::Offer)),
+			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Propose")), UUDDealActionPointModifyType::PointTypeToInteger(EUDPointType::Proposal)),
+			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Demand")), UUDDealActionPointModifyType::PointTypeToInteger(EUDPointType::Demand)),
+			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Offer")), UUDDealActionPointModifyType::PointTypeToInteger(EUDPointType::Offer)),
 		};
 	}
 	UFUNCTION(BlueprintCallable)
 	int32 GetSelectedTypeCode()
 	{
-		return UUDDefinePointTypeDealAction::PointTypeToInteger(GetSelectedType());
+		return UUDDealActionPointModifyType::PointTypeToInteger(GetSelectedType());
 	}
 	UFUNCTION(BlueprintCallable)
 	void UpdatePointAction(FUDNamedOption option)
@@ -687,17 +694,17 @@ public:
 		// forces parameter to value based on predefined options for testing
 		switch (actionId)
 		{
-		case UUDUnconditionalGiftAction::ActionTypeId:
+		case UUDGameActionGiftIrrevocable::ActionTypeId:
 			ActionModel->RequestAction(
 				ActionModel->UpdateChangeValueParameterDiscussionPointAction(
 					dealId, pointId, 42));
 			break;
-		case UUDTransferTileAction::ActionTypeId:
+		case UUDGameActionTileTransfer::ActionTypeId:
 			ActionModel->RequestAction(
 				ActionModel->UpdateChangeTileParameterDiscussionPointAction(
 					dealId, pointId, 3, 3));
 			break;
-		case UUDGrantExploitTilePermissionAction::ActionTypeId:
+		case UUDGameActionPermitTileExploit::ActionTypeId:
 			ActionModel->RequestAction(
 				ActionModel->UpdateChangeTileParameterDiscussionPointAction(
 					dealId, pointId, 2, 2));
@@ -738,7 +745,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UpdatePointType(FUDNamedOption option) 
 	{
-		EUDPointType type = UUDDefinePointTypeDealAction::IntegerToPointType(option.OptionCode);
+		EUDPointType type = UUDDealActionPointModifyType::IntegerToPointType(option.OptionCode);
 		ActionModel->RequestAction(
 			ActionModel->UpdateTypeDiscussionPointAction(
 				CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, type));

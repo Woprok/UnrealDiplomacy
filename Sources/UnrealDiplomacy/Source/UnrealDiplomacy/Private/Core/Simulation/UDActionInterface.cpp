@@ -1,6 +1,14 @@
 // Copyright Miroslav Valach
 
+#include "Core/Simulation/UDActionInterface.h"
+#include "Core/Simulation/UDActionData.h"
+#include "Core/Simulation/UDWorldState.h"
+#include "Core/Simulation/UDWorldGenerator.h"
+#include "Core/Simulation/UDModifier.h"
+#include "Core/Simulation/UDModifierManager.h"
+
 // TODO LIST
+// TODO extend by adding more functions that do verify & check restriction
 // UUDUnconditionalGiftAction is missing condition (actionData.InvokerPlayerId != actionData.TargetPlayerId)
 // TODO CanExecute overloads that check if the action is still queued in PendingRequests.
 // TODO Create action class that has function RemovePendingTargetRequest as default implementation.
@@ -16,7 +24,6 @@
 // This makes SDID more suitable in current code base as main Id during creating entities, while UniqueId has no role
 // other than synchronization of Client and Server in batch.
 
-#include "Core/Simulation/UDActionInterface.h"
 
 bool IUDActionInterface::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
 {

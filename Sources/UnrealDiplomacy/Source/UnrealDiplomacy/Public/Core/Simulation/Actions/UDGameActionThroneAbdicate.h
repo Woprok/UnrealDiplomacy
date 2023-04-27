@@ -10,7 +10,7 @@
  * Current usurper can abdicate or be forced to abdicate via deal.
  */
 UCLASS()
-class UNREALDIPLOMACY_API UDGameActionThroneAbdicate : public UObject, public IUDActionInterface
+class UNREALDIPLOMACY_API UUDGameActionThroneAbdicate : public UObject, public IUDActionInterface
 {
 	GENERATED_BODY()
 public:

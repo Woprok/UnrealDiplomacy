@@ -6,6 +6,8 @@
 #include "UDActionData.h"
 #include "UDActionInterface.h"
 #include "UDWorldState.h"
+#include "Core/Simulation/Actions/UDSystemActionTurnEnd.h"
+#include "Core/Simulation/Actions/UDGameActionThroneReceive.h"
 #include "UDWorldArbiter.generated.h"
 
 USTRUCT(BlueprintType)
@@ -40,7 +42,7 @@ public:
 
 		switch (actionType)
 		{
-		case UUDEndTurnAction::ActionTypeId:
+		case UUDSystemActionTurnEnd::ActionTypeId:
 			EvaluateTurnGameOverState(gaiaWorldState);
 		default:
 			// We don't care about the remaining actions.
@@ -96,11 +98,11 @@ protected:
 	}
 	FUDActionData DetermineNewRuler()
 	{
-		return FUDActionData(UUDCrownGrantedAction::ActionTypeId, UUDWorldState::GaiaWorldStateId, { CrownableRuler });
+		return FUDActionData(UUDGameActionThroneReceive::ActionTypeId, UUDWorldState::GaiaWorldStateId, { CrownableRuler });
 	}
 	FUDActionData CreateEndGame()
 	{
-		return FUDActionData(UUDEndGameAction::ActionTypeId, UUDWorldState::GaiaWorldStateId);
+		return FUDActionData(UUDSystemActionTurnEnd::ActionTypeId, UUDWorldState::GaiaWorldStateId);
 	}
 private:
 	bool GameReachedEnd = false;
