@@ -103,120 +103,9 @@ public:
 	 virtual void Backup(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState);
 };
 
-/**
- * Simple action example for debugging purposes.
- */ 
-UCLASS(BlueprintType, Blueprintable)
-class UNREALDIPLOMACY_API UUDLogAction : public UObject, public IUDActionInterface
-{
-	GENERATED_BODY()
-public:
-	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual int32 GetActionTypeId() override { return ActionTypeId; };
-	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
-public:
-	static const int32 ActionTypeId = 0;
-	static const int32 RequiredParametersCount = 0;
-};
-
-/**
- * Notification for new Player/Ai being part of the game.
- * This allows new player to receive history and create list of all players.
- * Note: Invoker is always the new player, even, if he was added by someone esle AI by server.
- */
-UCLASS()
-class UNREALDIPLOMACY_API UUDAddPlayerAction : public UObject, public IUDActionInterface
-{
-	GENERATED_BODY()
-public:
-	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual int32 GetActionTypeId() override { return ActionTypeId; };
-	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
-public:
-	static const int32 ActionTypeId = 1;
-	static const int32 RequiredParametersCount = 0;
-};
-
-/**
- * Start of game action that is called as action only once.
- * This is only due to fact that we are otherwise using only end turn action.
- * Which is for most purposes sufficient, as any player can check if they are currently playing
- * by observing their state. First player does not know this, so Gaia which takes the first turn
- * is awaiting for this to end her turn.
- */
-UCLASS()
-class UNREALDIPLOMACY_API UUDStartGameAction : public UObject, public IUDActionInterface
-{
-	GENERATED_BODY()
-public:
-	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual int32 GetActionTypeId() override { return ActionTypeId; };
-	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
-public:
-	static 	const int32 ActionTypeId = 2;
-	static const int32 RequiredParametersCount = 0;
-};
-
-UCLASS()
-class UNREALDIPLOMACY_API UUDEndGameAction : public UObject, public IUDActionInterface
-{
-	GENERATED_BODY()
-public:
-	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual int32 GetActionTypeId() override { return ActionTypeId; };
-	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
-public:
-	static 	const int32 ActionTypeId = 3;
-	static const int32 RequiredParametersCount = 0;
-};
-
-/**
- * End of turn action that is called as action by clients or AIs.
- */
-UCLASS()
-class UNREALDIPLOMACY_API UUDEndTurnAction : public UObject, public IUDActionInterface
-{
-	GENERATED_BODY()
-public:
-	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual int32 GetActionTypeId() override { return ActionTypeId; };
-	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
-public:
-	static const int32 ActionTypeId = 4;
-	static const int32 RequiredParametersCount = 0;
-};
 
 
-/**
- * End of turn action that is called as action by server only.
- * Requires TargetParameter that contains the Player that was forced to end the turn.
- */
-UCLASS()
-class UNREALDIPLOMACY_API UUDForceEndTurnAction : public UObject, public IUDActionInterface
-{
-	GENERATED_BODY()
-public:
-	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual int32 GetActionTypeId() override { return ActionTypeId; };
-	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
-public:
-	static const int32 ActionTypeId = 5;
-	static const int32 RequiredParametersCount = 1;
-	static FUDTargetData ConvertData(FUDActionData& data)
-	{
-		return FUDTargetData(data.ValueParameters);
-	}
-};
+
 
 /**
  * Enables player to usurp the throne. 
@@ -277,29 +166,6 @@ public:
 	static const int32 RequiredParametersCount = 0;
 };
 
-/**
- * Generates income for all players. 
- * Called only on GAIA turn.
- * Requires ValueParameter to determine amount to generate for all players.
- */
-UCLASS()
-class UNREALDIPLOMACY_API UUDGenerateIncomeAction : public UObject, public IUDActionInterface
-{
-	GENERATED_BODY()
-public:
-	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual int32 GetActionTypeId() override { return ActionTypeId; };
-	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
-public:
-	static const int32 ActionTypeId = 100;
-	static const int32 RequiredParametersCount = 1;
-	static FUDValueData ConvertData(FUDActionData& data)
-	{
-		return FUDValueData(data.ValueParameters);
-	}
-};
 
 /**
  * Simple gift of resources between two players, without any strings attached.
@@ -381,33 +247,6 @@ public:
 	static const int32 RequiredParametersCount = 2;
 };
 
-/**
- * Automatic action generated by the WorldGenerator that assign's duplicates of World to all existing states.
- */
-UCLASS()
-class UNREALDIPLOMACY_API UUDCreateWorldMapAction : public UObject, public IUDActionInterface
-{
-	GENERATED_BODY()
-public:
-	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual int32 GetActionTypeId() override { return ActionTypeId; };
-	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
-	virtual void SetWorldGenerator(TObjectPtr<UUDWorldGenerator> worldGenerator) override
-	{
-		WorldGenerator = worldGenerator;
-	}
-public:
-	static const int32 ActionTypeId = 66600;
-	static const int32 RequiredParametersCount = 3;
-	static FUDMapSettingsData ConvertData(FUDActionData& data)
-	{
-		return FUDMapSettingsData(data.ValueParameters);
-	}
-protected:
-	UPROPERTY()
-	TWeakObjectPtr<UUDWorldGenerator> WorldGenerator = nullptr;
-};
 
 /**
  * Change ownership of an tile. Tile will be owned by InvokerPlayer and it will be taken from TargetPlayer.
