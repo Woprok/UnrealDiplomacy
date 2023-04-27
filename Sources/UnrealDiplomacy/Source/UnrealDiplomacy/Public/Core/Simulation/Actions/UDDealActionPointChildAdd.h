@@ -4,10 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Core/Simulation/UDActionInterface.h"
-#include "UDDealActionReady.generated.h"
+#include "UDDealActionPointChildAdd.generated.h"
 
+/**
+ * Allows extending of the deal with new discussion point.
+ */
 UCLASS()
-class UNREALDIPLOMACY_API UUDDealActionReady : public UObject, public IUDActionInterface
+class UNREALDIPLOMACY_API UUDDealActionPointChildAdd : public UObject, public IUDActionInterface
 {
 	GENERATED_BODY()
 public:
@@ -17,10 +20,10 @@ public:
 	virtual int32 GetActionTypeId() override { return ActionTypeId; };
 	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
 public:
-	static const int32 ActionTypeId = 10042;
-	static const int32 RequiredParametersCount = 1;
-	static FUDDealData ConvertData(FUDActionData& data)
+	static const int32 ActionTypeId = 10033;
+	static const int32 RequiredParametersCount = 2;
+	static FUDDealPointData ConvertData(FUDActionData& data)
 	{
-		return FUDDealData(data.ValueParameters);
+		return FUDDealPointData(data.ValueParameters);
 	}
 };
