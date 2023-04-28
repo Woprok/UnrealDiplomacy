@@ -11,7 +11,7 @@
  * Handles opening, closing deal window and ensuring that only one deal is present ? (optional but easiest)
  * Handles opening interactions (they might still open automatically), useful for closed interaction window.
  */
-UCLASS(BlueprintType, Blueprintable)
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDInteractionPanelViewModel : public UUDViewModelBase
 {
 	GENERATED_BODY()

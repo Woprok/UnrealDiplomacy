@@ -31,7 +31,7 @@ public:
 	AUDHexTile();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	// Event that updates visuals of this class based on supplied data. Visual logic is separated from rest of game logic even if its using game logic data.
+	// Event that updates visuals of this class based on supplied action. Visual logic is separated from rest of game logic even if its using game logic action.
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "Tile")
 	void OnVisualUpdate(UPARAM(ref)FUDTile& tile);
 protected:

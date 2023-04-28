@@ -2,27 +2,27 @@
 
 #include "Core/Simulation/Actions/UDDealActionPointModifyTargetRemove.h"
 
-bool UUDDealActionPointModifyTargetRemove::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+bool UUDDealActionPointModifyTargetRemove::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	bool result = IUDActionInterface::CanExecute(data, world);
 	if (result)
 	{
-		FUDDealPointValueData data = UUDDealActionPointModifyTargetRemove::ConvertData(actionData);
-		bool isStateOpen = targetWorldState->Deals[data.DealId]->DealSimulationState <= EUDDealSimulationState::FinalizingDraft;
-		bool isResultOpen = targetWorldState->Deals[data.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
+		FUDDealPointValueData data = UUDDealActionPointModifyTargetRemove::ConvertData(data);
+		bool isStateOpen = world->Deals[action.DealId]->DealSimulationState <= EUDDealSimulationState::FinalizingDraft;
+		bool isResultOpen = world->Deals[action.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
 		result = result && isStateOpen && isResultOpen;
 	}
 	return result;
 }
-void UUDDealActionPointModifyTargetRemove::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionPointModifyTargetRemove::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
-	FUDDealPointValueData data = UUDDealActionPointModifyTargetRemove::ConvertData(actionData);
-	targetWorldState->Deals[data.DealId]->Points[data.Point]->Targets.Remove(data.Value);
+	IUDActionInterface::Execute(data, world);
+	FUDDealPointValueData data = UUDDealActionPointModifyTargetRemove::ConvertData(data);
+	world->Deals[action.DealId]->Points[action.Point]->Targets.Remove(action.Value);
 }
-void UUDDealActionPointModifyTargetRemove::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionPointModifyTargetRemove::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
-	FUDDealPointValueData data = UUDDealActionPointModifyTargetRemove::ConvertData(actionData);
-	targetWorldState->Deals[data.DealId]->Points[data.Point]->Targets.Add(data.Value);
+	IUDActionInterface::Revert(data, world);
+	FUDDealPointValueData data = UUDDealActionPointModifyTargetRemove::ConvertData(data);
+	world->Deals[action.DealId]->Points[action.Point]->Targets.Add(action.Value);
 }

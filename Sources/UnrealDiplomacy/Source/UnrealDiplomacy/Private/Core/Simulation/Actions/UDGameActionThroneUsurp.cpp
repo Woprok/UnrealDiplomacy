@@ -2,25 +2,25 @@
 
 #include "Core/Simulation/Actions/UDGameActionThroneUsurp.h"
 
-bool UUDGameActionThroneUsurp::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+bool UUDGameActionThroneUsurp::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+	return IUDActionInterface::CanExecute(data, world) &&
 		// Throne must be empty.
-		targetWorldState->ImperialThrone.Ruler == UUDWorldState::GaiaWorldStateId &&
+		world->ImperialThrone.Ruler == UUDWorldState::GaiaWorldStateId &&
 		// Player should be the one who is currently playing his turn.
-		actionData.InvokerPlayerId == targetWorldState->CurrentTurnPlayerId;
+		action.InvokerPlayerId == world->CurrentTurnPlayerId;
 }
 
-void UUDGameActionThroneUsurp::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDGameActionThroneUsurp::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
+	IUDActionInterface::Execute(data, world);
 	// Takeover the empty throne.
-	targetWorldState->ImperialThrone.Ruler = actionData.InvokerPlayerId;
+	world->ImperialThrone.Ruler = action.InvokerPlayerId;
 }
 
-void UUDGameActionThroneUsurp::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDGameActionThroneUsurp::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
+	IUDActionInterface::Revert(data, world);
 	// Rollback to the empty throne.
-	targetWorldState->ImperialThrone.Ruler = UUDWorldState::GaiaWorldStateId;
+	world->ImperialThrone.Ruler = UUDWorldState::GaiaWorldStateId;
 }

@@ -1,39 +1,49 @@
 // Copyright Miroslav Valach
 
 #include "Core/Simulation/Actions/UDSystemActionTurnEnd.h"
+#include "Core/UDGlobalData.h"
+#include "Core/Simulation/UDActionData.h"
+#include "Core/Simulation/UDWorldState.h"
 
-bool UUDSystemActionTurnEnd::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+bool UUDSystemActionTurnEnd::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
-		// Invoker must be current player.
-		actionData.InvokerPlayerId == targetWorldState->CurrentTurnPlayerId;
+	bool isPlaying = action.InvokerPlayerId == world->CurrentTurnPlayerId;
+	return IUDActionInterface::CanExecute(action, world) && isPlaying;
 }
 
-void UUDSystemActionTurnEnd::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDSystemActionTurnEnd::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
-	// Find next player and update state.
-	int32 nextPlayer = 0;
-	for (auto& playerUniqueId : targetWorldState->PlayerOrder)
+	IUDActionInterface::Execute(action, world);
+	// Pass turn to next player.
+	TurnAdvance(world);
+}
+
+void UUDSystemActionTurnEnd::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
+{
+	IUDActionInterface::Revert(action, world);
+	// Reverts previous player ending turn.
+	RevertTurnAdvance(world, action.InvokerPlayerId);
+}
+
+void UUDSystemActionTurnEnd::TurnAdvance(TObjectPtr<UUDWorldState> world)
+{
+	// Find turn player successor.
+	int32 nextPlayerId = 0;
+	for (auto& playerUniqueId : world->PlayerOrder)
 	{
-		if (playerUniqueId > targetWorldState->CurrentTurnPlayerId)
+		if (playerUniqueId > world->CurrentTurnPlayerId)
 		{
-			nextPlayer = playerUniqueId;
+			nextPlayerId = playerUniqueId;
 			break;
 		}
 	}
 	// Update turn player and counter.
-	targetWorldState->CurrentTurnPlayerId = nextPlayer;
-	targetWorldState->CurrentTurn += 1;
+	world->CurrentTurnPlayerId = nextPlayerId;
+	world->CurrentTurn += 1;
 }
 
-void UUDSystemActionTurnEnd::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDSystemActionTurnEnd::RevertTurnAdvance(TObjectPtr<UUDWorldState> world, int32 previousPlayerId)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
-	// Executing player is always the one who is ending the turn.
-	// Force turn is used by server.
-	int32 previousPlayer = actionData.InvokerPlayerId;
-	// Rollback to the moment before turn end.
-	targetWorldState->CurrentTurnPlayerId = previousPlayer;
-	targetWorldState->CurrentTurn -= 1;
+	world->CurrentTurnPlayerId = previousPlayerId;
+	world->CurrentTurn -= 1;
 }

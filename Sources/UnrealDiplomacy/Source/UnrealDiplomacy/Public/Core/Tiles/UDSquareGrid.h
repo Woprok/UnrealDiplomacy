@@ -26,7 +26,7 @@ public:
 		Create(MapModel->GetMapState());
 	}
 	/**
-	 * Reference to model, used for retrieving all important data.
+	 * Reference to model, used for retrieving all important action.
 	 */
 	UFUNCTION(BlueprintCallable)
 	void SetAuthority(UUDActionAdministrator* model)

@@ -2,18 +2,18 @@
 
 #include "Core/Simulation/Actions/UDGameActionTileTransfer.h"
 
-void UUDGameActionTileTransfer::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDGameActionTileTransfer::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
+	IUDActionInterface::Execute(data, world);
 	// Queue new confirmable request.
-	FUDTargetTileData data = UUDGameActionTileTransfer::ConvertData(actionData);
-	AddPendingTargetRequest(actionData, data.TargetId, targetWorldState);
+	FUDTargetTileData data = UUDGameActionTileTransfer::ConvertData(data);
+	AddPendingTargetRequest(data, action.TargetId, world);
 }
 
-void UUDGameActionTileTransfer::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDGameActionTileTransfer::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
+	IUDActionInterface::Revert(data, world);
 	// Remove request from queue.
-	FUDTargetTileData data = UUDGameActionTileTransfer::ConvertData(actionData);
-	RemovePendingTargetRequest(actionData, data.TargetId, targetWorldState);
+	FUDTargetTileData data = UUDGameActionTileTransfer::ConvertData(data);
+	RemovePendingTargetRequest(data, action.TargetId, world);
 }

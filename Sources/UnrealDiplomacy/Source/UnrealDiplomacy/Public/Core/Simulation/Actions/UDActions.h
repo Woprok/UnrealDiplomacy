@@ -1,3 +1,4 @@
+#include "Core/Simulation/Actions/UDActionInvalid.h"
 // Deal
 #include "Core/Simulation/Actions/UDDealAction.h"
 #include "Core/Simulation/Actions/UDDealActionContractCreate.h"
@@ -62,7 +63,6 @@
 #include "Core/Simulation/Actions/UDSystemAction.h"
 #include "Core/Simulation/Actions/UDSystemActionGameEnd.h"
 #include "Core/Simulation/Actions/UDSystemActionGameStart.h"
-#include "Core/Simulation/Actions/UDSystemActionInvalid.h"
 #include "Core/Simulation/Actions/UDSystemActionLog.h"
 #include "Core/Simulation/Actions/UDSystemActionPlayerAdd.h"
 #include "Core/Simulation/Actions/UDSystemActionPlayerRemove.h"

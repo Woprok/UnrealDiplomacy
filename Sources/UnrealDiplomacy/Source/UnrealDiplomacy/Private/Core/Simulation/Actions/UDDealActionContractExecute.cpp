@@ -2,9 +2,9 @@
 
 #include "Core/Simulation/Actions/UDDealActionContractExecute.h"
 
-bool UUDDealActionContractExecute::AreAllActionsPrepared(TObjectPtr<UUDWorldState> targetWorldState, int32 dealUniqueId)
+bool UUDDealActionContractExecute::AreAllActionsPrepared(TObjectPtr<UUDWorldState> world, int32 dealUniqueId)
 {
-	for (auto actionWrapper : targetWorldState->Deals[dealUniqueId]->DealActionList)
+	for (auto actionWrapper : world->Deals[dealUniqueId]->DealActionList)
 	{
 		if (actionWrapper.SelectedResult < EUDDealActionResult::Accepted)
 		{
@@ -14,33 +14,33 @@ bool UUDDealActionContractExecute::AreAllActionsPrepared(TObjectPtr<UUDWorldStat
 	return true;
 }
 
-bool UUDDealActionContractExecute::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+bool UUDDealActionContractExecute::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	bool result = IUDActionInterface::CanExecute(data, world);
 	if (result)
 	{
-		FUDDealData data = UUDDealActionContractExecute::ConvertData(actionData);
-		bool unresolved = UUDDealActionContractExecute::AreAllActionsPrepared(targetWorldState, data.DealId);
+		FUDDealData data = UUDDealActionContractExecute::ConvertData(data);
+		bool unresolved = UUDDealActionContractExecute::AreAllActionsPrepared(world, action.DealId);
 		result = result && unresolved;
 	}
 	return result;
 }
-void UUDDealActionContractExecute::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionContractExecute::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
+	IUDActionInterface::Execute(data, world);
 	// Execution is empty as this action only invokes other.
 }
-void UUDDealActionContractExecute::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionContractExecute::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
+	IUDActionInterface::Revert(data, world);
 	// Execution is always reverted if all subactions were revoked.
 }
 
-TArray<FUDActionData> UUDDealActionContractExecute::GetSubactions(FUDActionData& parentAction, TObjectPtr<UUDWorldState> targetWorldState)
+TArray<FUDActionData> UUDDealActionContractExecute::GetContinuations(FUDActionData& parentAction, TObjectPtr<UUDWorldState> world)
 {
 	TArray<FUDActionData> finalActionList;
 	FUDDealData data = UUDDealActionContractExecute::ConvertData(parentAction);
-	for (auto wrappedAction : targetWorldState->Deals[data.DealId]->DealActionList)
+	for (auto wrappedAction : world->Deals[action.DealId]->DealActionList)
 	{
 		if (!wrappedAction.WasSabotaged &&
 			(

@@ -10,7 +10,7 @@
 /**
  * Nation Iverview/Management Widget
  */
-UCLASS(BlueprintType, Blueprintable)
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDNationOverviewViewModel : public UUDViewModelBase
 {
 	GENERATED_BODY()

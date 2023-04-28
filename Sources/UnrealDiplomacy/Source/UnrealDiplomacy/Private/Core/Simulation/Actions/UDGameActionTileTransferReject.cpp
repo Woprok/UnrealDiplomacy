@@ -2,19 +2,19 @@
 
 #include "Core/Simulation/Actions/UDGameActionTileTransferReject.h"
 
-void UUDGameActionTileTransferReject::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDGameActionTileTransferReject::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
+	IUDActionInterface::Execute(data, world);
 	// Request is removed from queue, without any effect being applied.
-	FUDTargetTileData data = UUDTransferTileAction::ConvertData(actionData);
-	RemovePendingTargetRequest(actionData, data.TargetId, targetWorldState);
+	FUDTargetTileData data = UUDTransferTileAction::ConvertData(data);
+	RemovePendingTargetRequest(data, action.TargetId, world);
 }
 
-void UUDGameActionTileTransferReject::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDGameActionTileTransferReject::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
+	IUDActionInterface::Revert(data, world);
 	// Request is returned to queue.
-	FUDTargetTileData data = UUDTransferTileAction::ConvertData(actionData);
-	FUDActionData originalActionData = FUDActionData::AsPredecessorOf(actionData, UUDTransferTileAction::ActionTypeId);
-	AddPendingTargetRequest(originalActionData, data.TargetId, targetWorldState);
+	FUDTargetTileData data = UUDTransferTileAction::ConvertData(data);
+	FUDActionData originalActionData = FUDActionData::AsPredecessorOf(data, UUDTransferTileAction::ActionTypeId);
+	AddPendingTargetRequest(originalActionData, action.TargetId, world);
 }

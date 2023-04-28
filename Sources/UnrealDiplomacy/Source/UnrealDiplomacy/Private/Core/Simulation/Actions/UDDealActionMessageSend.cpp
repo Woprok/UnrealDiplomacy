@@ -2,29 +2,29 @@
 
 #include "Core/Simulation/Actions/UDDealActionMessageSend.h"
 
-bool UUDDealActionMessageSend::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+bool UUDDealActionMessageSend::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	bool result = IUDActionInterface::CanExecute(data, world);
 	if (result)
 	{
-		FUDDealData data = UUDDealActionMessageSend::ConvertData(actionData);
-		bool isNotEmpty = actionData.TextParameter.Len() > 0;
+		FUDDealData data = UUDDealActionMessageSend::ConvertData(data);
+		bool isNotEmpty = action.TextParameter.Len() > 0;
 		result = result && isNotEmpty;
 	}
 	return result;
 }
-void UUDDealActionMessageSend::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionMessageSend::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
+	IUDActionInterface::Execute(data, world);
 	// Add to history.
-	FUDDealData data = UUDDealActionMessageSend::ConvertData(actionData);
-	targetWorldState->Deals[data.DealId]->ChatHistory.Add(actionData.TextParameter);
+	FUDDealData data = UUDDealActionMessageSend::ConvertData(data);
+	world->Deals[action.DealId]->ChatHistory.Add(action.TextParameter);
 }
-void UUDDealActionMessageSend::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionMessageSend::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
+	IUDActionInterface::Revert(data, world);
 	// Remove last add message from the history.
-	FUDDealData data = UUDDealActionMessageSend::ConvertData(actionData);
-	int32 lastItem = targetWorldState->Deals[data.DealId]->ChatHistory.Num() - 1;
-	targetWorldState->Deals[data.DealId]->ChatHistory.RemoveAt(lastItem);
+	FUDDealData data = UUDDealActionMessageSend::ConvertData(data);
+	int32 lastItem = world->Deals[action.DealId]->ChatHistory.Num() - 1;
+	world->Deals[action.DealId]->ChatHistory.RemoveAt(lastItem);
 }

@@ -1,22 +1,22 @@
 // Copyright Miroslav Valach
 
 #include "Core/Simulation/Actions/UDDealActionCreate.h"
-
+#include "Core/Simulation/UDWorldState.h"
 /**
  * Deal can be created only if all other deals are closed.
  * TODO bugfix issues with mutliple active deals owned by single player?
  * Currently it prevents only from having multiple deals in opened state...
  */
-bool UUDDealActionCreate::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+bool UUDDealActionCreate::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	bool result = IUDActionInterface::CanExecute(action, world);
 	if (result)
 	{
 		bool canCreate = true;
-		for (auto deal : targetWorldState->Deals)
+		for (auto deal : world->Deals)
 		{
 			if (deal.Value->DealSimulationResult == EUDDealSimulationResult::Opened &&
-				deal.Value->OwnerUniqueId == actionData.InvokerPlayerId)
+				deal.Value->OwnerUniqueId == action.InvokerPlayerId)
 			{
 				canCreate = false;
 			}
@@ -26,19 +26,19 @@ bool UUDDealActionCreate::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWo
 	return result;
 }
 
-void UUDDealActionCreate::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionCreate::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
+	IUDActionInterface::Execute(action, world);
 	// Creates new deal state with Id same as this action SourceUniqueId.
-	targetWorldState->Deals.Add(actionData.SourceUniqueId,
-		UUDDealState::CreateState(actionData.SourceUniqueId, actionData.InvokerPlayerId));
-	targetWorldState->Deals[actionData.SourceUniqueId]->Participants.Add(actionData.InvokerPlayerId);
+	world->Deals.Add(action.SourceUniqueId,
+		UUDDealState::CreateState(action.SourceUniqueId, action.InvokerPlayerId));
+	world->Deals[action.SourceUniqueId]->Participants.Add(action.InvokerPlayerId);
 }
 
-void UUDDealActionCreate::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionCreate::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
+	IUDActionInterface::Revert(action, world);
 	// Removes deal with key equal to SourceUniqueId of the original action.
-	targetWorldState->Deals[actionData.SourceUniqueId]->Participants.Remove(actionData.InvokerPlayerId);
-	targetWorldState->Deals.Remove(actionData.SourceUniqueId);
+	world->Deals[action.SourceUniqueId]->Participants.Remove(action.InvokerPlayerId);
+	world->Deals.Remove(action.SourceUniqueId);
 }

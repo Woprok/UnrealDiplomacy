@@ -2,23 +2,23 @@
 
 #include "Core/Simulation/Actions/UDDealActionParticipantInviteReject.h"
 
-void UUDDealActionParticipantInviteReject::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionParticipantInviteReject::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
+	IUDActionInterface::Execute(data, world);
 	// Request is removed from queue, without any effect being applied.
-	FUDDealTargetData data = UUDInviteParticipantDealAction::ConvertData(actionData);
-	RemovePendingTargetRequest(actionData, data.TargetId, targetWorldState);
+	FUDDealTargetData data = UUDInviteParticipantDealAction::ConvertData(data);
+	RemovePendingTargetRequest(data, action.TargetId, world);
 	// Block player future participation.
-	targetWorldState->Deals[data.DealId]->BlockedParticipants.Add(data.TargetId);
+	world->Deals[action.DealId]->BlockedParticipants.Add(action.TargetId);
 }
 
-void UUDDealActionParticipantInviteReject::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionParticipantInviteReject::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
+	IUDActionInterface::Revert(data, world);
 	// Request is returned to queue.
-	FUDDealTargetData data = UUDInviteParticipantDealAction::ConvertData(actionData);
-	FUDActionData originalActionData = FUDActionData::AsPredecessorOf(actionData, UUDInviteParticipantDealAction::ActionTypeId);
-	AddPendingTargetRequest(originalActionData, data.TargetId, targetWorldState);
+	FUDDealTargetData data = UUDInviteParticipantDealAction::ConvertData(data);
+	FUDActionData originalActionData = FUDActionData::AsPredecessorOf(data, UUDInviteParticipantDealAction::ActionTypeId);
+	AddPendingTargetRequest(originalActionData, action.TargetId, world);
 	// Enable blocked player participation.
-	targetWorldState->Deals[data.DealId]->BlockedParticipants.Remove(data.TargetId);
+	world->Deals[action.DealId]->BlockedParticipants.Remove(action.TargetId);
 }

@@ -8,6 +8,7 @@
 // Forward Declarations
 
 struct FUDActionData;
+struct FUDActionPresentation;
 class UUDWorldState;
 class UUDWorldGenerator;
 class UUDModifierManager;
@@ -17,7 +18,7 @@ class UUDModifierManager;
  * Unreal Engine requires Interface to be first defined as empty stumb.
  * https://docs.unrealengine.com/5.1/en-US/interfaces-in-unreal-engine/
  */
-UINTERFACE(MinimalAPI, Blueprintable)
+UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
 class UUDActionInterface : public UInterface
 {
 	GENERATED_BODY()
@@ -25,7 +26,7 @@ class UUDActionInterface : public UInterface
 
 /** 
  * Actions are executable operations that can apply themselves on simulated state based on parameters.
- * Actions must be able to revert any effect it applied on a state.
+ * Actions are required to be able to revert any effect they applied on a state.
  */
 class UNREALDIPLOMACY_API IUDActionInterface
 {
@@ -34,70 +35,57 @@ public:
 	/**
 	 * Evaluates if the action is executable on the provided state.
 	 */
-	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState);
+	virtual bool CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const;
 	/**
 	 * Applies action over the provided state.
 	 */
-	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState);
+	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world);
 	/**
 	 * Applies inverse of the Execute on the provided state.
 	 */
-	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState);
+	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world);
 	/**
-	 * Unique action id that is provided for each action.
-	 * This is directly referenced by FUDActionData to determine,
-	 * who can execute it as the FUDActionData is very simple container.
-	 * This has to be overriden, otherwise the action will be discarded (valid values are 0 - int32.MAX).
+	 * Actions are identified by their unique Id.
+	 * Valid values are 0 - int32.MAX.
+	 * Only UUDSystemActionInvalid and interface are allowed to return -1;
 	 */
-	virtual int32 GetActionTypeId()
-	{
-		// Default Interface call returns invalid value, e.g. -1.
-		return -1;
-	}
-	virtual int32 GetRequiredParametersCount()
-	{
-		// Default Interface call returns invalid value, e.g. -1.
-		return -1;
-	}
+	virtual int32 GetId() const;
 	/**
-	 * Set the instance of world generator used by all registred actions.
-	 * If actions share world generator, they can use same data.
-	 * Note: all actions that use generator needs this to be set.
-	 * By default set this to every action.
+	 * Additional parameters required by the action.
+	 * Valid values are 0 - int32.MAX.
 	 */
-	virtual void SetWorldGenerator(TObjectPtr<UUDWorldGenerator> worldGenerator)
-	{
-	 // Default Interface call is empty.
-	}
+	virtual int32 GetParameterCount() const;
 	/**
-	 * Set the instance of modifier manager used by all registred actions.
-	 * Actions share modifier manager to correctly handle all modifiers.
-	 * Note: all actions that use modifiers needs this to be set.
-	 * By default set this to every action.
+	 * Defines if action requires to be followed by other actions to complete execution.
 	 */
-	virtual void SetModifierManager(TObjectPtr<UUDModifierManager> modifierManager)
-	{
-	 // Default Interface call is empty.
-	}
-	/**
-	 * Determines if this action is eligible to execute additional actions.
-	 * Additional actions should never be composite to prevent loop!
-	 */
-	virtual bool IsComposite()
-	{
-	 return false;
-	}
+	virtual bool HasContinuations() const;
 	/**
 	 * Additional actions that should be executed after this action, based on input.
 	 * Validity is in general checked on GaiaWorldState.
 	 */
-	virtual TArray<FUDActionData> GetSubactions(FUDActionData& parentAction, TObjectPtr<UUDWorldState> targetWorldState);
+	virtual TArray<FUDActionData> GetContinuations(const FUDActionData& action, TObjectPtr<UUDWorldState> world);
 	/**
-	 * Indicates if this action requires additional backup before being applied.
+	 * Defines if action requires backup before being applied.
 	 */
-	virtual bool RequiresBackup();
-	/** 
-	 * Backups specific data into provided action data so they can be restored on revert to original state.
+	virtual bool IsBackupRequired() const;
+	/**
+	 * Enables to backup additional data to the provided action action.
 	 */
-	virtual void Backup(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState);
+	virtual void Backup(FUDActionData& action, TObjectPtr<UUDWorldState> world);
+	/**
+	 * Shared world generator that can be used by action.
+	 */
+	virtual void SetWorldGenerator(TObjectPtr<UUDWorldGenerator> generator);
+	/**
+	 * Shared modifier manager that can be used by action.
+	 */
+	virtual void SetModifierManager(TObjectPtr<UUDModifierManager> manager);
+	/**
+	 * Formatted version of the action.
+	 */
+	virtual FString ToString() const;
+	/**
+	 * Contains definition for filtering and displaying action.
+	 */
+	virtual FUDActionPresentation GetPresentation() const;
 };

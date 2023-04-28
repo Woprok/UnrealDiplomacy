@@ -2,19 +2,19 @@
 
 #include "Core/Simulation/Actions/UDGameActionGiftReject.h"
 
-void UUDGameActionGiftReject::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDGameActionGiftReject::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
+	IUDActionInterface::Execute(data, world);
 	// Request is removed from queue, without any effect being applied.
-	FUDTargetValueData data = UUDGiftAction::ConvertData(actionData);
-	RemovePendingTargetRequest(actionData, data.TargetId, targetWorldState);
+	FUDTargetValueData data = UUDGiftAction::ConvertData(data);
+	RemovePendingTargetRequest(data, action.TargetId, world);
 }
 
-void UUDGameActionGiftReject::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDGameActionGiftReject::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
+	IUDActionInterface::Revert(data, world);
 	// Request is returned to queue.
-	FUDTargetValueData data = UUDGiftAction::ConvertData(actionData);
-	FUDActionData originalActionData = FUDActionData::AsPredecessorOf(actionData, UUDGiftAction::ActionTypeId);
-	AddPendingTargetRequest(originalActionData, data.TargetId, targetWorldState);
+	FUDTargetValueData data = UUDGiftAction::ConvertData(data);
+	FUDActionData originalActionData = FUDActionData::AsPredecessorOf(data, UUDGiftAction::ActionTypeId);
+	AddPendingTargetRequest(originalActionData, action.TargetId, world);
 }

@@ -85,9 +85,9 @@ void AUDSkirmishPlayerController::InitializeAdministrator()
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Initialized personal administrator."), GetControllerUniqueId());
 }
 
-void AUDSkirmishPlayerController::OnWorldSimulationUpdated(FUDActionData& actionData)
+void AUDSkirmishPlayerController::OnWorldSimulationUpdated(FUDActionData& action)
 {
-	// Currently this has no use for actionData as we are not parsing actions.
+	// Currently this has no use for data as we are not parsing actions.
 	// We do through propagate the change for anyone who is interested in hearing about it.
 	// Currently only UI elements and World...
 	// TODO revisit this commentary that questions our decisions.
@@ -134,7 +134,7 @@ void AUDSkirmishPlayerController::InitializeSimulation()
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Initialized with temporary Id."), GetControllerUniqueId());
 }
 
-void AUDSkirmishPlayerController::ProcessAction(FUDActionData& actionData)
+void AUDSkirmishPlayerController::ProcessAction(FUDActionData& action)
 {
 	// TODO call event that will notify UI, so the new change is propagated to UI.
 	// TODO maybe added variant for execute that does not check CanExecute ?
@@ -143,27 +143,27 @@ void AUDSkirmishPlayerController::ProcessAction(FUDActionData& actionData)
 	if (IsSynchronized)
 	{
 		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Executing."), GetControllerUniqueId());
-		GetWorldSimulation()->NaiveExecuteAction(actionData);
+		GetWorldSimulation()->NaiveExecuteAction(data);
 	}
 	else
 	{
 		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Awaiting sync."), GetControllerUniqueId());
-		SaveActionUntilSynchronization(actionData);
+		SaveActionUntilSynchronization(data);
 		// Attempt to sync...
 		VerifySyncInProgress();
 	}
 }
 
-void AUDSkirmishPlayerController::SaveActionUntilSynchronization(FUDActionData& actionData)
+void AUDSkirmishPlayerController::SaveActionUntilSynchronization(FUDActionData& action)
 {
 	// These should arrive in order as we are using reliable RPCs.
-	TemporaryActionHolder.Add(actionData);
+	TemporaryActionHolder.Add(data);
 }
 
-void AUDSkirmishPlayerController::MulticastReceiveActionFromServer_Local(FUDActionData& actionData)
+void AUDSkirmishPlayerController::MulticastReceiveActionFromServer_Local(FUDActionData& action)
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Multicast Receive."), GetControllerUniqueId());
-	ProcessAction(actionData);
+	ProcessAction(data);
 }
 
 // Header part for this is automatically generated from RPC definition.

@@ -91,12 +91,12 @@ public:
 	 * Passes received action to world simulation.
 	 * Used whenever Multicast is the sender of an action from the server.
 	 */
-	void MulticastReceiveActionFromServer_Local(FUDActionData& actionData);
+	void MulticastReceiveActionFromServer_Local(FUDActionData& action);
 protected:
 	/**
 	 * Binding to delegate of WorldSimulation.
 	 */
-	void OnWorldSimulationUpdated(FUDActionData& actionData);
+	void OnWorldSimulationUpdated(FUDActionData& action);
 	/**
 	 * Initializes Overseer for handling game rules over this player.
 	 */
@@ -141,11 +141,11 @@ protected:
 	 * Determines how to deal with the action and executes it if possible.
 	 * Requires client to be synchronized.
 	 */
-	void ProcessAction(FUDActionData& actionData);
+	void ProcessAction(FUDActionData& action);
 	/**
 	 * Saves unresolveable actions for later.
 	 */
-	void SaveActionUntilSynchronization(FUDActionData& actionData);
+	void SaveActionUntilSynchronization(FUDActionData& action);
 	/**
 	 * Verifies that sync is requested and if it is not then start it.
 	 * Invoked on receiving new action from standard channel.

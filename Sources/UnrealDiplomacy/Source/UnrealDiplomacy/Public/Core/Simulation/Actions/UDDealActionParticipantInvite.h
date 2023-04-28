@@ -15,16 +15,16 @@ class UNREALDIPLOMACY_API UUDDealActionParticipantInvite : public UObject, publi
 {
 	GENERATED_BODY()
 public:
-	//virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual int32 GetActionTypeId() override { return ActionTypeId; };
-	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
+	//virtual bool CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
+	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
+	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
+	virtual int32 GetId() const override { return ActionTypeId; };
+	virtual int32 GetParameterCount() const override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 10001;
 	static const int32 RequiredParametersCount = 2;
-	static FUDDealTargetData ConvertData(FUDActionData& data)
+	static FUDDealTargetData ConvertData(FUDActionData& action)
 	{
-		return FUDDealTargetData(data.ValueParameters);
+		return FUDDealTargetData(action.ValueParameters);
 	}
 };

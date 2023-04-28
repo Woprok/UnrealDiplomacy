@@ -162,7 +162,7 @@ public:
 /**
  * TODO check if someone found or implemented function binding to events
  */
-UCLASS(BlueprintType, Blueprintable)
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDViewModelBase : public UMVVMViewModelBase
 {
 	GENERATED_BODY()
@@ -191,7 +191,7 @@ protected:
 /**
  * TODO REMOVE THIS as its useless and we are stuck with needing access to ActionModel for any interaction
  */
-UCLASS(BlueprintType, Blueprintable)
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDStaticViewModelBase : public UMVVMViewModelBase
 {
 	GENERATED_BODY()

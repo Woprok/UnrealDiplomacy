@@ -3,26 +3,26 @@
 #include "Core/Simulation/Actions/UDDealActionReadyRevert.h"
 
 
-bool UUDDealActionReadyRevert::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+bool UUDDealActionReadyRevert::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	bool result = IUDActionInterface::CanExecute(data, world);
 	if (result)
 	{
-		FUDDealData data = UUDDealActionReadyRevert::ConvertData(actionData);
-		bool isReady = targetWorldState->Deals[data.DealId]->IsReadyPlayerList.Contains(actionData.InvokerPlayerId);
+		FUDDealData data = UUDDealActionReadyRevert::ConvertData(data);
+		bool isReady = world->Deals[action.DealId]->IsReadyPlayerList.Contains(action.InvokerPlayerId);
 		result = result && isReady;
 	}
 	return result;
 }
-void UUDDealActionReadyRevert::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionReadyRevert::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
-	FUDDealData data = UUDDealActionReadyRevert::ConvertData(actionData);
-	targetWorldState->Deals[data.DealId]->IsReadyPlayerList.Remove(actionData.InvokerPlayerId);
+	IUDActionInterface::Execute(data, world);
+	FUDDealData data = UUDDealActionReadyRevert::ConvertData(data);
+	world->Deals[action.DealId]->IsReadyPlayerList.Remove(action.InvokerPlayerId);
 }
-void UUDDealActionReadyRevert::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionReadyRevert::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
-	FUDDealData data = UUDDealActionReadyRevert::ConvertData(actionData);
-	targetWorldState->Deals[data.DealId]->IsReadyPlayerList.Add(actionData.InvokerPlayerId);
+	IUDActionInterface::Revert(data, world);
+	FUDDealData data = UUDDealActionReadyRevert::ConvertData(data);
+	world->Deals[action.DealId]->IsReadyPlayerList.Add(action.InvokerPlayerId);
 }

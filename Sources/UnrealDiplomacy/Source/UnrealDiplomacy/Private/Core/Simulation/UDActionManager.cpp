@@ -24,16 +24,16 @@ TScriptInterface<IUDActionInterface> UUDActionManager::GetAction(int32 actionTyp
 bool UUDActionManager::RegisterAction(TScriptInterface<IUDActionInterface> newAction)
 {
 	check(IsInitialized);
-	if (Actions.Contains(newAction->GetActionTypeId()))
+	if (Actions.Contains(newAction->GetId()))
 	{
-		UE_LOG(LogTemp, Log, TEXT("UUDActionManager: Duplicate registration of Action(%d)."), newAction->GetActionTypeId());
+		UE_LOG(LogTemp, Log, TEXT("UUDActionManager: Duplicate registration of Action(%d)."), newAction->GetId());
 		return false;
 	}
 
 	BindSharedToAction(newAction);
 
-	UE_LOG(LogTemp, Log, TEXT("UUDActionManager: Action(%d) successfully registered."), newAction->GetActionTypeId());
-	Actions.Add(newAction->GetActionTypeId(), newAction);
+	UE_LOG(LogTemp, Log, TEXT("UUDActionManager: Action(%d) successfully registered."), newAction->GetId());
+	Actions.Add(newAction->GetId(), newAction);
 	return true;
 }
 
@@ -58,7 +58,7 @@ void UUDActionManager::RegisterCoreActions()
 		NewObject<UUDSystemActionGameStart>(this),
 		NewObject<UUDSystemActionGameEnd>(this),
 		NewObject<UUDSystemActionPlayerAdd>(this),
-		NewObject<UUDSystemActionPlayerRemove>(this),
+		//NewObject<UUDSystemActionPlayerRemove>(this),
 		NewObject<UUDSystemActionTurnEnd>(this),
 		NewObject<UUDSystemActionTurnForceEnd>(this),
 		NewObject<UUDSystemActionWorldCreate>(this),

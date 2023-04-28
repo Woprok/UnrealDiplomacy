@@ -2,6 +2,9 @@
 
 
 #include "Core/Simulation/UDWorldGenerator.h"
+#include "Core/Simulation/UDWorldState.h"
+//#include "Kismet/GameplayStatics.h"
+//#include "Core/UDGameInstance.h"
 
 void UUDWorldGenerator::CreateAndDuplicate(TObjectPtr<UUDMapState> targetMapState)
 {
@@ -83,4 +86,13 @@ void UUDWorldGenerator::GenerateArray(int32 xSize, int32 ySize)
 			Map[xy] = UUDTileState::CreateState(x, y);
 		}
 	}
+}
+
+const FRandomStream& UUDWorldGenerator::GetRandom()
+{
+	if (Random.GetInitialSeed() != LastSeed)
+	{
+		Random = FRandomStream(LastSeed);
+	}
+	return Random;
 }

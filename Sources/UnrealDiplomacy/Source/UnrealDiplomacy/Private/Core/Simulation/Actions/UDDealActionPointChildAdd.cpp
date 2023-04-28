@@ -2,31 +2,31 @@
 
 #include "Core/Simulation/Actions/UDDealActionPointChildAdd.h"
 
-bool UUDDealActionPointChildAdd::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+bool UUDDealActionPointChildAdd::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	bool result = IUDActionInterface::CanExecute(data, world);
 	if (result)
 	{
-		FUDDealPointData data = UUDDealActionPointChildAdd::ConvertData(actionData);
-		bool isStateOpen = targetWorldState->Deals[data.DealId]->DealSimulationState <= EUDDealSimulationState::FinalizingDraft;
-		bool isResultOpen = targetWorldState->Deals[data.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
+		FUDDealPointData data = UUDDealActionPointChildAdd::ConvertData(data);
+		bool isStateOpen = world->Deals[action.DealId]->DealSimulationState <= EUDDealSimulationState::FinalizingDraft;
+		bool isResultOpen = world->Deals[action.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
 		result = result && isStateOpen && isResultOpen;
 	}
 	return result;
 }
-void UUDDealActionPointChildAdd::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionPointChildAdd::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
+	IUDActionInterface::Execute(data, world);
 	// Creates new sub-point for a specified Point with current SourceUniqueId.
-	FUDDealPointData data = UUDDealActionPointChildAdd::ConvertData(actionData);
-	targetWorldState->Deals[data.DealId]->Points.Add(actionData.SourceUniqueId, UUDDiscussionItem::CreateState(actionData.InvokerPlayerId));
-	targetWorldState->Deals[data.DealId]->Points[data.Point]->Consequencies.Add(actionData.SourceUniqueId);
+	FUDDealPointData data = UUDDealActionPointChildAdd::ConvertData(data);
+	world->Deals[action.DealId]->Points.Add(action.SourceUniqueId, UUDDiscussionItem::CreateState(action.InvokerPlayerId));
+	world->Deals[action.DealId]->Points[action.Point]->Consequencies.Add(action.SourceUniqueId);
 }
-void UUDDealActionPointChildAdd::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionPointChildAdd::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
+	IUDActionInterface::Revert(data, world);
 	// Deletes created sub-point that is saved with this action SourceUniqueId.
-	FUDDealPointData data = UUDDealActionPointChildAdd::ConvertData(actionData);
-	targetWorldState->Deals[data.DealId]->Points.Remove(actionData.SourceUniqueId);
-	targetWorldState->Deals[data.DealId]->Points[data.Point]->Consequencies.Remove(actionData.SourceUniqueId);
+	FUDDealPointData data = UUDDealActionPointChildAdd::ConvertData(data);
+	world->Deals[action.DealId]->Points.Remove(action.SourceUniqueId);
+	world->Deals[action.DealId]->Points[action.Point]->Consequencies.Remove(action.SourceUniqueId);
 }

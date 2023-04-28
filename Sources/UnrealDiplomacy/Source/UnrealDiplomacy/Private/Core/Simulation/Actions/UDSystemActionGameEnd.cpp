@@ -1,24 +1,26 @@
 // Copyright Miroslav Valach
 
 #include "Core/Simulation/Actions/UDSystemActionGameEnd.h"
+#include "Core/UDGlobalData.h"
+#include "Core/Simulation/UDActionData.h"
+#include "Core/Simulation/UDWorldState.h"
 
-bool UUDSystemActionGameEnd::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+bool UUDSystemActionGameEnd::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
-		// State is checked.
-		targetWorldState->WorldSimulationState == EUDWorldSimulationState::PLAYING;
+	bool isSimulating = world->WorldSimulationState == EUDWorldSimulationState::Simulating;
+	return IUDActionInterface::CanExecute(action, world) && isSimulating;
 }
 
-void UUDSystemActionGameEnd::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDSystemActionGameEnd::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
-	// State is updated.
-	targetWorldState->WorldSimulationState = EUDWorldSimulationState::FINISHING;
+	IUDActionInterface::Execute(action, world);
+	// Disables simulation.
+	world->WorldSimulationState = EUDWorldSimulationState::Finished;
 }
 
-void UUDSystemActionGameEnd::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDSystemActionGameEnd::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
-	// State is returned to previous value.
-	targetWorldState->WorldSimulationState = EUDWorldSimulationState::PLAYING;
+	IUDActionInterface::Revert(action, world);
+	// Enables simulation.
+	world->WorldSimulationState = EUDWorldSimulationState::Simulating;
 }

@@ -15,11 +15,11 @@ class UNREALDIPLOMACY_API UUDGameActionThroneUsurp : public UObject, public IUDA
 {
 	GENERATED_BODY()
 public:
-	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual int32 GetActionTypeId() override { return ActionTypeId; };
-	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
+	virtual bool CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
+	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
+	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
+	virtual int32 GetId() override { return ActionTypeId; };
+	virtual int32 GetParameterCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 10;
 	static const int32 RequiredParametersCount = 0;

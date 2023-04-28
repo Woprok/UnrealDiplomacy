@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS(BlueprintType, Blueprintable)
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDGameOverViewModel : public UUDViewModelBase
 {
 	GENERATED_BODY()

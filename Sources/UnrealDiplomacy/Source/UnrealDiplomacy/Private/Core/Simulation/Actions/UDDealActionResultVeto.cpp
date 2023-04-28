@@ -2,27 +2,27 @@
 
 #include "Core/Simulation/Actions/UDDealActionResultVeto.h"
 
-bool UUDDealActionResultVeto::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+bool UUDDealActionResultVeto::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	bool result = IUDActionInterface::CanExecute(data, world);
 	if (result)
 	{
-		FUDDealData data = UUDDealActionResultVeto::ConvertData(actionData);
-		bool isModerator = targetWorldState->Deals[data.DealId]->OwnerUniqueId == actionData.InvokerPlayerId;
-		bool isStateBefore = targetWorldState->Deals[data.DealId]->DealSimulationResult == EUDDealSimulationResult::Opened;
+		FUDDealData data = UUDDealActionResultVeto::ConvertData(data);
+		bool isModerator = world->Deals[action.DealId]->OwnerUniqueId == action.InvokerPlayerId;
+		bool isStateBefore = world->Deals[action.DealId]->DealSimulationResult == EUDDealSimulationResult::Opened;
 		result = result && isModerator && isStateBefore;
 	}
 	return result;
 }
-void UUDDealActionResultVeto::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionResultVeto::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
-	FUDDealData data = UUDDealActionResultVeto::ConvertData(actionData);
-	targetWorldState->Deals[data.DealId]->DealSimulationResult = EUDDealSimulationResult::Vetoed;
+	IUDActionInterface::Execute(data, world);
+	FUDDealData data = UUDDealActionResultVeto::ConvertData(data);
+	world->Deals[action.DealId]->DealSimulationResult = EUDDealSimulationResult::Vetoed;
 }
-void UUDDealActionResultVeto::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionResultVeto::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
-	FUDDealData data = UUDDealActionResultVeto::ConvertData(actionData);
-	targetWorldState->Deals[data.DealId]->DealSimulationResult = EUDDealSimulationResult::Opened;
+	IUDActionInterface::Revert(data, world);
+	FUDDealData data = UUDDealActionResultVeto::ConvertData(data);
+	world->Deals[action.DealId]->DealSimulationResult = EUDDealSimulationResult::Opened;
 }

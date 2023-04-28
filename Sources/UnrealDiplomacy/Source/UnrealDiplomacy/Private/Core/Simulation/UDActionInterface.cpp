@@ -1,15 +1,100 @@
 // Copyright Miroslav Valach
 
 #include "Core/Simulation/UDActionInterface.h"
+#include "Core/UDGlobalData.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDWorldState.h"
 #include "Core/Simulation/UDWorldGenerator.h"
-#include "Core/Simulation/UDModifier.h"
 #include "Core/Simulation/UDModifierManager.h"
+
+bool IUDActionInterface::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
+{
+	UE_LOG(LogTemp, Log, TEXT("INSTANCE(%d): Verifying...\n%s\n%s"), 
+		world->PerspectivePlayerId, action.ToString(), ToString());
+	
+	bool isActionSame = action.ActionTypeId == GetId();
+	bool isParameterCountSame = action.ValueParameters.Num() == GetParameterCount();
+	return isActionSame && isParameterCountSame;
+}	 
+
+void IUDActionInterface::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
+{
+	UE_LOG(LogTemp, Log, TEXT("INSTANCE(%d): Executing %s"), 
+		world->PerspectivePlayerId, action.ToString());
+}
+
+void IUDActionInterface::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
+{
+	UE_LOG(LogTemp, Log, TEXT("INSTANCE(%d): Reverting %s"), 
+		world->PerspectivePlayerId, action.ToString());
+}
+
+int32 IUDActionInterface::GetId() const
+{
+	UUDGlobalData::InvalidActionId;
+}
+
+int32 IUDActionInterface::GetParameterCount() const
+{
+	UUDGlobalData::DefaultActionParameterCount;
+}
+
+bool IUDActionInterface::HasContinuations() const
+{
+	return false;
+}
+
+TArray<FUDActionData> IUDActionInterface::GetContinuations(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
+{
+	return { };
+}
+
+bool IUDActionInterface::IsBackupRequired() const
+{
+	return false;
+}
+
+void IUDActionInterface::Backup(FUDActionData& action, TObjectPtr<UUDWorldState> world)
+{
+	return;
+}
+
+void IUDActionInterface::SetWorldGenerator(TObjectPtr<UUDWorldGenerator> generator)
+{
+	return;
+}
+
+void IUDActionInterface::SetModifierManager(TObjectPtr<UUDModifierManager> manager)
+{
+	return;
+}
+
+FString IUDActionInterface::ToString() const
+{
+	FStringFormatNamedArguments formatArgs;
+	formatArgs.Add(TEXT("aid"), GetId());
+	formatArgs.Add(TEXT("values"), GetParameterCount());
+
+	FString formatted = FString::Format(TEXT("Executor[ID={aid}, OPTIONAL={values}]"), formatArgs);
+
+	return formatted;
+}
+
+FUDActionPresentation IUDActionInterface::GetPresentation() const
+{
+	FUDActionPresentation presentation = FUDActionPresentation();
+
+	presentation.Tags.Append({
+		FUDActionPresentation::INVALID,
+	});
+
+	return presentation;
+}
+
 
 // TODO LIST
 // TODO extend by adding more functions that do verify & check restriction
-// UUDUnconditionalGiftAction is missing condition (actionData.InvokerPlayerId != actionData.TargetPlayerId)
+// UUDUnconditionalGiftAction is missing condition (action.InvokerPlayerId != action.TargetPlayerId)
 // TODO CanExecute overloads that check if the action is still queued in PendingRequests.
 // TODO Create action class that has function RemovePendingTargetRequest as default implementation.
 // TODO reverting confirm or reject does not result in same action, if the action would be modified, e.g.
@@ -25,121 +110,79 @@
 // other than synchronization of Client and Server in batch.
 
 
-bool IUDActionInterface::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+USTRUCT()
+struct FUDActionPresentation
 {
-	// Default Interface call is checking only ActionId and ParameterCount.
-	UE_LOG(LogTemp, Log, TEXT("INSTANCE(%d): Verifying Execution Action[Id(%d)==(%d), ValueCount(%d)==(%d)]."),
-		targetWorldState->PerspectivePlayerId, actionData.ActionTypeId, GetActionTypeId(),
-		actionData.ValueParameters.Num(), GetRequiredParametersCount());
-	
-	return actionData.ActionTypeId == GetActionTypeId() &&
-		actionData.ValueParameters.Num() == GetRequiredParametersCount();
-}	 
-
-void IUDActionInterface::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
-{
-	// Default Interface call is empty with a log.
-	UE_LOG(
-		LogTemp, 
-		Log, 
-		TEXT("INSTANCE(%d): Execuing Action[Id(%d), Invoker(%d), UID(%d), Source(%d), ValueCount(%d), TextLength(%d)]."),
-		targetWorldState->PerspectivePlayerId, 
-		actionData.ActionTypeId, 
-		actionData.InvokerPlayerId,
-		actionData.UniqueId,
-		actionData.SourceUniqueId,
-		actionData.ValueParameters.Num(),
-		actionData.TextParameter.Len()
-	);
-}
-
-void IUDActionInterface::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
-{
-	// Default Interface call is empty with a log.
-	UE_LOG(
-		LogTemp,
-		Log,
-		TEXT("INSTANCE(%d): Execuing Action[Id(%d), Invoker(%d), UID(%d), Source(%d), ValueCount(%d), TextLength(%d)]."),
-		targetWorldState->PerspectivePlayerId,
-		actionData.ActionTypeId,
-		actionData.InvokerPlayerId,
-		actionData.UniqueId,
-		actionData.SourceUniqueId,
-		actionData.ValueParameters.Num(),
-		actionData.TextParameter.Len()
-	);
-}
-
-TArray<FUDActionData> IUDActionInterface::GetSubactions(FUDActionData& parentAction, TObjectPtr<UUDWorldState> targetWorldState)
-{
-	TArray<FUDActionData> emptyArray;
-	emptyArray.Empty(0);
-	return emptyArray;
-}
-
-bool IUDActionInterface::RequiresBackup()
-{
-	// Default interface call always returns false as it does no backup.
-	return false;
-}
-
-void IUDActionInterface::Backup(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
-{
-	// Default interface call is empty and should never be invoked by correctly defined action.
-}
+	GENERATED_BODY()
+public:
+	FUDActionPresentation() {}
+	TSet<int32> Tags;
+	// What is UI name
+	FString Name;
+	// What is UI desc
+	FString Description;
+	// What is UI icon
+	FString Icon;
+	// What is UI deal preview
+	FString Preview;
+	// What is UI deal final
+	FString Final;
+	static const int32 INVALID = -1;
+	static const int32 VALID = 0;
+};
 
 /**
  * Removes pending request associated with action and specified target.
  */
-void RemovePendingTargetRequest(FUDActionData actionData, int32 targetId, TObjectPtr<UUDWorldState> targetWorldState)
+void RemovePendingTargetRequest(FUDActionData action, int32 targetId, TObjectPtr<UUDWorldState> world)
 {
 	UE_LOG(
 		LogTemp, 
 		Log,
 		TEXT("INSTANCE(%d): Player(%d) started with (%d) requests. Deleting request(%d)"),
-		targetWorldState->PerspectivePlayerId, 
+		world->PerspectivePlayerId, 
 		targetId,
-		targetWorldState->Players[targetId]->PendingRequests.Num(),
-		actionData.SourceUniqueId
+		world->Players[targetId]->PendingRequests.Num(),
+		action.SourceUniqueId
 	);
 	
 	// Item is removed based on the key.
-	targetWorldState->Players[targetId]->PendingRequests.Remove(actionData.SourceUniqueId);
+	world->Players[targetId]->PendingRequests.Remove(action.SourceUniqueId);
 
 	UE_LOG(
 		LogTemp, 
 		Log,
 		TEXT("INSTANCE(%d): Player(%d) ended with (%d) requests."),
-		targetWorldState->PerspectivePlayerId,
+		world->PerspectivePlayerId,
 		targetId,
-		targetWorldState->Players[targetId]->PendingRequests.Num()
+		world->Players[targetId]->PendingRequests.Num()
 	);
 }
 
 /**
  * Adds pending request associated with action and specified target.
  */
-void AddPendingTargetRequest(FUDActionData actionData, int32 targetId, TObjectPtr<UUDWorldState> targetWorldState)
+void AddPendingTargetRequest(FUDActionData action, int32 targetId, TObjectPtr<UUDWorldState> world)
 {
 	UE_LOG(
 		LogTemp,
 		Log,
 		TEXT("INSTANCE(%d): Player(%d) started with (%d) requests. Adding request(%d)"),
-		targetWorldState->PerspectivePlayerId,
+		world->PerspectivePlayerId,
 		targetId,
-		targetWorldState->Players[targetId]->PendingRequests.Num(),
-		actionData.SourceUniqueId
+		world->Players[targetId]->PendingRequests.Num(),
+		action.SourceUniqueId
 	);
 
 	// Item is added as key value pair.
-	targetWorldState->Players[targetId]->PendingRequests.Add(actionData.SourceUniqueId, actionData);
+	world->Players[targetId]->PendingRequests.Add(action.SourceUniqueId, action);
 
 	UE_LOG(
 		LogTemp,
 		Log,
 		TEXT("INSTANCE(%d): Player(%d) ended with (%d) requests."),
-		targetWorldState->PerspectivePlayerId,
+		world->PerspectivePlayerId,
 		targetId,
-		targetWorldState->Players[targetId]->PendingRequests.Num()
+		world->Players[targetId]->PendingRequests.Num()
 	);
 }

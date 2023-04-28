@@ -12,7 +12,7 @@ DECLARE_DELEGATE_OneParam(NationSelectedDelegate, int32);
 /**
  * Single nation representation in a list or similiar selectable collection.
  */
-UCLASS(BlueprintType, Blueprintable)
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDNationItemViewModel : public UUDViewModelBase
 {
 	GENERATED_BODY()
@@ -36,7 +36,7 @@ public:
 		}
 	}
 	/**
-	 * Changes nation associated with this viewmodel and correctly updates data.
+	 * Changes nation associated with this viewmodel and correctly updates action.
 	 */
 	UFUNCTION(BlueprintCallable)
 	void ChangeDisplayedNation(int32 newNationId)

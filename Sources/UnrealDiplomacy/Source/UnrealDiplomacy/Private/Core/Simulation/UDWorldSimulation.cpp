@@ -80,7 +80,7 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 	if (!actionExecutor->CanExecute(newAction, GetSpecificState(UUDWorldState::GaiaWorldStateId)))
 	{
 		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Action executor was halted for action id(%d) due to executor id(%d)."),
-			newAction.ActionTypeId, actionExecutor->GetActionTypeId());
+			newAction.ActionTypeId, actionExecutor->GetId());
 		return;
 	}
 
@@ -96,7 +96,7 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 		newAction.SourceUniqueId = newAction.UniqueId;
 	}
 
-	if (actionExecutor->RequiresBackup())
+	if (actionExecutor->IsBackupRequired())
 	{
 		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Backup by UID(%d)."), newAction.UniqueId);
 		actionExecutor->Backup(newAction, GetSpecificState(UUDWorldState::GaiaWorldStateId));
@@ -111,10 +111,10 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 	// Notifies everyone about the action.
 	OnBroadcastVerifiedActionExecutedDelegate.Broadcast(newAction);
 	// Continue notifying about the subsequent actions...
-	if (actionExecutor->IsComposite())
+	if (actionExecutor->HasContinuations())
 	{
 		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Composite Action UID(%d) Started."), newAction.UniqueId);
-		TArray<FUDActionData> subactions = actionExecutor->GetSubactions(newAction, GetSpecificState(UUDWorldState::GaiaWorldStateId));
+		TArray<FUDActionData> subactions = actionExecutor->GetContinuations(newAction, GetSpecificState(UUDWorldState::GaiaWorldStateId));
 		for (auto& action : subactions)
 		{
 			ExecuteAction(action);
@@ -123,7 +123,7 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 	}
 	// This is basically required to check after every action due to current structure.
 	// In return we are only checking actions we think can end the game.
-	if (Arbiter->OnActionExecutionFinished(actionExecutor->GetActionTypeId(), GetSpecificState(UUDWorldState::GaiaWorldStateId)))
+	if (Arbiter->OnActionExecutionFinished(actionExecutor->GetId(), GetSpecificState(UUDWorldState::GaiaWorldStateId)))
 	{
 		for (auto& action : Arbiter->EndGame())
 		{
@@ -137,9 +137,9 @@ void AUDWorldSimulation::SynchronizeNewPlayerState(TObjectPtr<UUDWorldState> new
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Synchrinizing new Player."));
 	// New player state must be synchronzied from old action list first.
 	// This directly executes action over the supplied state.
-	for (auto& actionData : ExecutionHistory)
+	for (auto& data : ExecutionHistory)
 	{
-		Actions[actionData.ActionTypeId]->Execute(actionData, newState);
+		Actions[action.ActionTypeId]->Execute(data, newState);
 	}
 }
 
@@ -202,15 +202,15 @@ FUDActionArray AUDWorldSimulation::GetHistoryUntil(int32 historyPoint)
 
 void AUDWorldSimulation::RegisterAction(TScriptInterface<IUDActionInterface> newAction)
 {
-	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering Action(%d)."), newAction->GetActionTypeId());
-	if (Actions.Contains(newAction->GetActionTypeId()))
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering Action(%d)."), newAction->GetId());
+	if (Actions.Contains(newAction->GetId()))
 	{
-		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Duplicate registration of action with id(%d)."), newAction->GetActionTypeId());
+		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Duplicate registration of action with id(%d)."), newAction->GetId());
 		return;
 	}
 	//newAction->SetWorldGenerator(WorldGenerator);
 	//newAction->SetModifierManager(ModifierManager);
-	Actions.Add(newAction->GetActionTypeId(), newAction);
+	Actions.Add(newAction->GetId(), newAction);
 }
 
 void AUDWorldSimulation::LoadCoreActions()

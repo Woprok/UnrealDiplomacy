@@ -2,25 +2,25 @@
 
 #include "Core/Simulation/Actions/UDGameActionGiftIrrevocable.h"
 
-bool UUDGameActionGiftIrrevocable::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+bool UUDGameActionGiftIrrevocable::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	return IUDActionInterface::CanExecute(actionData, targetWorldState);
+	return IUDActionInterface::CanExecute(data, world);
 }
 
-void UUDGameActionGiftIrrevocable::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDGameActionGiftIrrevocable::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
+	IUDActionInterface::Execute(data, world);
 	// Transfer resource to target.
-	FUDTargetValueData data = UUDGameActionGiftIrrevocable::ConvertData(actionData);
-	targetWorldState->Players[actionData.InvokerPlayerId]->ResourceGold -= data.Value;
-	targetWorldState->Players[data.TargetId]->ResourceGold += data.Value;
+	FUDTargetValueData data = UUDGameActionGiftIrrevocable::ConvertData(data);
+	world->Players[action.InvokerPlayerId]->ResourceGold -= action.Value;
+	world->Players[action.TargetId]->ResourceGold += action.Value;
 }
 
-void UUDGameActionGiftIrrevocable::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDGameActionGiftIrrevocable::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
+	IUDActionInterface::Revert(data, world);
 	// Transfer resource back from target.
-	FUDTargetValueData data = UUDGameActionGiftIrrevocable::ConvertData(actionData);
-	targetWorldState->Players[actionData.InvokerPlayerId]->ResourceGold += data.Value;
-	targetWorldState->Players[data.TargetId]->ResourceGold -= data.Value;
+	FUDTargetValueData data = UUDGameActionGiftIrrevocable::ConvertData(data);
+	world->Players[action.InvokerPlayerId]->ResourceGold += action.Value;
+	world->Players[action.TargetId]->ResourceGold -= action.Value;
 }

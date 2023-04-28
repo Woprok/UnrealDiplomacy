@@ -2,25 +2,25 @@
 
 #include "Core/Simulation/Actions/UDGameActionTileTransferAccept.h"
 
-void UUDGameActionTileTransferAccept::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDGameActionTileTransferAccept::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
+	IUDActionInterface::Execute(data, world);
 	// Execute change based on data contained in confirm.
-	FUDTargetTileData data = UUDTransferTileAction::ConvertData(actionData);
-	FIntPoint tile(data.X, data.Y);
-	targetWorldState->Map->GetTile(tile)->OwnerUniqueId = data.TargetId;
+	FUDTargetTileData data = UUDTransferTileAction::ConvertData(data);
+	FIntPoint tile(action.X, action.Y);
+	world->Map->GetTile(tile)->OwnerUniqueId = action.TargetId;
 	// Remove request from queue.
-	RemovePendingTargetRequest(actionData, data.TargetId, targetWorldState);
+	RemovePendingTargetRequest(data, action.TargetId, world);
 }
 
-void UUDGameActionTileTransferAccept::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDGameActionTileTransferAccept::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
+	IUDActionInterface::Revert(data, world);
 	// Confirmed request is returned to queue, but it has to be changed first.
-	FUDTargetTileData data = UUDTransferTileAction::ConvertData(actionData);
-	FIntPoint tile(data.X, data.Y);
-	FUDActionData originalActionData = FUDActionData::AsPredecessorOf(actionData, UUDGameActionTileTransferAccept::ActionTypeId);
-	AddPendingTargetRequest(originalActionData, data.TargetId, targetWorldState);
+	FUDTargetTileData data = UUDTransferTileAction::ConvertData(data);
+	FIntPoint tile(action.X, action.Y);
+	FUDActionData originalActionData = FUDActionData::AsPredecessorOf(data, UUDGameActionTileTransferAccept::ActionTypeId);
+	AddPendingTargetRequest(originalActionData, action.TargetId, world);
 	// Revert change based on data that were used for confirmation..
-	targetWorldState->Map->GetTile(tile)->OwnerUniqueId = actionData.InvokerPlayerId;
+	world->Map->GetTile(tile)->OwnerUniqueId = action.InvokerPlayerId;
 }

@@ -2,26 +2,26 @@
 
 #include "Core/Simulation/Actions/UDDealActionContractPointTamper.h"
 
-bool UUDDealActionContractPointTamper::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+bool UUDDealActionContractPointTamper::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	bool result = IUDActionInterface::CanExecute(data, world);
 	if (result)
 	{
-		FUDDealValueData data = UUDDealActionContractPointTamper::ConvertData(actionData);
-		bool unresolved = targetWorldState->Deals[data.DealId]->DealActionList[data.Value].SelectedResult == EUDDealActionResult::Unresolved;
+		FUDDealValueData data = UUDDealActionContractPointTamper::ConvertData(data);
+		bool unresolved = world->Deals[action.DealId]->DealActionList[action.Value].SelectedResult == EUDDealActionResult::Unresolved;
 		result = result && unresolved;
 	}
 	return result;
 }
-void UUDDealActionContractPointTamper::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionContractPointTamper::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
-	FUDDealValueData data = UUDDealActionContractPointTamper::ConvertData(actionData);
-	targetWorldState->Deals[data.DealId]->DealActionList[data.Value].SelectedResult = EUDDealActionResult::Changed;
+	IUDActionInterface::Execute(data, world);
+	FUDDealValueData data = UUDDealActionContractPointTamper::ConvertData(data);
+	world->Deals[action.DealId]->DealActionList[action.Value].SelectedResult = EUDDealActionResult::Changed;
 }
-void UUDDealActionContractPointTamper::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionContractPointTamper::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
-	FUDDealValueData data = UUDDealActionContractPointTamper::ConvertData(actionData);
-	targetWorldState->Deals[data.DealId]->DealActionList[data.Value].SelectedResult = EUDDealActionResult::Unresolved;
+	IUDActionInterface::Revert(data, world);
+	FUDDealValueData data = UUDDealActionContractPointTamper::ConvertData(data);
+	world->Deals[action.DealId]->DealActionList[action.Value].SelectedResult = EUDDealActionResult::Unresolved;
 }

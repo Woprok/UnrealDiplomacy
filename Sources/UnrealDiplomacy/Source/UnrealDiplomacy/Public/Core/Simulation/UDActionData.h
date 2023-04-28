@@ -316,30 +316,6 @@ public:
 	int32 Value = 0;
 };
 
-/**
- * Transforms action parameters to properly named fields.
- * @param FUDActionData.ValueParameters
- */
-USTRUCT(BlueprintType)
-struct FUDMapSettingsData
-{
-	GENERATED_BODY()
-public:
-	FUDMapSettingsData() {}
-	FUDMapSettingsData(TArray<int32> valueParameters)
-	{
-		Seed = valueParameters[0];
-		SizeX = valueParameters[1];
-		SizeY = valueParameters[2];
-	}
-	UPROPERTY(BlueprintReadOnly)
-	int32 Seed = 0;
-	UPROPERTY(BlueprintReadOnly)
-	int32 SizeX = 0;
-	UPROPERTY(BlueprintReadOnly)
-	int32 SizeY = 0;
-};
-
 #pragma endregion
 
 /**
@@ -399,6 +375,8 @@ public:
 	 * Creates parent from its child. Usefull for action that is reverting it's effect.
 	 */
 	static FUDActionData AsPredecessorOf(const FUDActionData& childAction, int32 ActionTypeId);
+
+	FString ToString() const;
 private:	
 	 /**
 	  * Copy constructor for static construction of child and parent.

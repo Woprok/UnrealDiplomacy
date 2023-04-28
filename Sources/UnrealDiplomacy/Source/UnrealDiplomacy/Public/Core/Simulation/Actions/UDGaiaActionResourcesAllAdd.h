@@ -3,29 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Core/Simulation/UDActionInterface.h"
+#include "Core/Simulation/Actions/UDGaiaAction.h"
 #include "UDGaiaActionResourcesAllAdd.generated.h"
 
 /**
- * Generates income for all players.
- * Called only on GAIA turn.
- * Requires ValueParameter to determine amount to generate for all players.
+ * Generates income based on parameter for all players.
  */
-UCLASS()
-class UNREALDIPLOMACY_API UUDGaiaActionResourcesAllAdd : public UObject, public IUDActionInterface
+UCLASS(Blueprintable, BlueprintType)
+class UNREALDIPLOMACY_API UUDGaiaActionResourcesAllAdd : public UUDGaiaAction
 {
 	GENERATED_BODY()
 public:
-	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual int32 GetActionTypeId() override { return ActionTypeId; };
-	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
+	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
+	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
+	virtual int32 GetId() const override { return ActionTypeId; };
+	virtual int32 GetParameterCount() const override { return FUDGaiaDataValue::ParameterCount; };
 public:
-	static const int32 ActionTypeId = 100;
-	static const int32 RequiredParametersCount = 1;
-	static FUDValueData ConvertData(FUDActionData& data)
-	{
-		return FUDValueData(data.ValueParameters);
-	}
+	static const int32 ActionTypeId = 1001;
 };

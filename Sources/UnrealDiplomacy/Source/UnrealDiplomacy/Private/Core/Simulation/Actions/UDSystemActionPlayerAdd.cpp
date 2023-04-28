@@ -1,19 +1,22 @@
 // Copyright Miroslav Valach
 
 #include "Core/Simulation/Actions/UDSystemActionPlayerAdd.h"
+#include "Core/UDGlobalData.h"
+#include "Core/Simulation/UDActionData.h"
+#include "Core/Simulation/UDWorldState.h"
 
-void UUDSystemActionPlayerAdd::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDSystemActionPlayerAdd::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
+	IUDActionInterface::Execute(action, world);
 	// Player is added to the state.
-	targetWorldState->PlayerOrder.Add(actionData.InvokerPlayerId);
-	targetWorldState->Players.Add(actionData.InvokerPlayerId, UUDNationState::CreateState(actionData.InvokerPlayerId));
+	world->PlayerOrder.Add(action.InvokerPlayerId);
+	world->Players.Add(action.InvokerPlayerId, UUDNationState::CreateState(action.InvokerPlayerId));
 }
 
-void UUDSystemActionPlayerAdd::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDSystemActionPlayerAdd::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
+	IUDActionInterface::Revert(action, world);
 	// Player is removed from the state.
-	targetWorldState->PlayerOrder.Remove(actionData.InvokerPlayerId);
-	targetWorldState->Players.Remove(actionData.InvokerPlayerId);
+	world->PlayerOrder.Remove(action.InvokerPlayerId);
+	world->Players.Remove(action.InvokerPlayerId);
 }

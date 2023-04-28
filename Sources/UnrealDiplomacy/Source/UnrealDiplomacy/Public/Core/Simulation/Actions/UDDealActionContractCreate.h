@@ -24,18 +24,18 @@ class UNREALDIPLOMACY_API UUDDealActionContractCreate : public UObject, public I
 {
 	GENERATED_BODY()
 public:
-	virtual bool CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual int32 GetActionTypeId() override { return ActionTypeId; };
-	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
+	virtual bool CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
+	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
+	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
+	virtual int32 GetId() override { return ActionTypeId; };
+	virtual int32 GetParameterCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 10046;
 	static const int32 RequiredParametersCount = 1;
-	static FUDDealData ConvertData(FUDActionData& data)
+	static FUDDealData ConvertData(FUDActionData& action)
 	{
-		return FUDDealData(data.ValueParameters);
+		return FUDDealData(action.ValueParameters);
 	}
-	static TArray<FUDActionData> FinalizeActions(TObjectPtr<UUDWorldState> targetWorldState, int32 dealUniqueId);
-	static TArray<FUDDiscsussionAction> WrapActions(TArray<FUDActionData> actionData);
+	static TArray<FUDActionData> FinalizeActions(TObjectPtr<UUDWorldState> world, int32 dealUniqueId);
+	static TArray<FUDDiscsussionAction> WrapActions(TArray<FUDActionData> data);
 };

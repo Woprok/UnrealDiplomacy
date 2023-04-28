@@ -2,25 +2,25 @@
 
 #include "Core/Simulation/Actions/UDGameActionGiftAccept.h"
 
-void UUDGameActionGiftAccept::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDGameActionGiftAccept::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
+	IUDActionInterface::Execute(data, world);
 	// Execute change based on data contained in confirm.
-	FUDTargetValueData data = UUDGiftAction::ConvertData(actionData);
-	targetWorldState->Players[actionData.InvokerPlayerId]->ResourceGold -= data.Value;
-	targetWorldState->Players[data.TargetId]->ResourceGold += data.Value;
+	FUDTargetValueData data = UUDGiftAction::ConvertData(data);
+	world->Players[action.InvokerPlayerId]->ResourceGold -= action.Value;
+	world->Players[action.TargetId]->ResourceGold += action.Value;
 	// Remove request from queue.
-	RemovePendingTargetRequest(actionData, data.TargetId, targetWorldState);
+	RemovePendingTargetRequest(data, action.TargetId, world);
 }
 
-void UUDGameActionGiftAccept::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDGameActionGiftAccept::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
+	IUDActionInterface::Revert(data, world);
 	// Confirmed request is returned to queue, but it has to be changed first.
-	FUDTargetValueData data = UUDGiftAction::ConvertData(actionData);
-	FUDActionData originalActionData = FUDActionData::AsPredecessorOf(actionData, UUDGiftAction::ActionTypeId);
-	AddPendingTargetRequest(originalActionData, data.TargetId, targetWorldState);
+	FUDTargetValueData data = UUDGiftAction::ConvertData(data);
+	FUDActionData originalActionData = FUDActionData::AsPredecessorOf(data, UUDGiftAction::ActionTypeId);
+	AddPendingTargetRequest(originalActionData, action.TargetId, world);
 	// Revert change based on data that were used for confirmation..
-	targetWorldState->Players[actionData.InvokerPlayerId]->ResourceGold += data.Value;
-	targetWorldState->Players[data.TargetId]->ResourceGold -= data.Value;
+	world->Players[action.InvokerPlayerId]->ResourceGold += action.Value;
+	world->Players[action.TargetId]->ResourceGold -= action.Value;
 }

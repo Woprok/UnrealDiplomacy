@@ -240,9 +240,9 @@ public:
 	 * Request
 	 * TODO refactor all these delegates
 	 */
-	void RequestAction(FUDActionData actionData)
+	void RequestAction(FUDActionData data)
 	{
-		OnUserActionRequestedDelegate.ExecuteIfBound(actionData);
+		OnUserActionRequestedDelegate.ExecuteIfBound(data);
 	}
 	/**
 	 * Defines state that is being monitored and used for determining validity, actions, infos & etc.
@@ -265,7 +265,7 @@ public:
 	bool IsGameFinished()
 	{
 		if (IsOverseeingStatePresent() && 
-			OverseeingState->WorldSimulationState == EUDWorldSimulationState::FINISHING)
+			OverseeingState->WorldSimulationState == EUDWorldSimulationState::Finished)
 		{
 			return true;
 		}
@@ -280,7 +280,7 @@ public:
 	bool IsGameInProgress()
 	{
 		if (IsOverseeingStatePresent() && 
-			OverseeingState->WorldSimulationState == EUDWorldSimulationState::PLAYING)
+			OverseeingState->WorldSimulationState == EUDWorldSimulationState::Simulating)
 		{
 			return true;
 		}
@@ -740,7 +740,7 @@ public:
 	FUDGameStateInfo GetGameStateInfo()
 	{
 		return FUDGameStateInfo(
-			OverseeingState->WorldSimulationState == EUDWorldSimulationState::FINISHING,
+			OverseeingState->WorldSimulationState == EUDWorldSimulationState::Finished,
 			OverseeingState->ImperialThrone.Ruler
 		);
 	}
@@ -750,7 +750,7 @@ public:
 	bool IsLocalPlayerWinner()
 	{
 		return 
-			OverseeingState->WorldSimulationState == EUDWorldSimulationState::FINISHING &&
+			OverseeingState->WorldSimulationState == EUDWorldSimulationState::Finished &&
 			OverseeingState->ImperialThrone.Ruler == OverseeingState->PerspectivePlayerId;
 	}
 

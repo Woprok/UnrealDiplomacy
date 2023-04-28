@@ -2,35 +2,35 @@
 
 #include "Core/Simulation/Actions/UDGameActionTileTake.h"
 
-bool UUDGameActionTileTake::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+bool UUDGameActionTileTake::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	bool result = IUDActionInterface::CanExecute(data, world);
 	if (result)
 	{
-		FUDTargetTileData data = UUDGameActionTileTake::ConvertData(actionData);
-		FIntPoint tile(data.X, data.Y);
-		bool isTargetOwner = targetWorldState->Map->GetTile(tile)->OwnerUniqueId == data.TargetId;
+		FUDTargetTileData data = UUDGameActionTileTake::ConvertData(data);
+		FIntPoint tile(action.X, action.Y);
+		bool isTargetOwner = world->Map->GetTile(tile)->OwnerUniqueId == action.TargetId;
 		result = result && isTargetOwner;
 	}
 	return result;
 }
 
-void UUDGameActionTileTake::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDGameActionTileTake::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
+	IUDActionInterface::Execute(data, world);
 	// Takeover the tile
-	FUDTargetTileData data = UUDGameActionTileTake::ConvertData(actionData);
-	FIntPoint tile(data.X, data.Y);
-	targetWorldState->Map->GetTile(tile)->OwnerUniqueId = actionData.InvokerPlayerId;
+	FUDTargetTileData data = UUDGameActionTileTake::ConvertData(data);
+	FIntPoint tile(action.X, action.Y);
+	world->Map->GetTile(tile)->OwnerUniqueId = action.InvokerPlayerId;
 
 }
 
-void UUDGameActionTileTake::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDGameActionTileTake::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
+	IUDActionInterface::Revert(data, world);
 	// Revert ownership
-	FUDTargetTileData data = UUDGameActionTileTake::ConvertData(actionData);
-	FIntPoint tile(data.X, data.Y);
-	targetWorldState->Map->GetTile(tile)->OwnerUniqueId = data.TargetId;
+	FUDTargetTileData data = UUDGameActionTileTake::ConvertData(data);
+	FIntPoint tile(action.X, action.Y);
+	world->Map->GetTile(tile)->OwnerUniqueId = action.TargetId;
 
 }

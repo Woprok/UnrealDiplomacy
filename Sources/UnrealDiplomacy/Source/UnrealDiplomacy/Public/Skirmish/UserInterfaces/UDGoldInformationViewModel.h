@@ -10,7 +10,7 @@
 /**
  * Gold Info for Resource Bar (reusable?)
  */
-UCLASS(BlueprintType, Blueprintable)
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDGoldInformationViewModel : public UUDViewModelBase
 {
 	GENERATED_BODY()

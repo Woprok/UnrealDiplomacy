@@ -2,26 +2,26 @@
 
 #include "Core/Simulation/Actions/UDDealActionVoteYes.h"
 
-bool UUDDealActionVoteYes::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+bool UUDDealActionVoteYes::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	bool result = IUDActionInterface::CanExecute(data, world);
 	if (result)
 	{
-		FUDDealData data = UUDDealActionVoteYes::ConvertData(actionData);
-		bool isNotReady = !targetWorldState->Deals[data.DealId]->PositiveVotePlayerList.Contains(actionData.InvokerPlayerId);
+		FUDDealData data = UUDDealActionVoteYes::ConvertData(data);
+		bool isNotReady = !world->Deals[action.DealId]->PositiveVotePlayerList.Contains(action.InvokerPlayerId);
 		result = result && isNotReady;
 	}
 	return result;
 }
-void UUDDealActionVoteYes::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionVoteYes::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
-	FUDDealData data = UUDDealActionVoteYes::ConvertData(actionData);
-	targetWorldState->Deals[data.DealId]->PositiveVotePlayerList.Add(actionData.InvokerPlayerId);
+	IUDActionInterface::Execute(data, world);
+	FUDDealData data = UUDDealActionVoteYes::ConvertData(data);
+	world->Deals[action.DealId]->PositiveVotePlayerList.Add(action.InvokerPlayerId);
 }
-void UUDDealActionVoteYes::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionVoteYes::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
-	FUDDealData data = UUDDealActionVoteYes::ConvertData(actionData);
-	targetWorldState->Deals[data.DealId]->PositiveVotePlayerList.Remove(actionData.InvokerPlayerId);
+	IUDActionInterface::Revert(data, world);
+	FUDDealData data = UUDDealActionVoteYes::ConvertData(data);
+	world->Deals[action.DealId]->PositiveVotePlayerList.Remove(action.InvokerPlayerId);
 }

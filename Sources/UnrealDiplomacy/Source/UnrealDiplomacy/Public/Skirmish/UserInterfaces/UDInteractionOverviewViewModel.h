@@ -10,7 +10,7 @@
 /**
  * Browsing of all currently available interactions...
  */
-UCLASS(BlueprintType, Blueprintable)
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDInteractionOverviewViewModel : public UUDViewModelBase
 {
 	GENERATED_BODY()
@@ -123,8 +123,8 @@ protected:
 		SetCurrentItemName(rs1);
 		auto rs2 = FText::Format(
 			LOCTEXT("Gift", "A{0} Player {1} offered gift. Do we accept ?"),
-			data.ActionTypeId,
-			data.InvokerPlayerId
+			action.ActionTypeId,
+			action.InvokerPlayerId
 		).ToString();
 		SetCurrentItemDescription(rs2);
 	}

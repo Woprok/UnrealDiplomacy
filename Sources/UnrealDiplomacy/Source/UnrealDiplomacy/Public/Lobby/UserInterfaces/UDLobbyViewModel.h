@@ -11,7 +11,7 @@
 /**
  * Lobby Widget
  */
-UCLASS(BlueprintType, Blueprintable)
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDLobbyViewModel : public UUDViewModelBase
 {
 	GENERATED_BODY()

@@ -2,23 +2,23 @@
 
 #include "Core/Simulation/Actions/UDGameActionThroneAbdicate.h"
 
-bool UUDGameActionThroneAbdicate::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+bool UUDGameActionThroneAbdicate::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+	return IUDActionInterface::CanExecute(data, world) &&
 		// Invoker must be current throne owner. No other conditions are requried for abdication.
-		targetWorldState->ImperialThrone.Ruler == actionData.InvokerPlayerId;
+		world->ImperialThrone.Ruler == action.InvokerPlayerId;
 }
 
-void UUDGameActionThroneAbdicate::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDGameActionThroneAbdicate::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
+	IUDActionInterface::Execute(data, world);
 	// Player is removed from the throne..
-	targetWorldState->ImperialThrone.Ruler = UUDWorldState::GaiaWorldStateId;
+	world->ImperialThrone.Ruler = UUDWorldState::GaiaWorldStateId;
 }
 
-void UUDGameActionThroneAbdicate::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDGameActionThroneAbdicate::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
+	IUDActionInterface::Revert(data, world);
 	// Player is returned to throne.
-	targetWorldState->ImperialThrone.Ruler = actionData.InvokerPlayerId;
+	world->ImperialThrone.Ruler = action.InvokerPlayerId;
 }

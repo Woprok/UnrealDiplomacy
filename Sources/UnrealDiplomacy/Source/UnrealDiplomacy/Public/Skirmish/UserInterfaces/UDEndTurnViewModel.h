@@ -11,7 +11,7 @@
 /**
  * End Turn Widget
  */
-UCLASS(BlueprintType, Blueprintable)
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDEndTurnViewModel : public UUDViewModelBase
 {
 	GENERATED_BODY()

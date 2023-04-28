@@ -14,15 +14,15 @@ class UNREALDIPLOMACY_API UUDGameActionGift : public UObject, public IUDActionIn
 {
 	GENERATED_BODY()
 public:
-	virtual void Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual void Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState) override;
-	virtual int32 GetActionTypeId() override { return ActionTypeId; };
-	virtual int32 GetRequiredParametersCount() override { return RequiredParametersCount; };
+	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
+	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
+	virtual int32 GetId() override { return ActionTypeId; };
+	virtual int32 GetParameterCount() override { return RequiredParametersCount; };
 public:
 	static const int32 ActionTypeId = 1001;
 	static const int32 RequiredParametersCount = 2;
-	static FUDTargetValueData ConvertData(FUDActionData& data)
+	static FUDTargetValueData ConvertData(FUDActionData& action)
 	{
-		return FUDTargetValueData(data.ValueParameters);
+		return FUDTargetValueData(action.ValueParameters);
 	}
 };

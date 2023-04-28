@@ -22,7 +22,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDEditedDealUpdated);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDActionInfoUpdated);
 
 
-UCLASS(BlueprintType, Blueprintable)
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDPointActionFinalViewModel : public UUDStaticViewModelBase
 {
 	GENERATED_BODY()
@@ -46,31 +46,31 @@ public:
 	void SetBindingTarget(FUDDealActionInfo data, bool isOwner)
 	{
 		CurrentData = data;
-		FUDActionData actionData = data.ActionBody.Action;
+		FUDActionData data = action.ActionBody.Action;
 		TStringBuilder<64> desc;
 		desc.Append(FText::Format(LOCTEXT("ActionPreview", "Action: {0}. "),
-			actionData.ActionTypeId).ToString()
+			action.ActionTypeId).ToString()
 		);
 		desc.Append(FText::Format(LOCTEXT("ActionPreview", "Invoked by: {0}. "),
-			actionData.InvokerPlayerId).ToString()
+			action.InvokerPlayerId).ToString()
 
 		);
 		desc.Append(FText(LOCTEXT("ActionPreview", "Text param: ")).ToString());
-		desc.Append(actionData.TextParameter);
+		desc.Append(action.TextParameter);
 		desc.Append(FText(LOCTEXT("ActionPreview", ".\n")).ToString());
 
 		desc.Append(FText::Format(LOCTEXT("ActionPreview", "Value param count: {0} Params:\n"),
-			actionData.ValueParameters.Num()).ToString()
+			action.ValueParameters.Num()).ToString()
 		);
-		for (auto param : actionData.ValueParameters)
+		for (auto param : action.ValueParameters)
 		{
 			desc.Append(FText::Format(LOCTEXT("ActionPreview", "Prm: {0}. "),
 				param).ToString()
 			);
 		}
 		SetDescription(desc.ToString());
-		SetIsResolved(data.ActionBody.SelectedResult != EUDDealActionResult::Unresolved);
-		SetIsSabotaged(data.ActionBody.WasSabotaged);
+		SetIsResolved(action.ActionBody.SelectedResult != EUDDealActionResult::Unresolved);
+		SetIsSabotaged(action.ActionBody.WasSabotaged);
 		SetIsExecutor(isOwner);
 	}
 
@@ -141,7 +141,7 @@ private:
 	}
 };
 
-UCLASS(BlueprintType, Blueprintable)
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDPointActionPreviewViewModel : public UUDStaticViewModelBase
 {
 	GENERATED_BODY()
@@ -152,24 +152,24 @@ public:
 	// Fields.
 public:
 	UFUNCTION(BlueprintCallable)
-		void SetBindingTarget(FUDActionData actionData)
+		void SetBindingTarget(FUDActionData data)
 	{
 		TStringBuilder<64> desc;
 		desc.Append(FText::Format(LOCTEXT("ActionPreview", "Action: {0}. "),
-			actionData.ActionTypeId).ToString()
+			action.ActionTypeId).ToString()
 		);
 		desc.Append(FText::Format(LOCTEXT("ActionPreview", "Invoked by: {0}. "),
-			actionData.InvokerPlayerId).ToString()
+			action.InvokerPlayerId).ToString()
 
 		);
 		desc.Append(FText(LOCTEXT("ActionPreview", "Text param: ")).ToString());
-		desc.Append(actionData.TextParameter);
+		desc.Append(action.TextParameter);
 		desc.Append(FText(LOCTEXT("ActionPreview", ".\n")).ToString());
 
 		desc.Append(FText::Format(LOCTEXT("ActionPreview", "Value param count: {0} Params:\n"), 
-			actionData.ValueParameters.Num()).ToString()
+			action.ValueParameters.Num()).ToString()
 		);
-		for (auto param : actionData.ValueParameters)
+		for (auto param : action.ValueParameters)
 		{
 			desc.Append(FText::Format(LOCTEXT("ActionPreview", "Prm: {0}. "), 
 				param).ToString()
@@ -189,7 +189,7 @@ private:
 	}
 };
 
-UCLASS(BlueprintType, Blueprintable)
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDPointParticipantViewModel : public UUDStaticViewModelBase
 {
 	GENERATED_BODY()
@@ -279,7 +279,7 @@ private:
 };
 
 
-UCLASS(BlueprintType, Blueprintable)
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDPointViewModel : public UUDStaticViewModelBase
 {
 	GENERATED_BODY()
@@ -385,7 +385,7 @@ private:
 	}
 };
 
-USTRUCT(BlueprintType, Blueprintable)
+USTRUCT(Blueprintable, BlueprintType)
 struct FUDNamedOption
 {
 	GENERATED_BODY()
@@ -419,7 +419,7 @@ enum class EUDParameterCountType : uint8
  * Each parameter type that is supported for actions
  * TODO Make this modular.
  */
-UCLASS(BlueprintType, Blueprintable)
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDActionParameterEditorViewModel : public UUDStaticViewModelBase
 {
 	GENERATED_BODY()
@@ -547,7 +547,7 @@ private:
 };
 
 // TODO make this modular
-UCLASS(BlueprintType, Blueprintable)
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDPointEditorViewModel : public UUDViewModelBase
 {
 	GENERATED_BODY()
@@ -779,7 +779,7 @@ private:
 };
 
 
-UCLASS(BlueprintType, Blueprintable)
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDParticipantViewModel : public UUDStaticViewModelBase
 {
 	GENERATED_BODY()
@@ -881,7 +881,7 @@ private:
 /**
  * 
  */
-UCLASS(BlueprintType, Blueprintable)
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDDealProcessViewModel : public UUDViewModelBase
 {
 	GENERATED_BODY()
@@ -1096,9 +1096,9 @@ protected:
 		SetCurrentItemName(rs1);
 		auto rs2 = FText::Format(
 			LOCTEXT("Gift", "A{0} Player {1} offered {2} as gift. Do we accept ?"),
-			data.ActionTypeId,
-			data.InvokerPlayerId,
-			data.ValueParameter
+			action.ActionTypeId,
+			action.InvokerPlayerId,
+			action.ValueParameter
 		).ToString();
 		SetCurrentItemDescription(rs2);*/
 	}

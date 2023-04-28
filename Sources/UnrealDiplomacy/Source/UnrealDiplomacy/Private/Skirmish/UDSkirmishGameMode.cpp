@@ -109,37 +109,37 @@ void AUDSkirmishGameMode::StartGame(FUDActionData& startAction)
 	GetWorldSimulation()->ExecuteAction(startAction);
 }
 
-void AUDSkirmishGameMode::ProcessAction(FUDActionData& actionData)
+void AUDSkirmishGameMode::ProcessAction(FUDActionData& action)
 {
 	// Certain action require additional calls
 	// TODO merge this additional calls to action execution.
 	// This would require additional way for creating merged actions or
 	// allowing actions to invoke additional actions.
-	if (actionData.ActionTypeId == UUDStartGameAction::ActionTypeId)
+	if (action.ActionTypeId == UUDStartGameAction::ActionTypeId)
 	{
-		StartGame(actionData);
+		StartGame(data);
 	}
 	// Execute action as obtained.
 	else 
 	{
-		GetWorldSimulation()->ExecuteAction(actionData);
+		GetWorldSimulation()->ExecuteAction(data);
 	}
 }
 
-void AUDSkirmishGameMode::ActionExecutionFinished(FUDActionData& actionData)
+void AUDSkirmishGameMode::ActionExecutionFinished(FUDActionData& action)
 {
 	// GAMEMODE decides who will receive which action, based on expected requirements passed by simulation.
 	
 	// Gaia always receives action notification.
-	GaiaController->OnActionExecuted(actionData);
+	GaiaController->OnActionExecuted(data);
 	// TODO all
 
 	// if all
-	GetCastGameState()->MulticastSendActionToAllClients(actionData);
+	GetCastGameState()->MulticastSendActionToAllClients(data);
 	// AI
 	for (auto& controller : AiControllers)
 	{
-		controller->OnActionExecuted(actionData);
+		controller->OnActionExecuted(data);
 	}
 
 	/*
@@ -148,12 +148,12 @@ void AUDSkirmishGameMode::ActionExecutionFinished(FUDActionData& actionData)
 	for (auto& controller : PlayerControllers)
 	{
 		// if is part
-		controller->ClientcastReceiveActionFromServer(actionData);
+		controller->ClientcastReceiveActionFromServer(data);
 	}
 	// AI
 	for (auto& controller : AiControllers)
 	{ //if is in range
-		controller->OnActionExecuted(actionData);
+		controller->OnActionExecuted(data);
 	}
 	*/
 }

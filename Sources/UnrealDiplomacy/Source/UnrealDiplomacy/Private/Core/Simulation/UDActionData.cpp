@@ -7,25 +7,25 @@ FUDActionData::FUDActionData()
 
 }
 
-FUDActionData::FUDActionData(const FUDActionData& actionData) 
+FUDActionData::FUDActionData(const FUDActionData& action) 
 	: 
-	ActionTypeId(actionData.ActionTypeId),
-	UniqueId(actionData.UniqueId),
-	SourceUniqueId(actionData.SourceUniqueId),
-	InvokerPlayerId(actionData.InvokerPlayerId),
-	ValueParameters(actionData.ValueParameters),
-	TextParameter(actionData.TextParameter)
+	ActionTypeId(action.ActionTypeId),
+	UniqueId(action.UniqueId),
+	SourceUniqueId(action.SourceUniqueId),
+	InvokerPlayerId(action.InvokerPlayerId),
+	ValueParameters(action.ValueParameters),
+	TextParameter(action.TextParameter)
 {
 
 }
 
 FUDActionData FUDActionData::CreateDataCopy(const FUDActionData& existingAction)
 {
-	FUDActionData actionData = FUDActionData();
-	actionData.InvokerPlayerId = existingAction.InvokerPlayerId;
-	actionData.ValueParameters = existingAction.ValueParameters;
-	actionData.TextParameter = existingAction.TextParameter;
-	return actionData;
+	FUDActionData data = FUDActionData();
+	action.InvokerPlayerId = existingAction.InvokerPlayerId;
+	action.ValueParameters = existingAction.ValueParameters;
+	action.TextParameter = existingAction.TextParameter;
+	return data;
 }
 
 //FUDActionData FUDActionData::AsChildOf(const FUDActionData& parentAction, int32 parentUniqueId)
@@ -63,6 +63,23 @@ FUDActionData FUDActionData::AsPredecessorOf(const FUDActionData& childAction, i
 	parent.SourceUniqueId = childAction.SourceUniqueId;
 
 	return parent;
+}
+
+FString FUDActionData::ToString() const
+{
+	FStringFormatNamedArguments formatArgs;
+	formatArgs.Add(TEXT("aid"), ActionTypeId);
+	formatArgs.Add(TEXT("uid"), UniqueId);
+	formatArgs.Add(TEXT("sid"), SourceUniqueId);
+	formatArgs.Add(TEXT("invoker"), InvokerPlayerId);
+	formatArgs.Add(TEXT("values"), ValueParameters.Num());
+	formatArgs.Add(TEXT("backup"), BackupValueParameters.Num());
+	formatArgs.Add(TEXT("text"), TextParameter.Len());
+
+	FString formatted = FString::Format(TEXT("Action[ID={aid}, UID={uid}, SID={sid}, INVOKER={invoker}, \
+OPTIONAL={values},{backup},{text}]"), formatArgs);
+
+	return formatted;
 }
 
 FUDActionData::FUDActionData(int32 actionTypeId, int32 invokerPlayerId)

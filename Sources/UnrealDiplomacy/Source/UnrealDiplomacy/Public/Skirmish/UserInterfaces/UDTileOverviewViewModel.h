@@ -10,7 +10,7 @@
 /**
  * Tile Overview/Management widget
  */
-UCLASS(BlueprintType, Blueprintable)
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDTileOverviewViewModel : public UUDViewModelBase
 {
 	GENERATED_BODY()

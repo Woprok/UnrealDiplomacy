@@ -9,7 +9,7 @@
 /**
  * Interaction widget for Gift, TODO more generic or something...
  */
-UCLASS(BlueprintType, Blueprintable)
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDInteractionItemViewModel : public UUDViewModelBase
 {
 	GENERATED_BODY()

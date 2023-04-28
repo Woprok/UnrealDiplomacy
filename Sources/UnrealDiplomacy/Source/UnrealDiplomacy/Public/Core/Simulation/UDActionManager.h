@@ -16,7 +16,7 @@ class UUDModifierManager;
  * Each action must be registered with this manager otherwise
  * it will not be executable.
  */
-UCLASS(BlueprintType, Blueprintable)
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDActionManager : public UObject
 {
 	GENERATED_BODY()

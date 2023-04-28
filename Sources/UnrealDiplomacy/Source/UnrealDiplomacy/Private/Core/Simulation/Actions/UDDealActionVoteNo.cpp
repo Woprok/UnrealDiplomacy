@@ -2,26 +2,26 @@
 
 #include "Core/Simulation/Actions/UDDealActionVoteNo.h"
 
-bool UUDDealActionVoteNo::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+bool UUDDealActionVoteNo::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	bool result = IUDActionInterface::CanExecute(data, world);
 	if (result)
 	{
-		FUDDealData data = UUDDealActionVoteNo::ConvertData(actionData);
-		bool isReady = targetWorldState->Deals[data.DealId]->PositiveVotePlayerList.Contains(actionData.InvokerPlayerId);
+		FUDDealData data = UUDDealActionVoteNo::ConvertData(data);
+		bool isReady = world->Deals[action.DealId]->PositiveVotePlayerList.Contains(action.InvokerPlayerId);
 		result = result && isReady;
 	}
 	return result;
 }
-void UUDDealActionVoteNo::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionVoteNo::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
-	FUDDealData data = UUDDealActionVoteNo::ConvertData(actionData);
-	targetWorldState->Deals[data.DealId]->PositiveVotePlayerList.Remove(actionData.InvokerPlayerId);
+	IUDActionInterface::Execute(data, world);
+	FUDDealData data = UUDDealActionVoteNo::ConvertData(data);
+	world->Deals[action.DealId]->PositiveVotePlayerList.Remove(action.InvokerPlayerId);
 }
-void UUDDealActionVoteNo::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionVoteNo::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
-	FUDDealData data = UUDDealActionVoteNo::ConvertData(actionData);
-	targetWorldState->Deals[data.DealId]->PositiveVotePlayerList.Add(actionData.InvokerPlayerId);
+	IUDActionInterface::Revert(data, world);
+	FUDDealData data = UUDDealActionVoteNo::ConvertData(data);
+	world->Deals[action.DealId]->PositiveVotePlayerList.Add(action.InvokerPlayerId);
 }

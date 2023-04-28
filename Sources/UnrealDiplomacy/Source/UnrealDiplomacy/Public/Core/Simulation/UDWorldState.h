@@ -3,9 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UDActionData.h"
 #include "UDModifier.h"
 #include "UDWorldState.generated.h"
+
+// Forward Declarations
+
+struct FUDActionData;
 
 /**
  * Represents single tile.
@@ -149,16 +152,19 @@ enum class EUDWorldSimulationState : uint8
 {
 	/**
 	 * World is being prepared for play.
+	 * System,Gaia
 	 */
-	INITIALIZING,
+	Preparing,
 	/**
 	 * Players action are allowed.
+	 * System,Gaia,Game
 	 */
-	PLAYING,
+	Simulating,
 	/**
 	 * Players action are no longer be allowed.
+	 * System
 	 */
-	FINISHING,
+	Finished,
 	MAX UMETA(Hidden)
 };
 
@@ -493,7 +499,7 @@ public:
 	/**
 	 * Gaia id.
 	 */
-	static const int32 GaiaWorldStateId = 0;
+	//static const int32 GaiaWorldStateId = 0;
 public:
 	/**
 	 * Current Map of tiles.
@@ -537,7 +543,7 @@ public:
 	 * State is not completely safe to read if it's not yet in PLAYING.
 	 */
 	UPROPERTY()
-	EUDWorldSimulationState WorldSimulationState = EUDWorldSimulationState::INITIALIZING;
+	EUDWorldSimulationState WorldSimulationState = EUDWorldSimulationState::Preparing;
 	/**
 	 * All deals that are / were done during the game.
 	 * key is Source / BySource

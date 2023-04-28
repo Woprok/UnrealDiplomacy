@@ -74,7 +74,7 @@ protected:
 	// Tiles used for world, does not carry data, but holds reference to indices in data array.
 	UPROPERTY(EditAnywhere, Category = "HexGrid|Setup")
 	TSubclassOf<AUDHexTile> MapWorldHexTile;
-	// Tile used for border, does not carry or read data. 
+	// Tile used for border, does not carry or read action. 
 	UPROPERTY(EditAnywhere, Category = "HexGrid|Setup")
 	TSubclassOf<AUDHexTile> MapBorderHexTile;
 	

@@ -2,6 +2,7 @@
 
 
 #include "Core/Simulation/UDWorldState.h"
+#include "Core/Simulation/UDActionData.h"
 
 TObjectPtr<UUDTileState> UUDTileState::CreateState(int32 x, int32 y)
 {

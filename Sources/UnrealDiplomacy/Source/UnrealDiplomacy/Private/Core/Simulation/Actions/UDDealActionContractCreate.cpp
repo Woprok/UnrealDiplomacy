@@ -2,10 +2,10 @@
 
 #include "Core/Simulation/Actions/UDDealActionContractCreate.h"
 
-TArray<FUDActionData> UUDDealActionContractCreate::FinalizeActions(TObjectPtr<UUDWorldState> targetWorldState, int32 dealUniqueId)
+TArray<FUDActionData> UUDDealActionContractCreate::FinalizeActions(TObjectPtr<UUDWorldState> world, int32 dealUniqueId)
 {
 	TArray<FUDActionData> actions;
-	auto deal = targetWorldState->Deals[dealUniqueId];
+	auto deal = world->Deals[dealUniqueId];
 	for (auto point : deal->Points)
 	{
 		auto actionId = point.Value->ActionId;
@@ -38,10 +38,10 @@ TArray<FUDActionData> UUDDealActionContractCreate::FinalizeActions(TObjectPtr<UU
 	return actions;
 }
 
-TArray<FUDDiscsussionAction> UUDDealActionContractCreate::WrapActions(TArray<FUDActionData> actionData)
+TArray<FUDDiscsussionAction> UUDDealActionContractCreate::WrapActions(TArray<FUDActionData> data)
 {
 	TArray<FUDDiscsussionAction> dealActions;
-	for (auto action : actionData)
+	for (auto action : data)
 	{
 		dealActions.Add(FUDDiscsussionAction(
 			action,
@@ -53,27 +53,27 @@ TArray<FUDDiscsussionAction> UUDDealActionContractCreate::WrapActions(TArray<FUD
 	return dealActions;
 }
 
-bool UUDDealActionContractCreate::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+bool UUDDealActionContractCreate::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	bool result = IUDActionInterface::CanExecute(data, world);
 	if (result)
 	{
-		FUDDealData data = UUDDealActionContractCreate::ConvertData(actionData);
-		bool isEmpty = targetWorldState->Deals[data.DealId]->DealActionList.IsEmpty();
+		FUDDealData data = UUDDealActionContractCreate::ConvertData(data);
+		bool isEmpty = world->Deals[action.DealId]->DealActionList.IsEmpty();
 		result = result && isEmpty;
 	}
 	return result;
 }
-void UUDDealActionContractCreate::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionContractCreate::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
-	FUDDealData data = UUDDealActionContractCreate::ConvertData(actionData);
-	TArray<FUDActionData> actions = UUDDealActionContractCreate::FinalizeActions(targetWorldState, data.DealId);
-	targetWorldState->Deals[data.DealId]->DealActionList = UUDDealActionContractCreate::WrapActions(actions);
+	IUDActionInterface::Execute(data, world);
+	FUDDealData data = UUDDealActionContractCreate::ConvertData(data);
+	TArray<FUDActionData> actions = UUDDealActionContractCreate::FinalizeActions(world, action.DealId);
+	world->Deals[action.DealId]->DealActionList = UUDDealActionContractCreate::WrapActions(actions);
 }
-void UUDDealActionContractCreate::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionContractCreate::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
-	FUDDealData data = UUDDealActionContractCreate::ConvertData(actionData);
-	targetWorldState->Deals[data.DealId]->DealActionList.Empty();
+	IUDActionInterface::Revert(data, world);
+	FUDDealData data = UUDDealActionContractCreate::ConvertData(data);
+	world->Deals[action.DealId]->DealActionList.Empty();
 }

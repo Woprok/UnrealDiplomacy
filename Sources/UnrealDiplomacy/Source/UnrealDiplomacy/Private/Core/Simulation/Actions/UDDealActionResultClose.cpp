@@ -2,25 +2,25 @@
 
 #include "Core/Simulation/Actions/UDDealActionResultClose.h"
 
-bool UUDDealActionResultClose::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+bool UUDDealActionResultClose::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	bool result = IUDActionInterface::CanExecute(data, world);
 	if (result)
 	{
-		FUDDealData data = UUDDealActionResultClose::ConvertData(actionData);
-		bool isModerator = targetWorldState->Deals[data.DealId]->OwnerUniqueId == actionData.InvokerPlayerId;
-		bool isStateBefore = targetWorldState->Deals[data.DealId]->DealSimulationResult == EUDDealSimulationResult::Opened;
+		FUDDealData data = UUDDealActionResultClose::ConvertData(data);
+		bool isModerator = world->Deals[action.DealId]->OwnerUniqueId == action.InvokerPlayerId;
+		bool isStateBefore = world->Deals[action.DealId]->DealSimulationResult == EUDDealSimulationResult::Opened;
 		result = result && isModerator && isStateBefore;
 	}
 	return result;
 }
-void UUDDealActionResultClose::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionResultClose::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	FUDDealData data = UUDDealActionResultClose::ConvertData(actionData);
-	targetWorldState->Deals[data.DealId]->DealSimulationResult = EUDDealSimulationResult::Closed;
+	FUDDealData data = UUDDealActionResultClose::ConvertData(data);
+	world->Deals[action.DealId]->DealSimulationResult = EUDDealSimulationResult::Closed;
 }
-void UUDDealActionResultClose::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionResultClose::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	FUDDealData data = UUDDealActionResultClose::ConvertData(actionData);
-	targetWorldState->Deals[data.DealId]->DealSimulationResult = EUDDealSimulationResult::Opened;
+	FUDDealData data = UUDDealActionResultClose::ConvertData(data);
+	world->Deals[action.DealId]->DealSimulationResult = EUDDealSimulationResult::Opened;
 }

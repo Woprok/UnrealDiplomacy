@@ -2,18 +2,18 @@
 
 #include "Core/Simulation/Actions/UDGameActionGift.h"
 
-void UUDGameActionGift::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDGameActionGift::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
+	IUDActionInterface::Execute(data, world);
 	// Queue new confirmable request.
-	FUDTargetValueData data = UUDGameActionGift::ConvertData(actionData);
-	AddPendingTargetRequest(actionData, data.TargetId, targetWorldState);
+	FUDTargetValueData data = UUDGameActionGift::ConvertData(data);
+	AddPendingTargetRequest(data, action.TargetId, world);
 }
 
-void UUDGameActionGift::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDGameActionGift::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
+	IUDActionInterface::Revert(data, world);
 	// Remove request from queue.
-	FUDTargetValueData data = UUDGameActionGift::ConvertData(actionData);
-	RemovePendingTargetRequest(actionData, data.TargetId, targetWorldState);
+	FUDTargetValueData data = UUDGameActionGift::ConvertData(data);
+	RemovePendingTargetRequest(data, action.TargetId, world);
 }

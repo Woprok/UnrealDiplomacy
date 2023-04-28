@@ -28,12 +28,12 @@ public:
 	/**
 	 * Process action that was invoked by Client. TODO as well for AI ?
 	 */
-	virtual void ProcessAction(FUDActionData& actionData);
+	virtual void ProcessAction(FUDActionData& action);
 	/**
 	 * Required to be called as last thing during game setup.
 	 * This will invoke UUDStartGameAction that handles pre-first turn play.
 	 */
-	virtual void StartGame(FUDActionData& actionData);
+	virtual void StartGame(FUDActionData& action);
 	/**
 	 * Gathers and sends back requested historic data to specified controller.
 	 * Parameters:
@@ -47,7 +47,7 @@ protected:
 	 * GameMode handles passing notification and action to all Clients and AIs.
 	 */
 	UFUNCTION()
-	virtual void ActionExecutionFinished(FUDActionData& actionData);
+	virtual void ActionExecutionFinished(FUDActionData& action);
 	/**
 	 * Initializes all fields and prepares all objects for use.
 	 */

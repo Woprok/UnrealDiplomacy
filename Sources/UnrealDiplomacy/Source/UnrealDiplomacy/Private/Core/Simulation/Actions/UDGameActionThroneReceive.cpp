@@ -2,26 +2,26 @@
 
 #include "Core/Simulation/Actions/UDGameActionThroneReceive.h"
 
-bool UUDGameActionThroneReceive::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+bool UUDGameActionThroneReceive::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	return IUDActionInterface::CanExecute(actionData, targetWorldState) &&
+	return IUDActionInterface::CanExecute(data, world) &&
 		// Throne must be empty.
-		targetWorldState->ImperialThrone.Ruler == UUDWorldState::GaiaWorldStateId &&
+		world->ImperialThrone.Ruler == UUDWorldState::GaiaWorldStateId &&
 		// Crown can be granted only be the world
-		actionData.InvokerPlayerId == targetWorldState->GaiaWorldStateId;
+		action.InvokerPlayerId == world->GaiaWorldStateId;
 }
 
-void UUDGameActionThroneReceive::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDGameActionThroneReceive::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
+	IUDActionInterface::Execute(data, world);
 	// Takeover the empty throne.
-	FUDTargetData data = UUDGameActionThroneReceive::ConvertData(actionData);
-	targetWorldState->ImperialThrone.Ruler = data.TargetId;
+	FUDTargetData data = UUDGameActionThroneReceive::ConvertData(data);
+	world->ImperialThrone.Ruler = action.TargetId;
 }
 
-void UUDGameActionThroneReceive::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDGameActionThroneReceive::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
+	IUDActionInterface::Revert(data, world);
 	// Rollback to the empty throne.
-	targetWorldState->ImperialThrone.Ruler = UUDWorldState::GaiaWorldStateId;
+	world->ImperialThrone.Ruler = UUDWorldState::GaiaWorldStateId;
 }

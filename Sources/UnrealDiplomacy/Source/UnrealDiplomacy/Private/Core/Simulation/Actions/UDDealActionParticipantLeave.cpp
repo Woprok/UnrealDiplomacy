@@ -2,34 +2,34 @@
 
 #include "Core/Simulation/Actions/UDDealActionParticipantLeave.h"
 
-bool UUDDealActionParticipantLeave::CanExecute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+bool UUDDealActionParticipantLeave::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	bool result = IUDActionInterface::CanExecute(actionData, targetWorldState);
+	bool result = IUDActionInterface::CanExecute(data, world);
 	if (result)
 	{
-		FUDDealData data = UUDDealActionParticipantLeave::ConvertData(actionData);
-		bool isStateOpen = targetWorldState->Deals[data.DealId]->DealSimulationState <= EUDDealSimulationState::FinalizingDraft;
-		bool isResultOpen = targetWorldState->Deals[data.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
-		bool isLeaver = targetWorldState->Deals[data.DealId]->Participants.Contains(actionData.InvokerPlayerId);
+		FUDDealData data = UUDDealActionParticipantLeave::ConvertData(data);
+		bool isStateOpen = world->Deals[action.DealId]->DealSimulationState <= EUDDealSimulationState::FinalizingDraft;
+		bool isResultOpen = world->Deals[action.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
+		bool isLeaver = world->Deals[action.DealId]->Participants.Contains(action.InvokerPlayerId);
 		result = result && isStateOpen && isResultOpen && isLeaver;
 	}
 	return result;
 }
 
-void UUDDealActionParticipantLeave::Execute(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionParticipantLeave::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(actionData, targetWorldState);
+	IUDActionInterface::Execute(data, world);
 	// Remove invoker from participants
-	FUDDealData data = UUDDealActionParticipantLeave::ConvertData(actionData);
-	targetWorldState->Deals[data.DealId]->Participants.Remove(actionData.InvokerPlayerId);
-	targetWorldState->Deals[data.DealId]->BlockedParticipants.Add(actionData.InvokerPlayerId);
+	FUDDealData data = UUDDealActionParticipantLeave::ConvertData(data);
+	world->Deals[action.DealId]->Participants.Remove(action.InvokerPlayerId);
+	world->Deals[action.DealId]->BlockedParticipants.Add(action.InvokerPlayerId);
 }
 
-void UUDDealActionParticipantLeave::Revert(FUDActionData& actionData, TObjectPtr<UUDWorldState> targetWorldState)
+void UUDDealActionParticipantLeave::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(actionData, targetWorldState);
+	IUDActionInterface::Revert(data, world);
 	// Add invoker back to participants
-	FUDDealData data = UUDDealActionParticipantLeave::ConvertData(actionData);
-	targetWorldState->Deals[data.DealId]->BlockedParticipants.Remove(actionData.InvokerPlayerId);
-	targetWorldState->Deals[data.DealId]->Participants.Add(actionData.InvokerPlayerId);
+	FUDDealData data = UUDDealActionParticipantLeave::ConvertData(data);
+	world->Deals[action.DealId]->BlockedParticipants.Remove(action.InvokerPlayerId);
+	world->Deals[action.DealId]->Participants.Add(action.InvokerPlayerId);
 }
