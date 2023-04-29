@@ -1,27 +1,29 @@
 // Copyright Miroslav Valach
 
 #include "Core/Simulation/Actions/UDDealActionContractPointAccept.h"
+#include "Core/UDGlobalData.h"
+#include "Core/Simulation/UDActionData.h"
+#include "Core/Simulation/UDWorldState.h"
 
-bool UUDDealActionContractPointAccept::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
+bool UUDDealActionContractPointAccept::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	bool result = IUDActionInterface::CanExecute(data, world);
-	if (result)
-	{
-		FUDDealValueData data = UUDDealActionContractPointAccept::ConvertData(data);
-		bool unresolved = world->Deals[action.DealId]->DealActionList[action.Value].SelectedResult == EUDDealActionResult::Unresolved;
-		result = result && unresolved;
-	}
-	return result;
+	FUDDealDataContractPoint data(action.ValueParameters);
+	bool isNotResolved = world->Deals[data.DealId]->DealActionList[data.ContractPointId].SelectedResult == EUDDealActionResult::Unresolved;
+	return IUDActionInterface::CanExecute(action, world) && isNotResolved;
 }
+
 void UUDDealActionContractPointAccept::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Execute(action, world);
-	FUDDealValueData data = UUDDealActionContractPointAccept::ConvertData(data);
-	world->Deals[action.DealId]->DealActionList[action.Value].SelectedResult = EUDDealActionResult::Accepted;
+	// Accept contract point.
+	FUDDealDataContractPoint data(action.ValueParameters);
+	world->Deals[data.DealId]->DealActionList[data.ContractPointId].SelectedResult = EUDDealActionResult::Accepted;
 }
+
 void UUDDealActionContractPointAccept::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Revert(action, world);
-	FUDDealValueData data = UUDDealActionContractPointAccept::ConvertData(data);
-	world->Deals[action.DealId]->DealActionList[action.Value].SelectedResult = EUDDealActionResult::Unresolved;
+	// Revert to undecided state of contract point.
+	FUDDealDataContractPoint data(action.ValueParameters);
+	world->Deals[data.DealId]->DealActionList[data.ContractPointId].SelectedResult = EUDDealActionResult::Unresolved;
 }

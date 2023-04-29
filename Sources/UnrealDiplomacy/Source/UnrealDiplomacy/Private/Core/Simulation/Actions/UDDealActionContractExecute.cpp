@@ -1,29 +1,15 @@
 // Copyright Miroslav Valach
 
 #include "Core/Simulation/Actions/UDDealActionContractExecute.h"
+#include "Core/UDGlobalData.h"
+#include "Core/Simulation/UDActionData.h"
+#include "Core/Simulation/UDWorldState.h"
 
-bool UUDDealActionContractExecute::AreAllActionsPrepared(TObjectPtr<UUDWorldState> world, int32 dealUniqueId)
+bool UUDDealActionContractExecute::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	for (auto actionWrapper : world->Deals[dealUniqueId]->DealActionList)
-	{
-		if (actionWrapper.SelectedResult < EUDDealActionResult::Accepted)
-		{
-			return false;
-		}
-	}
-	return true;
-}
-
-bool UUDDealActionContractExecute::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
-{
-	bool result = IUDActionInterface::CanExecute(data, world);
-	if (result)
-	{
-		FUDDealData data = UUDDealActionContractExecute::ConvertData(data);
-		bool unresolved = UUDDealActionContractExecute::AreAllActionsPrepared(world, action.DealId);
-		result = result && unresolved;
-	}
-	return result;
+	FUDDealData data(action.ValueParameters);
+	bool areAllActionsResolved = UUDDealActionContractExecute::AreAllActionsPrepared(world, data.DealId);
+	return IUDActionInterface::CanExecute(action, world) && areAllActionsResolved;
 }
 void UUDDealActionContractExecute::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
@@ -38,19 +24,36 @@ void UUDDealActionContractExecute::Revert(const FUDActionData& action, TObjectPt
 
 TArray<FUDActionData> UUDDealActionContractExecute::GetContinuations(FUDActionData& parentAction, TObjectPtr<UUDWorldState> world)
 {
+	FUDDealData data(parentAction.ValueParameters);
+	return GetAllContractedActions(world, data.DealId);
+}
+
+bool UUDDealActionContractExecute::AreAllActionsPrepared(TObjectPtr<UUDWorldState> world, int32 dealUniqueId)
+{
+	for (auto actionWrapper : world->Deals[dealUniqueId]->DealActionList)
+	{
+		if (actionWrapper.SelectedResult < EUDDealActionResult::Accepted)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+TArray<FUDActionData> UUDDealActionContractExecute::GetAllContractedActions(TObjectPtr<UUDWorldState> world, int32 dealUniqueId)
+{
 	TArray<FUDActionData> finalActionList;
-	FUDDealData data = UUDDealActionContractExecute::ConvertData(parentAction);
-	for (auto wrappedAction : world->Deals[action.DealId]->DealActionList)
+	for (auto wrappedAction : world->Deals[dealUniqueId]->DealActionList)
 	{
 		if (!wrappedAction.WasSabotaged &&
 			(
-				wrappedAction.SelectedResult == EUDDealActionResult::Accepted ||
-				wrappedAction.SelectedResult == EUDDealActionResult::Changed
-				)
+			wrappedAction.SelectedResult == EUDDealActionResult::Accepted ||
+			wrappedAction.SelectedResult == EUDDealActionResult::Changed
 			)
+		)
 		{
 			finalActionList.Add(wrappedAction.Action);
 		}
 	}
-	return finalActionList;
+	return TArray<FUDActionData>();
 }

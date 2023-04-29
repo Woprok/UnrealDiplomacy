@@ -3,24 +3,22 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Core/Simulation/UDActionInterface.h"
+#include "Core/Simulation/Actions/UDDealActionPointModify.h"
 #include "UDDealActionPointModifyInvokerRemove.generated.h"
 
-UCLASS()
-class UNREALDIPLOMACY_API UUDDealActionPointModifyInvokerRemove : public UObject, public IUDActionInterface
+/**
+ * Remove invoker from the point.
+ */
+UCLASS(Blueprintable, BlueprintType)
+class UNREALDIPLOMACY_API UUDDealActionPointModifyInvokerRemove : public UUDDealActionPointModify
 {
 	GENERATED_BODY()
 public:
 	virtual bool CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const override;
 	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
-	virtual int32 GetId() override { return ActionTypeId; };
-	virtual int32 GetParameterCount() override { return RequiredParametersCount; };
+	virtual int32 GetId() const override { return ActionTypeId; };
+	virtual int32 GetParameterCount() const override { return FUDDealDataPointTarget::ParameterCount; };
 public:
-	static const int32 ActionTypeId = 10039;
-	static const int32 RequiredParametersCount = 3;
-	static FUDDealPointValueData ConvertData(FUDActionData& action)
-	{
-		return FUDDealPointValueData(action.ValueParameters);
-	}
+	static const int32 ActionTypeId = 3029;
 };

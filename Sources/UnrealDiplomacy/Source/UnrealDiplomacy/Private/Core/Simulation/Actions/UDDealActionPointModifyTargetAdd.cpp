@@ -1,28 +1,29 @@
 // Copyright Miroslav Valach
 
 #include "Core/Simulation/Actions/UDDealActionPointModifyTargetAdd.h"
+#include "Core/UDGlobalData.h"
+#include "Core/Simulation/UDActionData.h"
+#include "Core/Simulation/UDWorldState.h"
 
-bool UUDDealActionPointModifyTargetAdd::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
+bool UUDDealActionPointModifyTargetAdd::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	bool result = IUDActionInterface::CanExecute(data, world);
-	if (result)
-	{
-		FUDDealPointValueData data = UUDDealActionPointModifyTargetAdd::ConvertData(data);
-		bool isStateOpen = world->Deals[action.DealId]->DealSimulationState <= EUDDealSimulationState::FinalizingDraft;
-		bool isResultOpen = world->Deals[action.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
-		result = result && isStateOpen && isResultOpen;
-	}
-	return result;
+	FUDDealDataPointTarget data(action.ValueParameters);
+	bool isNotTarget = !world->Deals[data.DealId]->Points[data.PointId]->Targets.Contains(data.TargetId);
+	return UUDDealActionPointModify::CanExecute(action, world) && isNotTarget;
 }
+
 void UUDDealActionPointModifyTargetAdd::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Execute(action, world);
-	FUDDealPointValueData data = UUDDealActionPointModifyTargetAdd::ConvertData(data);
-	world->Deals[action.DealId]->Points[action.Point]->Targets.Add(action.Value);
+	// Add target to list of targets.
+	FUDDealDataPointTarget data(action.ValueParameters);
+	world->Deals[data.DealId]->Points[data.PointId]->Targets.Add(data.TargetId);
 }
+
 void UUDDealActionPointModifyTargetAdd::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Revert(action, world);
-	FUDDealPointValueData data = UUDDealActionPointModifyTargetAdd::ConvertData(data);
-	world->Deals[action.DealId]->Points[action.Point]->Targets.Remove(action.Value);
+	// Removes target from list of targets.
+	FUDDealDataPointTarget data(action.ValueParameters);
+	world->Deals[data.DealId]->Points[data.PointId]->Targets.Remove(data.TargetId);
 }

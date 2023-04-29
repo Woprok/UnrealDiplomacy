@@ -1,28 +1,29 @@
 // Copyright Miroslav Valach
 
 #include "Core/Simulation/Actions/UDDealActionPointModifyInvokerAdd.h"
+#include "Core/UDGlobalData.h"
+#include "Core/Simulation/UDActionData.h"
+#include "Core/Simulation/UDWorldState.h"
 
-bool UUDDealActionPointModifyInvokerAdd::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
+bool UUDDealActionPointModifyInvokerAdd::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	bool result = IUDActionInterface::CanExecute(data, world);
-	if (result)
-	{
-		FUDDealPointValueData data = UUDDealActionPointModifyInvokerAdd::ConvertData(data);
-		bool isStateOpen = world->Deals[action.DealId]->DealSimulationState <= EUDDealSimulationState::FinalizingDraft;
-		bool isResultOpen = world->Deals[action.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
-		result = result && isStateOpen && isResultOpen;
-	}
-	return result;
+	FUDDealDataPointTarget data(action.ValueParameters);
+	bool isNotInvoker = !world->Deals[data.DealId]->Points[data.PointId]->Invokers.Contains(data.TargetId);
+	return UUDDealActionPointModify::CanExecute(action, world) && isNotInvoker;
 }
+
 void UUDDealActionPointModifyInvokerAdd::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Execute(action, world);
-	FUDDealPointValueData data = UUDDealActionPointModifyInvokerAdd::ConvertData(data);
-	world->Deals[action.DealId]->Points[action.Point]->Invokers.Add(action.Value);
+	// Add target to list of invokers.
+	FUDDealDataPointTarget data(action.ValueParameters);
+	world->Deals[data.DealId]->Points[data.PointId]->Invokers.Add(data.TargetId);
 }
+
 void UUDDealActionPointModifyInvokerAdd::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Revert(action, world);
-	FUDDealPointValueData data = UUDDealActionPointModifyInvokerAdd::ConvertData(data);
-	world->Deals[action.DealId]->Points[action.Point]->Invokers.Remove(action.Value);
+	// Removes target from list of invokers.
+	FUDDealDataPointTarget data(action.ValueParameters);
+	world->Deals[data.DealId]->Points[data.PointId]->Invokers.Remove(data.TargetId);
 }

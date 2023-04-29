@@ -3,27 +3,22 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Core/Simulation/UDActionInterface.h"
+#include "Core/Simulation/Actions/UDDealAction.h"
 #include "UDDealActionPointAdd.generated.h"
 
 /**
- * Allows extending of the deal with new discussion point.
+ * Creates new primary point.
  */
-UCLASS()
-class UNREALDIPLOMACY_API UUDDealActionPointAdd : public UObject, public IUDActionInterface
+UCLASS(Blueprintable, BlueprintType)
+class UNREALDIPLOMACY_API UUDDealActionPointAdd : public UUDDealAction
 {
 	GENERATED_BODY()
 public:
 	virtual bool CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const override;
 	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
-	virtual int32 GetId() override { return ActionTypeId; };
-	virtual int32 GetParameterCount() override { return RequiredParametersCount; };
+	virtual int32 GetId() const override { return ActionTypeId; };
+	virtual int32 GetParameterCount() const override { return FUDDealData::ParameterCount; };
 public:
-	static const int32 ActionTypeId = 10030;
-	static const int32 RequiredParametersCount = 1;
-	static FUDDealData ConvertData(FUDActionData& action)
-	{
-		return FUDDealData(action.ValueParameters);
-	}
+	static const int32 ActionTypeId = 3024;
 };

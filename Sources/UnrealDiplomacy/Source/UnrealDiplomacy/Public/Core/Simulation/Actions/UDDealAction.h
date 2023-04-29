@@ -28,6 +28,132 @@ public:
  * Transforms action parameters to properly named fields.
  */
 USTRUCT(BlueprintType)
+struct FUDDealDataPoint
+{
+	GENERATED_BODY()
+public:
+	FUDDealDataPoint() {}
+	FUDDealDataPoint(TArray<int32> valueParameters)
+	{
+		DealId = valueParameters[0];
+		PointId = valueParameters[1];
+	}
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 PointId = 0;
+	static const int32 ParameterCount = 2;
+};
+
+/**
+ * Transforms action parameters to properly named fields.
+ */
+USTRUCT(BlueprintType)
+struct FUDDealDataPointTarget
+{
+	GENERATED_BODY()
+public:
+	FUDDealDataPointTarget() {}
+	FUDDealDataPointTarget(TArray<int32> valueParameters)
+	{
+		DealId = valueParameters[0];
+		PointId = valueParameters[1];
+		TargetId = valueParameters[2];
+	}
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 PointId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 TargetId = 0;
+	static const int32 ParameterCount = 3;
+};
+
+/**
+ * Transforms action parameters to properly named fields.
+ */
+USTRUCT(BlueprintType)
+struct FUDDealDataPointValue
+{
+	GENERATED_BODY()
+public:
+	FUDDealDataPointValue() {}
+	FUDDealDataPointValue(TArray<int32> valueParameters)
+	{
+		DealId = valueParameters[0];
+		PointId = valueParameters[1];
+		Value = valueParameters[2];
+	}
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 PointId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 Value = 0;
+	static const int32 ParameterCount = 3;
+};
+
+/**
+ * Transforms action parameters to properly named fields.
+ */
+USTRUCT(BlueprintType)
+struct FUDDealDataPointTile
+{
+	GENERATED_BODY()
+public:
+	FUDDealDataPointTile() {}
+	FUDDealDataPointTile(TArray<int32> valueParameters)
+	{
+		DealId = valueParameters[0];
+		PointId = valueParameters[1];
+		X = valueParameters[2];
+		Y = valueParameters[3];
+	}
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 PointId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 X = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 Y = 0;
+	static const int32 ParameterCount = 4;
+};
+
+/**
+ * Transforms action parameters to properly named fields.
+ */
+USTRUCT(BlueprintType)
+struct FUDDealDataPointTileValue
+{
+	GENERATED_BODY()
+public:
+	FUDDealDataPointTileValue() {}
+	FUDDealDataPointTileValue(TArray<int32> valueParameters)
+	{
+		DealId = valueParameters[0];
+		PointId = valueParameters[1];
+		X = valueParameters[2];
+		Y = valueParameters[3];
+		Value = valueParameters[4];
+	}
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 PointId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 X = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 Y = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 Value = 0;
+	static const int32 ParameterCount = 5;
+};
+
+/**
+ * Transforms action parameters to properly named fields.
+ */
+USTRUCT(BlueprintType)
 struct FUDDealDataContractPoint
 {
 	GENERATED_BODY()
