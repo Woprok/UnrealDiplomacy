@@ -40,7 +40,7 @@ void UUDDealActionPointModifyAction::Backup(FUDActionData& action, TObjectPtr<UU
 	action.BackupValueParameters.Add(world->Deals[data.DealId]->Points[data.PointId]->ActionId);
 }
 
-TArray<FUDActionData> UUDDealActionPointModifyAction::GetContinuations(const FUDActionData& parentAction, TObjectPtr<UUDWorldState> world)
+TArray<FUDActionData> UUDDealActionPointModifyAction::GetContinuations(const FUDActionData& parentAction, TObjectPtr<UUDWorldState> world) const
 {
 	FUDDealDataPointValue data(parentAction.ValueParameters);
 	return {

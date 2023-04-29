@@ -3,6 +3,7 @@
 
 #include "Skirmish/UDSkirmishPlayerController.h"
 #include "Net/UnrealNetwork.h"
+#include "Core/UDGlobalData.h"
 
 void AUDSkirmishPlayerController::OnRep_SetUniqueControllerId(const int32& oldId)
 {
@@ -101,12 +102,12 @@ void AUDSkirmishPlayerController::VerifySyncInProgress()
 {
 	// Default value is 0 and that is always equal to Gaia, which is never correct for client.
 	// TODO maybe rework this to something that can't be a problem, like ever...
-	if (UniqueControllerId != UUDWorldState::GaiaWorldStateId && IsSyncInProgress)
+	if (UniqueControllerId != UUDGlobalData::GaiaId && IsSyncInProgress)
 	{
 		// Has Id and is already in progress of receiving necessary history.
 		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Awaiting synchronization."), GetControllerUniqueId());
 	}
-	else if (UniqueControllerId != UUDWorldState::GaiaWorldStateId && !IsSyncInProgress)
+	else if (UniqueControllerId != UUDGlobalData::GaiaId && !IsSyncInProgress)
 	{
 		// Has Id and is not already in prgoress of receiving necessary history. 
 		// This by default should happen only if client is running server.
@@ -143,12 +144,12 @@ void AUDSkirmishPlayerController::ProcessAction(FUDActionData& action)
 	if (IsSynchronized)
 	{
 		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Executing."), GetControllerUniqueId());
-		GetWorldSimulation()->NaiveExecuteAction(data);
+		GetWorldSimulation()->NaiveExecuteAction(action);
 	}
 	else
 	{
 		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Awaiting sync."), GetControllerUniqueId());
-		SaveActionUntilSynchronization(data);
+		SaveActionUntilSynchronization(action);
 		// Attempt to sync...
 		VerifySyncInProgress();
 	}
@@ -157,13 +158,13 @@ void AUDSkirmishPlayerController::ProcessAction(FUDActionData& action)
 void AUDSkirmishPlayerController::SaveActionUntilSynchronization(FUDActionData& action)
 {
 	// These should arrive in order as we are using reliable RPCs.
-	TemporaryActionHolder.Add(data);
+	TemporaryActionHolder.Add(action);
 }
 
 void AUDSkirmishPlayerController::MulticastReceiveActionFromServer_Local(FUDActionData& action)
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Multicast Receive."), GetControllerUniqueId());
-	ProcessAction(data);
+	ProcessAction(action);
 }
 
 // Header part for this is automatically generated from RPC definition.

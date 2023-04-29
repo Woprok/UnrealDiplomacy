@@ -22,7 +22,7 @@ void UUDDealActionContractExecute::Revert(const FUDActionData& action, TObjectPt
 	// Execution is always reverted if all subactions were revoked.
 }
 
-TArray<FUDActionData> UUDDealActionContractExecute::GetContinuations(FUDActionData& parentAction, TObjectPtr<UUDWorldState> world)
+TArray<FUDActionData> UUDDealActionContractExecute::GetContinuations(const FUDActionData& parentAction, TObjectPtr<UUDWorldState> world) const
 {
 	FUDDealData data(parentAction.ValueParameters);
 	return GetAllContractedActions(world, data.DealId);
@@ -40,7 +40,7 @@ bool UUDDealActionContractExecute::AreAllActionsPrepared(TObjectPtr<UUDWorldStat
 	return true;
 }
 
-TArray<FUDActionData> UUDDealActionContractExecute::GetAllContractedActions(TObjectPtr<UUDWorldState> world, int32 dealUniqueId)
+TArray<FUDActionData> UUDDealActionContractExecute::GetAllContractedActions(TObjectPtr<UUDWorldState> world, int32 dealUniqueId) const
 {
 	TArray<FUDActionData> finalActionList;
 	for (auto wrappedAction : world->Deals[dealUniqueId]->DealActionList)

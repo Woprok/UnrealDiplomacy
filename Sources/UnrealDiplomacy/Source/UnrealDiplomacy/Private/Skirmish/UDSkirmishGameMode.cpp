@@ -1,6 +1,7 @@
 // Copyright Miroslav Valach
 
 #include "Skirmish/UDSkirmishGameMode.h"
+#include "Core/UDGlobalData.h"
 
 AUDSkirmishGameMode::AUDSkirmishGameMode() 
 {	
@@ -103,7 +104,7 @@ void AUDSkirmishGameMode::StartGame(FUDActionData& startAction)
 	// Start game requires mapGen to be done before it as everything after it depends on it.
 	CreateAiPlayers(2);
 
-	FUDActionData mapGen(UUDCreateWorldMapAction::ActionTypeId, UUDWorldState::GaiaWorldStateId, { 4, 5, 5 });
+	FUDActionData mapGen(UUDSystemActionWorldCreate::ActionTypeId, UUDGlobalData::GaiaId, { 4, 5, 5 });
 	GetWorldSimulation()->ExecuteAction(mapGen);
 
 	GetWorldSimulation()->ExecuteAction(startAction);
@@ -115,14 +116,14 @@ void AUDSkirmishGameMode::ProcessAction(FUDActionData& action)
 	// TODO merge this additional calls to action execution.
 	// This would require additional way for creating merged actions or
 	// allowing actions to invoke additional actions.
-	if (action.ActionTypeId == UUDStartGameAction::ActionTypeId)
+	if (action.ActionTypeId == UUDSystemActionGameStart::ActionTypeId)
 	{
-		StartGame(data);
+		StartGame(action);
 	}
 	// Execute action as obtained.
 	else 
 	{
-		GetWorldSimulation()->ExecuteAction(data);
+		GetWorldSimulation()->ExecuteAction(action);
 	}
 }
 
@@ -131,15 +132,15 @@ void AUDSkirmishGameMode::ActionExecutionFinished(FUDActionData& action)
 	// GAMEMODE decides who will receive which action, based on expected requirements passed by simulation.
 	
 	// Gaia always receives action notification.
-	GaiaController->OnActionExecuted(data);
+	GaiaController->OnActionExecuted(action);
 	// TODO all
 
 	// if all
-	GetCastGameState()->MulticastSendActionToAllClients(data);
+	GetCastGameState()->MulticastSendActionToAllClients(action);
 	// AI
 	for (auto& controller : AiControllers)
 	{
-		controller->OnActionExecuted(data);
+		controller->OnActionExecuted(action);
 	}
 
 	/*

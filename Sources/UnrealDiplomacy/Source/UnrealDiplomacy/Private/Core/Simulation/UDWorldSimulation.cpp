@@ -3,6 +3,8 @@
 
 #include "Core/Simulation/UDWorldSimulation.h"
 #include "Core/Simulation/UDActionManager.h"
+#include "Core/UDGlobalData.h"
+#include "Core/Simulation/Actions/UDActions.h"
 
 void AUDWorldSimulation::Initialize()
 {
@@ -21,11 +23,11 @@ void AUDWorldSimulation::CreateState(int32 playerId, bool isPlayerOrAi)
 		return;
 	}
 
-	if (!isPlayerOrAi && playerId == UUDWorldState::GaiaWorldStateId)
+	if (!isPlayerOrAi && playerId == UUDGlobalData::GaiaId)
 	{
 		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering Gaia as Id(%d)."), playerId);
 	}
-	else if (isPlayerOrAi && playerId != UUDWorldState::GaiaWorldStateId)
+	else if (isPlayerOrAi && playerId != UUDGlobalData::GaiaId)
 	{
 		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering Player or Ai as Id(%d)."), playerId);
 	}
@@ -44,7 +46,7 @@ void AUDWorldSimulation::CreateStateAndSynchronize(int32 playerId, bool isPlayer
 	CreateState(playerId, isPlayerOrAi);
 	SynchronizeNewPlayerState(States[playerId]);
 	// After that push new synchronize action to all, including new joined player.
-	FUDActionData joinPlayer(UUDAddPlayerAction::ActionTypeId, States[playerId]->PerspectivePlayerId);
+	FUDActionData joinPlayer(UUDSystemActionPlayerAdd::ActionTypeId, States[playerId]->PerspectivePlayerId);
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Calling join action for player id(%d)."), States[playerId]->PerspectivePlayerId);
 	ExecuteAction(joinPlayer);
 }
@@ -77,7 +79,7 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 	//// Obtained executor for this action.
 	//auto& actionExecutor = Actions[newAction.ActionTypeId];
 
-	if (!actionExecutor->CanExecute(newAction, GetSpecificState(UUDWorldState::GaiaWorldStateId)))
+	if (!actionExecutor->CanExecute(newAction, GetSpecificState(UUDGlobalData::GaiaId)))
 	{
 		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Action executor was halted for action id(%d) due to executor id(%d)."),
 			newAction.ActionTypeId, actionExecutor->GetId());
@@ -99,7 +101,7 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 	if (actionExecutor->IsBackupRequired())
 	{
 		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Backup by UID(%d)."), newAction.UniqueId);
-		actionExecutor->Backup(newAction, GetSpecificState(UUDWorldState::GaiaWorldStateId));
+		actionExecutor->Backup(newAction, GetSpecificState(UUDGlobalData::GaiaId));
 	}
 
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Action UID(%d)."), newAction.UniqueId);
@@ -114,7 +116,7 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 	if (actionExecutor->HasContinuations())
 	{
 		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Composite Action UID(%d) Started."), newAction.UniqueId);
-		TArray<FUDActionData> subactions = actionExecutor->GetContinuations(newAction, GetSpecificState(UUDWorldState::GaiaWorldStateId));
+		TArray<FUDActionData> subactions = actionExecutor->GetContinuations(newAction, GetSpecificState(UUDGlobalData::GaiaId));
 		for (auto& action : subactions)
 		{
 			ExecuteAction(action);
@@ -123,7 +125,7 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 	}
 	// This is basically required to check after every action due to current structure.
 	// In return we are only checking actions we think can end the game.
-	if (Arbiter->OnActionExecutionFinished(actionExecutor->GetId(), GetSpecificState(UUDWorldState::GaiaWorldStateId)))
+	if (Arbiter->OnActionExecutionFinished(actionExecutor->GetId(), GetSpecificState(UUDGlobalData::GaiaId)))
 	{
 		for (auto& action : Arbiter->EndGame())
 		{
@@ -137,9 +139,9 @@ void AUDWorldSimulation::SynchronizeNewPlayerState(TObjectPtr<UUDWorldState> new
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Synchrinizing new Player."));
 	// New player state must be synchronzied from old action list first.
 	// This directly executes action over the supplied state.
-	for (auto& data : ExecutionHistory)
+	for (auto& action : ExecutionHistory)
 	{
-		Actions[action.ActionTypeId]->Execute(data, newState);
+		Actions[action.ActionTypeId]->Execute(action, newState);
 	}
 }
 
@@ -216,82 +218,5 @@ void AUDWorldSimulation::RegisterAction(TScriptInterface<IUDActionInterface> new
 void AUDWorldSimulation::LoadCoreActions()
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering Actions."));
-	RegisterAction(NewObject<UUDLogAction>(this));
-	RegisterAction(NewObject<UUDAddPlayerAction>(this));
-	RegisterAction(NewObject<UUDStartGameAction>(this));
-	RegisterAction(NewObject<UUDEndGameAction>(this));
-	RegisterAction(NewObject<UUDEndTurnAction>(this));
-	RegisterAction(NewObject<UUDForceEndTurnAction>(this));
-	// Gaia 100+
-	RegisterAction(NewObject<UUDGenerateIncomeAction>(this));
-	// Player 1000+
-	RegisterAction(NewObject<UUDUnconditionalGiftAction>(this));
-	// Gift Action 1001-1003
-	RegisterAction(NewObject<UUDGiftAction>(this));
-	RegisterAction(NewObject<UUDConfirmGiftAction>(this));
-	RegisterAction(NewObject<UUDRejectGiftAction>(this));
-	// CreateWorldMap action, requires self initializing WorldGenerator
-	RegisterAction(NewObject<UUDCreateWorldMapAction>(this));
-	// Take Tile
-	RegisterAction(NewObject<UUDTakeTileAction>(this));
-	// Exploit Tile
-	RegisterAction(NewObject<UUDExploitTileAction>(this));
-	// Transfer Tile Action 1004-1006
-	RegisterAction(NewObject<UUDTransferTileAction>(this));
-	RegisterAction(NewObject<UUDConfirmTransferTileAction>(this));
-	RegisterAction(NewObject<UUDRejectTransferTileAction>(this));
-	// Grant exploit permission
-	RegisterAction(NewObject<UUDGrantExploitTilePermissionAction>(this));
-	// Deal actions 10000+
-	RegisterAction(NewObject<UUDCreateDealAction>(this));
-	RegisterAction(NewObject<UUDInviteParticipantDealAction>(this));
-	RegisterAction(NewObject<UUDAcceptParticipationDealAction>(this));
-	RegisterAction(NewObject<UUDRejectParticipationDealAction>(this));
-	RegisterAction(NewObject<UUDKickParticipantDealAction>(this));
-	RegisterAction(NewObject<UUDLeaveParticipationDealAction>(this));
-
-	RegisterAction(NewObject<UUDAdvanceStateAssemblingDealAction>(this));
-	RegisterAction(NewObject<UUDAdvanceStateExtendingDraftDealAction>(this));
-	RegisterAction(NewObject<UUDAdvanceStateDemandsAndRequestsDealAction>(this));
-	RegisterAction(NewObject<UUDAdvanceStateBiddingDealAction>(this));
-	RegisterAction(NewObject<UUDAdvanceStateFinalizingDraftDealAction>(this));
-	RegisterAction(NewObject<UUDAdvanceStateVoteDealAction>(this));
-	RegisterAction(NewObject<UUDAdvanceStateResolutionDealAction>(this));
-
-	RegisterAction(NewObject<UUDAdvanceResultPassedDealAction>(this));
-	RegisterAction(NewObject<UUDAdvanceResultVetoedDealAction>(this));
-	RegisterAction(NewObject<UUDAdvanceResultDisassembledDealAction>(this));
-	RegisterAction(NewObject<UUDAdvanceResultClosedDealAction>(this));
-	// Deal action update
-	RegisterAction(NewObject<UUDSendMessageDealAction>(this));
-	//
-	RegisterAction(NewObject<UUDAddDiscussionItemDealAction>(this));
-	RegisterAction(NewObject<UUDIgnoreDiscussionItemDealAction>(this));
-	RegisterAction(NewObject<UUDAddChildDiscussionItemDealAction>(this));
-	RegisterAction(NewObject<UUDDefineActionDealAction>(this));
-	RegisterAction(NewObject<UUDCleanParametersPointDealAction>(this));
-	RegisterAction(NewObject<UUDChangeValueParameterPointDealAction>(this));
-	RegisterAction(NewObject<UUDChangeTileParameterPointDealAction>(this));
-	RegisterAction(NewObject<UUDChangeTileValueParameterPointDealAction>(this));
-	RegisterAction(NewObject<UUDDefinePointTypeDealAction>(this));
-	RegisterAction(NewObject<UUDAddInvokerDealAction>(this));
-	RegisterAction(NewObject<UUDRemoveInvokerDealAction>(this));
-	RegisterAction(NewObject<UUDAddTargetDealAction>(this));
-	RegisterAction(NewObject<UUDRemoveTargetDealAction>(this));
-	//
-	RegisterAction(NewObject<UUDReadyDealAction>(this));
-	RegisterAction(NewObject<UUDNotReadyDealAction>(this));
-	RegisterAction(NewObject<UUDPositiveVoteDealAction>(this));
-	RegisterAction(NewObject<UUDNegativeVoteDealAction>(this));
-	// Deal action finalizations
-	RegisterAction(NewObject<UUDFinalizeItemsDealAction>(this));
-	RegisterAction(NewObject<UUDAcceptFinalItemDealAction>(this));
-	RegisterAction(NewObject<UUDDenyFinalItemDealAction>(this));
-	RegisterAction(NewObject<UUDAlterFinalItemDealAction>(this));
-	RegisterAction(NewObject<UUDSabotageFinalItemDealAction>(this));
-	RegisterAction(NewObject<UUDExecuteAllActionsDealAction>(this));
-	// Win conditions
-	RegisterAction(NewObject<UUDUsurpTheThroneAction>(this));
-	RegisterAction(NewObject<UUDCrownGrantedAction>(this));
-	RegisterAction(NewObject<UUDAbdicateTheThroneAction>(this));
+	// TODO REGISTER
 }

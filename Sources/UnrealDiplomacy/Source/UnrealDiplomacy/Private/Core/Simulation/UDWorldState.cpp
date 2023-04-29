@@ -3,12 +3,13 @@
 
 #include "Core/Simulation/UDWorldState.h"
 #include "Core/Simulation/UDActionData.h"
+#include "Core/UDGlobalData.h"
 
 TObjectPtr<UUDTileState> UUDTileState::CreateState(int32 x, int32 y)
 {
 	TObjectPtr<UUDTileState> newState = NewObject<UUDTileState>();
 	newState->Position = FIntPoint(x, y);
-	newState->OwnerUniqueId = UUDWorldState::GaiaWorldStateId;
+	newState->OwnerUniqueId = UUDGlobalData::GaiaId;
 	newState->Type = 0;
 	return newState;
 }
@@ -94,6 +95,6 @@ TObjectPtr<UUDWorldState> UUDWorldState::CreateState(int32 playerId, bool isPlay
 	TObjectPtr<UUDWorldState> newState = NewObject<UUDWorldState>();
 	newState->IsPlayerPerspectiveOnly = isPlayerPerspectiveOnly;
 	newState->PerspectivePlayerId = playerId;
-	newState->ImperialThrone = FUDThroneState(UUDWorldState::GaiaWorldStateId);
+	newState->ImperialThrone = FUDThroneState(UUDGlobalData::GaiaId);
 	return newState;
 }

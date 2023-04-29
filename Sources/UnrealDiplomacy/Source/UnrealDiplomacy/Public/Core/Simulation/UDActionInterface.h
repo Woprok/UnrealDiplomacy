@@ -13,6 +13,28 @@ class UUDWorldState;
 class UUDWorldGenerator;
 class UUDModifierManager;
 
+// TODO move this
+USTRUCT()
+struct FUDActionPresentation
+{
+	GENERATED_BODY()
+public:
+	FUDActionPresentation() {}
+	TSet<int32> Tags;
+	// What is UI name
+	FString Name;
+	// What is UI desc
+	FString Description;
+	// What is UI icon
+	FString Icon;
+	// What is UI deal preview
+	FString Preview;
+	// What is UI deal final
+	FString Final;
+	static const int32 INVALID = -1;
+	static const int32 VALID = 0;
+};
+
 /** 
  * Stumb for Action Interface.
  * Unreal Engine requires Interface to be first defined as empty stumb.
@@ -63,7 +85,7 @@ public:
 	 * Additional actions that should be executed after this action, based on input.
 	 * Validity is in general checked on GaiaWorldState.
 	 */
-	virtual TArray<FUDActionData> GetContinuations(const FUDActionData& action, TObjectPtr<UUDWorldState> world);
+	virtual TArray<FUDActionData> GetContinuations(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const;
 	/**
 	 * Defines if action requires backup before being applied.
 	 */
@@ -98,7 +120,11 @@ protected:
 	 */
 	void RemovePendingTargetRequest(const FUDActionData& action, int32 targetId, TObjectPtr<UUDWorldState> world);
 	/**
-	 * Checks if there is pending request associated with action and specified target..
+	 * Checks if there is pending request associated with action and specified target.
 	 */
 	bool IsPendingTargetRequest(const FUDActionData& action, int32 targetId, TObjectPtr<UUDWorldState> world) const;
+	/**
+	 * Checks if there is pending interchangeable request associated with target.
+	 */
+	bool IsPendingInterchangeableTargetRequest(const FUDActionData& action, int32 targetId, TObjectPtr<UUDWorldState> world) const;
 };

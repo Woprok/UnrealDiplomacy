@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModelBase.h"
+#include "Core/Simulation/UDActionData.h"
 #include "UDInteractionOverviewViewModel.generated.h"
+
 
 #define LOCTEXT_NAMESPACE "ActionUI"
 /**
@@ -112,10 +114,10 @@ protected:
 	//requests.Num()
 	//requests[0]
 	//position in current (new) list
-	void UpdateView(int32 count, FUDActionData data, int32 position)
+	void UpdateView(int32 count, FUDActionData action, int32 position)
 	{
 		SetPendingCount(count);
-		SetCurrentItem(data); //at least one must be present...
+		SetCurrentItem(action); //at least one must be present...
 		SetCurrentItemShown(position);
 		auto rs1 = FText(
 			LOCTEXT("Gift", "Gift")

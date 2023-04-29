@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 #include "UDActionInterface.h"
 #include "UDWorldState.h"
-#include "Core/Simulation/Actions/UDActions.h"
+#include "Core/UDGlobalData.h"
+#include "Core/Simulation/UDActionData.h"
+#include "Actions/UDActions.h"
 #include "UDActionAdministrator.generated.h"
 
 USTRUCT(BlueprintType)
@@ -373,7 +375,7 @@ public:
 	bool CanTakeTile(FIntPoint position)
 	{
 		auto tile = OverseeingState->Map->GetTile(position);
-		return tile->OwnerUniqueId == UUDWorldState::GaiaWorldStateId;
+		return tile->OwnerUniqueId == UUDGlobalData::GaiaId;
 	}
 	/**
 	 * Returns true if amount is at least 1 and remains is equal or larger then 0.
@@ -390,7 +392,7 @@ public:
 	{
 		for (auto tile : OverseeingState->Map->Tiles)
 		{
-			if (tile->OwnerUniqueId == UUDWorldState::GaiaWorldStateId)
+			if (tile->OwnerUniqueId == UUDGlobalData::GaiaId)
 			{
 				return tile->Position;
 			}
@@ -724,7 +726,7 @@ public:
 	{
 		FUDThroneInfo info = FUDThroneInfo(OverseeingState->ImperialThrone.Ruler);
 		
-		if (info.UsurperId == UUDWorldState::GaiaWorldStateId)
+		if (info.UsurperId == UUDGlobalData::GaiaId)
 		{
 			info.UsurperName = FText::Format(LOCTEXT("Player", "Throne is empty. ({0})"), info.UsurperId);
 		}
@@ -758,7 +760,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool CanUsurpThrone()
 	{
-		return OverseeingState->ImperialThrone.Ruler == UUDWorldState::GaiaWorldStateId;
+		return OverseeingState->ImperialThrone.Ruler == UUDGlobalData::GaiaId;
 	}
 
 	UFUNCTION(BlueprintCallable)

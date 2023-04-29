@@ -28,7 +28,7 @@ void UUDDealActionParticipantInviteAccept::Revert(const FUDActionData& action, T
 	IUDActionInterface::Revert(action, world);
 	// Confirmed request is returned to queue, but it has to be changed first.
 	FUDDealDataTarget data(action.ValueParameters);
-	FUDActionData originalActionData = FUDActionData::AsPredecessorOf(action, UUDInviteParticipantDealAction::ActionTypeId);
+	FUDActionData originalActionData = FUDActionData::AsPredecessorOf(action, UUDDealActionParticipantInvite::ActionTypeId);
 	AddPendingTargetRequest(originalActionData, data.TargetId, world);
 	// Revert change based on data that were used for confirmation.
 	world->Deals[data.DealId]->Participants.Remove(data.TargetId);

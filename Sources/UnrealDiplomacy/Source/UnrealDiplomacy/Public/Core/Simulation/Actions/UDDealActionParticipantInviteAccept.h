@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Core/Simulation/Actions/UDDealAction.h"
+#include "Core/Simulation/Actions/UDDealActionParticipantInvite.h"
 #include "UDDealActionParticipantInviteAccept.generated.h"
 
 /**

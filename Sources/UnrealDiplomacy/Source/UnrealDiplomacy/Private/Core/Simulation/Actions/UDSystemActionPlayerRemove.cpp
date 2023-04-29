@@ -5,7 +5,7 @@
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDWorldState.h"
 
-void UUDSystemActionPlayerRemove::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
+void UDEPRECATED_UDSystemActionPlayerRemove::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Execute(action, world);
 	// Player is removed from the state.
@@ -13,7 +13,7 @@ void UUDSystemActionPlayerRemove::Execute(const FUDActionData& action, TObjectPt
 	world->Players.Remove(action.InvokerPlayerId);
 }
 
-void UUDSystemActionPlayerRemove::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
+void UDEPRECATED_UDSystemActionPlayerRemove::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Revert(action, world);
 	// Player is added to the state.
@@ -22,7 +22,7 @@ void UUDSystemActionPlayerRemove::Revert(const FUDActionData& action, TObjectPtr
 	world->Players.Add(action.InvokerPlayerId, UUDNationState::CreateState(action.InvokerPlayerId));
 }
 
-void UUDSystemActionPlayerIgnore::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
+void UDEPRECATED_UDSystemActionPlayerIgnore::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Execute(action, world);
 	// Player is removed from the state.
@@ -30,7 +30,7 @@ void UUDSystemActionPlayerIgnore::Execute(const FUDActionData& action, TObjectPt
 	//world->Players[action.InvokerPlayerId]->IsIgnored = true;
 }
 
-void UUDSystemActionPlayerIgnore::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
+void UDEPRECATED_UDSystemActionPlayerIgnore::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Revert(action, world);
 	// Player is added to the state.

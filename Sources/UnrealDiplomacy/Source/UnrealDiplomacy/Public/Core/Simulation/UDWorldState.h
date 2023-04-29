@@ -4,11 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "UDModifier.h"
+
+#include "UDActionData.h"
+
 #include "UDWorldState.generated.h"
 
 // Forward Declarations
 
-struct FUDActionData;
+//struct FUDActionData;
 
 /**
  * Represents single tile.

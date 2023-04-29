@@ -9,6 +9,7 @@ bool UUDDealActionParticipantInvite::CanExecute(const FUDActionData& action, TOb
 {
 	FUDDealDataTarget data(action.ValueParameters);
 	bool isNotMember = !world->Deals[data.DealId]->Participants.Contains(data.TargetId);
+	bool isQueuedAgain = IsPendingInterchangeableTargetRequest(action, data.TargetId, world);
 	return IUDActionInterface::CanExecute(action, world) && isNotMember;
 }
 
@@ -16,7 +17,7 @@ void UUDDealActionParticipantInvite::Execute(const FUDActionData& action, TObjec
 {
 	IUDActionInterface::Execute(action, world);
 	// Queue new confirmable request.
-	FUDDealTargetData data(action.ValueParameters);
+	FUDDealDataTarget data(action.ValueParameters);
 	AddPendingTargetRequest(action, data.TargetId, world);
 }
 
@@ -24,6 +25,6 @@ void UUDDealActionParticipantInvite::Revert(const FUDActionData& action, TObject
 {
 	IUDActionInterface::Revert(action, world);
 	// Remove request from queue.
-	FUDDealTargetData data(action.ValueParameters);
+	FUDDealDataTarget data(action.ValueParameters);
 	RemovePendingTargetRequest(action, data.TargetId, world);
 }

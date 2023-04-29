@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h
+#include "CoreMinimal.h"
 #include "Core/Simulation/Actions/UDDealAction.h"
 #include "UDDealActionContractExecute.generated.h"
 
@@ -19,10 +19,10 @@ public:
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual int32 GetId() const override { return ActionTypeId; };
 	virtual int32 GetParameterCount() const override { return FUDDealData::ParameterCount; };
-	virtual bool HasContinuations() override { return true; }
-	virtual TArray<FUDActionData> GetContinuations(FUDActionData& parentAction, TObjectPtr<UUDWorldState> world) override;
+	virtual bool HasContinuations() const override { return true; }
+	virtual TArray<FUDActionData> GetContinuations(const FUDActionData& parentAction, TObjectPtr<UUDWorldState> world) const override;
 public:
 	static const int32 ActionTypeId = 3019;
 	static bool AreAllActionsPrepared(TObjectPtr<UUDWorldState> world, int32 dealUniqueId);
-	TArray<FUDActionData> GetAllContractedActions(TObjectPtr<UUDWorldState> world, int32 dealUniqueId);
+	TArray<FUDActionData> GetAllContractedActions(TObjectPtr<UUDWorldState> world, int32 dealUniqueId) const;
 };

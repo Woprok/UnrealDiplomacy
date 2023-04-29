@@ -3,12 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UDActionData.h"
-#include "UDActionInterface.h"
-#include "UDWorldState.h"
-#include "Core/Simulation/Actions/UDSystemActionTurnEnd.h"
-#include "Core/Simulation/Actions/UDGameActionThroneReceive.h"
 #include "UDWorldArbiter.generated.h"
+
+// Forward Declarations
+struct FUDActionData;
+class UUDWorldState;
 
 USTRUCT(BlueprintType)
 struct UNREALDIPLOMACY_API FUDArbiterRuleset
@@ -32,78 +31,12 @@ public:
 	/**
 	 * Requires Gaia world state to provide accurate information.
 	 */
-	bool OnActionExecutionFinished(int32 actionType, TObjectPtr<UUDWorldState> gaiaWorldState)
-	{
-		if (GameReachedEnd)
-		{
-			// Execution must be halted if game was decided.
-			return false;
-		}
-
-		switch (actionType)
-		{
-		case UUDSystemActionTurnEnd::ActionTypeId:
-			EvaluateTurnGameOverState(gaiaWorldState);
-		default:
-			// We don't care about the remaining actions.
-			break;
-		}
-
-		return GameReachedEnd;
-	}
-
-	TArray<FUDActionData> EndGame()
-	{
-		TArray<FUDActionData> actions;
-		// Return if game is still not finished based on last check.
-		if (!GameReachedEnd)
-			return actions;
-
-		if (CrownIsEmpty)
-		{
-			actions.Add(DetermineNewRuler());
-		}
-
-		actions.Add(CreateEndGame());
-		// This is final action in sequence always.
-		// Endgame is expected to behave as hard stop for taking new actions.
-		return actions;
-	}
+	bool OnActionExecutionFinished(int32 actionType, TObjectPtr<UUDWorldState> gaiaWorldState);
+	TArray<FUDActionData> EndGame();
 protected:
-	void EvaluateTurnGameOverState(TObjectPtr<UUDWorldState> gaiaWorldState)
-	{
-		// Winner was found
-		if (gaiaWorldState->CurrentTurn < CurrentRuleSet.MaxTurnCount)
-		{
-			return;
-		}
-		// Game will end with this action.
-		GameReachedEnd = true;
-		// New ruler will be crowned.
-		if (gaiaWorldState->ImperialThrone.Ruler == UUDWorldState::GaiaWorldStateId)
-		{
-			CrownIsEmpty = true;
-			// TODO add legitimacy
-			// This determines final usurper based on gold
-			int32 mostGold = -1;
-			for (auto& player : gaiaWorldState->Players)
-			{
-				if (player.Value->ResourceGold > mostGold && player.Value->PlayerUniqueId != UUDWorldState::GaiaWorldStateId)
-				{
-					mostGold = player.Value->ResourceGold;
-					CrownableRuler = player.Value->PlayerUniqueId;
-				}
-			}
-		}
-	}
-	FUDActionData DetermineNewRuler()
-	{
-		return FUDActionData(UUDGameActionThroneReceive::ActionTypeId, UUDWorldState::GaiaWorldStateId, { CrownableRuler });
-	}
-	FUDActionData CreateEndGame()
-	{
-		return FUDActionData(UUDSystemActionTurnEnd::ActionTypeId, UUDWorldState::GaiaWorldStateId);
-	}
+	void EvaluateTurnGameOverState(TObjectPtr<UUDWorldState> gaiaWorldState);
+	FUDActionData DetermineNewRuler();
+	FUDActionData CreateEndGame();
 private:
 	bool GameReachedEnd = false;
 	bool CrownIsEmpty = false;

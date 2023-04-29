@@ -21,11 +21,11 @@ FUDActionData::FUDActionData(const FUDActionData& action)
 
 FUDActionData FUDActionData::CreateDataCopy(const FUDActionData& existingAction)
 {
-	FUDActionData data = FUDActionData();
+	FUDActionData action = FUDActionData();
 	action.InvokerPlayerId = existingAction.InvokerPlayerId;
 	action.ValueParameters = existingAction.ValueParameters;
 	action.TextParameter = existingAction.TextParameter;
-	return data;
+	return action;
 }
 
 //FUDActionData FUDActionData::AsChildOf(const FUDActionData& parentAction, int32 parentUniqueId)

@@ -11,6 +11,8 @@
 #include "Core/Simulation/Actions/UDGameActionThroneAbdicate.h"
 #include "Core/Simulation/Actions/UDDealActionPointModifyType.h"
 
+#include "Core/Simulation/UDActionData.h"
+
 #include "UDDealProcessViewModel.generated.h"
 
 #define LOCTEXT_NAMESPACE "ActionUI"
@@ -43,26 +45,26 @@ public:
 	FUDDealActionInfo CurrentData;
 public:
 	UFUNCTION(BlueprintCallable)
-	void SetBindingTarget(FUDDealActionInfo data, bool isOwner)
+	void SetBindingTarget(FUDDealActionInfo action, bool isOwner)
 	{
-		CurrentData = data;
+		CurrentData = action;
 		FUDActionData data = action.ActionBody.Action;
 		TStringBuilder<64> desc;
 		desc.Append(FText::Format(LOCTEXT("ActionPreview", "Action: {0}. "),
-			action.ActionTypeId).ToString()
+			data.ActionTypeId).ToString()
 		);
 		desc.Append(FText::Format(LOCTEXT("ActionPreview", "Invoked by: {0}. "),
-			action.InvokerPlayerId).ToString()
+			data.InvokerPlayerId).ToString()
 
 		);
 		desc.Append(FText(LOCTEXT("ActionPreview", "Text param: ")).ToString());
-		desc.Append(action.TextParameter);
+		desc.Append(data.TextParameter);
 		desc.Append(FText(LOCTEXT("ActionPreview", ".\n")).ToString());
 
 		desc.Append(FText::Format(LOCTEXT("ActionPreview", "Value param count: {0} Params:\n"),
-			action.ValueParameters.Num()).ToString()
+			data.ValueParameters.Num()).ToString()
 		);
-		for (auto param : action.ValueParameters)
+		for (auto param : data.ValueParameters)
 		{
 			desc.Append(FText::Format(LOCTEXT("ActionPreview", "Prm: {0}. "),
 				param).ToString()
@@ -152,7 +154,7 @@ public:
 	// Fields.
 public:
 	UFUNCTION(BlueprintCallable)
-		void SetBindingTarget(FUDActionData data)
+		void SetBindingTarget(FUDActionData action)
 	{
 		TStringBuilder<64> desc;
 		desc.Append(FText::Format(LOCTEXT("ActionPreview", "Action: {0}. "),

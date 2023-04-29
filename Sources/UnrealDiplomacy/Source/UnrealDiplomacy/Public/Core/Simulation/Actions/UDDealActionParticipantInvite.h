@@ -11,6 +11,7 @@
  */
 UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDDealActionParticipantInvite : public UUDDealAction
+{
 	GENERATED_BODY()
 public:
 	virtual bool CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const override;

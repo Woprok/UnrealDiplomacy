@@ -2,6 +2,7 @@
 
 
 #include "Skirmish/UDSkirmishAIController.h"
+#include "Core/Simulation/Actions/UDActions.h"
 
 void AUDSkirmishAIController::InitializeAdministrator()
 {
@@ -57,7 +58,7 @@ void AUDSkirmishAIController::DoTurn()
 	// Resolve requests
 	for (auto request : GetPersonalAdministrator()->GetPendingRequests())
 	{
-		if (request.ActionTypeId == UUDGiftAction::ActionTypeId)
+		if (request.ActionTypeId == UUDGameActionGift::ActionTypeId)
 		{
 			gifters.Add(request.InvokerPlayerId);
 			OnActionDecidedDelegate.ExecuteIfBound(GetPersonalAdministrator()->GetConfirmConditionalGiftGoldAction(request));

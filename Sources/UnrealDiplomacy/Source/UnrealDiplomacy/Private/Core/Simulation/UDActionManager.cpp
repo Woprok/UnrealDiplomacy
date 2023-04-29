@@ -53,7 +53,8 @@ void UUDActionManager::Initialize()
 void UUDActionManager::RegisterCoreActions()
 {
 	TArray<TScriptInterface<IUDActionInterface>> coreActionList = {
-		NewObject<UUDSystemActionInvalid>(this),
+		NewObject<UUDActionInvalid>(this),
+
 		NewObject<UUDSystemActionLog>(this),
 		NewObject<UUDSystemActionGameStart>(this),
 		NewObject<UUDSystemActionGameEnd>(this),
