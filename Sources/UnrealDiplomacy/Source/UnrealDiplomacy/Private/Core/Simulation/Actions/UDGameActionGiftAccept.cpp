@@ -1,26 +1,36 @@
 // Copyright Miroslav Valach
 
 #include "Core/Simulation/Actions/UDGameActionGiftAccept.h"
+#include "Core/UDGlobalData.h"
+#include "Core/Simulation/UDActionData.h"
+#include "Core/Simulation/UDWorldState.h"
+
+bool UUDGameActionGiftAccept::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
+{
+	FUDGameDataTargetAmount data(action.ValueParameters);
+	bool isQueued = IsPendingTargetRequest(action, data.TargetId, world);
+	return UUDGameActionGift::CanExecute(action, world) && isQueued;
+}
 
 void UUDGameActionGiftAccept::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(data, world);
+	IUDActionInterface::Execute(action, world);
 	// Execute change based on data contained in confirm.
-	FUDTargetValueData data = UUDGiftAction::ConvertData(data);
-	world->Players[action.InvokerPlayerId]->ResourceGold -= action.Value;
-	world->Players[action.TargetId]->ResourceGold += action.Value;
+	FUDGameDataTargetAmount data(action.ValueParameters);
+	world->Players[action.InvokerPlayerId]->ResourceGold -= data.Amount;
+	world->Players[data.TargetId]->ResourceGold += data.Amount;
 	// Remove request from queue.
-	RemovePendingTargetRequest(data, action.TargetId, world);
+	RemovePendingTargetRequest(action, data.TargetId, world);
 }
 
 void UUDGameActionGiftAccept::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(data, world);
+	IUDActionInterface::Revert(action, world);
 	// Confirmed request is returned to queue, but it has to be changed first.
-	FUDTargetValueData data = UUDGiftAction::ConvertData(data);
-	FUDActionData originalActionData = FUDActionData::AsPredecessorOf(data, UUDGiftAction::ActionTypeId);
-	AddPendingTargetRequest(originalActionData, action.TargetId, world);
+	FUDGameDataTargetAmount data(action.ValueParameters);
+	FUDActionData originalActionData = FUDActionData::AsPredecessorOf(action, UUDGameActionGift::ActionTypeId);
+	AddPendingTargetRequest(originalActionData, data.TargetId, world);
 	// Revert change based on data that were used for confirmation..
-	world->Players[action.InvokerPlayerId]->ResourceGold += action.Value;
-	world->Players[action.TargetId]->ResourceGold -= action.Value;
+	world->Players[action.InvokerPlayerId]->ResourceGold += data.Amount;
+	world->Players[data.TargetId]->ResourceGold -= data.Amount;
 }

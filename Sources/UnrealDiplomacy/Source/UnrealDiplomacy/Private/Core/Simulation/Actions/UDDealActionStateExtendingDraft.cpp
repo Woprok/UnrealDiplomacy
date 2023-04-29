@@ -1,28 +1,29 @@
 // Copyright Miroslav Valach
 
 #include "Core/Simulation/Actions/UDDealActionStateExtendingDraft.h"
+#include "Core/UDGlobalData.h"
+#include "Core/Simulation/UDActionData.h"
+#include "Core/Simulation/UDWorldState.h"
 
-bool UUDDealActionStateExtendingDraft::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
+bool UUDDealActionStateExtendingDraft::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	bool result = IUDActionInterface::CanExecute(data, world);
-	if (result)
-	{
-		FUDDealData data = UUDDealActionStateExtendingDraft::ConvertData(data);
-		bool isModerator = world->Deals[action.DealId]->OwnerUniqueId == action.InvokerPlayerId;
-		bool isStateBefore = world->Deals[action.DealId]->DealSimulationState == EUDDealSimulationState::Assembling;
-		result = result && isModerator && isStateBefore;
-	}
-	return result;
+	FUDDealData data(action.ValueParameters);
+	bool isParticipant = world->Deals[data.DealId]->Participants.Contains(action.InvokerPlayerId);
+	bool isModerator = world->Deals[data.DealId]->OwnerUniqueId == action.InvokerPlayerId;
+	bool isStateBefore = world->Deals[data.DealId]->DealSimulationState == EUDDealSimulationState::Assembling;
+	return IUDActionInterface::CanExecute(action, world) && isParticipant && isModerator && isStateBefore;
 }
 void UUDDealActionStateExtendingDraft::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(data, world);
-	FUDDealData data = UUDDealActionStateExtendingDraft::ConvertData(data);
-	world->Deals[action.DealId]->DealSimulationState = EUDDealSimulationState::ExtendingDraft;
+	IUDActionInterface::Execute(action, world);
+	// Advances the state to assembling.
+	FUDDealData data(action.ValueParameters);
+	world->Deals[data.DealId]->DealSimulationState = EUDDealSimulationState::ExtendingDraft;
 }
 void UUDDealActionStateExtendingDraft::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(data, world);
-	FUDDealData data = UUDDealActionStateExtendingDraft::ConvertData(data);
-	world->Deals[action.DealId]->DealSimulationState = EUDDealSimulationState::Assembling;
+	IUDActionInterface::Revert(action, world);
+	// Reverts back to previous state.
+	FUDDealData data(action.ValueParameters);
+	world->Deals[data.DealId]->DealSimulationState = EUDDealSimulationState::Assembling;
 }

@@ -15,13 +15,13 @@ bool UUDDealActionContractPointTamper::CanExecute(const FUDActionData& action, T
 }
 void UUDDealActionContractPointTamper::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(data, world);
+	IUDActionInterface::Execute(action, world);
 	FUDDealValueData data = UUDDealActionContractPointTamper::ConvertData(data);
 	world->Deals[action.DealId]->DealActionList[action.Value].SelectedResult = EUDDealActionResult::Changed;
 }
 void UUDDealActionContractPointTamper::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(data, world);
+	IUDActionInterface::Revert(action, world);
 	FUDDealValueData data = UUDDealActionContractPointTamper::ConvertData(data);
 	world->Deals[action.DealId]->DealActionList[action.Value].SelectedResult = EUDDealActionResult::Unresolved;
 }

@@ -88,4 +88,17 @@ public:
 	 * Contains definition for filtering and displaying action.
 	 */
 	virtual FUDActionPresentation GetPresentation() const;
+protected:
+	/**
+	 * Adds pending request associated with action and specified target.
+	 */
+	void AddPendingTargetRequest(FUDActionData action, int32 targetId, TObjectPtr<UUDWorldState> world);
+	/**
+	 * Removes pending request associated with action and specified target.
+	 */
+	void RemovePendingTargetRequest(const FUDActionData& action, int32 targetId, TObjectPtr<UUDWorldState> world);
+	/**
+	 * Checks if there is pending request associated with action and specified target..
+	 */
+	bool IsPendingTargetRequest(const FUDActionData& action, int32 targetId, TObjectPtr<UUDWorldState> world) const;
 };

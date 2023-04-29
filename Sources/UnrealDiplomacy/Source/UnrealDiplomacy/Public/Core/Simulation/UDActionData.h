@@ -47,24 +47,6 @@ public:
  * @param FUDActionData.ValueParameters
  */
 USTRUCT(BlueprintType)
-struct FUDDealData
-{
-	GENERATED_BODY()
-public:
-	FUDDealData() {}
-	FUDDealData(TArray<int32> valueParameters)
-	{
-		DealId = valueParameters[0];
-	}
-	UPROPERTY(BlueprintReadOnly)
-	int32 DealId = 0;
-};
-
-/**
- * Transforms action parameters to properly named fields.
- * @param FUDActionData.ValueParameters
- */
-USTRUCT(BlueprintType)
 struct FUDDealValueData
 {
 	GENERATED_BODY()

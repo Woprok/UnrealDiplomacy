@@ -21,7 +21,6 @@ public:
 	}
 	UPROPERTY(BlueprintReadOnly)
 	int32 TargetId = 0;
-	UPROPERTY(BlueprintReadOnly)
 	static const int32 ParameterCount = 1;
 };
 
@@ -46,7 +45,6 @@ public:
 	int32 SizeX = 0;
 	UPROPERTY(BlueprintReadOnly)
 	int32 SizeY = 0;
-	UPROPERTY(BlueprintReadOnly)
 	static const int32 ParameterCount = 3;
 };
 

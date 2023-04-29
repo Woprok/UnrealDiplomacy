@@ -27,12 +27,12 @@ bool UUDDealActionContractExecute::CanExecute(const FUDActionData& action, TObje
 }
 void UUDDealActionContractExecute::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(data, world);
+	IUDActionInterface::Execute(action, world);
 	// Execution is empty as this action only invokes other.
 }
 void UUDDealActionContractExecute::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(data, world);
+	IUDActionInterface::Revert(action, world);
 	// Execution is always reverted if all subactions were revoked.
 }
 

@@ -22,6 +22,6 @@ void UUDSystemActionTurnForceEnd::Revert(const FUDActionData& action, TObjectPtr
 {
 	IUDActionInterface::Revert(action, world);
 	// Reverts previous player that was forced to end turn.
-	FUDSystemDataTarget data = FUDSystemDataTarget(action.ValueParameters);
+	FUDSystemDataTarget data(action.ValueParameters);
 	RevertTurnAdvance(world, data.TargetId);
 }

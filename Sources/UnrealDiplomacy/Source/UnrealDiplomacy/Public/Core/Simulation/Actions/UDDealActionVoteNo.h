@@ -3,24 +3,22 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Core/Simulation/UDActionInterface.h"
+#include "Core/Simulation/Actions/UDDealAction.h"
 #include "UDDealActionVoteNo.generated.h"
 
-UCLASS()
-class UNREALDIPLOMACY_API UUDDealActionVoteNo : public UObject, public IUDActionInterface
+/**
+ * Vote against the deal.
+ */
+UCLASS(Blueprintable, BlueprintType)
+class UNREALDIPLOMACY_API UUDDealActionVoteNo : public UUDDealAction
 {
 	GENERATED_BODY()
 public:
-	virtual bool CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
+	virtual bool CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const override;
 	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
-	virtual int32 GetId() override { return ActionTypeId; };
-	virtual int32 GetParameterCount() override { return RequiredParametersCount; };
+	virtual int32 GetId() const override { return ActionTypeId; };
+	virtual int32 GetParameterCount() const override { return FUDDealData::ParameterCount; };
 public:
-	static const int32 ActionTypeId = 10045;
-	static const int32 RequiredParametersCount = 1;
-	static FUDDealData ConvertData(FUDActionData& action)
-	{
-		return FUDDealData(action.ValueParameters);
-	}
+	static const int32 ActionTypeId = 3008;
 };

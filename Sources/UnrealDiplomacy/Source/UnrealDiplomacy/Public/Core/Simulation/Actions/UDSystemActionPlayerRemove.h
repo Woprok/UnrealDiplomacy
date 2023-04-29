@@ -10,7 +10,7 @@
  * Removes state of existing player.
  */
 UCLASS(Deprecated, Blueprintable, BlueprintType)
-class UNREALDIPLOMACY_API __declspec(deprecated) UUDSystemActionPlayerRemove : public UUDSystemAction
+class UNREALDIPLOMACY_API UDEPRECATED_UDSystemActionPlayerRemove : public UUDSystemAction
 {
 	GENERATED_BODY()
 public:
@@ -25,7 +25,7 @@ public:
  * Ignores state of existing player.
  */
 UCLASS(Deprecated, Blueprintable, BlueprintType)
-class UNREALDIPLOMACY_API __declspec(deprecated) UUDSystemActionPlayerIgnore : public UUDSystemAction
+class UNREALDIPLOMACY_API UDEPRECATED_UDSystemActionPlayerIgnore : public UUDSystemAction
 {
 	GENERATED_BODY()
 public:

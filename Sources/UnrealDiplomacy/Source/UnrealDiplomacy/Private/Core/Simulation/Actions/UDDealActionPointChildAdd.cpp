@@ -16,7 +16,7 @@ bool UUDDealActionPointChildAdd::CanExecute(const FUDActionData& action, TObject
 }
 void UUDDealActionPointChildAdd::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(data, world);
+	IUDActionInterface::Execute(action, world);
 	// Creates new sub-point for a specified Point with current SourceUniqueId.
 	FUDDealPointData data = UUDDealActionPointChildAdd::ConvertData(data);
 	world->Deals[action.DealId]->Points.Add(action.SourceUniqueId, UUDDiscussionItem::CreateState(action.InvokerPlayerId));
@@ -24,7 +24,7 @@ void UUDDealActionPointChildAdd::Execute(const FUDActionData& action, TObjectPtr
 }
 void UUDDealActionPointChildAdd::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(data, world);
+	IUDActionInterface::Revert(action, world);
 	// Deletes created sub-point that is saved with this action SourceUniqueId.
 	FUDDealPointData data = UUDDealActionPointChildAdd::ConvertData(data);
 	world->Deals[action.DealId]->Points.Remove(action.SourceUniqueId);

@@ -16,7 +16,7 @@ bool UUDDealActionPointAdd::CanExecute(const FUDActionData& action, TObjectPtr<U
 }
 void UUDDealActionPointAdd::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(data, world);
+	IUDActionInterface::Execute(action, world);
 	// Creates new point.
 	FUDDealData data = UUDDealActionPointAdd::ConvertData(data);
 	world->Deals[action.DealId]->Points.Add(action.SourceUniqueId, UUDDiscussionItem::CreateState(action.InvokerPlayerId));
@@ -24,7 +24,7 @@ void UUDDealActionPointAdd::Execute(const FUDActionData& action, TObjectPtr<UUDW
 }
 void UUDDealActionPointAdd::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(data, world);
+	IUDActionInterface::Revert(action, world);
 	// Deletes created point that is currently located at the end.
 	FUDDealData data = UUDDealActionPointAdd::ConvertData(data);
 	world->Deals[action.DealId]->Points.Remove(action.SourceUniqueId);

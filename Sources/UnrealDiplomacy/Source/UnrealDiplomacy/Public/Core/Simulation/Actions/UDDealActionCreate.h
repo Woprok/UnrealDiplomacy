@@ -3,18 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Core/Simulation/UDActionInterface.h"
+#include "Core/Simulation/Actions/UDDealAction.h"
 #include "UDDealActionCreate.generated.h"
 
 /**
- * Deal actions between any amount of players.
- * Core part of the game. Uses 10000-19999 for all subsequent actions.
- * Creates new deal.
- * Player that created the deal is considered a participant immediately.
- * Deals do not have an owner and are stored as part of world state.
+ * Creates new deal owned by invoking player. 
  */
-UCLASS()
-class UNREALDIPLOMACY_API UUDDealActionCreate : public UObject, public IUDActionInterface
+UCLASS(Blueprintable, BlueprintType)
+class UNREALDIPLOMACY_API UUDDealActionCreate : public UUDDealAction
 {
 	GENERATED_BODY()
 public:
@@ -22,8 +18,8 @@ public:
 	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual int32 GetId() const override { return ActionTypeId; };
-	virtual int32 GetParameterCount() const override { return RequiredParametersCount; };
 public:
-	static const int32 ActionTypeId = 10000;
-	static const int32 RequiredParametersCount = 0;
+	static const int32 ActionTypeId = 3001;
+protected:
+	bool IsDealModerator(TObjectPtr<UUDWorldState> world, int32 playerId) const;
 };

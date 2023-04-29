@@ -3,26 +3,22 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Core/Simulation/UDActionInterface.h"
+#include "Core/Simulation/Actions/UDGameAction.h"
 #include "UDGameActionGift.generated.h"
 
 /**
- * Simple gift of resources between two players, that must be accepted.
+ * Gift that can be accepted or rejected.
  */
-UCLASS()
-class UNREALDIPLOMACY_API UUDGameActionGift : public UObject, public IUDActionInterface
+UCLASS(Blueprintable, BlueprintType)
+class UNREALDIPLOMACY_API UUDGameActionGift : public UUDGameAction
 {
 	GENERATED_BODY()
 public:
+	virtual bool CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const override;
 	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
-	virtual int32 GetId() override { return ActionTypeId; };
-	virtual int32 GetParameterCount() override { return RequiredParametersCount; };
+	virtual int32 GetId() const override { return ActionTypeId; };
+	virtual int32 GetParameterCount() const override { return FUDGameDataTargetAmount::ParameterCount; };
 public:
-	static const int32 ActionTypeId = 1001;
-	static const int32 RequiredParametersCount = 2;
-	static FUDTargetValueData ConvertData(FUDActionData& action)
-	{
-		return FUDTargetValueData(action.ValueParameters);
-	}
+	static const int32 ActionTypeId = 2004;
 };

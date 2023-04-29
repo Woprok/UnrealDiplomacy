@@ -1,26 +1,26 @@
 // Copyright Miroslav Valach
 
 #include "Core/Simulation/Actions/UDGameActionThroneUsurp.h"
+#include "Core/UDGlobalData.h"
+#include "Core/Simulation/UDActionData.h"
+#include "Core/Simulation/UDWorldState.h"
 
-bool UUDGameActionThroneUsurp::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
+bool UUDGameActionThroneUsurp::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	return IUDActionInterface::CanExecute(data, world) &&
-		// Throne must be empty.
-		world->ImperialThrone.Ruler == UUDWorldState::GaiaWorldStateId &&
-		// Player should be the one who is currently playing his turn.
-		action.InvokerPlayerId == world->CurrentTurnPlayerId;
+	bool isThroneEmpty = world->ImperialThrone.Ruler == UUDGlobalData::GaiaId;
+	return IUDActionInterface::CanExecute(action, world) && isThroneEmpty;
 }
 
 void UUDGameActionThroneUsurp::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(data, world);
+	IUDActionInterface::Execute(action, world);
 	// Takeover the empty throne.
 	world->ImperialThrone.Ruler = action.InvokerPlayerId;
 }
 
 void UUDGameActionThroneUsurp::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(data, world);
+	IUDActionInterface::Revert(action, world);
 	// Rollback to the empty throne.
-	world->ImperialThrone.Ruler = UUDWorldState::GaiaWorldStateId;
+	world->ImperialThrone.Ruler = UUDGlobalData::GaiaId;
 }

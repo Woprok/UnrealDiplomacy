@@ -1,6 +1,33 @@
 // Copyright Miroslav Valach
 
 #include "Core/Simulation/Actions/UDDealActionContractCreate.h"
+#include "Core/UDGlobalData.h"
+#include "Core/Simulation/UDActionData.h"
+#include "Core/Simulation/UDWorldState.h"
+
+bool UUDDealActionContractCreate::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
+{
+	FUDDealData data(action.ValueParameters);
+	bool isEmpty = world->Deals[data.DealId]->DealActionList.IsEmpty();
+	return IUDActionInterface::CanExecute(action, world) && isEmpty;
+}
+
+void UUDDealActionContractCreate::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
+{
+	IUDActionInterface::Execute(action, world);
+	// Defines new action list.
+	FUDDealData data(action.ValueParameters);
+	TArray<FUDActionData> actions = UUDDealActionContractCreate::FinalizeActions(world, data.DealId);
+	world->Deals[data.DealId]->DealActionList = UUDDealActionContractCreate::WrapActions(actions);
+}
+
+void UUDDealActionContractCreate::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
+{
+	IUDActionInterface::Revert(action, world);
+	// Removes action list.
+	FUDDealData data(action.ValueParameters);
+	world->Deals[data.DealId]->DealActionList.Empty();
+}
 
 TArray<FUDActionData> UUDDealActionContractCreate::FinalizeActions(TObjectPtr<UUDWorldState> world, int32 dealUniqueId)
 {
@@ -47,33 +74,8 @@ TArray<FUDDiscsussionAction> UUDDealActionContractCreate::WrapActions(TArray<FUD
 			action,
 			EUDDealActionResult::Unresolved,
 			false,
-			UUDWorldState::GaiaWorldStateId)
+			UUDGlobalData::GaiaId)
 		);
 	}
 	return dealActions;
-}
-
-bool UUDDealActionContractCreate::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
-{
-	bool result = IUDActionInterface::CanExecute(data, world);
-	if (result)
-	{
-		FUDDealData data = UUDDealActionContractCreate::ConvertData(data);
-		bool isEmpty = world->Deals[action.DealId]->DealActionList.IsEmpty();
-		result = result && isEmpty;
-	}
-	return result;
-}
-void UUDDealActionContractCreate::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
-{
-	IUDActionInterface::Execute(data, world);
-	FUDDealData data = UUDDealActionContractCreate::ConvertData(data);
-	TArray<FUDActionData> actions = UUDDealActionContractCreate::FinalizeActions(world, action.DealId);
-	world->Deals[action.DealId]->DealActionList = UUDDealActionContractCreate::WrapActions(actions);
-}
-void UUDDealActionContractCreate::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
-{
-	IUDActionInterface::Revert(data, world);
-	FUDDealData data = UUDDealActionContractCreate::ConvertData(data);
-	world->Deals[action.DealId]->DealActionList.Empty();
 }

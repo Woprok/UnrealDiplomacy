@@ -17,7 +17,7 @@ bool UUDDealActionPointIgnore::CanExecute(const FUDActionData& action, TObjectPt
 }
 void UUDDealActionPointIgnore::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(data, world);
+	IUDActionInterface::Execute(action, world);
 	// Mark point as ignored. Removing is not necessary.
 	// TODO consider Id based indexing for Points...
 	FUDDealPointData data = UUDDealActionPointIgnore::ConvertData(data);
@@ -25,7 +25,7 @@ void UUDDealActionPointIgnore::Execute(const FUDActionData& action, TObjectPtr<U
 }
 void UUDDealActionPointIgnore::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(data, world);
+	IUDActionInterface::Revert(action, world);
 	// Mark point as available for editing and use.
 	FUDDealPointData data = UUDDealActionPointIgnore::ConvertData(data);
 	world->Deals[action.DealId]->Points[action.Point]->IsIgnored = false;

@@ -15,14 +15,14 @@ bool UUDDealActionContractPointSabotage::CanExecute(const FUDActionData& action,
 }
 void UUDDealActionContractPointSabotage::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(data, world);
+	IUDActionInterface::Execute(action, world);
 	FUDDealValueData data = UUDDealActionContractPointSabotage::ConvertData(data);
 	world->Deals[action.DealId]->DealActionList[action.Value].WasSabotaged = true;
 	world->Deals[action.DealId]->DealActionList[action.Value].SabotageId = action.InvokerPlayerId;
 }
 void UUDDealActionContractPointSabotage::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(data, world);
+	IUDActionInterface::Revert(action, world);
 	FUDDealValueData data = UUDDealActionContractPointSabotage::ConvertData(data);
 	world->Deals[action.DealId]->DealActionList[action.Value].WasSabotaged = false;
 	world->Deals[action.DealId]->DealActionList[action.Value].SabotageId = UUDWorldState::GaiaWorldStateId;

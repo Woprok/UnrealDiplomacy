@@ -1,26 +1,32 @@
 // Copyright Miroslav Valach
 
 #include "Core/Simulation/Actions/UDGameActionGiftIrrevocable.h"
+#include "Core/UDGlobalData.h"
+#include "Core/Simulation/UDActionData.h"
+#include "Core/Simulation/UDWorldState.h"
 
-bool UUDGameActionGiftIrrevocable::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
+bool UUDGameActionGiftIrrevocable::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	return IUDActionInterface::CanExecute(data, world);
+	FUDGameDataTargetAmount data(action.ValueParameters);
+	bool isDifferentPlayer = action.InvokerPlayerId != data.TargetId;
+	bool isPositiveAmount = data.Amount > 0;
+	return IUDActionInterface::CanExecute(action, world) && isDifferentPlayer && isPositiveAmount;
 }
 
 void UUDGameActionGiftIrrevocable::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(data, world);
+	IUDActionInterface::Execute(action, world);
 	// Transfer resource to target.
-	FUDTargetValueData data = UUDGameActionGiftIrrevocable::ConvertData(data);
-	world->Players[action.InvokerPlayerId]->ResourceGold -= action.Value;
-	world->Players[action.TargetId]->ResourceGold += action.Value;
+	FUDGameDataTargetAmount data(action.ValueParameters);
+	world->Players[action.InvokerPlayerId]->ResourceGold -= data.Amount;
+	world->Players[data.TargetId]->ResourceGold += data.Amount;
 }
 
 void UUDGameActionGiftIrrevocable::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(data, world);
+	IUDActionInterface::Revert(action, world);
 	// Transfer resource back from target.
-	FUDTargetValueData data = UUDGameActionGiftIrrevocable::ConvertData(data);
-	world->Players[action.InvokerPlayerId]->ResourceGold += action.Value;
-	world->Players[action.TargetId]->ResourceGold -= action.Value;
+	FUDGameDataTargetAmount data(action.ValueParameters);
+	world->Players[action.InvokerPlayerId]->ResourceGold += data.Amount;
+	world->Players[data.TargetId]->ResourceGold -= data.Amount;
 }

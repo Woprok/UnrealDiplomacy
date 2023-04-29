@@ -1,27 +1,29 @@
 // Copyright Miroslav Valach
 
 #include "Core/Simulation/Actions/UDDealActionVoteYes.h"
+#include "Core/UDGlobalData.h"
+#include "Core/Simulation/UDActionData.h"
+#include "Core/Simulation/UDWorldState.h"
 
-bool UUDDealActionVoteYes::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
+bool UUDDealActionVoteYes::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	bool result = IUDActionInterface::CanExecute(data, world);
-	if (result)
-	{
-		FUDDealData data = UUDDealActionVoteYes::ConvertData(data);
-		bool isNotReady = !world->Deals[action.DealId]->PositiveVotePlayerList.Contains(action.InvokerPlayerId);
-		result = result && isNotReady;
-	}
-	return result;
+	FUDDealData data(action.ValueParameters);
+	bool isNotVoting = !world->Deals[data.DealId]->PositiveVotePlayerList.Contains(action.InvokerPlayerId);
+	return IUDActionInterface::CanExecute(action, world) && isNotVoting;
 }
+
 void UUDDealActionVoteYes::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(data, world);
-	FUDDealData data = UUDDealActionVoteYes::ConvertData(data);
-	world->Deals[action.DealId]->PositiveVotePlayerList.Add(action.InvokerPlayerId);
+	IUDActionInterface::Execute(action, world);
+	// Vote yes.
+	FUDDealData data(action.ValueParameters);
+	world->Deals[data.DealId]->PositiveVotePlayerList.Add(action.InvokerPlayerId);
 }
+
 void UUDDealActionVoteYes::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(data, world);
-	FUDDealData data = UUDDealActionVoteYes::ConvertData(data);
-	world->Deals[action.DealId]->PositiveVotePlayerList.Remove(action.InvokerPlayerId);
+	IUDActionInterface::Revert(action, world);
+	// Revert to no vote.
+	FUDDealData data(action.ValueParameters);
+	world->Deals[data.DealId]->PositiveVotePlayerList.Remove(action.InvokerPlayerId);
 }

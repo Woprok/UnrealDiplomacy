@@ -33,7 +33,7 @@ public:
 	static const int32 GaiaId = 0;
 };
 
-// DESC COMMENTS TO DELETE
+// DESC COMMENTS TO CHECK, CONSIDER, DELETE
 /**
 * START GAME
  * Start of game action that is called as action only once.
@@ -45,6 +45,11 @@ public:
  * Notification for new Player/Ai being part of the game.
  * This allows new player to receive history and create list of all players.
  * Note: Invoker is always the new player, even, if he was added by someone esle AI by server.
- 
+* DEALS
+ * Deal actions between any amount of players.
+ * Core part of the game. Uses 10000-19999 for all subsequent actions.
+ * Creates new deal.
+ * Player that created the deal is considered a participant immediately.
+ * Deals do not have an owner and are stored as part of world state.
  
  */

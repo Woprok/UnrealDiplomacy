@@ -131,10 +131,32 @@ public:
 	static const int32 VALID = 0;
 };
 
-/**
- * Removes pending request associated with action and specified target.
- */
-void RemovePendingTargetRequest(FUDActionData action, int32 targetId, TObjectPtr<UUDWorldState> world)
+void IUDActionInterface::AddPendingTargetRequest(FUDActionData action, int32 targetId, TObjectPtr<UUDWorldState> world)
+{
+	UE_LOG(
+		LogTemp,
+		Log,
+		TEXT("INSTANCE(%d): Player(%d) started with (%d) requests. Adding request(%d)"),
+		world->PerspectivePlayerId,
+		targetId,
+		world->Players[targetId]->PendingRequests.Num(),
+		action.SourceUniqueId
+	);
+
+	// Item is added as key value pair.
+	world->Players[targetId]->PendingRequests.Add(action.SourceUniqueId, action);
+
+	UE_LOG(
+		LogTemp,
+		Log,
+		TEXT("INSTANCE(%d): Player(%d) ended with (%d) requests."),
+		world->PerspectivePlayerId,
+		targetId,
+		world->Players[targetId]->PendingRequests.Num()
+	);
+}
+
+void IUDActionInterface::RemovePendingTargetRequest(const FUDActionData& action, int32 targetId, TObjectPtr<UUDWorldState> world)
 {
 	UE_LOG(
 		LogTemp, 
@@ -159,30 +181,41 @@ void RemovePendingTargetRequest(FUDActionData action, int32 targetId, TObjectPtr
 	);
 }
 
-/**
- * Adds pending request associated with action and specified target.
- */
-void AddPendingTargetRequest(FUDActionData action, int32 targetId, TObjectPtr<UUDWorldState> world)
+bool IUDActionInterface::IsPendingTargetRequest(const FUDActionData& action, int32 targetId, TObjectPtr<UUDWorldState> world) const
 {
 	UE_LOG(
 		LogTemp,
 		Log,
-		TEXT("INSTANCE(%d): Player(%d) started with (%d) requests. Adding request(%d)"),
+		TEXT("INSTANCE(%d): Player(%d) has (%d) requests. Finding request(%d)"),
 		world->PerspectivePlayerId,
 		targetId,
 		world->Players[targetId]->PendingRequests.Num(),
 		action.SourceUniqueId
 	);
 
-	// Item is added as key value pair.
-	world->Players[targetId]->PendingRequests.Add(action.SourceUniqueId, action);
+	// Item is found based on the key.
+	if (world->Players[targetId]->PendingRequests.Contains(action.SourceUniqueId))
+	{
+		UE_LOG(
+			LogTemp,
+			Log,
+			TEXT("INSTANCE(%d): Player(%d) has (%d) requests. Including request(%d)."),
+			world->PerspectivePlayerId,
+			targetId,
+			world->Players[targetId]->PendingRequests.Num(),
+			action.SourceUniqueId
+		);
+		return true;
+	}
 
 	UE_LOG(
 		LogTemp,
 		Log,
-		TEXT("INSTANCE(%d): Player(%d) ended with (%d) requests."),
+		TEXT("INSTANCE(%d): Player(%d) has (%d) requests. Did not found request(%d)"),
 		world->PerspectivePlayerId,
 		targetId,
-		world->Players[targetId]->PendingRequests.Num()
+		world->Players[targetId]->PendingRequests.Num(),
+		action.SourceUniqueId
 	);
+	return false;
 }

@@ -9,10 +9,10 @@ void UUDGaiaActionResourcesAllAdd::Execute(const FUDActionData& action, TObjectP
 {
 	IUDActionInterface::Execute(action, world);
 	// Grant all players defined amount of resources.
-	FUDGaiaDataValue data = FUDGaiaDataValue(action.ValueParameters);
+	FUDGaiaDataAmount data(action.ValueParameters);
 	for (auto& state : world->Players)
 	{
-		state.Value->ResourceGold += data.Value;
+		state.Value->ResourceGold += data.Amount;
 	}
 }
 
@@ -20,9 +20,9 @@ void UUDGaiaActionResourcesAllAdd::Revert(const FUDActionData& action, TObjectPt
 {
 	IUDActionInterface::Revert(action, world);
 	// Take defined amount of resources from all players.
-	FUDGaiaDataValue data = FUDGaiaDataValue(action.ValueParameters);
+	FUDGaiaDataAmount data(action.ValueParameters);
 	for (auto& state : world->Players)
 	{
-		state.Value->ResourceGold -= data.Value;
+		state.Value->ResourceGold -= data.Amount;
 	}
 }

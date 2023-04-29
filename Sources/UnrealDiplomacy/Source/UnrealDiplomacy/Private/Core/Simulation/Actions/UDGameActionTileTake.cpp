@@ -1,36 +1,32 @@
 // Copyright Miroslav Valach
 
 #include "Core/Simulation/Actions/UDGameActionTileTake.h"
+#include "Core/UDGlobalData.h"
+#include "Core/Simulation/UDActionData.h"
+#include "Core/Simulation/UDWorldState.h"
 
-bool UUDGameActionTileTake::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
+bool UUDGameActionTileTake::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	bool result = IUDActionInterface::CanExecute(data, world);
-	if (result)
-	{
-		FUDTargetTileData data = UUDGameActionTileTake::ConvertData(data);
-		FIntPoint tile(action.X, action.Y);
-		bool isTargetOwner = world->Map->GetTile(tile)->OwnerUniqueId == action.TargetId;
-		result = result && isTargetOwner;
-	}
-	return result;
+	FUDGameDataTargetTile data(action.ValueParameters);
+	FIntPoint tile(data.X, data.Y);
+	bool isTargetOwner = world->Map->GetTile(tile)->OwnerUniqueId == data.TargetId;
+	return IUDActionInterface::CanExecute(action, world) && isTargetOwner;
 }
 
 void UUDGameActionTileTake::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(data, world);
-	// Takeover the tile
-	FUDTargetTileData data = UUDGameActionTileTake::ConvertData(data);
-	FIntPoint tile(action.X, action.Y);
+	IUDActionInterface::Execute(action, world);
+	// Take the tile
+	FUDGameDataTargetTile data(action.ValueParameters);
+	FIntPoint tile(data.X, data.Y);
 	world->Map->GetTile(tile)->OwnerUniqueId = action.InvokerPlayerId;
-
 }
 
 void UUDGameActionTileTake::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(data, world);
-	// Revert ownership
-	FUDTargetTileData data = UUDGameActionTileTake::ConvertData(data);
-	FIntPoint tile(action.X, action.Y);
-	world->Map->GetTile(tile)->OwnerUniqueId = action.TargetId;
-
+	IUDActionInterface::Revert(action, world);
+	// Return the tile
+	FUDGameDataTargetTile data(action.ValueParameters);
+	FIntPoint tile(data.X, data.Y);
+	world->Map->GetTile(tile)->OwnerUniqueId = data.TargetId;
 }

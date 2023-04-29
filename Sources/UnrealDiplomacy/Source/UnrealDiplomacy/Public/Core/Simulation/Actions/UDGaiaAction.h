@@ -10,18 +10,17 @@
  * Transforms action parameters to properly named fields.
  */
 USTRUCT(BlueprintType)
-struct FUDGaiaDataValue
+struct FUDGaiaDataAmount
 {
 	GENERATED_BODY()
 public:
-	FUDGaiaDataValue() {}
-	FUDGaiaDataValue(TArray<int32> valueParameters)
+	FUDGaiaDataAmount() {}
+	FUDGaiaDataAmount(TArray<int32> valueParameters)
 	{
-		Value = valueParameters[0];
+		Amount = valueParameters[0];
 	}
 	UPROPERTY(BlueprintReadOnly)
-	int32 Value = 0;
-	UPROPERTY(BlueprintReadOnly)
+	int32 Amount = 0;
 	static const int32 ParameterCount = 1;
 };
 

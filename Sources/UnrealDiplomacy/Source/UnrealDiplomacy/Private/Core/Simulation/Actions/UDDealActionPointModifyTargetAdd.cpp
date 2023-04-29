@@ -16,13 +16,13 @@ bool UUDDealActionPointModifyTargetAdd::CanExecute(const FUDActionData& action, 
 }
 void UUDDealActionPointModifyTargetAdd::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(data, world);
+	IUDActionInterface::Execute(action, world);
 	FUDDealPointValueData data = UUDDealActionPointModifyTargetAdd::ConvertData(data);
 	world->Deals[action.DealId]->Points[action.Point]->Targets.Add(action.Value);
 }
 void UUDDealActionPointModifyTargetAdd::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(data, world);
+	IUDActionInterface::Revert(action, world);
 	FUDDealPointValueData data = UUDDealActionPointModifyTargetAdd::ConvertData(data);
 	world->Deals[action.DealId]->Points[action.Point]->Targets.Remove(action.Value);
 }

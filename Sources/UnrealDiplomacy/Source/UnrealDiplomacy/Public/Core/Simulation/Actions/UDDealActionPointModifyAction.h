@@ -11,7 +11,7 @@ class UNREALDIPLOMACY_API UUDDealActionPointModifyAction : public UObject, publi
 {
 	GENERATED_BODY()
 public:
-	virtual bool CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
+	virtual bool CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const override;
 	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual int32 GetId() override { return ActionTypeId; };

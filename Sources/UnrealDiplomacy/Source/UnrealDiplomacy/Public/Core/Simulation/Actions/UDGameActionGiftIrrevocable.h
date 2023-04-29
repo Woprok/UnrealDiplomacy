@@ -3,27 +3,22 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Core/Simulation/UDActionInterface.h"
+#include "Core/Simulation/Actions/UDGameAction.h"
 #include "UDGameActionGiftIrrevocable.generated.h"
 
 /**
- * Simple gift of resources between two players, without any strings attached.
+ * Gift that is always accepted.
  */
-UCLASS()
-class UNREALDIPLOMACY_API UUDGameActionGiftIrrevocable : public UObject, public IUDActionInterface
+UCLASS(Blueprintable, BlueprintType)
+class UNREALDIPLOMACY_API UUDGameActionGiftIrrevocable : public UUDGameAction
 {
 	GENERATED_BODY()
 public:
-	virtual bool CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
+	virtual bool CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const override;
 	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
-	virtual int32 GetId() override { return ActionTypeId; };
-	virtual int32 GetParameterCount() override { return RequiredParametersCount; };
+	virtual int32 GetId() const override { return ActionTypeId; };
+	virtual int32 GetParameterCount() const override { return FUDGameDataTargetAmount::ParameterCount; };
 public:
-	static const int32 ActionTypeId = 1000;
-	static const int32 RequiredParametersCount = 2;
-	static FUDTargetValueData ConvertData(FUDActionData& action)
-	{
-		return FUDTargetValueData(action.ValueParameters);
-	}
+	static const int32 ActionTypeId = 2007;
 };

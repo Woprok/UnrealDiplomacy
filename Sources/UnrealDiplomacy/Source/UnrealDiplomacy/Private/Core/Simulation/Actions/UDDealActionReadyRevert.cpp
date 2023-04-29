@@ -1,28 +1,27 @@
 // Copyright Miroslav Valach
 
 #include "Core/Simulation/Actions/UDDealActionReadyRevert.h"
+#include "Core/UDGlobalData.h"
+#include "Core/Simulation/UDActionData.h"
+#include "Core/Simulation/UDWorldState.h"
 
-
-bool UUDDealActionReadyRevert::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
+bool UUDDealActionReadyRevert::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	bool result = IUDActionInterface::CanExecute(data, world);
-	if (result)
-	{
-		FUDDealData data = UUDDealActionReadyRevert::ConvertData(data);
-		bool isReady = world->Deals[action.DealId]->IsReadyPlayerList.Contains(action.InvokerPlayerId);
-		result = result && isReady;
-	}
-	return result;
+	FUDDealData data(action.ValueParameters);
+	bool isReady = world->Deals[data.DealId]->IsReadyPlayerList.Contains(action.InvokerPlayerId);
+	return IUDActionInterface::CanExecute(action, world) && isReady;
 }
 void UUDDealActionReadyRevert::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Execute(data, world);
-	FUDDealData data = UUDDealActionReadyRevert::ConvertData(data);
-	world->Deals[action.DealId]->IsReadyPlayerList.Remove(action.InvokerPlayerId);
+	IUDActionInterface::Execute(action, world);
+	// Unselect ready.
+	FUDDealData data(action.ValueParameters);
+	world->Deals[data.DealId]->IsReadyPlayerList.Remove(action.InvokerPlayerId);
 }
 void UUDDealActionReadyRevert::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
-	IUDActionInterface::Revert(data, world);
-	FUDDealData data = UUDDealActionReadyRevert::ConvertData(data);
-	world->Deals[action.DealId]->IsReadyPlayerList.Add(action.InvokerPlayerId);
+	IUDActionInterface::Revert(action, world);
+	// Select ready.
+	FUDDealData data(action.ValueParameters);
+	world->Deals[data.DealId]->IsReadyPlayerList.Add(action.InvokerPlayerId);
 }
