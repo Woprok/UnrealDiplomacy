@@ -10,7 +10,7 @@
 bool IUDActionInterface::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
 	UE_LOG(LogTemp, Log, TEXT("INSTANCE(%d): Verifying...\n%s\n%s"), 
-		world->PerspectivePlayerId, action.ToString(), ToString());
+		world->PerspectivePlayerId, *action.ToString(), *ToString());
 	
 	bool isActionSame = action.ActionTypeId == GetId();
 	bool isParameterCountSame = action.ValueParameters.Num() == GetParameterCount();
@@ -20,23 +20,23 @@ bool IUDActionInterface::CanExecute(const FUDActionData& action, TObjectPtr<UUDW
 void IUDActionInterface::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	UE_LOG(LogTemp, Log, TEXT("INSTANCE(%d): Executing %s"), 
-		world->PerspectivePlayerId, action.ToString());
+		world->PerspectivePlayerId, *action.ToString());
 }
 
 void IUDActionInterface::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	UE_LOG(LogTemp, Log, TEXT("INSTANCE(%d): Reverting %s"), 
-		world->PerspectivePlayerId, action.ToString());
+		world->PerspectivePlayerId, *action.ToString());
 }
 
 int32 IUDActionInterface::GetId() const
 {
-	UUDGlobalData::InvalidActionId;
+	return UUDGlobalData::InvalidActionId;
 }
 
 int32 IUDActionInterface::GetParameterCount() const
 {
-	UUDGlobalData::DefaultActionParameterCount;
+	return UUDGlobalData::DefaultActionParameterCount;
 }
 
 bool IUDActionInterface::HasContinuations() const

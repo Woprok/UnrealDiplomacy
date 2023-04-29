@@ -9,7 +9,7 @@ bool UUDGameActionTileTransferAccept::CanExecute(const FUDActionData& action, TO
 {
 	FUDGameDataTargetTile data(action.ValueParameters);
 	bool isQueued = IsPendingTargetRequest(action, data.TargetId, world);
-	return UUDGameActionTileTransferAccept::CanExecute(action, world) && isQueued;
+	return UUDGameActionTileTransfer::CanExecute(action, world) && isQueued;
 }
 void UUDGameActionTileTransferAccept::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {

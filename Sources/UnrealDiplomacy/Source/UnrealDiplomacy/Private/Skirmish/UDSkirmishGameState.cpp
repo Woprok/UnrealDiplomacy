@@ -2,6 +2,7 @@
 
 #include "Skirmish/UDSkirmishGameState.h"
 #include "Skirmish/UDSkirmishGameMode.h"
+#include <Kismet/GameplayStatics.h>
 
 TWeakObjectPtr<AUDSkirmishGameMode> AUDSkirmishGameState::GetCastGameMode()
 {
