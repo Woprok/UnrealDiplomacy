@@ -1,3 +1,10 @@
+// Copyright Miroslav Valach
+
+#pragma once
+
+#include "CoreMinimal.h"
+
+// Default
 #include "Core/Simulation/Actions/UDActionInvalid.h"
 // Deal
 #include "Core/Simulation/Actions/UDDealAction.h"
@@ -69,3 +76,30 @@
 #include "Core/Simulation/Actions/UDSystemActionTurnEnd.h"
 #include "Core/Simulation/Actions/UDSystemActionTurnForceEnd.h"
 #include "Core/Simulation/Actions/UDSystemActionWorldCreate.h"
+
+UCLASS(meta = (BlueprintThreadSafe))
+class UNREALDIPLOMACY_API UUDActionDatabase
+{
+	GENERATED_BODY()
+public:
+	/**
+	 * Returns new instances of default actions.
+	 */
+	static TArray<TScriptInterface<IUDActionInterface>> GetDefaultActions();
+	/**
+	 * Returns new instances of system of actions.
+	 */
+	static TArray<TScriptInterface<IUDActionInterface>> GetSystemActions();
+	/**
+	 * Returns new instances of gaia of actions.
+	 */
+	static TArray<TScriptInterface<IUDActionInterface>> GetGaiaActions();
+	/**
+	 * Returns new instances of game of actions.
+	 */
+	static TArray<TScriptInterface<IUDActionInterface>> GetGameActions();
+	/**
+	 * Returns new instances of deal of actions.
+	 */
+	static TArray<TScriptInterface<IUDActionInterface>> GetDealActions();
+};

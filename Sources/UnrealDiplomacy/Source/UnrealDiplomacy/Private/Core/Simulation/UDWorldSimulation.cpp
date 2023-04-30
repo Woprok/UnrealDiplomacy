@@ -219,4 +219,5 @@ void AUDWorldSimulation::LoadCoreActions()
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering Actions."));
 	// TODO REGISTER
+	ActionManager->Initialize();
 }
