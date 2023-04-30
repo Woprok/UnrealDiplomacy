@@ -7,7 +7,7 @@
 #include "UDDealActionContractCreate.generated.h"
 
 // Forward Declarations
-class FUDDiscussionAction;
+struct FUDDiscussionAction;
 
 /**
  * This action transforms preview of actions to final actions.
@@ -35,5 +35,5 @@ public:
 public:
 	static const int32 ActionTypeId = 3018;
 	static TArray<FUDActionData> FinalizeActions(TObjectPtr<UUDWorldState> world, int32 dealUniqueId);
-	static TArray<FUDDiscsussionAction> WrapActions(TArray<FUDActionData> data);
+	static TArray<FUDDiscussionAction> WrapActions(TArray<FUDActionData> data);
 };

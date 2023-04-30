@@ -7,8 +7,86 @@
 #include "UDWorldState.h"
 #include "Core/UDGlobalData.h"
 #include "Core/Simulation/UDActionData.h"
-#include "Actions/UDActions.h"
+
+
+// Default
+#include "Core/Simulation/Actions/UDDefaultActionInvalid.h"
+// Deal
+#include "Core/Simulation/Actions/UDDealAction.h"
+#include "Core/Simulation/Actions/UDDealActionContractCreate.h"
+#include "Core/Simulation/Actions/UDDealActionContractExecute.h"
+#include "Core/Simulation/Actions/UDDealActionContractPointAccept.h"
+#include "Core/Simulation/Actions/UDDealActionContractPointReject.h"
+#include "Core/Simulation/Actions/UDDealActionContractPointSabotage.h"
+#include "Core/Simulation/Actions/UDDealActionContractPointTamper.h"
+#include "Core/Simulation/Actions/UDDealActionCreate.h"
+#include "Core/Simulation/Actions/UDDealActionFinalize.h"
+#include "Core/Simulation/Actions/UDDealActionMessageSend.h"
+#include "Core/Simulation/Actions/UDDealActionParticipantInvite.h"
+#include "Core/Simulation/Actions/UDDealActionParticipantInviteAccept.h"
+#include "Core/Simulation/Actions/UDDealActionParticipantInviteReject.h"
+#include "Core/Simulation/Actions/UDDealActionParticipantKick.h"
+#include "Core/Simulation/Actions/UDDealActionParticipantLeave.h"
+#include "Core/Simulation/Actions/UDDealActionPointAdd.h"
+#include "Core/Simulation/Actions/UDDealActionPointChildAdd.h"
+#include "Core/Simulation/Actions/UDDealActionPointIgnore.h"
+#include "Core/Simulation/Actions/UDDealActionPointModify.h"
+#include "Core/Simulation/Actions/UDDealActionPointModifyAction.h"
+#include "Core/Simulation/Actions/UDDealActionPointModifyInvokerAdd.h"
+#include "Core/Simulation/Actions/UDDealActionPointModifyInvokerRemove.h"
+#include "Core/Simulation/Actions/UDDealActionPointModifyResetParameters.h"
+#include "Core/Simulation/Actions/UDDealActionPointModifyTargetAdd.h"
+#include "Core/Simulation/Actions/UDDealActionPointModifyTargetRemove.h"
+#include "Core/Simulation/Actions/UDDealActionPointModifyTile.h"
+#include "Core/Simulation/Actions/UDDealActionPointModifyTileValue.h"
+#include "Core/Simulation/Actions/UDDealActionPointModifyType.h"
+#include "Core/Simulation/Actions/UDDealActionPointModifyValue.h"
+#include "Core/Simulation/Actions/UDDealActionPointRemove.h"
+#include "Core/Simulation/Actions/UDDealActionReady.h"
+#include "Core/Simulation/Actions/UDDealActionReadyReset.h"
+#include "Core/Simulation/Actions/UDDealActionReadyRevert.h"
+#include "Core/Simulation/Actions/UDDealActionResultClose.h"
+#include "Core/Simulation/Actions/UDDealActionResultDisassemble.h"
+#include "Core/Simulation/Actions/UDDealActionResultPass.h"
+#include "Core/Simulation/Actions/UDDealActionResultVeto.h"
+#include "Core/Simulation/Actions/UDDealActionStateAssemble.h"
+#include "Core/Simulation/Actions/UDDealActionStateExtendingDraft.h"
+#include "Core/Simulation/Actions/UDDealActionVoteNo.h"
+#include "Core/Simulation/Actions/UDDealActionVoteYes.h"
+// Gaia
+#include "Core/Simulation/Actions/UDGaiaAction.h"
+#include "Core/Simulation/Actions/UDGaiaActionResourcesAllAdd.h"
+// Game
+#include "Core/Simulation/Actions/UDGameAction.h"
+#include "Core/Simulation/Actions/UDGameActionGift.h"
+#include "Core/Simulation/Actions/UDGameActionGiftAccept.h"
+#include "Core/Simulation/Actions/UDGameActionGiftIrrevocable.h"
+#include "Core/Simulation/Actions/UDGameActionGiftReject.h"
+#include "Core/Simulation/Actions/UDGameActionPermitTileExploit.h"
+#include "Core/Simulation/Actions/UDGameActionThroneAbdicate.h"
+#include "Core/Simulation/Actions/UDGameActionThroneReceive.h"
+#include "Core/Simulation/Actions/UDGameActionThroneUsurp.h"
+#include "Core/Simulation/Actions/UDGameActionTileExploit.h"
+#include "Core/Simulation/Actions/UDGameActionTileTake.h"
+#include "Core/Simulation/Actions/UDGameActionTileTransfer.h"
+#include "Core/Simulation/Actions/UDGameActionTileTransferAccept.h"
+#include "Core/Simulation/Actions/UDGameActionTileTransferReject.h"
+// System
+#include "Core/Simulation/Actions/UDSystemAction.h"
+#include "Core/Simulation/Actions/UDSystemActionGameEnd.h"
+#include "Core/Simulation/Actions/UDSystemActionGameStart.h"
+#include "Core/Simulation/Actions/UDSystemActionLog.h"
+#include "Core/Simulation/Actions/UDSystemActionPlayerAdd.h"
+#include "Core/Simulation/Actions/UDSystemActionPlayerRemove.h"
+#include "Core/Simulation/Actions/UDSystemActionTurnEnd.h"
+#include "Core/Simulation/Actions/UDSystemActionTurnForceEnd.h"
+#include "Core/Simulation/Actions/UDSystemActionWorldCreate.h"
+
+
 #include "UDActionAdministrator.generated.h"
+
+
+
 
 USTRUCT(BlueprintType)
 struct FUDTurnInfo
@@ -161,14 +239,14 @@ struct FUDDealActionInfo
 	GENERATED_BODY()
 public:
 	FUDDealActionInfo() {}
-	FUDDealActionInfo(int32 dealUniqueId, int32 actionIndex, FUDDiscsussionAction actionBody)
+	FUDDealActionInfo(int32 dealUniqueId, int32 actionIndex, FUDDiscussionAction actionBody)
 		: DealUniqueId(dealUniqueId), ActionIndex(actionIndex), ActionBody(actionBody) {}
 	UPROPERTY(BlueprintReadOnly)
 	int32 DealUniqueId;
 	UPROPERTY(BlueprintReadOnly)
 	int32 ActionIndex;
 	UPROPERTY(BlueprintReadOnly)
-	FUDDiscsussionAction ActionBody;
+	FUDDiscussionAction ActionBody;
 };
 
 
@@ -682,7 +760,7 @@ public:
 		
 		for (size_t index = 0; index < OverseeingState->Deals[dealUniqueId]->DealActionList.Num(); index++)
 		{
-			FUDDiscsussionAction action = OverseeingState->Deals[dealUniqueId]->DealActionList[index];
+			FUDDiscussionAction action = OverseeingState->Deals[dealUniqueId]->DealActionList[index];
 			if (action.Action.InvokerPlayerId == OverseeingState->PerspectivePlayerId) {
 				actions.Add(FUDDealActionInfo(dealUniqueId, index, action));
 			}
@@ -698,7 +776,7 @@ public:
 
 		for (size_t index = 0; index < OverseeingState->Deals[dealUniqueId]->DealActionList.Num(); index++)
 		{
-			FUDDiscsussionAction action = OverseeingState->Deals[dealUniqueId]->DealActionList[index];
+			FUDDiscussionAction action = OverseeingState->Deals[dealUniqueId]->DealActionList[index];
 			if (action.Action.InvokerPlayerId != OverseeingState->PerspectivePlayerId) {
 				actions.Add(FUDDealActionInfo(dealUniqueId, index, action));
 			}

@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Core/Simulation/UDActionInterface.h"
-#include "UDActionInvalid.generated.h"
+#include "UDDefaultActionInvalid.generated.h"
 
 /**
  * Handles action that are passed to execution with undefined executor.
  */
 UCLASS(Blueprintable, BlueprintType)
-class UNREALDIPLOMACY_API UUDActionInvalid : public UObject, public IUDActionInterface
+class UNREALDIPLOMACY_API UUDDefaultActionInvalid : public UObject, public IUDActionInterface
 {
 	GENERATED_BODY()
 public:

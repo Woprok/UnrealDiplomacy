@@ -2,7 +2,7 @@
 
 
 #include "Skirmish/UDSkirmishAIController.h"
-#include "Core/Simulation/Actions/UDActions.h"
+#include "Core/Simulation/Actions/UDGameActionGift.h"
 
 void AUDSkirmishAIController::InitializeAdministrator()
 {

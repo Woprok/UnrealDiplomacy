@@ -39,3 +39,15 @@ void UUDDealActionPointModifyType::Backup(FUDActionData& action, TObjectPtr<UUDW
 	int32 pointType = UUDDealActionPointModifyType::PointTypeToInteger(world->Deals[data.DealId]->Points[data.PointId]->Type);
 	action.BackupValueParameters.Add(pointType);
 }
+
+int32 UUDDealActionPointModifyType::PointTypeToInteger(EUDPointType type)
+{
+	return static_cast<int32>(static_cast<uint8>(type));
+}
+
+EUDPointType UUDDealActionPointModifyType::IntegerToPointType(int32 type)
+{
+	if (0 > type || type > UINT8_MAX)
+		return EUDPointType::Error;
+	return static_cast<EUDPointType>(type);
+}

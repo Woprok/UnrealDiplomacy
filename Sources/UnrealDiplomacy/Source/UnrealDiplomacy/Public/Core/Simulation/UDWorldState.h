@@ -367,12 +367,12 @@ enum class EUDDealActionResult : uint8
  * Represents single action created from discussion item.
  */
 USTRUCT(BlueprintType)
-struct UNREALDIPLOMACY_API FUDDiscsussionAction
+struct UNREALDIPLOMACY_API FUDDiscussionAction
 {
 	GENERATED_BODY()
 public:
-	FUDDiscsussionAction() {}
-	FUDDiscsussionAction(FUDActionData action, EUDDealActionResult result, bool isSabotaged, int32 sabotageId) 
+	FUDDiscussionAction() {}
+	FUDDiscussionAction(FUDActionData action, EUDDealActionResult result, bool isSabotaged, int32 sabotageId) 
 		: Action(action), SelectedResult(result), WasSabotaged(isSabotaged), SabotageId(sabotageId) {}
 	UPROPERTY(BlueprintReadOnly)
 	FUDActionData Action;
@@ -466,7 +466,7 @@ public:
 	 * Actions are executed once all players determined their actions.
 	 */
 	UPROPERTY()
-	TArray<FUDDiscsussionAction> DealActionList;
+	TArray<FUDDiscussionAction> DealActionList;
 };
 
 /**

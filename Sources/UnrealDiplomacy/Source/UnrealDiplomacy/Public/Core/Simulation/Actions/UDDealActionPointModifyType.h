@@ -6,6 +6,9 @@
 #include "Core/Simulation/Actions/UDDealActionPointModify.h"
 #include "UDDealActionPointModifyType.generated.h"
 
+// Forward Declarations
+enum class EUDPointType : uint8;
+
 /**
  * Modifies point type.
  */
@@ -23,14 +26,6 @@ public:
 	void Backup(FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 public:
 	static const int32 ActionTypeId = 3036;
-	static int32 PointTypeToInteger(EUDPointType type)
-	{
-		return static_cast<int32>(static_cast<uint8>(type));
-	}
-	static EUDPointType IntegerToPointType(int32 type)
-	{
-		if (0 > type || type > UINT8_MAX)
-			return EUDPointType::Error;
-		return static_cast<EUDPointType>(type);
-	}
+	static int32 PointTypeToInteger(EUDPointType type);
+	static EUDPointType IntegerToPointType(int32 type);
 };

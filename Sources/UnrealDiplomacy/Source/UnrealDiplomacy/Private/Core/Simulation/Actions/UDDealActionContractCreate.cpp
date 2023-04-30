@@ -65,12 +65,12 @@ TArray<FUDActionData> UUDDealActionContractCreate::FinalizeActions(TObjectPtr<UU
 	return actions;
 }
 
-TArray<FUDDiscsussionAction> UUDDealActionContractCreate::WrapActions(TArray<FUDActionData> data)
+TArray<FUDDiscussionAction> UUDDealActionContractCreate::WrapActions(TArray<FUDActionData> data)
 {
-	TArray<FUDDiscsussionAction> dealActions;
+	TArray<FUDDiscussionAction> dealActions;
 	for (auto action : data)
 	{
-		dealActions.Add(FUDDiscsussionAction(
+		dealActions.Add(FUDDiscussionAction(
 			action,
 			EUDDealActionResult::Unresolved,
 			false,

@@ -6,7 +6,7 @@
 #include "Core/Simulation/UDModifierManager.h"
 #include "Core/UDGlobalData.h"
 // Actions
-#include "Core/Simulation/Actions/UDActions.h"
+#include "Core/Simulation/Actions/UDActionDatabase.h"
 
 TScriptInterface<IUDActionInterface> UUDActionManager::GetAction(int32 actionTypeId)
 {
@@ -53,16 +53,6 @@ void UUDActionManager::Initialize()
 void UUDActionManager::RegisterCoreActions()
 {
 	TArray<TScriptInterface<IUDActionInterface>> coreActionList = {
-		NewObject<UUDActionInvalid>(this),
-
-		NewObject<UUDSystemActionLog>(this),
-		NewObject<UUDSystemActionGameStart>(this),
-		NewObject<UUDSystemActionGameEnd>(this),
-		NewObject<UUDSystemActionPlayerAdd>(this),
-		//NewObject<UUDSystemActionPlayerRemove>(this),
-		NewObject<UUDSystemActionTurnEnd>(this),
-		NewObject<UUDSystemActionTurnForceEnd>(this),
-		NewObject<UUDSystemActionWorldCreate>(this),
 	};
 	RegisterActionList(coreActionList);
 }
