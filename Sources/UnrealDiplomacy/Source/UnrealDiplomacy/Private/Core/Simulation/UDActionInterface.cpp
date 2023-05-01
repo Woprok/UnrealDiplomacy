@@ -83,7 +83,7 @@ FString IUDActionInterface::ToString() const
 FUDActionPresentation IUDActionInterface::GetPresentation() const
 {
 	FUDActionPresentation presentation = FUDActionPresentation();
-
+	presentation.ActionId = GetId();
 	presentation.Tags.Append({
 		FUDActionPresentation::INVALID,
 	});

@@ -98,14 +98,6 @@ private:
 	void SynchronizeNewPlayerState(TObjectPtr<UUDWorldState> newState);
 protected:
 	/**
-	 * Updates Simulation with known actions, that are necessary^TM for core gameplay.
-	 */
-	virtual void LoadCoreActions();
-	/**
-	 * Register new action that can be executed over this simulation.
-	 */
-	void RegisterAction(TScriptInterface<IUDActionInterface> newAction);
-	/**
 	 * Returns true if the current id is proper, otherwise false.
 	 * Id with value of 0 is not valid.
 	 */
@@ -136,11 +128,6 @@ private:
 	 */
 	UPROPERTY()
 	TMap<int32, TObjectPtr<UUDWorldState>> States;
-	/**
-	 * List of all actions registered in this simulation.
-	 */
-	UPROPERTY()
-	TMap<int32, TScriptInterface<IUDActionInterface>> Actions;
 	/**
 	 * List of all actions in chronological order of execution over the GaiaState.
 	 * Due to that it's necessary tool for synchronizing new players as well as old, if

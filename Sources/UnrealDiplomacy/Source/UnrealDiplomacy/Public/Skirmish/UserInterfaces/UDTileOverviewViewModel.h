@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModelBase.h"
 #include "Core/Simulation/UDActionAdministrator.h"
+#include "Core/Simulation/Actions/UDGameActionTileTake.h"
 #include "UDTileOverviewViewModel.generated.h"
 
 /**
@@ -54,7 +55,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ClaimTile()
 	{
-		ActionModel->RequestAction(ActionModel->GetTakeTileAction(Position));
+		ActionModel->RequestAction(ActionModel->GetAction(UUDGameActionTileTake::ActionTypeId));
 	}
 	UFUNCTION(BlueprintCallable)
 	void SetSelectedPosition(FIntPoint newPosition)

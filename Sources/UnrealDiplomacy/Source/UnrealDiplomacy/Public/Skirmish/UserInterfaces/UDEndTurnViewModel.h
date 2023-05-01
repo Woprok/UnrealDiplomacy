@@ -6,6 +6,7 @@
 #include "MVVMViewModelBase.h"
 #include "Core/UserInterfaces/UDViewModelBase.h"
 #include "Core/Simulation/UDActionAdministrator.h"
+#include "Core/Simulation/Actions/UDSystemActionTurnEnd.h"
 #include "UDEndTurnViewModel.generated.h"
 
 /**
@@ -52,7 +53,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void EndTurn()
 	{
-		ActionModel->RequestAction(ActionModel->GetEndTurnAction());
+		ActionModel->RequestAction(ActionModel->GetAction(UUDSystemActionTurnEnd::ActionTypeId));
 	}
 protected:
 	/**

@@ -8,79 +8,85 @@
 #include "Core/UDGlobalData.h"
 #include "Core/Simulation/UDActionData.h"
 
+// Forward Declarations
+class IUDActionInterface;
+class UUDWorldState;
+class UUDActionManager;
+class UUDActionDatabase;
 
-// Default
-#include "Core/Simulation/Actions/UDDefaultActionInvalid.h"
-// Deal
-#include "Core/Simulation/Actions/UDDealAction.h"
 #include "Core/Simulation/Actions/UDDealActionContractCreate.h"
-#include "Core/Simulation/Actions/UDDealActionContractExecute.h"
-#include "Core/Simulation/Actions/UDDealActionContractPointAccept.h"
-#include "Core/Simulation/Actions/UDDealActionContractPointReject.h"
-#include "Core/Simulation/Actions/UDDealActionContractPointSabotage.h"
-#include "Core/Simulation/Actions/UDDealActionContractPointTamper.h"
-#include "Core/Simulation/Actions/UDDealActionCreate.h"
-#include "Core/Simulation/Actions/UDDealActionFinalize.h"
-#include "Core/Simulation/Actions/UDDealActionMessageSend.h"
-#include "Core/Simulation/Actions/UDDealActionParticipantInvite.h"
-#include "Core/Simulation/Actions/UDDealActionParticipantInviteAccept.h"
-#include "Core/Simulation/Actions/UDDealActionParticipantInviteReject.h"
-#include "Core/Simulation/Actions/UDDealActionParticipantKick.h"
-#include "Core/Simulation/Actions/UDDealActionParticipantLeave.h"
-#include "Core/Simulation/Actions/UDDealActionPointAdd.h"
-#include "Core/Simulation/Actions/UDDealActionPointChildAdd.h"
-#include "Core/Simulation/Actions/UDDealActionPointIgnore.h"
-#include "Core/Simulation/Actions/UDDealActionPointModify.h"
-#include "Core/Simulation/Actions/UDDealActionPointModifyAction.h"
-#include "Core/Simulation/Actions/UDDealActionPointModifyInvokerAdd.h"
-#include "Core/Simulation/Actions/UDDealActionPointModifyInvokerRemove.h"
-#include "Core/Simulation/Actions/UDDealActionPointModifyResetParameters.h"
-#include "Core/Simulation/Actions/UDDealActionPointModifyTargetAdd.h"
-#include "Core/Simulation/Actions/UDDealActionPointModifyTargetRemove.h"
-#include "Core/Simulation/Actions/UDDealActionPointModifyTile.h"
-#include "Core/Simulation/Actions/UDDealActionPointModifyTileValue.h"
-#include "Core/Simulation/Actions/UDDealActionPointModifyType.h"
-#include "Core/Simulation/Actions/UDDealActionPointModifyValue.h"
-#include "Core/Simulation/Actions/UDDealActionPointRemove.h"
-#include "Core/Simulation/Actions/UDDealActionReady.h"
-#include "Core/Simulation/Actions/UDDealActionReadyReset.h"
-#include "Core/Simulation/Actions/UDDealActionReadyRevert.h"
-#include "Core/Simulation/Actions/UDDealActionResultClose.h"
-#include "Core/Simulation/Actions/UDDealActionResultDisassemble.h"
-#include "Core/Simulation/Actions/UDDealActionResultPass.h"
-#include "Core/Simulation/Actions/UDDealActionResultVeto.h"
-#include "Core/Simulation/Actions/UDDealActionStateAssemble.h"
-#include "Core/Simulation/Actions/UDDealActionStateExtendingDraft.h"
-#include "Core/Simulation/Actions/UDDealActionVoteNo.h"
-#include "Core/Simulation/Actions/UDDealActionVoteYes.h"
-// Gaia
-#include "Core/Simulation/Actions/UDGaiaAction.h"
-#include "Core/Simulation/Actions/UDGaiaActionResourcesAllAdd.h"
-// Game
-#include "Core/Simulation/Actions/UDGameAction.h"
-#include "Core/Simulation/Actions/UDGameActionGift.h"
-#include "Core/Simulation/Actions/UDGameActionGiftAccept.h"
-#include "Core/Simulation/Actions/UDGameActionGiftIrrevocable.h"
-#include "Core/Simulation/Actions/UDGameActionGiftReject.h"
-#include "Core/Simulation/Actions/UDGameActionPermitTileExploit.h"
-#include "Core/Simulation/Actions/UDGameActionThroneAbdicate.h"
-#include "Core/Simulation/Actions/UDGameActionThroneReceive.h"
-#include "Core/Simulation/Actions/UDGameActionThroneUsurp.h"
-#include "Core/Simulation/Actions/UDGameActionTileExploit.h"
-#include "Core/Simulation/Actions/UDGameActionTileTake.h"
-#include "Core/Simulation/Actions/UDGameActionTileTransfer.h"
-#include "Core/Simulation/Actions/UDGameActionTileTransferAccept.h"
-#include "Core/Simulation/Actions/UDGameActionTileTransferReject.h"
-// System
-#include "Core/Simulation/Actions/UDSystemAction.h"
-#include "Core/Simulation/Actions/UDSystemActionGameEnd.h"
-#include "Core/Simulation/Actions/UDSystemActionGameStart.h"
-#include "Core/Simulation/Actions/UDSystemActionLog.h"
-#include "Core/Simulation/Actions/UDSystemActionPlayerAdd.h"
-#include "Core/Simulation/Actions/UDSystemActionPlayerRemove.h"
-#include "Core/Simulation/Actions/UDSystemActionTurnEnd.h"
-#include "Core/Simulation/Actions/UDSystemActionTurnForceEnd.h"
-#include "Core/Simulation/Actions/UDSystemActionWorldCreate.h"
+
+//// Default
+//#include "Core/Simulation/Actions/UDDefaultActionInvalid.h"
+//// Deal
+//#include "Core/Simulation/Actions/UDDealAction.h"
+//#include "Core/Simulation/Actions/UDDealActionContractExecute.h"
+//#include "Core/Simulation/Actions/UDDealActionContractPointAccept.h"
+//#include "Core/Simulation/Actions/UDDealActionContractPointReject.h"
+//#include "Core/Simulation/Actions/UDDealActionContractPointSabotage.h"
+//#include "Core/Simulation/Actions/UDDealActionContractPointTamper.h"
+//#include "Core/Simulation/Actions/UDDealActionCreate.h"
+//#include "Core/Simulation/Actions/UDDealActionFinalize.h"
+//#include "Core/Simulation/Actions/UDDealActionMessageSend.h"
+//#include "Core/Simulation/Actions/UDDealActionParticipantInvite.h"
+//#include "Core/Simulation/Actions/UDDealActionParticipantInviteAccept.h"
+//#include "Core/Simulation/Actions/UDDealActionParticipantInviteReject.h"
+//#include "Core/Simulation/Actions/UDDealActionParticipantKick.h"
+//#include "Core/Simulation/Actions/UDDealActionParticipantLeave.h"
+//#include "Core/Simulation/Actions/UDDealActionPointAdd.h"
+//#include "Core/Simulation/Actions/UDDealActionPointChildAdd.h"
+//#include "Core/Simulation/Actions/UDDealActionPointIgnore.h"
+//#include "Core/Simulation/Actions/UDDealActionPointModify.h"
+//#include "Core/Simulation/Actions/UDDealActionPointModifyAction.h"
+//#include "Core/Simulation/Actions/UDDealActionPointModifyInvokerAdd.h"
+//#include "Core/Simulation/Actions/UDDealActionPointModifyInvokerRemove.h"
+//#include "Core/Simulation/Actions/UDDealActionPointModifyResetParameters.h"
+//#include "Core/Simulation/Actions/UDDealActionPointModifyTargetAdd.h"
+//#include "Core/Simulation/Actions/UDDealActionPointModifyTargetRemove.h"
+//#include "Core/Simulation/Actions/UDDealActionPointModifyTile.h"
+//#include "Core/Simulation/Actions/UDDealActionPointModifyTileValue.h"
+//#include "Core/Simulation/Actions/UDDealActionPointModifyType.h"
+//#include "Core/Simulation/Actions/UDDealActionPointModifyValue.h"
+//#include "Core/Simulation/Actions/UDDealActionPointRemove.h"
+//#include "Core/Simulation/Actions/UDDealActionReady.h"
+//#include "Core/Simulation/Actions/UDDealActionReadyReset.h"
+//#include "Core/Simulation/Actions/UDDealActionReadyRevert.h"
+//#include "Core/Simulation/Actions/UDDealActionResultClose.h"
+//#include "Core/Simulation/Actions/UDDealActionResultDisassemble.h"
+//#include "Core/Simulation/Actions/UDDealActionResultPass.h"
+//#include "Core/Simulation/Actions/UDDealActionResultVeto.h"
+//#include "Core/Simulation/Actions/UDDealActionStateAssemble.h"
+//#include "Core/Simulation/Actions/UDDealActionStateExtendingDraft.h"
+//#include "Core/Simulation/Actions/UDDealActionVoteNo.h"
+//#include "Core/Simulation/Actions/UDDealActionVoteYes.h"
+//// Gaia
+//#include "Core/Simulation/Actions/UDGaiaAction.h"
+//#include "Core/Simulation/Actions/UDGaiaActionResourcesAllAdd.h"
+//// Game
+//#include "Core/Simulation/Actions/UDGameAction.h"
+//#include "Core/Simulation/Actions/UDGameActionGift.h"
+//#include "Core/Simulation/Actions/UDGameActionGiftAccept.h"
+//#include "Core/Simulation/Actions/UDGameActionGiftIrrevocable.h"
+//#include "Core/Simulation/Actions/UDGameActionGiftReject.h"
+//#include "Core/Simulation/Actions/UDGameActionPermitTileExploit.h"
+//#include "Core/Simulation/Actions/UDGameActionThroneAbdicate.h"
+//#include "Core/Simulation/Actions/UDGameActionThroneReceive.h"
+//#include "Core/Simulation/Actions/UDGameActionThroneUsurp.h"
+//#include "Core/Simulation/Actions/UDGameActionTileExploit.h"
+//#include "Core/Simulation/Actions/UDGameActionTileTake.h"
+//#include "Core/Simulation/Actions/UDGameActionTileTransfer.h"
+//#include "Core/Simulation/Actions/UDGameActionTileTransferAccept.h"
+//#include "Core/Simulation/Actions/UDGameActionTileTransferReject.h"
+//// System
+//#include "Core/Simulation/Actions/UDSystemAction.h"
+//#include "Core/Simulation/Actions/UDSystemActionGameEnd.h"
+//#include "Core/Simulation/Actions/UDSystemActionGameStart.h"
+//#include "Core/Simulation/Actions/UDSystemActionLog.h"
+//#include "Core/Simulation/Actions/UDSystemActionPlayerAdd.h"
+//#include "Core/Simulation/Actions/UDSystemActionPlayerRemove.h"
+//#include "Core/Simulation/Actions/UDSystemActionTurnEnd.h"
+//#include "Core/Simulation/Actions/UDSystemActionTurnForceEnd.h"
+//#include "Core/Simulation/Actions/UDSystemActionWorldCreate.h"
 
 
 #include "UDActionAdministrator.generated.h"
@@ -848,295 +854,43 @@ public:
 	}
 
 public:
-	UFUNCTION(BlueprintCallable)
-	FUDActionData GetUsurpThroneAction()
-	{
-		return FUDActionData(UUDGameActionThroneUsurp::ActionTypeId, OverseeingState->PerspectivePlayerId);
-	}
-	UFUNCTION(BlueprintCallable)
-	FUDActionData GetAbdicateThroneAction()
-	{
-		return FUDActionData(UUDGameActionThroneAbdicate::ActionTypeId, OverseeingState->PerspectivePlayerId);
-	}
-
-	UFUNCTION(BlueprintCallable)
-	FUDActionData GetFinalizeItemsDealAction(int32 dealUniqueId)
-	{
-		return FUDActionData(UUDDealActionContractCreate::ActionTypeId, OverseeingState->PerspectivePlayerId,
-			{ dealUniqueId });
-	}
-	UFUNCTION(BlueprintCallable)
-	FUDActionData GetExecuteAllActionsDealAction(int32 dealUniqueId)
-	{
-		return FUDActionData(UUDDealActionContractExecute::ActionTypeId, OverseeingState->PerspectivePlayerId,
-			{ dealUniqueId });
-	}
-
-	UFUNCTION(BlueprintCallable)
-	FUDActionData GetAcceptFinalItemDealAction(int32 dealUniqueId, int32 actionIndex)
-	{
-		return FUDActionData(UUDDealActionContractPointAccept::ActionTypeId, OverseeingState->PerspectivePlayerId,
-			{ dealUniqueId, actionIndex });
-	}
-	UFUNCTION(BlueprintCallable)
-	FUDActionData GetDenyFinalItemDealAction(int32 dealUniqueId, int32 actionIndex)
-	{
-		return FUDActionData(UUDDealActionContractPointReject::ActionTypeId, OverseeingState->PerspectivePlayerId,
-			{ dealUniqueId, actionIndex });
-	}
-	UFUNCTION(BlueprintCallable)
-	FUDActionData GetAlterFinalItemDealAction(int32 dealUniqueId, int32 actionIndex)
-	{
-		return FUDActionData(UUDDealActionContractPointTamper::ActionTypeId, OverseeingState->PerspectivePlayerId,
-			{ dealUniqueId, actionIndex });
-	}
-	UFUNCTION(BlueprintCallable)
-	FUDActionData GetSabotageFinalItemDealAction(int32 dealUniqueId, int32 actionIndex)
-	{
-		return FUDActionData(UUDDealActionContractPointSabotage::ActionTypeId, OverseeingState->PerspectivePlayerId,
-			{ dealUniqueId, actionIndex });
-	}
-
-
-	UFUNCTION(BlueprintCallable)
-	FUDActionData GetPositiveVoteDealAction(int32 dealUniqueId)
-	{
-		return FUDActionData(UUDDealActionVoteYes::ActionTypeId, OverseeingState->PerspectivePlayerId,
-			{ dealUniqueId });
-	}
-	UFUNCTION(BlueprintCallable)
-	FUDActionData GetNegativeVoteDealAction(int32 dealUniqueId)
-	{
-		return FUDActionData(UUDDealActionVoteNo::ActionTypeId, OverseeingState->PerspectivePlayerId,
-			{ dealUniqueId });
-	}
-
-	UFUNCTION(BlueprintCallable)
-	FUDActionData GetReadyDealAction(int32 dealUniqueId)
-	{
-		return FUDActionData(UUDDealActionReady::ActionTypeId, OverseeingState->PerspectivePlayerId,
-			{ dealUniqueId });
-	}
-	UFUNCTION(BlueprintCallable)
-	FUDActionData GetNotReadyDealAction(int32 dealUniqueId)
-	{
-		return FUDActionData(UUDDealActionReadyRevert::ActionTypeId, OverseeingState->PerspectivePlayerId,
-			{ dealUniqueId });
-	}
-
-	UFUNCTION(BlueprintCallable)
-	FUDActionData UpdateActionDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 actionId)
-	{
-		return FUDActionData(UUDDealActionPointModifyAction::ActionTypeId, OverseeingState->PerspectivePlayerId,
-			{ dealUniqueId, pointUniqueId, actionId });
-	}
-	UFUNCTION(BlueprintCallable)
-	FUDActionData UpdateChangeValueParameterDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 valueParameter)
-	{
-		return FUDActionData(UUDDealActionPointModifyValue::ActionTypeId, OverseeingState->PerspectivePlayerId,
-			{ dealUniqueId, pointUniqueId, valueParameter });
-	}
-	UFUNCTION(BlueprintCallable)
-	FUDActionData UpdateChangeTileParameterDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 x, int32 y)
-	{
-		return FUDActionData(UUDDealActionPointModifyTile::ActionTypeId, OverseeingState->PerspectivePlayerId,
-			{ dealUniqueId, pointUniqueId, x, y });
-	}
-	UFUNCTION(BlueprintCallable)
-	FUDActionData UpdateChangeTileValueParameterDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 x, int32 y, int32 valueParameter)
-	{
-		return FUDActionData(UUDDealActionPointModifyTileValue::ActionTypeId, OverseeingState->PerspectivePlayerId,
-			{ dealUniqueId, pointUniqueId, x, y, valueParameter });
-	}
-	UFUNCTION(BlueprintCallable)
-	FUDActionData UpdateTypeDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, EUDPointType type)
-	{
-		return FUDActionData(UUDDealActionPointModifyType::ActionTypeId, OverseeingState->PerspectivePlayerId,
-			{ dealUniqueId, pointUniqueId, UUDDealActionPointModifyType::PointTypeToInteger(type)});
-	}
-
-	UFUNCTION(BlueprintCallable)
-	FUDActionData UpdateAddInvokerDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 playerId)
-	{
-		return FUDActionData(UUDDealActionPointModifyInvokerAdd::ActionTypeId, OverseeingState->PerspectivePlayerId,
-			{ dealUniqueId, pointUniqueId, playerId });
-	}
-	UFUNCTION(BlueprintCallable)
-	FUDActionData UpdateRemoveInvokerDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 playerId)
-	{
-		return FUDActionData(UUDDealActionPointModifyInvokerRemove::ActionTypeId, OverseeingState->PerspectivePlayerId,
-			{ dealUniqueId, pointUniqueId, playerId });
-	}
-	UFUNCTION(BlueprintCallable)
-	FUDActionData UpdateAddTargetDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 playerId)
-	{
-		return FUDActionData(UUDDealActionPointModifyTargetAdd::ActionTypeId, OverseeingState->PerspectivePlayerId,
-			{ dealUniqueId, pointUniqueId, playerId });
-	}
-	UFUNCTION(BlueprintCallable)
-	FUDActionData UpdateRemoveTargetDiscussionPointAction(int32 dealUniqueId, int32 pointUniqueId, int32 playerId)
-	{
-		return FUDActionData(UUDDealActionPointModifyTargetRemove::ActionTypeId, OverseeingState->PerspectivePlayerId,
-			{ dealUniqueId, pointUniqueId, playerId });
-	}
-
-	UFUNCTION(BlueprintCallable)
-	FUDActionData CreateDiscussionPointAction(int32 dealUniqueId)
-	{
-		return FUDActionData(UUDDealActionPointAdd::ActionTypeId, OverseeingState->PerspectivePlayerId,
-			{ dealUniqueId });
-	}
-	UFUNCTION(BlueprintCallable)
-	FUDActionData CreateChildDiscussionPointAction(int32 dealUniqueId, int32 parentPointId)
-	{
-		return FUDActionData(UUDDealActionPointChildAdd::ActionTypeId, OverseeingState->PerspectivePlayerId,
-			{ dealUniqueId, parentPointId });
-	}
-	UFUNCTION(BlueprintCallable)
-	FUDActionData CreateChatMessageAction(int32 dealUniqueId, FString chatMessage)
-	{
-		return FUDActionData(UUDDealActionMessageSend::ActionTypeId, OverseeingState->PerspectivePlayerId,
-			{ dealUniqueId }, chatMessage);
-	}
+	TObjectPtr<UUDMapState> GetMapState();
 	/**
-	 * Creates new deal that is immediately joined by the creator.
+	 * Returns new action that can be invoked.
 	 */
-	UFUNCTION(BlueprintCallable)
-	FUDActionData GetCreateDealAction()
-	{
-		return FUDActionData(UUDDealActionCreate::ActionTypeId, OverseeingState->PerspectivePlayerId);
-	}
+	//UFUNCTION(BlueprintCallable)
+	FUDActionData GetAction(int32 actionId);
 	/**
-	 * Closes deal that is currently opened by the creator.
+	 * Returns new action that can be invoked.
 	 */
-	UFUNCTION(BlueprintCallable)
-	FUDActionData GetCloseDealAction(int32 dealUniqueId)
-	{
-		return FUDActionData(UUDDealActionResultClose::ActionTypeId, OverseeingState->PerspectivePlayerId, { dealUniqueId });
-	}
+	//UFUNCTION(BlueprintCallable)
+	FUDActionData GetAction(int32 actionId, TArray<int32> optionalValues);
 	/**
-	 * Invite participant
+	 * Returns new action that can be invoked.
 	 */
-	UFUNCTION(BlueprintCallable)
-		FUDActionData GetInviteParticipantDealAction(int32 dealUniqueId, int32 targetId)
-	{
-		return FUDActionData(UUDDealActionParticipantInvite::ActionTypeId, OverseeingState->PerspectivePlayerId, { dealUniqueId, targetId });
-	}
+	//UFUNCTION(BlueprintCallable)
+	FUDActionData GetAction(int32 actionId, TArray<int32> optionalValues, FString optionaString);
 	/**
-	 * Confirm
+	 * Returns new action that can be invoked.
 	 */
-	UFUNCTION(BlueprintCallable)
-	FUDActionData GetAcceptParticipantDealAction(FUDActionData sourceAction)
-	{
-		return FUDActionData::AsSuccessorOf(sourceAction, UUDDealActionParticipantInviteAccept::ActionTypeId);
-	}
+	//UFUNCTION(BlueprintCallable)
+	FUDActionData GetAction(int32 actionId, FString optionaString);
 	/**
-	 * Reject
+	 * Returns new action that can be invoked.
 	 */
-	UFUNCTION(BlueprintCallable)
-	FUDActionData GetRejectParticipantDealAction(FUDActionData sourceAction)
-	{
-		return FUDActionData::AsSuccessorOf(sourceAction, UUDDealActionParticipantInviteReject::ActionTypeId);
-	}
+	//UFUNCTION(BlueprintCallable)
+	FUDActionData GetAcceptAction(int32 actionId, FUDActionData sourceAction);
 	/**
-	 * Creates new deal that is immediately joined by the creator.
+	 * Returns new action that can be invoked.
 	 */
-	UFUNCTION(BlueprintCallable)
-	FUDActionData GetLeaveParticipantDealAction(int32 dealUniqueId, int32 targetId)
-	{
-		return FUDActionData(UUDDealActionParticipantKick::ActionTypeId, OverseeingState->PerspectivePlayerId, { dealUniqueId, targetId });
-	}
-	/**
-	 * Send amount of gold to other player, other player must accept.
-	 */
-	UFUNCTION(BlueprintCallable)
-	FUDActionData GetConditionalGiftGoldAction(int32 targetId, int32 amount)
-	{
-		return FUDActionData(UUDGameActionGift::ActionTypeId, OverseeingState->PerspectivePlayerId, { targetId, amount });
-	}
-	/**
-	 * Accept amount of gold from other player.
-	 */
-	UFUNCTION(BlueprintCallable)
-	FUDActionData GetConfirmConditionalGiftGoldAction(FUDActionData sourceAction)
-	{
-		return FUDActionData::AsSuccessorOf(sourceAction, UUDGameActionGiftAccept::ActionTypeId);
-	}
-	/**
-	 * Reject amount of gold to other player.
-	 */
-	UFUNCTION(BlueprintCallable)
-	FUDActionData GetRejectConditionalGiftGoldAction(FUDActionData sourceAction)
-	{
-		return FUDActionData::AsSuccessorOf(sourceAction, UUDGameActionGiftReject::ActionTypeId);
-	}
-
-
-	/**
-	 * Accept tile from other player.
-	 */
-	UFUNCTION(BlueprintCallable)
-		FUDActionData GetConfirmTransferTileAction(FUDActionData sourceAction)
-	{
-		return FUDActionData::AsSuccessorOf(sourceAction, UUDGameActionTileTransferAccept::ActionTypeId);
-	}
-	/**
-	 * Reject tile from other player.
-	 */
-	UFUNCTION(BlueprintCallable)
-		FUDActionData GetRejectTransferTileAction(FUDActionData sourceAction)
-	{
-		return FUDActionData::AsSuccessorOf(sourceAction, UUDGameActionTileTransferReject::ActionTypeId);
-	}
-
-	/**
-	 * Send amount of gold to other player.
-	 */
-	UFUNCTION(BlueprintCallable)
-	FUDActionData GetUnconditionalGiftGoldAction(int32 targetId, int32 amount)
-	{
-		return FUDActionData(UUDGameActionGiftIrrevocable::ActionTypeId, OverseeingState->PerspectivePlayerId, { targetId, amount });
-	}
-	/**
-	 * Retrieves generate income action, that is used by Gaia to grant some resources to players.
-	 */
-	UFUNCTION(BlueprintCallable)
-	FUDActionData GetGenerateIncomeAction()
-	{
-		return FUDActionData(UUDGaiaActionResourcesAllAdd::ActionTypeId, OverseeingState->PerspectivePlayerId, { 100 });
-	}
-	/**
-	 * Retrieves start game action, that is used for execution in simulation.
-	 */
-	UFUNCTION(BlueprintCallable)
-	FUDActionData GetStartGameAction()
-	{
-		return FUDActionData(UUDSystemActionGameStart::ActionTypeId, OverseeingState->PerspectivePlayerId);
-	}
-	/**
-	 * Retrieves end turn action, that is used for execution in simulation.
-	 */
-	UFUNCTION(BlueprintCallable)
-	FUDActionData GetEndTurnAction()
-	{
-		return FUDActionData(UUDSystemActionTurnEnd::ActionTypeId, OverseeingState->PerspectivePlayerId);
-	}
-	/**
-	 * Retrieves take tile action, that is used for execution in simulation.
-	 */
-	UFUNCTION(BlueprintCallable)
-	FUDActionData GetTakeTileAction(FIntPoint position)
-	{
-		return FUDActionData(UUDGameActionTileTake::ActionTypeId, OverseeingState->PerspectivePlayerId, { 0, position.X, position.Y } );
-	}
-	TObjectPtr<UUDMapState> GetMapState()
-	{
-		return OverseeingState->Map;
-	}
+	 //UFUNCTION(BlueprintCallable)
+	FUDActionData GetRejectAction(int32 actionId, FUDActionData sourceAction);
 protected:
 	UFUNCTION()
 	bool IsOverseeingStatePresent() { return IsValid(OverseeingState); }
 	UPROPERTY()
 	TObjectPtr<UUDWorldState> OverseeingState;
+	//UPROPERTY()
+	//TObjectPtr<UUDActionManager> ActionManager;
 };
 #undef LOCTEXT_NAMESPACE

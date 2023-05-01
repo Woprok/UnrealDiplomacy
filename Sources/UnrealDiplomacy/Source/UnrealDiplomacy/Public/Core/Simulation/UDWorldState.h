@@ -262,18 +262,18 @@ enum class EUDPointType : uint8
 	 * Invalid state.
 	 */
 	Error = 0,
-	 /**
-	  * Player expects fair deal.
-	  */
-	 Proposal = 1,
-	 /**
-	  * Player expects to benefit from it.
-	  */
-	 Demand = 2,
-	 /**
-	  * Player expects to pay for it.
-	  */
-	 Offer = 3,
+	/**
+	 * Player expects fair deal.
+	 */
+	Proposal = 1,
+	/**
+	 * Player expects to benefit from it.
+	 */
+	Demand = 2,
+	/**
+	 * Player expects to pay for it.
+	 */
+	Offer = 3,
 };
 
 /**
@@ -288,44 +288,44 @@ public:
 	 * Creates new instance of the deal state.
 	 */
 	static TObjectPtr<UUDDiscussionItem> CreateState(int32 ownerId);
-	 /**
-	  * Who is responsible for editing this point.
-	  */
-	 int32 EditorId;
-	 /**
-	  * Consequencies represent direct answer to this item. 
-	  * Result is tree-like structure between Point->Arguments->Bids.
-	  */
-	 TArray<int32> Consequencies;
-	 /**
-	  * Determines if this item is still used, or is just preserved for consistency of reverting actions.
-	  */
-	 bool IsIgnored = false;
-	 /**
-	  * Invoked action.
-	  */
-	 int32 ActionId;
-	 /**
-	  * Each item has a specific overarching behaviour attached to it.
-	  * Valid options may wary between different levels.
-	  */
-	 EUDPointType Type = EUDPointType::Error;
-	 /**
-	  * Players that are invoking by action, so these are on left side of an action.
-	  */
-	 TArray<int32> Invokers;
-	 /**
-	  * Players that are targeted by action, so these are on right side of an action.
-	  */
-	 TArray<int32> Targets;
-	 /**
-	  * Same as FUDActionData definition.
-	  */
-	 TArray<int32> ValueParameters;
-	 /**
-	  * Same as FUDActionData definition.
-	  */
-	 FString TextParameter;
+	/**
+	 * Who is responsible for editing this point.
+	 */
+	int32 EditorId;
+	/**
+	 * Consequencies represent direct answer to this item. 
+	 * Result is tree-like structure between Point->Arguments->Bids.
+	 */
+	TArray<int32> Consequencies;
+	/**
+	 * Determines if this item is still used, or is just preserved for consistency of reverting actions.
+	 */
+	bool IsIgnored = false;
+	/**
+	 * Invoked action.
+	 */
+	int32 ActionId;
+	/**
+	 * Each item has a specific overarching behaviour attached to it.
+	 * Valid options may wary between different levels.
+	 */
+	EUDPointType Type = EUDPointType::Error;
+	/**
+	 * Players that are invoking by action, so these are on left side of an action.
+	 */
+	TArray<int32> Invokers;
+	/**
+	 * Players that are targeted by action, so these are on right side of an action.
+	 */
+	TArray<int32> Targets;
+	/**
+	 * Same as FUDActionData definition.
+	 */
+	TArray<int32> ValueParameters;
+	/**
+	 * Same as FUDActionData definition.
+	 */
+	FString TextParameter;
 };
 
 

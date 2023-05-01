@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModelBase.h"
+#include "Core/Simulation/Actions/UDGameActionThroneUsurp.h"
+#include "Core/Simulation/Actions/UDGameActionThroneAbdicate.h"
 #include "UDImperialThroneViewModel.generated.h"
 
 /**
@@ -48,7 +50,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void TakeThrone()
 	{
-		ActionModel->RequestAction(ActionModel->GetUsurpThroneAction());
+		ActionModel->RequestAction(ActionModel->GetAction(UUDGameActionThroneUsurp::ActionTypeId));
 	}
 	/**
 	 * Giveup throne for nothing in return.
@@ -56,7 +58,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AbdicateThrone()
 	{
-		ActionModel->RequestAction(ActionModel->GetAbdicateThroneAction());
+		ActionModel->RequestAction(ActionModel->GetAction(UUDGameActionThroneAbdicate::ActionTypeId));
 	}
 protected:
 	void UpdateThrone(FUDThroneInfo info)

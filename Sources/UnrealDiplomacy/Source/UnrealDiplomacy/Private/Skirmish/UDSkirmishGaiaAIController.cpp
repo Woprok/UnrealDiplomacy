@@ -3,6 +3,8 @@
 
 #include "Skirmish/UDSkirmishGaiaAIController.h"
 #include "Skirmish/UDSkirmishGameMode.h"
+#include "Core/Simulation/Actions/UDGaiaActionResourcesAllAdd.h"
+#include "Core/Simulation/Actions/UDSystemActionTurnEnd.h"
 
 void AUDSkirmishGaiaAIController::InitializeAdministrator()
 {
@@ -40,10 +42,10 @@ void AUDSkirmishGaiaAIController::OnActionExecuted(FUDActionData executedAction)
 
 void AUDSkirmishGaiaAIController::DoTurn()
 {
-	OnActionDecidedDelegate.ExecuteIfBound(GetPersonalAdministrator()->GetGenerateIncomeAction());
+	OnActionDecidedDelegate.ExecuteIfBound(GetPersonalAdministrator()->GetAction(UUDGaiaActionResourcesAllAdd::ActionTypeId));
 
 	// Finish this by executing end turn action, thus giving up control.
-	OnActionDecidedDelegate.ExecuteIfBound(GetPersonalAdministrator()->GetEndTurnAction());
+	OnActionDecidedDelegate.ExecuteIfBound(GetPersonalAdministrator()->GetAction(UUDSystemActionTurnEnd::ActionTypeId));
 
 	// Evaluation always ends
 

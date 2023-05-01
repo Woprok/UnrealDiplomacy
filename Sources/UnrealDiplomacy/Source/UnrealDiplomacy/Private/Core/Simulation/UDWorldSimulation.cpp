@@ -12,7 +12,10 @@ void AUDWorldSimulation::Initialize()
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Initializing."));
 	ActionManager = NewObject<UUDActionManager>(this);
 	Arbiter = NewObject<UUDWorldArbiter>(this);
-	LoadCoreActions();
+
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering Actions."));
+	// THIS REGISTER ALL ACTIONS IF CORRECTLY DONE
+	ActionManager->Initialize();
 }
 
 void AUDWorldSimulation::CreateState(int32 playerId, bool isPlayerOrAi)
@@ -60,7 +63,7 @@ void AUDWorldSimulation::NaiveExecuteAction(FUDActionData& trustworthyAction)
 	// TODO move these comments and verify their trustworthyness.
 	for (auto& pair : States)
 	{
-		Actions[trustworthyAction.ActionTypeId]->Execute(trustworthyAction, pair.Value);
+		ActionManager->GetAction(trustworthyAction.ActionTypeId)->Execute(trustworthyAction, pair.Value);
 	}
 	OnBroadcastActionAppliedDelegate.Broadcast(trustworthyAction);
 }
@@ -142,7 +145,7 @@ void AUDWorldSimulation::SynchronizeNewPlayerState(TObjectPtr<UUDWorldState> new
 	// This directly executes action over the supplied state.
 	for (auto& action : ExecutionHistory)
 	{
-		Actions[action.ActionTypeId]->Execute(action, newState);
+		ActionManager->GetAction(action.ActionTypeId)->Execute(action, newState);
 	}
 }
 
@@ -159,7 +162,7 @@ void AUDWorldSimulation::RevertAction()
 	// Revert all current states with this action.
 	for (auto& pair : States)
 	{
-		Actions[oldAction.ActionTypeId]->Revert(oldAction, pair.Value);
+		ActionManager->GetAction(oldAction.ActionTypeId)->Revert(oldAction, pair.Value);
 	}
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Action executor reverted action last successful action."));
 	UndoHistory.Add(oldAction);
@@ -201,24 +204,4 @@ FUDActionArray AUDWorldSimulation::GetHistoryUntil(int32 historyPoint)
 
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Returning %d historic actions from %d to %d."), newHistory.Actions.Num(), first, last);
 	return newHistory;
-}
-
-void AUDWorldSimulation::RegisterAction(TScriptInterface<IUDActionInterface> newAction)
-{
-	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering Action(%d)."), newAction->GetId());
-	if (Actions.Contains(newAction->GetId()))
-	{
-		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Duplicate registration of action with id(%d)."), newAction->GetId());
-		return;
-	}
-	//newAction->SetWorldGenerator(WorldGenerator);
-	//newAction->SetModifierManager(ModifierManager);
-	Actions.Add(newAction->GetId(), newAction);
-}
-
-void AUDWorldSimulation::LoadCoreActions()
-{
-	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering Actions."));
-	// TODO REGISTER
-	ActionManager->Initialize();
 }

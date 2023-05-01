@@ -13,6 +13,48 @@
 
 #include "Core/Simulation/UDActionData.h"
 
+#include "Core/Simulation/Actions/UDDealAction.h"
+#include "Core/Simulation/Actions/UDDealActionContractCreate.h"
+#include "Core/Simulation/Actions/UDDealActionContractExecute.h"
+#include "Core/Simulation/Actions/UDDealActionContractPointAccept.h"
+#include "Core/Simulation/Actions/UDDealActionContractPointReject.h"
+#include "Core/Simulation/Actions/UDDealActionContractPointSabotage.h"
+#include "Core/Simulation/Actions/UDDealActionContractPointTamper.h"
+#include "Core/Simulation/Actions/UDDealActionCreate.h"
+#include "Core/Simulation/Actions/UDDealActionFinalize.h"
+#include "Core/Simulation/Actions/UDDealActionMessageSend.h"
+#include "Core/Simulation/Actions/UDDealActionParticipantInvite.h"
+#include "Core/Simulation/Actions/UDDealActionParticipantInviteAccept.h"
+#include "Core/Simulation/Actions/UDDealActionParticipantInviteReject.h"
+#include "Core/Simulation/Actions/UDDealActionParticipantKick.h"
+#include "Core/Simulation/Actions/UDDealActionParticipantLeave.h"
+#include "Core/Simulation/Actions/UDDealActionPointAdd.h"
+#include "Core/Simulation/Actions/UDDealActionPointChildAdd.h"
+#include "Core/Simulation/Actions/UDDealActionPointIgnore.h"
+#include "Core/Simulation/Actions/UDDealActionPointModify.h"
+#include "Core/Simulation/Actions/UDDealActionPointModifyAction.h"
+#include "Core/Simulation/Actions/UDDealActionPointModifyInvokerAdd.h"
+#include "Core/Simulation/Actions/UDDealActionPointModifyInvokerRemove.h"
+#include "Core/Simulation/Actions/UDDealActionPointModifyResetParameters.h"
+#include "Core/Simulation/Actions/UDDealActionPointModifyTargetAdd.h"
+#include "Core/Simulation/Actions/UDDealActionPointModifyTargetRemove.h"
+#include "Core/Simulation/Actions/UDDealActionPointModifyTile.h"
+#include "Core/Simulation/Actions/UDDealActionPointModifyTileValue.h"
+#include "Core/Simulation/Actions/UDDealActionPointModifyType.h"
+#include "Core/Simulation/Actions/UDDealActionPointModifyValue.h"
+#include "Core/Simulation/Actions/UDDealActionPointRemove.h"
+#include "Core/Simulation/Actions/UDDealActionReady.h"
+#include "Core/Simulation/Actions/UDDealActionReadyReset.h"
+#include "Core/Simulation/Actions/UDDealActionReadyRevert.h"
+#include "Core/Simulation/Actions/UDDealActionResultClose.h"
+#include "Core/Simulation/Actions/UDDealActionResultDisassemble.h"
+#include "Core/Simulation/Actions/UDDealActionResultPass.h"
+#include "Core/Simulation/Actions/UDDealActionResultVeto.h"
+#include "Core/Simulation/Actions/UDDealActionStateAssemble.h"
+#include "Core/Simulation/Actions/UDDealActionStateExtendingDraft.h"
+#include "Core/Simulation/Actions/UDDealActionVoteNo.h"
+#include "Core/Simulation/Actions/UDDealActionVoteYes.h"
+
 #include "UDDealProcessViewModel.generated.h"
 
 #define LOCTEXT_NAMESPACE "ActionUI"
@@ -80,32 +122,32 @@ public:
 	void AcceptAction()
 	{
 		ActionModel->RequestAction(
-			ActionModel->GetAcceptFinalItemDealAction(
-				CurrentData.DealUniqueId, CurrentData.ActionIndex));
+			ActionModel->GetAction(UUDDealActionContractPointAccept::ActionTypeId,
+				{ CurrentData.DealUniqueId, CurrentData.ActionIndex }));
 	}
 
 	UFUNCTION(BlueprintCallable)
 	void ChangeAction()
 	{
 		ActionModel->RequestAction(
-			ActionModel->GetAlterFinalItemDealAction(
-				CurrentData.DealUniqueId, CurrentData.ActionIndex));
+			ActionModel->GetAction(UUDDealActionContractPointTamper::ActionTypeId,
+				{ CurrentData.DealUniqueId, CurrentData.ActionIndex }));
 	}
 
 	UFUNCTION(BlueprintCallable)
 	void DenyAction()
 	{
 		ActionModel->RequestAction(
-			ActionModel->GetDenyFinalItemDealAction(
-				CurrentData.DealUniqueId, CurrentData.ActionIndex));
+			ActionModel->GetAction(UUDDealActionContractPointReject::ActionTypeId,
+				{ CurrentData.DealUniqueId, CurrentData.ActionIndex }));
 	}
 
 	UFUNCTION(BlueprintCallable)
 	void SabotageAction()
 	{
 		ActionModel->RequestAction(
-			ActionModel->GetSabotageFinalItemDealAction(
-				CurrentData.DealUniqueId, CurrentData.ActionIndex));
+			ActionModel->GetAction(UUDDealActionContractPointSabotage::ActionTypeId,
+				{ CurrentData.DealUniqueId, CurrentData.ActionIndex }));
 	}
 private:
 	// MVVM Setters & Getters
@@ -228,29 +270,29 @@ public:
 	void AddToInvokers()
 	{
 		ActionModel->RequestAction(
-			ActionModel->UpdateAddInvokerDiscussionPointAction(
-				CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, CurrentPlayer.Id));
+			ActionModel->GetAction(UUDDealActionPointModifyInvokerAdd::ActionTypeId,
+				{ CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, CurrentPlayer.Id }));
 	}
 	UFUNCTION(BlueprintCallable)
 	void RemoveFromInvokers()
 	{
 		ActionModel->RequestAction(
-			ActionModel->UpdateRemoveInvokerDiscussionPointAction(
-				CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, CurrentPlayer.Id));
+			ActionModel->GetAction(UUDDealActionPointModifyInvokerRemove::ActionTypeId,
+				{ CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, CurrentPlayer.Id }));
 	}
 	UFUNCTION(BlueprintCallable)
 	void AddToTargets()
 	{
 		ActionModel->RequestAction(
-			ActionModel->UpdateAddTargetDiscussionPointAction(
-				CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, CurrentPlayer.Id));
+			ActionModel->GetAction(UUDDealActionPointModifyTargetAdd::ActionTypeId,
+				{ CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, CurrentPlayer.Id }));
 	}
 	UFUNCTION(BlueprintCallable)
 	void RemoveFromTargets()
 	{
 		ActionModel->RequestAction(
-			ActionModel->UpdateRemoveTargetDiscussionPointAction(
-				CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, CurrentPlayer.Id));
+			ActionModel->GetAction(UUDDealActionPointModifyTargetRemove::ActionTypeId,
+				{ CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, CurrentPlayer.Id }));
 	}
 private:
 	// MVVM Setters & Getters
@@ -349,7 +391,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ItemAddChildPoint()
 	{
-		ActionModel->RequestAction(ActionModel->CreateChildDiscussionPointAction(CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId));
+		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionPointChildAdd::ActionTypeId,{ CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId }));
 	}
 private:
 	// MVVM Setters & Getters
@@ -688,8 +730,8 @@ public:
 		int32 pointId = CurrentPoint.PointUniqueId;
 		int32 actionId = option.OptionCode;
 		ActionModel->RequestAction(
-			ActionModel->UpdateActionDiscussionPointAction(
-				dealId, pointId, actionId));
+			ActionModel->GetAction(UUDDealActionPointModifyAction::ActionTypeId,
+				{ dealId, pointId, actionId }));
 		// TODO add dynamic editable parameters
 		// TODO remove this before finishing
 		// HACK: please do not crash
@@ -698,18 +740,18 @@ public:
 		{
 		case UUDGameActionGiftIrrevocable::ActionTypeId:
 			ActionModel->RequestAction(
-				ActionModel->UpdateChangeValueParameterDiscussionPointAction(
-					dealId, pointId, 42));
+				ActionModel->GetAction(UUDDealActionPointModifyValue::ActionTypeId,
+					{ dealId, pointId, 42 }));
 			break;
 		case UUDGameActionTileTransfer::ActionTypeId:
 			ActionModel->RequestAction(
-				ActionModel->UpdateChangeTileParameterDiscussionPointAction(
-					dealId, pointId, 3, 3));
+				ActionModel->GetAction(UUDDealActionPointModifyTile::ActionTypeId,
+					{ dealId, pointId, 3, 3 }));
 			break;
 		case UUDGameActionPermitTileExploit::ActionTypeId:
 			ActionModel->RequestAction(
-				ActionModel->UpdateChangeTileParameterDiscussionPointAction(
-					dealId, pointId, 2, 2));
+				ActionModel->GetAction(UUDDealActionPointModifyTileValue::ActionTypeId,
+					{ dealId, pointId, 2, 2 }));
 			break;
 		default:
 			// safely ignore the fake actions or actions that don't need parameter.
@@ -722,8 +764,8 @@ public:
 		int32 dealId = CurrentPoint.DealUniqueId;
 		int32 pointId = CurrentPoint.PointUniqueId;
 		ActionModel->RequestAction(
-			ActionModel->UpdateChangeValueParameterDiscussionPointAction(
-				dealId, pointId, value));
+			ActionModel->GetAction(UUDDealActionPointModifyValue::ActionTypeId,
+				{ dealId, pointId, value }));
 	}
 	UFUNCTION(BlueprintCallable)
 	void ItemUpdateTile(FIntPoint tile)
@@ -731,8 +773,8 @@ public:
 		int32 dealId = CurrentPoint.DealUniqueId;
 		int32 pointId = CurrentPoint.PointUniqueId;
 		ActionModel->RequestAction(
-			ActionModel->UpdateChangeTileParameterDiscussionPointAction(
-				dealId, pointId, tile.X, tile.Y));
+			ActionModel->GetAction(UUDDealActionPointModifyTile::ActionTypeId,
+				{ dealId, pointId, tile.X, tile.Y }));
 	}
 	UFUNCTION(BlueprintCallable)
 	void ItemUpdateTileValue(FIntPoint tile, int32 value)
@@ -740,17 +782,18 @@ public:
 		int32 dealId = CurrentPoint.DealUniqueId;
 		int32 pointId = CurrentPoint.PointUniqueId;
 		ActionModel->RequestAction(
-			ActionModel->UpdateChangeTileValueParameterDiscussionPointAction(
-				dealId, pointId, tile.X, tile.Y, value));
+			ActionModel->GetAction(UUDDealActionPointModifyTileValue::ActionTypeId,
+				{ dealId, pointId, tile.X, tile.Y, value }));
 	}
 
 	UFUNCTION(BlueprintCallable)
 	void UpdatePointType(FUDNamedOption option) 
 	{
 		EUDPointType type = UUDDealActionPointModifyType::IntegerToPointType(option.OptionCode);
+		int32 typeAsInt = option.OptionCode; // WUT
 		ActionModel->RequestAction(
-			ActionModel->UpdateTypeDiscussionPointAction(
-				CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, type));
+			ActionModel->GetAction(UUDDealActionPointModifyType::ActionTypeId,
+				{ CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, typeAsInt }));
 	}
 
 	UFUNCTION(BlueprintCallable)
@@ -817,32 +860,32 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void InvitePlayer()
 	{
-		ActionModel->RequestAction(ActionModel->GetInviteParticipantDealAction(CurrentDealUniqueId, CurrentInfo.Id));
+		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionParticipantInvite::ActionTypeId, { CurrentDealUniqueId, CurrentInfo.Id }));
 	}
 	UFUNCTION(BlueprintCallable)
 	void LeaveDeal()
 	{
-		ActionModel->RequestAction(ActionModel->GetLeaveParticipantDealAction(CurrentDealUniqueId, CurrentInfo.Id));
+		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionParticipantLeave::ActionTypeId, { CurrentDealUniqueId, CurrentInfo.Id }));
 	}
 	UFUNCTION(BlueprintCallable)
 	void ChangeToReady()
 	{
-		ActionModel->RequestAction(ActionModel->GetReadyDealAction(CurrentDealUniqueId));
+		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionReadyRevert::ActionTypeId, { CurrentDealUniqueId }));
 	}
 	UFUNCTION(BlueprintCallable)
 	void ChangeToNotReady()
 	{
-		ActionModel->RequestAction(ActionModel->GetNotReadyDealAction(CurrentDealUniqueId));
+		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionReady::ActionTypeId, { CurrentDealUniqueId }));
 	}
 	UFUNCTION(BlueprintCallable)
 	void ChangeToYes()
 	{
-		ActionModel->RequestAction(ActionModel->GetPositiveVoteDealAction(CurrentDealUniqueId));
+		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionVoteYes::ActionTypeId, { CurrentDealUniqueId }));
 	}
 	UFUNCTION(BlueprintCallable)
 	void ChangeToNo()
 	{
-		ActionModel->RequestAction(ActionModel->GetNegativeVoteDealAction(CurrentDealUniqueId));
+		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionVoteNo::ActionTypeId, { CurrentDealUniqueId }));
 	}
 private:
 	// MVVM Setters & Getters
@@ -1023,29 +1066,29 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ItemClose()
 	{
-		ActionModel->RequestAction(ActionModel->GetCloseDealAction(CurrentDealItem.DealUniqueId));
+		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionResultClose::ActionTypeId, { CurrentDealItem.DealUniqueId }));
 	}
 	UFUNCTION(BlueprintCallable)
 	void ItemAddPoint()
 	{
-		ActionModel->RequestAction(ActionModel->CreateDiscussionPointAction(CurrentDealItem.DealUniqueId));
+		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionPointAdd::ActionTypeId, { CurrentDealItem.DealUniqueId }));
 	}
 	UFUNCTION(BlueprintCallable)
 	void ItemAddMessage()
 	{
-		ActionModel->RequestAction(ActionModel->CreateChatMessageAction(CurrentDealItem.DealUniqueId, CurrentChatMessage));
+		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionMessageSend::ActionTypeId,{ CurrentDealItem.DealUniqueId }, CurrentChatMessage));
 		SetCurrentChatMessage(FString());
 	}
 
 	UFUNCTION(BlueprintCallable)
 	void ItemForceResolution()
 	{
-		ActionModel->RequestAction(ActionModel->GetFinalizeItemsDealAction(CurrentDealItem.DealUniqueId));
+		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionContractCreate::ActionTypeId,{ CurrentDealItem.DealUniqueId }));
 	}
 	UFUNCTION(BlueprintCallable)
 	void ItemForceExecution()
 	{
-		ActionModel->RequestAction(ActionModel->GetExecuteAllActionsDealAction(CurrentDealItem.DealUniqueId));
+		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionContractExecute::ActionTypeId,{ CurrentDealItem.DealUniqueId }));
 	}
 	UFUNCTION(BlueprintCallable)
 	TArray<FUDDealActionInfo> GetAllActionForCurrentPlayer()

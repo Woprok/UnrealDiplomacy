@@ -20,6 +20,9 @@ struct FUDActionPresentation
 	GENERATED_BODY()
 public:
 	FUDActionPresentation() {}
+	// who is owner of this presentation effort
+	int32 ActionId;
+	// different 
 	TSet<int32> Tags;
 	// What is UI name
 	FString Name;

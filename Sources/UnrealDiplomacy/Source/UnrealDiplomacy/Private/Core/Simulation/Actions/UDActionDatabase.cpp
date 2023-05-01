@@ -86,7 +86,7 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetDefaultAction
 TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetSystemActions(UObject* parent)
 {
 	return {
-		NewObject<UUDSystemAction>(parent),
+		//NewObject<UUDSystemAction>(parent),
 		NewObject<UUDSystemActionGameEnd>(parent),
 		NewObject<UUDSystemActionGameStart>(parent),
 		NewObject<UUDSystemActionLog>(parent),
@@ -101,7 +101,7 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetSystemActions
 TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetGaiaActions(UObject* parent)
 {
 	return {
-		NewObject<UUDGaiaAction>(parent),
+		//NewObject<UUDGaiaAction>(parent),
 		NewObject<UUDGaiaActionResourcesAllAdd>(parent)
 	};
 }
@@ -109,7 +109,7 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetGaiaActions(U
 TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetGameActions(UObject* parent)
 {
 	return {
-		NewObject<UUDGameAction>(parent),
+		//NewObject<UUDGameAction>(parent),
 		NewObject<UUDGameActionGift>(parent),
 		NewObject<UUDGameActionGiftAccept>(parent),
 		NewObject<UUDGameActionGiftIrrevocable>(parent),
@@ -129,7 +129,7 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetGameActions(U
 TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetDealActions(UObject* parent)
 {
 	return {
-		NewObject<UUDDealAction>(parent),
+		//NewObject<UUDDealAction>(parent),
 		NewObject<UUDDealActionContractCreate>(parent),
 		NewObject<UUDDealActionContractExecute>(parent),
 		NewObject<UUDDealActionContractPointAccept>(parent),
@@ -147,7 +147,7 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetDealActions(U
 		NewObject<UUDDealActionPointAdd>(parent),
 		NewObject<UUDDealActionPointChildAdd>(parent),
 		NewObject<UUDDealActionPointIgnore>(parent),
-		NewObject<UUDDealActionPointModify>(parent),
+		//NewObject<UUDDealActionPointModify>(parent),
 		NewObject<UUDDealActionPointModifyAction>(parent),
 		NewObject<UUDDealActionPointModifyInvokerAdd>(parent),
 		NewObject<UUDDealActionPointModifyInvokerRemove>(parent),

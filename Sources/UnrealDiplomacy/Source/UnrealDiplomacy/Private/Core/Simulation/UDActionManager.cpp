@@ -47,22 +47,22 @@ void UUDActionManager::Initialize()
 	ModifierManager = NewObject<UUDModifierManager>(this);
 
 	RegisterCoreActions();
-	RegisterDefaultActions();
+	RegisterAdditionalActions();
 }
 
 void UUDActionManager::RegisterCoreActions()
 {
-	TArray<TScriptInterface<IUDActionInterface>> coreActionList = {
-	};
-	RegisterActionList(coreActionList);
+	RegisterActionList(UUDActionDatabase::GetDefaultActions(this));
+	RegisterActionList(UUDActionDatabase::GetGaiaActions(this));
+	RegisterActionList(UUDActionDatabase::GetSystemActions(this));
+	RegisterActionList(UUDActionDatabase::GetGameActions(this));
+	RegisterActionList(UUDActionDatabase::GetDealActions(this));
 }
 
-void UUDActionManager::RegisterDefaultActions()
+void UUDActionManager::RegisterAdditionalActions()
 {
-	TArray<TScriptInterface<IUDActionInterface>> defaultActionList = {
-
-	};
-	RegisterActionList(defaultActionList);
+	// This is only for inherited managers.
+	return;
 }
 
 void UUDActionManager::RegisterActionList(TArray<TScriptInterface<IUDActionInterface>> actionList)

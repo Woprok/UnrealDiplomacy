@@ -6,6 +6,7 @@
 #include "MVVMViewModelBase.h"
 #include "Core/UserInterfaces/UDViewModelBase.h"
 #include "Core/Simulation/UDActionAdministrator.h"
+#include "Core/Simulation/Actions/UDSystemActionGameStart.h"
 #include "UDLobbyViewModel.generated.h"
 
 /**
@@ -32,7 +33,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void StartGame()
 	{
-		ActionModel->RequestAction(ActionModel->GetStartGameAction());
+		ActionModel->RequestAction(ActionModel->GetAction(UUDSystemActionGameStart::ActionTypeId));
 	}
 protected:
 private:

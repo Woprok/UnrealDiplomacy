@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModelBase.h"
+#include "Core/Simulation/Actions/UDDealActionCreate.h"
 #include "UDInteractionPanelViewModel.generated.h"
 
 /**
@@ -40,7 +41,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void CreateDeal()
 	{
-		ActionModel->RequestAction(ActionModel->GetCreateDealAction());
+		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionCreate::ActionTypeId));
 	}
 protected:
 	void UpdateInteractions(int32 count)

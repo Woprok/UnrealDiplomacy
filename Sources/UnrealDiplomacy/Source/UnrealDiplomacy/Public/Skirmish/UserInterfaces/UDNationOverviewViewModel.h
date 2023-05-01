@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModelBase.h"
 #include "Core/Simulation/UDActionAdministrator.h"
+#include "Core/Simulation/Actions/UDGameActionGift.h"
+#include "Core/Simulation/Actions/UDGameActionGiftIrrevocable.h"
 #include "UDNationOverviewViewModel.generated.h"
 
 /**
@@ -62,7 +64,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void GiveGold()
 	{
-		ActionModel->RequestAction(ActionModel->GetUnconditionalGiftGoldAction(NationId, GoldAmount));
+		ActionModel->RequestAction(ActionModel->GetAction(UUDGameActionGiftIrrevocable::ActionTypeId, { NationId, GoldAmount }));
 	}
 	/**
 	 * Called by button.
@@ -70,7 +72,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OfferGold()
 	{
-		ActionModel->RequestAction(ActionModel->GetConditionalGiftGoldAction(NationId, GoldAmount));
+		ActionModel->RequestAction(ActionModel->GetAction(UUDGameActionGift::ActionTypeId, { NationId, GoldAmount }));
 	}
 protected:
 	void UpdateNation(FUDNationInfo info)

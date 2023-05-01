@@ -46,8 +46,8 @@ protected:
 	/**
 	 * Registers all additional actions.
 	 */
-	UFUNCTION()
-	virtual void RegisterDefaultActions();
+	UFUNCTION(BlueprintCallable)
+	virtual void RegisterAdditionalActions();
 	/**
 	 * Default method for registering multiple actions at once.
 	 */
