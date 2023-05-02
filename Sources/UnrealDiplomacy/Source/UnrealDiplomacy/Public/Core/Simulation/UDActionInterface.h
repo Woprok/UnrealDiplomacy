@@ -13,6 +13,27 @@ class UUDWorldState;
 class UUDWorldGenerator;
 class UUDModifierManager;
 
+// TODO parameter order ?
+// SPECIALS:
+// Map Settings
+// TARGET/TILE/AMOUNT
+// Amount
+// Tile
+// Tile Amount
+// Target
+// Target Amount
+// Target Tile
+// -> Target Tile Amount
+// DEAL -> POINT OR ELSE -> POINT MODIFICATION
+// Deal
+// Deal Point
+// Deal Point Target
+// Deal Point Value
+// Deal Point Tile
+// Deal Point Tile Value
+// Deal Target
+// Deal ConstructPoint
+
 // TODO move this
 USTRUCT()
 struct FUDActionPresentation

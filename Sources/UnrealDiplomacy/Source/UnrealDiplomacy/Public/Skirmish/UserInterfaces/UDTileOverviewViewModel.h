@@ -55,7 +55,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ClaimTile()
 	{
-		ActionModel->RequestAction(ActionModel->GetAction(UUDGameActionTileTake::ActionTypeId));
+		ActionModel->RequestAction(ActionModel->GetAction(UUDGameActionTileTake::ActionTypeId, { Owner, Position.X, Position.Y }));
 	}
 	UFUNCTION(BlueprintCallable)
 	void SetSelectedPosition(FIntPoint newPosition)

@@ -51,7 +51,7 @@ void AUDSkirmishAIController::DoTurn()
 		{
 			OnActionDecidedDelegate.ExecuteIfBound(GetPersonalAdministrator()->GetAction(UUDGameActionTileTake::ActionTypeId, 
 				{
-					tile.X, tile.Y
+					UUDGlobalData::GaiaId, tile.X, tile.Y
 				}));
 		}
 	}
