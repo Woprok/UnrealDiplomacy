@@ -19,6 +19,5 @@ void UUDNewsWidget::BindDelegates()
 
 void UUDNewsWidget::Close()
 {
-	UE_LOG(LogTemp, Log, TEXT("UUDNewsWidget: Close."));
-	RemoveFromParent();
+	UE_LOG(LogTemp, Log, TEXT("UUDViewModel: Close."));
 }

@@ -47,6 +47,6 @@ void UUDUserWidgetManager::HideWidget(const FName& name)
 
 TObjectPtr<UUDUserWidget> UUDUserWidgetManager::Create(TSubclassOf<UUDUserWidget> viewType)
 {
-	//auto pptr = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	return NewObject<UUDUserWidget>(this, viewType);
+	auto player = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	return CreateWidget<UUDUserWidget>(player, viewType);
 }
