@@ -5,7 +5,7 @@
 
 void UUDViewModel::SetModel(TObjectPtr<UUDActionAdministrator> model)
 {
-	UE_LOG(LogTemp, Log, TEXT("UUDViewModel: Model(%d) successfully set."));
+	UE_LOG(LogTemp, Log, TEXT("UUDViewModel: Model successfully set."));
 	Model = model;
 }
 

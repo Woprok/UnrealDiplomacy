@@ -75,7 +75,7 @@ protected:
 	TObjectPtr<UUDModifierManager> ModifierManager = nullptr;
 private:
 	/**
-	 * Determines if this was initialized and can be used;
+	 * Determines if this was initialized and can be used.
 	 */
 	UPROPERTY()
 	bool IsInitialized = false;

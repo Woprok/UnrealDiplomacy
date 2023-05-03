@@ -20,7 +20,7 @@ class UNREALDIPLOMACY_API UUDViewModel : public UMVVMViewModelBase
 	GENERATED_BODY()
 public:
 	/**
-	 * Model is required for all view models
+	 * Model is required for all view models that are using world state.
 	 */
 	void SetModel(TObjectPtr<UUDActionAdministrator> model);
 	/**

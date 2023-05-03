@@ -1,59 +1,97 @@
 // Copyright Miroslav Valach
 
 #include "Core/UDHUD.h"
-#include "Kismet/GameplayStatics.h"
 #include "Core/UserInterfaces/UDUserWidget.h"
+#include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDUserWidgetManager.h"
 #include "Core/UserInterfaces/UDViewModelManager.h"
-#include "Menu/UserInterfaces/UDNewsViewModel.h"
 
-void AUDHUD::ShowWidgets()
+void AUDHUD::ForceUpdate()
 {
-	for (auto widget : Widgets)
+	ViewModelManager->ForceUpdate();
+}
+
+void AUDHUD::SwitchScreen(const FName& screenName)
+{
+	UE_LOG(LogTemp, Log, TEXT("AUDHUD: Switching to Screen(%s)."), *screenName.ToString());
+	HideScreen(CurrentScreenName);
+
+	if (ShowScreen(screenName))
 	{
-		ShowView(widget);
+		CurrentScreenName = screenName;
 	}
 }
 
-void AUDHUD::CreateWidgets()
+void AUDHUD::Initialize()
 {
-	for (auto view : Views)
+	UE_LOG(LogTemp, Log, TEXT("AUDHUD: Initializing new instance of AUDHUD."));
+	check(!IsInitialized);
+	IsInitialized = true;
+
+	ViewManager = NewObject<UUDUserWidgetManager>(this);
+	ViewModelManager = NewObject<UUDViewModelManager>(this);
+
+	PrepareAllScreens();
+}
+
+bool AUDHUD::ShowScreen(const FName& screenName)
+{
+	if (!Screens.Contains(screenName))
 	{
-		CreateView(view);
+		UE_LOG(LogTemp, Log, TEXT("AUDHUD: Current Screen(%s) is not defined."), *screenName.ToString());
+		return false;
+	}
+	FUDScreenInfo screen = Screens[screenName];
+
+	for (const auto& widget : screen.Widgets)
+	{
+		ViewManager->ShowWidget(widget.Name);
+	}
+	return true;
+}
+
+void AUDHUD::HideScreen(const FName& screenName)
+{
+	if (!Screens.Contains(screenName))
+	{
+		UE_LOG(LogTemp, Log, TEXT("AUDHUD: Current Screen(%s) is not defined."), *screenName.ToString());
+		return;
+	}
+	FUDScreenInfo screen = Screens[screenName];
+
+	for (const auto& widget : screen.Widgets)
+	{
+		ViewManager->HideWidget(widget.Name);
 	}
 }
 
-void AUDHUD::CreateViewModels()
+void AUDHUD::PrepareAllScreens() 
 {
-	ViewModels = NewObject<UUDViewModelManager>(this);
-	ViewModels->RegisterViewModel(NewObject<UUDNewsViewModel>(this));
+	UE_LOG(LogTemp, Log, TEXT("AUDHUD: Initializing new instances for all screens."));
+
+	for (const auto& screen : Screens)
+	{
+		PrepareScreen(screen.Value);
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("AUDHUD: Finished initialization for all screens."));
 }
 
-void AUDHUD::BindViewModel()
+void AUDHUD::PrepareScreen(const FUDScreenInfo& screen)
 {
-	for (auto widget : Widgets)
-	{
-		widget->SetViewModel();
+	for (const auto& widget : screen.Widgets)
+	{ 
+		PrepareWidget(widget);
 	}
 }
 
-void AUDHUD::UpdateViewModel()
+void AUDHUD::PrepareWidget(const FUDWidgetInfo& widget)
 {
-	ViewModels->UpdateViewModels();
-}
-
-UUDViewModel* AUDHUD::GetViewModel(FName name)
-{
-	return ViewModels->Get(name);
-}
-
-void AUDHUD::CreateView(TSubclassOf<UUDUserWidget> widgetClass)
-{
-	auto pptr = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	TObjectPtr<UUDUserWidget> widget = CreateWidget<UUDUserWidget>(pptr, widgetClass);
-	Widgets.Add(widget);
-}
-
-void AUDHUD::ShowView(TObjectPtr<UUDUserWidget> widget)
-{
-	widget->AddToViewport();
+	ViewModelManager->Register(widget.Name, widget.ViewModelType);
+	ViewManager->Register(widget.Name, widget.ViewType);
+	// Bind view model to view.
+	// TODO consider cases where either of the register fails.
+	TObjectPtr<UUDUserWidget> view = ViewManager->Get(widget.Name); 
+	TObjectPtr<UUDViewModel> viewModel = ViewModelManager->Get(widget.Name);
+	view->SetViewModel(viewModel);
 }

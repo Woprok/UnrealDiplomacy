@@ -19,10 +19,9 @@ class UNREALDIPLOMACY_API UUDUserWidget : public UUserWidget
 	GENERATED_BODY()
 public:
 	/**
-	 * Invoked for each view exactly once to set a persistent view model reference.
+	 * Enables to define view model used by this widet.
 	 */
-	UFUNCTION(BlueprintNativeEvent)
-	void SetViewModel();
+	virtual void SetViewModel(TObjectPtr<UUDViewModel> viewModel);
 protected:
 	/**
 	 * Used to call all initializations for widget.
