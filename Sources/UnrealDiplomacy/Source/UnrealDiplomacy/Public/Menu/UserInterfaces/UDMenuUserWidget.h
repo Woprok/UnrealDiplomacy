@@ -37,23 +37,13 @@ protected:
 protected:
 	// Bindings
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<UTextBlock> GameTitleText;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UButton> CreateGameButton;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<UTextBlock> CreateGameText;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UButton> JoinGameButton;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<UTextBlock> JoinGameText;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UButton> SettingsButton;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<UTextBlock> SettingsText;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UButton> QuitButton;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<UTextBlock> QuitText;
 	// ViewModel
 	UPROPERTY()
 	TObjectPtr<UUDMenuViewModel> ViewModel;

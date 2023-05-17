@@ -36,11 +36,11 @@ protected:
 	virtual void BindDelegates() override;
 protected:
 	// Bindings
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	//UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
 	TObjectPtr<UTextBlock> TitleText;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	//UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
 	TObjectPtr<UTextBlock> MessageText;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	//UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
 	TObjectPtr<UTextBlock> CloseText;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UButton> CloseButton;

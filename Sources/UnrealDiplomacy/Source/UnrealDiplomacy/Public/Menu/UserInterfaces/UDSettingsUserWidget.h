@@ -45,27 +45,15 @@ protected:
 protected:
 	// Bindings
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<UTextBlock> SettingsTitleText;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UButton> BackButton;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<UTextBlock> BackText;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UButton> SaveButton;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<UTextBlock> SaveText;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UButton> CreditsButton;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<UTextBlock> CreditsText;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UComboBoxString> WindowModeComboBox;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<UTextBlock> WindowModeText;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UComboBoxString> ResolutionComboBox;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<UTextBlock> ResolutionText;
 	// ViewModel
 	UPROPERTY()
 	TObjectPtr<UUDSettingsViewModel> ViewModel;
