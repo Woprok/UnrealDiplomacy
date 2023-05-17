@@ -1,8 +1,9 @@
 // Copyright Miroslav Valach
 
 #include "Menu/UserInterfaces/UDMenuUserWidget.h"
-#include "Menu/UserInterfaces/UDMenuViewModel.h"
 #include "Components/Button.h"
+#include "Menu/UserInterfaces/UDMenuViewModel.h"
+#include "Kismet/GameplayStatics.h"
 #include "Core/UDGameInstance.h"
 #include "Menu/UDMenuHUD.h"
 
@@ -23,23 +24,24 @@ void UUDMenuUserWidget::BindDelegates()
 
 void UUDMenuUserWidget::CreateGame()
 {
-	UE_LOG(LogTemp, Log, TEXT("UUDMenuUserWidget: CreateGame."));
+	//auto hud = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD();
+	//CastChecked<AUDMenuHUD>(hud)->SwitchScreen("None");
 }
 
 void UUDMenuUserWidget::JoinGame()
 {
-	UE_LOG(LogTemp, Log, TEXT("UUDMenuUserWidget: JoinGame."));
-	AUDMenuHUD::Get(GetWorld())->SwitchScreen("JoinScreen");
+	auto hud = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD();
+	CastChecked<AUDMenuHUD>(hud)->SwitchScreen("JoinScreen");
 }
 
 void UUDMenuUserWidget::Settings()
 {
-	UE_LOG(LogTemp, Log, TEXT("UUDMenuUserWidget: Settings."));
-	AUDMenuHUD::Get(GetWorld())->SwitchScreen("SettingsScreen");
+	auto hud = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD();
+	CastChecked<AUDMenuHUD>(hud)->SwitchScreen("SettingsScreen");
 }
 
 void UUDMenuUserWidget::Quit()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDMenuUserWidget: Quit."));
-	UUDGameInstance::Get(GetWorld())->Quit();
+	CastChecked<UUDGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->Quit();
 }

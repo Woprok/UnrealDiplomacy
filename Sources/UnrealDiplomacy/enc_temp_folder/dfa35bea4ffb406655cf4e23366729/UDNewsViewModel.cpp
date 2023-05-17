@@ -2,6 +2,7 @@
 
 #include "Menu/UserInterfaces/UDNewsViewModel.h"
 
+
 #define LOCTEXT_NAMESPACE "News"
 
 void UUDNewsViewModel::Update()

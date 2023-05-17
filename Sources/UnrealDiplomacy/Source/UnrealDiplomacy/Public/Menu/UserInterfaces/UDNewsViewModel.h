@@ -13,22 +13,25 @@ UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDNewsViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
-
 public:
-
+	/**
+	 * Invoked for each update.
+	 */
 	virtual void Update() override;
-
 public:
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FString Title;
+	FString TitleText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FString Message;
+	FString MessageText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FString CloseText;
 private:
 	// MVVM Setters & Getters
-
-	void SetTitle(FString newTitle);
-	FString GetTitle() const;
-	void SetMessage(FString newMessage);
-	FString GetMessage() const;
+	void SetTitleText(FString newTitleText);
+	FString GetTitleText() const;
+	void SetMessageText(FString newMessageText);
+	FString GetMessageText() const;
+	void SetCloseText(FString newCloseText);
+	FString GetCloseText() const;
 };

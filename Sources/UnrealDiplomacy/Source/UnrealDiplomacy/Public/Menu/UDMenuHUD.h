@@ -13,4 +13,10 @@ UCLASS()
 class UNREALDIPLOMACY_API AUDMenuHUD : public AUDHUD
 {
 	GENERATED_BODY()
+public:
+	/**
+	 * Shortcut to retrieve casted MenuHUD.
+	 * Requries World pointer that can be retrieved by GetWorld()
+	 */
+	static TObjectPtr<AUDMenuHUD> Get(TObjectPtr<UWorld> world);
 };

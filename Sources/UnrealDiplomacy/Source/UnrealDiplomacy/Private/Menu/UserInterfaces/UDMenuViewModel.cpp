@@ -7,65 +7,65 @@
 void UUDMenuViewModel::Update()
 {
 	FString title = FText(LOCTEXT("Menu", "Koruna")).ToString();
-	SetTitle(title);
+	SetGameTitleText(title);
 	FString create = FText(LOCTEXT("Menu", "Create Game")).ToString();
-	SetCreateGame(create);
+	SetCreateGameText(create);
 	FString join = FText(LOCTEXT("Menu", "Join Game")).ToString();
-	SetJoinGame(join);
+	SetJoinGameText(join);
 	FString settings = FText(LOCTEXT("Menu", "Settings")).ToString();
-	SetSettings(settings);
+	SetSettingsText(settings);
 	FString quit = FText(LOCTEXT("Menu", "Quit")).ToString();
-	SetQuit(quit);
+	SetQuitText(quit);
 }
 
 #undef LOCTEXT_NAMESPACE
 
-void UUDMenuViewModel::SetTitle(FString newTitle)
+void UUDMenuViewModel::SetGameTitleText(FString newGameTitleText)
 {
-	UE_MVVM_SET_PROPERTY_VALUE(Title, newTitle);
+	UE_MVVM_SET_PROPERTY_VALUE(GameTitleText, newGameTitleText);
 }
 
-FString UUDMenuViewModel::GetTitle() const
+FString UUDMenuViewModel::GetGameTitleText() const
 {
-	return Title;
+	return GameTitleText;
 }
 
-void UUDMenuViewModel::SetCreateGame(FString newCreateGame)
+void UUDMenuViewModel::SetCreateGameText(FString newCreateGameText)
 {
-	UE_MVVM_SET_PROPERTY_VALUE(CreateGame, newCreateGame);
+	UE_MVVM_SET_PROPERTY_VALUE(CreateGameText, newCreateGameText);
 }
 
-FString UUDMenuViewModel::GetCreateGame() const
+FString UUDMenuViewModel::GetCreateGameText() const
 {
-	return CreateGame;
+	return CreateGameText;
 }
 
-void UUDMenuViewModel::SetJoinGame(FString newJoinGame)
+void UUDMenuViewModel::SetJoinGameText(FString newJoinGameText)
 {
-	UE_MVVM_SET_PROPERTY_VALUE(JoinGame, newJoinGame);
+	UE_MVVM_SET_PROPERTY_VALUE(JoinGameText, newJoinGameText);
 }
 
-FString UUDMenuViewModel::GetJoinGame() const
+FString UUDMenuViewModel::GetJoinGameText() const
 {
-	return JoinGame;
+	return JoinGameText;
 }
 
-void UUDMenuViewModel::SetSettings(FString newSettings)
+void UUDMenuViewModel::SetSettingsText(FString newSettingsText)
 {
-	UE_MVVM_SET_PROPERTY_VALUE(Settings, newSettings);
+	UE_MVVM_SET_PROPERTY_VALUE(SettingsText, newSettingsText);
 }
 
-FString UUDMenuViewModel::GetSettings() const
+FString UUDMenuViewModel::GetSettingsText() const
 {
-	return Settings;
+	return SettingsText;
 }
 
-void UUDMenuViewModel::SetQuit(FString newQuit)
+void UUDMenuViewModel::SetQuitText(FString newQuitText)
 {
-	UE_MVVM_SET_PROPERTY_VALUE(Quit, newQuit);
+	UE_MVVM_SET_PROPERTY_VALUE(QuitText, newQuitText);
 }
 
-FString UUDMenuViewModel::GetQuit() const
+FString UUDMenuViewModel::GetQuitText() const
 {
-	return Quit;
+	return QuitText;
 }

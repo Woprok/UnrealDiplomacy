@@ -25,7 +25,6 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UCanvasPanel> ScreenCanvas;
-
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UCanvasPanel> InnerCanvas;
 private:

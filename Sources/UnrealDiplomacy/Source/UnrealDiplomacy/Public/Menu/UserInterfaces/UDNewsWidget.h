@@ -30,17 +30,24 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetBlueprintViewModel(UUDNewsViewModel* model);
 protected:
+	/**
+	 * Automatically invoked by native construct.
+	 */
 	virtual void BindDelegates() override;
-
+	// Bindings
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UTextBlock> TitleText;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UTextBlock> MessageText;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<UTextBlock> CloseText;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UButton> CloseButton;
+	// ViewModel
 	UPROPERTY()
 	TObjectPtr<UUDNewsViewModel> ViewModel;
 private:
+	// Button Functions
 	UFUNCTION()
 	void Close();
 };

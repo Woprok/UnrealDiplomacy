@@ -33,6 +33,62 @@ public:
 	static const int32 GaiaId = 0;
 };
 
+// Following types are wrappers around otherwise engine types or values.
+
+/**
+ * Wrapper for all supported window modes.
+ */
+UENUM(BlueprintType)
+enum class EUDWindowModeType : uint8
+{
+	/**
+	 *
+	 */
+	Fullscreen,
+	/**
+	 *
+	 */
+	Borderless,
+	/**
+	 *
+	 */
+	Windowed,
+};
+
+/**
+ * Custom type that can hold most of the application settings with non-engine references.
+ */
+USTRUCT(BlueprintType)
+struct FUDApplicationSettings
+{
+	GENERATED_BODY()
+public:
+	FUDApplicationSettings() { }
+	FUDApplicationSettings(int32 resolutionWidth, int32 resolutionHeight, EUDWindowModeType windowMode)
+		: ResolutionWidth(resolutionWidth), ResolutionHeight(resolutionHeight), WindowMode(windowMode) { }
+	UPROPERTY(BlueprintReadOnly)
+	int32 ResolutionWidth;
+	UPROPERTY(BlueprintReadOnly)
+	int32 ResolutionHeight;
+	UPROPERTY(BlueprintReadOnly)
+	EUDWindowModeType WindowMode;
+};
+
+UCLASS(meta = (BlueprintThreadSafe))
+class UNREALDIPLOMACY_API UUDApplicationConverters : public UBlueprintFunctionLibrary
+{
+	GENERATED_BODY()
+public:
+	/**
+	 * Converts from engine enum to module enum.
+	 */
+	static EUDWindowModeType ToWindowModeType(EWindowMode::Type windowMode);
+	/**
+	 * Converts from module enum to engine enum.
+	 */
+	static EWindowMode::Type FromWindowModeType(EUDWindowModeType windowMode);
+};
+
 // DESC COMMENTS TO CHECK, CONSIDER, DELETE
 /**
 * START GAME

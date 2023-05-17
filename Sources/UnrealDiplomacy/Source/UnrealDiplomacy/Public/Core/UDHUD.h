@@ -7,6 +7,7 @@
 #include "UDHUD.generated.h"
 
 // Forward Declarations
+
 class UUDUserWidget;
 class UUDViewModel;
 class UUDViewModelManager;
@@ -47,7 +48,7 @@ public:
 /**
  * Defines screen switching for all HUDs.
  */
-UCLASS()
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API AUDHUD : public AHUD
 {
 	GENERATED_BODY()

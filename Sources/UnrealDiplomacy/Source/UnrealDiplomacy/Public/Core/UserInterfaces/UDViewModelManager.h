@@ -12,7 +12,7 @@ class UUDViewModel;
 /**
  * Manager for maintaining instances of view models.
  */
-UCLASS()
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDViewModelManager : public UObject
 {
 	GENERATED_BODY()

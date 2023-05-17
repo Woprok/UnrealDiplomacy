@@ -7,36 +7,39 @@
 #include "UDMenuViewModel.generated.h"
 
 /**
- * 
+ * ViewModel for displaying menu informations once game is opened.
  */
-UCLASS()
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDMenuViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
+	/**
+	 * Invoked for each update.
+	 */
 	virtual void Update() override;
 public:
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FString Title;
+	FString GameTitleText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FString CreateGame;
+	FString CreateGameText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FString JoinGame;
+	FString JoinGameText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FString Settings;
+	FString SettingsText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FString Quit;
+	FString QuitText;
 private:
 	// MVVM Setters & Getters
-	void SetTitle(FString newTitle);
-	FString GetTitle() const;
-	void SetCreateGame(FString newCreateGame);
-	FString GetCreateGame() const;
-	void SetJoinGame(FString newJoinGame);
-	FString GetJoinGame() const;
-	void SetSettings(FString newSettings);
-	FString GetSettings() const;
-	void SetQuit(FString newQuit);
-	FString GetQuit() const;
+	void SetGameTitleText(FString newGameTitleText);
+	FString GetGameTitleText() const;
+	void SetCreateGameText(FString newCreateGameText);
+	FString GetCreateGameText() const;
+	void SetJoinGameText(FString newJoinGameText);
+	FString GetJoinGameText() const;
+	void SetSettingsText(FString newSettingsText);
+	FString GetSettingsText() const;
+	void SetQuitText(FString newQuitText);
+	FString GetQuitText() const;
 };

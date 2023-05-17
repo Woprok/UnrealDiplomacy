@@ -72,11 +72,11 @@ public:
 	 */
 	void SaveChanges();
 	/**
-	 * Binding for non-primitive invoked by widget.
+	 * Binding for non-primitive.
 	 */
 	void SetSelectedWindowMode(FUDWindowModeItem selectedWindowMode);
 	/**
-	 * Binding for non-primitive invoked by widget.
+	 * Binding for non-primitive.
 	 */
 	void SetSelectedResolution(FUDResolutionItem selectedResolution);
 public:
@@ -106,7 +106,4 @@ private:
 	FString GetBackText() const;
 	void SetSaveText(FString newSaveText);
 	FString GetSaveText() const;
-	// Fields
-	FUDWindowModeItem SelectedWindowMode;
-	FUDResolutionItem SelectedResolution;
 };

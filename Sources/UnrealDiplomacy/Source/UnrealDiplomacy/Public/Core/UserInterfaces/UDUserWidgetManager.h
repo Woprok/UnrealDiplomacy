@@ -12,7 +12,7 @@ class UUDUserWidget;
 /**
  * Manager for maintaining instances of views.
  */
-UCLASS()
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDUserWidgetManager : public UObject
 {
 	GENERATED_BODY()

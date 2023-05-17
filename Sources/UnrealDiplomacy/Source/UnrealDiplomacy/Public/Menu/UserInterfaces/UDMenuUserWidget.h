@@ -13,9 +13,9 @@ class UButton;
 class UUDMenuViewModel;
 
 /**
- * 
+ * Ancestor for blueprint.
  */
-UCLASS()
+UCLASS(Abstract)
 class UNREALDIPLOMACY_API UUDMenuUserWidget : public UUDUserWidget
 {
 	GENERATED_BODY()
@@ -30,10 +30,13 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetBlueprintViewModel(UUDMenuViewModel* model);
 protected:
+	/**
+	 * Automatically invoked by native construct.
+	 */
 	virtual void BindDelegates() override;
-
+	// Bindings
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<UTextBlock> TitleText;
+	TObjectPtr<UTextBlock> GameTitleText;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UButton> CreateGameButton;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
@@ -50,9 +53,11 @@ protected:
 	TObjectPtr<UButton> QuitButton;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UTextBlock> QuitText;
+	// ViewModel
 	UPROPERTY()
 	TObjectPtr<UUDMenuViewModel> ViewModel;
 private:
+	// Button Functions
 	UFUNCTION()
 	void CreateGame();
 	UFUNCTION()

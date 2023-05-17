@@ -10,11 +10,15 @@
 
 class UUDActionAdministrator;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDViewModelUpdateBegin);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDViewModelUpdateEnd);
+
 /**
  * Base ancestor for all shared behaviour.
  * Refer to https://docs.unrealengine.com/5.1/en-US/umg-viewmodel/ for full description.
  */
-UCLASS()
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDViewModel : public UMVVMViewModelBase
 {
 	GENERATED_BODY()

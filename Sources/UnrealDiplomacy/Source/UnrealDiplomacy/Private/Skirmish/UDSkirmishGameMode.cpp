@@ -2,6 +2,8 @@
 
 #include "Skirmish/UDSkirmishGameMode.h"
 #include "Core/UDGlobalData.h"
+#include "Core/Simulation/Actions/UDSystemActionWorldCreate.h"
+#include "Core/Simulation/Actions/UDSystemActionGameStart.h"
 
 AUDSkirmishGameMode::AUDSkirmishGameMode() 
 {	

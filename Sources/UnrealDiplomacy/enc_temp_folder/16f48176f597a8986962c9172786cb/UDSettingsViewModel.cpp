@@ -45,21 +45,20 @@ TArray<FUDResolutionItem> UUDSettingsViewModel::CreateResolutionOptions() const
 void UUDSettingsViewModel::SaveChanges()
 {
 	FUDApplicationSettings newSettings = FUDApplicationSettings(
-		SelectedResolution.Width,
-		SelectedResolution.Height,
-		SelectedWindowMode.ItemCode
+
+
 	);
 	CastChecked<UUDGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->SaveSettings(newSettings);
 }
 
 void UUDSettingsViewModel::SetSelectedWindowMode(FUDWindowModeItem selectedWindowMode)
 {
-	SelectedWindowMode = selectedWindowMode;
+
 }
 
 void UUDSettingsViewModel::SetSelectedResolution(FUDResolutionItem selectedResolution)
 {
-	SelectedResolution = selectedResolution;
+
 }
 
 void UUDSettingsViewModel::SetWindowModeText(FString newWindowModeText)
