@@ -14,11 +14,6 @@ class UNREALDIPLOMACY_API UUDNewsViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Invoked for each update.
-	 */
-	virtual void Update() override;
-public:
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FString TitleText;
@@ -26,6 +21,11 @@ public:
 	FString MessageText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FString CloseText;
+protected:
+	/**
+	 * Invoked for each update.
+	 */
+	virtual void Update() override;
 private:
 	// MVVM Setters & Getters
 	void SetTitleText(FString newTitleText);

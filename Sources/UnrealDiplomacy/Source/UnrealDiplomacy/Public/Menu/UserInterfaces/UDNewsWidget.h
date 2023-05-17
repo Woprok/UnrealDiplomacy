@@ -34,6 +34,7 @@ protected:
 	 * Automatically invoked by native construct.
 	 */
 	virtual void BindDelegates() override;
+protected:
 	// Bindings
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UTextBlock> TitleText;

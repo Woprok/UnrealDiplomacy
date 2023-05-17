@@ -14,7 +14,7 @@ FUDApplicationSettings UUDGameInstance::LoadSettings()
     EUDWindowModeType windowMode = UUDApplicationConverters::ToWindowModeType(type);
     FIntPoint resolution = globalSettings->GetScreenResolution();
     // Return loaded settings wrapped.
-    FUDApplicationSettings loadedSettings = FUDApplicationSettings(resolution.X, resolution.Y, windowMode);
+    FUDApplicationSettings loadedSettings = FUDApplicationSettings(resolution, windowMode);
     return loadedSettings;
 }
 
@@ -22,7 +22,7 @@ void UUDGameInstance::SaveSettings(FUDApplicationSettings newSettings)
 {
     TObjectPtr<UGameUserSettings> globalSettings = GetGameUserSettings();
 
-    FIntPoint newResolution = FIntPoint(newSettings.ResolutionWidth, newSettings.ResolutionHeight);
+    FIntPoint newResolution = newSettings.Resolution;
     EWindowMode::Type newWindowMode = UUDApplicationConverters::FromWindowModeType(newSettings.WindowMode);
     // Set all defined settings.
     globalSettings->SetScreenResolution(newResolution);

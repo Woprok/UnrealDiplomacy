@@ -14,12 +14,16 @@ void UUDSettingsViewModel::Update()
 	SetWindowModeText(windowMode);
 	FString resolution = FText(LOCTEXT("Settings", "Resolution")).ToString();
 	SetResolutionText(resolution);
-	FString credits = FText(LOCTEXT("Settings", "Credits")).ToString();
-	SetCreditsText(credits);
 	FString back = FText(LOCTEXT("Settings", "Back")).ToString();
 	SetBackText(back);
 	FString save = FText(LOCTEXT("Settings", "Save")).ToString();
 	SetSaveText(save);
+	FString credits = FText(LOCTEXT("Settings", "Credits")).ToString();
+	SetCreditsText(credits);
+	FString settingsTitle = FText(LOCTEXT("Settings", "Settings")).ToString();
+	SetSettingsTitleText(settingsTitle);
+	// Load all settings.
+	RetrieveSettings();
 }
 
 TArray<FUDWindowModeItem> UUDSettingsViewModel::CreateWindowModeOptions() const
@@ -34,9 +38,9 @@ TArray<FUDWindowModeItem> UUDSettingsViewModel::CreateWindowModeOptions() const
 TArray<FUDResolutionItem> UUDSettingsViewModel::CreateResolutionOptions() const
 {
 	return {
-		FUDResolutionItem(1280, 0720, FText(LOCTEXT("Settings", "1280x720")).ToString()),
-		FUDResolutionItem(1920, 1080, FText(LOCTEXT("Settings", "1920x1080")).ToString()),
-		FUDResolutionItem(2560, 1440, FText(LOCTEXT("Settings", "2560x1440")).ToString()),
+		FUDResolutionItem(FIntPoint(1280, 0720), FText(LOCTEXT("Settings", "1280x720")).ToString()),
+		FUDResolutionItem(FIntPoint(1920, 1080), FText(LOCTEXT("Settings", "1920x1080")).ToString()),
+		FUDResolutionItem(FIntPoint(2560, 1440), FText(LOCTEXT("Settings", "2560x1440")).ToString()),
 	};
 }
 
@@ -45,21 +49,37 @@ TArray<FUDResolutionItem> UUDSettingsViewModel::CreateResolutionOptions() const
 void UUDSettingsViewModel::SaveChanges()
 {
 	FUDApplicationSettings newSettings = FUDApplicationSettings(
-		SelectedResolution.Width,
-		SelectedResolution.Height,
-		SelectedWindowMode.ItemCode
+		SelectedResolution,
+		SelectedWindowMode
 	);
 	CastChecked<UUDGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->SaveSettings(newSettings);
 }
 
-void UUDSettingsViewModel::SetSelectedWindowMode(FUDWindowModeItem selectedWindowMode)
+void UUDSettingsViewModel::RetrieveSettings()
 {
-	SelectedWindowMode = selectedWindowMode;
+	FUDApplicationSettings settings = UUDGameInstance::Get(GetWorld())->LoadSettings();
+	SelectedResolution = settings.Resolution;
+	SelectedWindowMode = settings.WindowMode;
 }
 
-void UUDSettingsViewModel::SetSelectedResolution(FUDResolutionItem selectedResolution)
+EUDWindowModeType UUDSettingsViewModel::GetSelectedWindowMode() const
 {
-	SelectedResolution = selectedResolution;
+	return SelectedWindowMode;
+}
+
+void UUDSettingsViewModel::SetSelectedWindowMode(const FUDWindowModeItem& selectedWindowMode)
+{
+	SelectedWindowMode = selectedWindowMode.ItemCode;
+}
+
+FIntPoint UUDSettingsViewModel::GetSelectedResolution() const
+{
+	return SelectedResolution;
+}
+
+void UUDSettingsViewModel::SetSelectedResolution(const FUDResolutionItem& selectedResolution)
+{
+	SelectedResolution = selectedResolution.ItemCode;
 }
 
 void UUDSettingsViewModel::SetWindowModeText(FString newWindowModeText)
@@ -82,16 +102,6 @@ FString UUDSettingsViewModel::GetResolutionText() const
 	return ResolutionText;
 }
 
-void UUDSettingsViewModel::SetCreditsText(FString newCreditsText)
-{
-	UE_MVVM_SET_PROPERTY_VALUE(CreditsText, newCreditsText);
-}
-
-FString UUDSettingsViewModel::GetCreditsText() const
-{
-	return CreditsText;
-}
-
 void UUDSettingsViewModel::SetBackText(FString newBackText)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(BackText, newBackText);
@@ -110,4 +120,24 @@ void UUDSettingsViewModel::SetSaveText(FString newSaveText)
 FString UUDSettingsViewModel::GetSaveText() const
 {
 	return SaveText;
+}
+
+void UUDSettingsViewModel::SetCreditsText(FString newCreditsText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(CreditsText, newCreditsText);
+}
+
+FString UUDSettingsViewModel::GetCreditsText() const
+{
+	return CreditsText;
+}
+
+void UUDSettingsViewModel::SetSettingsTitleText(FString newSettingsTitleText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(SettingsTitleText, newSettingsTitleText);
+}
+
+FString UUDSettingsViewModel::GetSettingsTitleText() const
+{
+	return SettingsTitleText;
 }

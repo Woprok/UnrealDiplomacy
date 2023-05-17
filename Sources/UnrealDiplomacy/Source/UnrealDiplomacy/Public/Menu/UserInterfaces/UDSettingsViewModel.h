@@ -36,12 +36,10 @@ struct FUDResolutionItem
 	GENERATED_BODY()
 public:
 	FUDResolutionItem() { }
-	FUDResolutionItem(int32 width, int32 height, FString itemText)
-		: Width(width), Height(height), ItemText(itemText) { }
+	FUDResolutionItem(FIntPoint itemCode, FString itemText)
+		: ItemCode(itemCode), ItemText(itemText) { }
 	UPROPERTY(BlueprintReadOnly)
-	int32 Width;
-	UPROPERTY(BlueprintReadOnly)
-	int32 Height;
+	FIntPoint ItemCode;
 	UPROPERTY(BlueprintReadOnly)
 	FString ItemText;
 };
@@ -55,11 +53,6 @@ class UNREALDIPLOMACY_API UUDSettingsViewModel : public UUDViewModel
 	GENERATED_BODY()
 public:
 	/**
-	 * Invoked for each update.
-	 */
-	virtual void Update() override;
-	// View Options
-	/**
 	 * Creates new list of all supported window options.
 	 */
 	TArray<FUDWindowModeItem> CreateWindowModeOptions() const;
@@ -68,17 +61,9 @@ public:
 	 */
 	TArray<FUDResolutionItem> CreateResolutionOptions() const;
 	/**
-	 * Applies changes.
+	 * Applies changes that are present in the view model.
 	 */
 	void SaveChanges();
-	/**
-	 * Binding for non-primitive invoked by widget.
-	 */
-	void SetSelectedWindowMode(FUDWindowModeItem selectedWindowMode);
-	/**
-	 * Binding for non-primitive invoked by widget.
-	 */
-	void SetSelectedResolution(FUDResolutionItem selectedResolution);
 public:
 	// MVVM 
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
@@ -86,27 +71,54 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FString ResolutionText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FString CreditsText;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FString BackText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FString SaveText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FString CreditsText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FString SettingsTitleText;
+	/**
+	 * Binding for non-primitive invoked by widget.
+	 */
+	EUDWindowModeType GetSelectedWindowMode() const;
+	/**
+	 * Binding for non-primitive invoked by widget.
+	 */
+	void SetSelectedWindowMode(const FUDWindowModeItem& selectedWindowMode);
+	/**
+	 * Binding for non-primitive invoked by widget.
+	 */
+	FIntPoint GetSelectedResolution() const;
+	/**
+	 * Binding for non-primitive invoked by widget.
+	 */
+	void SetSelectedResolution(const FUDResolutionItem& selectedResolution);
 protected:
-	//UPROPERTY()
-	//FUDViewModelUpdateBegin OnUpdateBegin;
+	/**
+	 * Invoked for each update.
+	 */
+	virtual void Update() override;
+	/**
+	 * Loads settings from game instance.
+	 */
+	void RetrieveSettings();
 private:
 	// MVVM Setters & Getters
 	void SetWindowModeText(FString newWindowModeText);
 	FString GetWindowModeText() const;
 	void SetResolutionText(FString newResolutionText);
 	FString GetResolutionText() const;
-	void SetCreditsText(FString newCreditsText);
-	FString GetCreditsText() const;
 	void SetBackText(FString newBackText);
 	FString GetBackText() const;
 	void SetSaveText(FString newSaveText);
 	FString GetSaveText() const;
+	void SetCreditsText(FString newCreditsText);
+	FString GetCreditsText() const;
+	void SetSettingsTitleText(FString newSettingsTitleText);
+	FString GetSettingsTitleText() const;
+private:
 	// Fields
-	FUDWindowModeItem SelectedWindowMode;
-	FUDResolutionItem SelectedResolution;
+	EUDWindowModeType SelectedWindowMode;
+	FIntPoint SelectedResolution;
 };

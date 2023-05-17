@@ -9,6 +9,14 @@ void UUDViewModel::SetModel(TObjectPtr<UUDActionAdministrator> model)
 	Model = model;
 }
 
+void UUDViewModel::FullUpdate()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDViewModel: Full Update."));
+	OnUpdateStarting.Broadcast();
+	Update();
+	OnUpdateFinishing.Broadcast();
+}
+
 void UUDViewModel::Update()
 {
 	return;

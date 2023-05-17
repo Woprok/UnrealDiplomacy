@@ -64,12 +64,10 @@ struct FUDApplicationSettings
 	GENERATED_BODY()
 public:
 	FUDApplicationSettings() { }
-	FUDApplicationSettings(int32 resolutionWidth, int32 resolutionHeight, EUDWindowModeType windowMode)
-		: ResolutionWidth(resolutionWidth), ResolutionHeight(resolutionHeight), WindowMode(windowMode) { }
+	FUDApplicationSettings(FIntPoint resolution, EUDWindowModeType windowMode)
+		: Resolution(resolution), WindowMode(windowMode) { }
 	UPROPERTY(BlueprintReadOnly)
-	int32 ResolutionWidth;
-	UPROPERTY(BlueprintReadOnly)
-	int32 ResolutionHeight;
+	FIntPoint Resolution;
 	UPROPERTY(BlueprintReadOnly)
 	EUDWindowModeType WindowMode;
 };

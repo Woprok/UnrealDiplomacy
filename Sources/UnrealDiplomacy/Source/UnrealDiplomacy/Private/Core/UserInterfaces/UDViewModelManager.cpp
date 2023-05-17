@@ -8,7 +8,7 @@ void UUDViewModelManager::ForceUpdate()
 {
 	for (auto viewModel : ViewModels)
 	{
-		viewModel.Value->Update();
+		viewModel.Value->FullUpdate();
 	}
 }
 

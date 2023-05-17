@@ -37,7 +37,15 @@ protected:
 	 * Automatically invoked by native construct.
 	 */
 	virtual void BindDelegates() override;
+	/**
+	 * Loads data from view model.
+	 */
+	UFUNCTION()
+	void LoadOptions();
+protected:
 	// Bindings
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<UTextBlock> SettingsTitleText;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UButton> BackButton;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
@@ -46,6 +54,10 @@ protected:
 	TObjectPtr<UButton> SaveButton;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UTextBlock> SaveText;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<UButton> CreditsButton;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<UTextBlock> CreditsText;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UComboBoxString> WindowModeComboBox;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
@@ -57,21 +69,24 @@ protected:
 	// ViewModel
 	UPROPERTY()
 	TObjectPtr<UUDSettingsViewModel> ViewModel;
-	/**
-	 * Loads data from view model.
-	 */
-	void LoadOptions();
 private:
 	// Button Functions
 	UFUNCTION()
 	void Back();
 	UFUNCTION()
 	void Save();
+	UFUNCTION()
+	void Credits();
 	// ComboBox Functions
 	UFUNCTION()
 	void WindowModeChanged(FString SelectedItem, ESelectInfo::Type SelectionType);
 	UFUNCTION()
 	void ResolutionChanged(FString SelectedItem, ESelectInfo::Type SelectionType);
+	UFUNCTION()
+	void LoadWindowMode(); 
+	UFUNCTION()
+	void LoadResolution();
+private:
 	// ComboBox Arrays
 	TArray<FUDWindowModeItem> WindowModeItems;
 	TArray<FUDResolutionItem> ResolutionItems;
