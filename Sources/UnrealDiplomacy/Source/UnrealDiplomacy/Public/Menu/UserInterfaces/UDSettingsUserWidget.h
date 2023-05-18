@@ -94,4 +94,5 @@ private:
 	// ComboBox Arrays
 	TArray<FUDWindowModeItem> WindowModeItems;
 	TArray<FUDResolutionItem> ResolutionItems;
+	bool isReloading = false;
 };

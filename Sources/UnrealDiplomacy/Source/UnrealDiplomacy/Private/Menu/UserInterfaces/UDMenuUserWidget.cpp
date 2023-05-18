@@ -43,13 +43,15 @@ void UUDMenuUserWidget::CreateGame()
 void UUDMenuUserWidget::JoinGame()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDMenuUserWidget: JoinGame."));
-	AUDMenuHUD::Get(GetWorld())->SwitchScreen("JoinScreen");
+	TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
+	hud->SwitchScreen(hud->JoinGameScreen);
 }
 
 void UUDMenuUserWidget::Settings()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDMenuUserWidget: Settings."));
-	AUDMenuHUD::Get(GetWorld())->SwitchScreen("SettingsScreen");
+	TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
+	hud->SwitchScreen(hud->SettingsScreen);
 }
 
 void UUDMenuUserWidget::Quit()

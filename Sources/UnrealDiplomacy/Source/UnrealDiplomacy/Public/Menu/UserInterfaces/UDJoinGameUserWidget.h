@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class UNREALDIPLOMACY_API UUDJoinGameUserWidget : public UUDUserWidget
 {
 	GENERATED_BODY()

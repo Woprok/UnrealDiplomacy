@@ -43,23 +43,32 @@ void UUDSettingsUserWidget::BindDelegates()
 void UUDSettingsUserWidget::Back()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDSettingsUserWidget: Back."));
-	AUDMenuHUD::Get(GetWorld())->SwitchScreen("MenuScreen");
+	LoadOptions();
+	TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
+	hud->SwitchScreen(hud->MenuScreen);
 }
 
 void UUDSettingsUserWidget::Save()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDSettingsUserWidget: Save."));
-	AUDMenuHUD::Get(GetWorld())->SwitchScreen("MenuScreen");
+	ViewModel->SaveChanges();
+	TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
+	hud->SwitchScreen(hud->MenuScreen);
 }
 
 void UUDSettingsUserWidget::Credits()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDSettingsUserWidget: Credits."));
-	AUDMenuHUD::Get(GetWorld())->SwitchScreen("Credits");
+	LoadOptions();
+	TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
+	hud->SwitchScreen(hud->CreditsScreen);
 }
 
 void UUDSettingsUserWidget::WindowModeChanged(FString SelectedItem, ESelectInfo::Type SelectionType)
 {
+	if (isReloading)
+		return;
+
 	FUDWindowModeItem selected = *WindowModeItems.FindByPredicate(
 		[&SelectedItem](const FUDWindowModeItem& item) { return item.ItemText == SelectedItem; }
 	);
@@ -68,6 +77,9 @@ void UUDSettingsUserWidget::WindowModeChanged(FString SelectedItem, ESelectInfo:
 
 void UUDSettingsUserWidget::ResolutionChanged(FString SelectedItem, ESelectInfo::Type SelectionType)
 {
+	if (isReloading)
+		return;
+
 	FUDResolutionItem selected = *ResolutionItems.FindByPredicate(
 		[&SelectedItem](const FUDResolutionItem& item) { return item.ItemText == SelectedItem; }
 	);
@@ -76,8 +88,10 @@ void UUDSettingsUserWidget::ResolutionChanged(FString SelectedItem, ESelectInfo:
 
 void UUDSettingsUserWidget::LoadOptions()
 {
+	isReloading = true;
 	LoadWindowMode();
 	LoadResolution();
+	isReloading = false;
 }
 
 void UUDSettingsUserWidget::LoadWindowMode()
@@ -107,8 +121,16 @@ void UUDSettingsUserWidget::LoadResolution()
 
 	FIntPoint selectedResolution = ViewModel->GetSelectedResolution();
 
-	FUDResolutionItem selectedOption = *ResolutionItems.FindByPredicate(
+	FUDResolutionItem* foundOption = ResolutionItems.FindByPredicate(
 		[&selectedResolution](const FUDResolutionItem& item) { return item.ItemCode == selectedResolution; }
 	);
+
+	// Handles rare case where resolution could be altered to non-supported version.
+	FUDResolutionItem selectedOption;
+	if (!foundOption && ResolutionItems.Num() > 0)
+		selectedOption = ResolutionItems[0];
+	else
+		selectedOption = *foundOption;
+
 	ResolutionComboBoxWidget->SetSelectedOption(selectedOption.ItemText);
 }

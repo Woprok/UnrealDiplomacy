@@ -35,6 +35,10 @@ public:
 	 * Requries World pointer that can be retrieved by GetWorld()
 	 */
 	static TObjectPtr<UUDGameInstance> Get(TObjectPtr<UWorld> world);
+	/**
+	 * Initializes new session.
+	 */
+	bool CreateSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, bool bIsLAN, bool bIsPresence, int32 MaxNumPlayers);
 private:
 	TObjectPtr<UGameUserSettings> GetGameUserSettings();
 };

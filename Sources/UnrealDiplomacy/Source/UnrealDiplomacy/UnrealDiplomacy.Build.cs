@@ -13,15 +13,16 @@ public class UnrealDiplomacy : ModuleRules
             {
                 "Core", "CoreUObject", "Engine", "InputCore",
 				"ModularGameplay", "ModularGameplayActors", 
-				"ModelViewViewModel"
+				"ModelViewViewModel",
+                "OnlineSubsystem", "OnlineSubsystemUtils"
             });
 
 		PrivateDependencyModuleNames.AddRange(
             new string[]
             {
                 "NetCore",
-                "SlateCore",
                 "Slate",
+                "SlateCore",
                 "UMG",
             });
 
@@ -29,7 +30,7 @@ public class UnrealDiplomacy : ModuleRules
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 		
 		// Uncomment if you are using online features
-		PrivateDependencyModuleNames.Add("OnlineSubsystem");
+		//PrivateDependencyModuleNames.Add("OnlineSubsystem");
 
 		// To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
 	}

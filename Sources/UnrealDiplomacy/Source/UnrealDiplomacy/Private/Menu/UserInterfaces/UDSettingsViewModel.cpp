@@ -9,6 +9,8 @@
 
 void UUDSettingsViewModel::Update()
 {
+	FString settingsTitle = FText(LOCTEXT("Settings", "Settings")).ToString();
+	SetSettingsTitleText(settingsTitle);
 	FString windowMode = FText(LOCTEXT("Settings", "Window Mode")).ToString();
 	SetWindowModeText(windowMode);
 	FString resolution = FText(LOCTEXT("Settings", "Resolution")).ToString();
@@ -19,8 +21,6 @@ void UUDSettingsViewModel::Update()
 	SetSaveText(save);
 	FString credits = FText(LOCTEXT("Settings", "Credits")).ToString();
 	SetCreditsText(credits);
-	FString settingsTitle = FText(LOCTEXT("Settings", "Settings")).ToString();
-	SetSettingsTitleText(settingsTitle);
 	// Load all settings.
 	RetrieveSettings();
 }
@@ -37,7 +37,7 @@ TArray<FUDWindowModeItem> UUDSettingsViewModel::CreateWindowModeOptions() const
 TArray<FUDResolutionItem> UUDSettingsViewModel::CreateResolutionOptions() const
 {
 	return {
-		FUDResolutionItem(FIntPoint(1280, 0720), FText(LOCTEXT("Settings", "1280x720")).ToString()),
+		FUDResolutionItem(FIntPoint(1280, 720), FText(LOCTEXT("Settings", "1280x720")).ToString()),
 		FUDResolutionItem(FIntPoint(1920, 1080), FText(LOCTEXT("Settings", "1920x1080")).ToString()),
 		FUDResolutionItem(FIntPoint(2560, 1440), FText(LOCTEXT("Settings", "2560x1440")).ToString()),
 	};

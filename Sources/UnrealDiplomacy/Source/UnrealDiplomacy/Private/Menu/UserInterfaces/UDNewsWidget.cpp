@@ -14,7 +14,7 @@ void UUDNewsWidget::SetViewModel(TObjectPtr<UUDViewModel> viewModel)
 
 void UUDNewsWidget::BindWidgets()
 {
-	TitleTextWidget = GetWidget<UTextBlock>(TEXT("TitleText"));
+	NewsTitleTextWidget = GetWidget<UTextBlock>(TEXT("NewsTitleText"));
 	MessageTextWidget = GetWidget<UTextBlock>(TEXT("MessageText"));
 	CloseTextWidget = GetWidget<UTextBlock>(TEXT("CloseText"));
 	CloseButtonWidget = GetWidget<UButton>(TEXT("CloseButton"));

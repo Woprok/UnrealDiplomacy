@@ -41,7 +41,7 @@ protected:
 protected:
 	// Bindings
 	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> TitleTextWidget;
+	TWeakObjectPtr<UTextBlock> NewsTitleTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> MessageTextWidget;
 	UPROPERTY()

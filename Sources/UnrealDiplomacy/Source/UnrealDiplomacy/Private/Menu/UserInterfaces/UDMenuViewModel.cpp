@@ -6,12 +6,12 @@
 
 void UUDMenuViewModel::Update()
 {
-	FString title = FText(LOCTEXT("Menu", "Koruna")).ToString();
-	SetGameTitleText(title);
-	FString create = FText(LOCTEXT("Menu", "Create Game")).ToString();
-	SetCreateGameText(create);
-	FString join = FText(LOCTEXT("Menu", "Join Game")).ToString();
-	SetJoinGameText(join);
+	FString gameTitle = FText(LOCTEXT("Menu", "Koruna")).ToString();
+	SetGameTitleText(gameTitle);
+	FString createGame = FText(LOCTEXT("Menu", "Create Game")).ToString();
+	SetCreateGameText(createGame);
+	FString joinGame = FText(LOCTEXT("Menu", "Join Game")).ToString();
+	SetJoinGameText(joinGame);
 	FString settings = FText(LOCTEXT("Menu", "Settings")).ToString();
 	SetSettingsText(settings);
 	FString quit = FText(LOCTEXT("Menu", "Quit")).ToString();

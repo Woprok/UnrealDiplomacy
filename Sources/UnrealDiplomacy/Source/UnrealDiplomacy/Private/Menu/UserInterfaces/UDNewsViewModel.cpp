@@ -6,8 +6,8 @@
 
 void UUDNewsViewModel::Update()
 {
-	FString title = FText(LOCTEXT("News", "Welcome!")).ToString();
-	SetTitleText(title);
+	FString newsTitle = FText(LOCTEXT("News", "Welcome!")).ToString();
+	SetNewsTitleText(newsTitle);
 	FString message = FText(LOCTEXT("News", "This game is still in active development. You may encounter spooky bugs!")).ToString();
 	SetMessageText(message);
 	FString close = FText(LOCTEXT("News", "Close")).ToString();
@@ -16,14 +16,14 @@ void UUDNewsViewModel::Update()
 
 #undef LOCTEXT_NAMESPACE
 
-void UUDNewsViewModel::SetTitleText(FString newTitleText)
+void UUDNewsViewModel::SetNewsTitleText(FString newNewsTitleText)
 {
-	UE_MVVM_SET_PROPERTY_VALUE(TitleText, newTitleText);
+	UE_MVVM_SET_PROPERTY_VALUE(NewsTitleText, newNewsTitleText);
 }
 
-FString UUDNewsViewModel::GetTitleText() const
+FString UUDNewsViewModel::GetNewsTitleText() const
 {
-	return TitleText;
+	return NewsTitleText;
 }
 
 void UUDNewsViewModel::SetMessageText(FString newMessageText)
