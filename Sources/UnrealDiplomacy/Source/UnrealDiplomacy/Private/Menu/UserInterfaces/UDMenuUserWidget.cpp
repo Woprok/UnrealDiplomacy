@@ -2,6 +2,7 @@
 
 #include "Menu/UserInterfaces/UDMenuUserWidget.h"
 #include "Menu/UserInterfaces/UDMenuViewModel.h"
+#include "Components/TextBlock.h"
 #include "Components/Button.h"
 #include "Core/UDGameInstance.h"
 #include "Menu/UDMenuHUD.h"
@@ -13,12 +14,25 @@ void UUDMenuUserWidget::SetViewModel(TObjectPtr<UUDViewModel> viewModel)
 	SetBlueprintViewModel(ViewModel.Get());
 }
 
+void UUDMenuUserWidget::BindWidgets()
+{
+	GameTitleTextWidget = GetWidget<UTextBlock>(TEXT("GameTitleText"));
+	CreateGameTextWidget = GetWidget<UTextBlock>(TEXT("CreateGameText"));
+	JoinGameTextWidget = GetWidget<UTextBlock>(TEXT("JoinGameText"));
+	SettingsTextWidget = GetWidget<UTextBlock>(TEXT("SettingsText"));
+	QuitTextWidget = GetWidget<UTextBlock>(TEXT("QuitText"));
+	CreateGameButtonWidget = GetWidget<UButton>(TEXT("CreateGameButton"));
+	JoinGameButtonWidget = GetWidget<UButton>(TEXT("JoinGameButton"));
+	SettingsButtonWidget = GetWidget<UButton>(TEXT("SettingsButton"));
+	QuitButtonWidget = GetWidget<UButton>(TEXT("QuitButton"));
+}
+
 void UUDMenuUserWidget::BindDelegates()
 {
-	CreateGameButton->OnClicked.AddUniqueDynamic(this, &UUDMenuUserWidget::CreateGame);
-	JoinGameButton->OnClicked.AddUniqueDynamic(this, &UUDMenuUserWidget::JoinGame);
-	SettingsButton->OnClicked.AddUniqueDynamic(this, &UUDMenuUserWidget::Settings);
-	QuitButton->OnClicked.AddUniqueDynamic(this, &UUDMenuUserWidget::Quit);
+	CreateGameButtonWidget->OnClicked.AddUniqueDynamic(this, &UUDMenuUserWidget::CreateGame);
+	JoinGameButtonWidget->OnClicked.AddUniqueDynamic(this, &UUDMenuUserWidget::JoinGame);
+	SettingsButtonWidget->OnClicked.AddUniqueDynamic(this, &UUDMenuUserWidget::Settings);
+	QuitButtonWidget->OnClicked.AddUniqueDynamic(this, &UUDMenuUserWidget::Quit);
 }
 
 void UUDMenuUserWidget::CreateGame()

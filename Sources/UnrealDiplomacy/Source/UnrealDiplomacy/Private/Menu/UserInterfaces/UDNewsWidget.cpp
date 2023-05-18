@@ -12,9 +12,17 @@ void UUDNewsWidget::SetViewModel(TObjectPtr<UUDViewModel> viewModel)
 	SetBlueprintViewModel(ViewModel.Get());
 }
 
+void UUDNewsWidget::BindWidgets()
+{
+	TitleTextWidget = GetWidget<UTextBlock>(TEXT("TitleText"));
+	MessageTextWidget = GetWidget<UTextBlock>(TEXT("MessageText"));
+	CloseTextWidget = GetWidget<UTextBlock>(TEXT("CloseText"));
+	CloseButtonWidget = GetWidget<UButton>(TEXT("CloseButton"));
+}
+
 void UUDNewsWidget::BindDelegates()
 {
-	CloseButton->OnClicked.AddUniqueDynamic(this, &UUDNewsWidget::Close);
+	CloseButtonWidget->OnClicked.AddUniqueDynamic(this, &UUDNewsWidget::Close);
 }
 
 void UUDNewsWidget::Close()

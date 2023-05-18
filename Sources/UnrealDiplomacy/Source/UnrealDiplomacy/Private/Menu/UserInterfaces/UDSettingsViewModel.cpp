@@ -3,7 +3,6 @@
 #include "Menu/UserInterfaces/UDSettingsViewModel.h"
 #include "GameFramework/GameUserSettings.h"
 #include "Core/UDGlobalData.h"
-#include "Kismet/GameplayStatics.h"
 #include "Core/UDGameInstance.h"
 
 #define LOCTEXT_NAMESPACE "Settings"
@@ -52,7 +51,7 @@ void UUDSettingsViewModel::SaveChanges()
 		SelectedResolution,
 		SelectedWindowMode
 	);
-	CastChecked<UUDGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->SaveSettings(newSettings);
+	UUDGameInstance::Get(GetWorld())->SaveSettings(newSettings);
 }
 
 void UUDSettingsViewModel::RetrieveSettings()

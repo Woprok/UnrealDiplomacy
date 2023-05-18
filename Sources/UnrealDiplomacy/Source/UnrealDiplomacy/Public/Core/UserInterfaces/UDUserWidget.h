@@ -26,13 +26,35 @@ protected:
 	/**
 	 * Used to call all initializations for widget.
 	 */
-	virtual void NativeConstruct() override;
+	virtual void NativeOnInitialized() override;
 	/**
-	 * Automatically invoked by native construct.
+	 * Used to call editor initializations for widget.
+	 * This is executed during the runtime as well.
+	 */
+	virtual void NativePreConstruct() override;
+	/**
+	 * Automatically invoked by native on initialized.
 	 */
 	virtual void BindDelegates();
 	/**
-	 * Autimatically invoked by native construct.
+	 * Automatically invoked by native on initialized.
+	 */
+	virtual void BindWidgets();
+	/**
+	 * Automatically invoked by native pre construct.
 	 */
 	virtual void SetAppearance();
+	/**
+	 * Retrieve widget based on name and casts it to the specified type.
+	 * This will throw runtime error, if it can't find desired widget.
+	 */
+	template<class T>
+	TWeakObjectPtr<T> GetWidget(const FName& widgetName)
+	{
+		TObjectPtr<UWidget> widget_ptr = GetWidgetFromName(widgetName);
+		ensureMsgf(widget_ptr, TEXT("UUDUserWidget: '%s' not found!"), *widgetName.ToString());
+		TObjectPtr<T> casted_ptr = CastChecked<T>(widget_ptr);
+		ensureMsgf(casted_ptr, TEXT("UUDUserWidget: '%s' incorrect type!"), *widgetName.ToString());
+		return casted_ptr;
+	}
 };

@@ -57,7 +57,10 @@ void AUDSkirmishGameMode::RegisterPlayer(APlayerController* NewPlayer)
 	TWeakObjectPtr<AUDSkirmishPlayerController> controller = Cast<AUDSkirmishPlayerController>(NewPlayer);
 	PlayerControllers.Add(controller);
 
-	AssignToSimulation(Cast<IUDControllerInterface>(controller), true);
+	TScriptInterface<IUDControllerInterface> udController;
+	udController.SetObject(controller.Get());
+
+	AssignToSimulation(udController, true);
 }
 
 void AUDSkirmishGameMode::RegisterAi()
@@ -67,10 +70,17 @@ void AUDSkirmishGameMode::RegisterAi()
 	TWeakObjectPtr<AUDSkirmishAIController> controller = CreateAi();
 	AiControllers.Add(controller);
 
-	AssignToSimulation(Cast<IUDControllerInterface>(controller), true);
+	TScriptInterface<IUDControllerInterface> udController;
+	udController.SetObject(controller.Get());
+
+	AssignToSimulation(udController, true);
 
 	controller->SetSimulatedStateAccess(GetWorldSimulation()->GetSpecificState(controller->GetControllerUniqueId()));
-	GetCastGameState()->RegisterActionMaker(Cast<IUDActionHandlingInterface>(controller));
+
+	TScriptInterface<IUDActionHandlingInterface> udHandler;
+	udHandler.SetObject(controller.Get());
+
+	GetCastGameState()->RegisterActionMaker(udHandler);
 }
 
 void AUDSkirmishGameMode::RegisterGaiaAi()
@@ -79,16 +89,23 @@ void AUDSkirmishGameMode::RegisterGaiaAi()
 	// Create new controller and save it.
 	GaiaController = CreateServerPlayer();
 
+	TScriptInterface<IUDControllerInterface> udController;
+	udController.SetObject(GaiaController.Get());
+
 	// This is supposed to be first call, if this ever becomes out of order, it will cause
 	// more issues as the initialization will not be able to handle a player that
 	// initialized sooner then server class.
-	AssignToSimulation(Cast<IUDControllerInterface>(GaiaController), false);
+	AssignToSimulation(udController, false);
 
 	GaiaController->SetSimulatedStateAccess(GetWorldSimulation()->GetSpecificState(GaiaController->GetControllerUniqueId()));
-	GetCastGameState()->RegisterActionMaker(Cast<IUDActionHandlingInterface>(GaiaController));
+
+	TScriptInterface<IUDActionHandlingInterface> udHandler;
+	udHandler.SetObject(GaiaController.Get());
+	
+	GetCastGameState()->RegisterActionMaker(udHandler);
 }
 
-void AUDSkirmishGameMode::AssignToSimulation(TObjectPtr<IUDControllerInterface> controller, bool isPlayerOrAi)
+void AUDSkirmishGameMode::AssignToSimulation(TScriptInterface<IUDControllerInterface> controller, bool isPlayerOrAi)
 {
 	// Always retrieve this before calling anything that might depend on it.
 	TWeakObjectPtr<AUDWorldSimulation> worldSim = GetWorldSimulation();

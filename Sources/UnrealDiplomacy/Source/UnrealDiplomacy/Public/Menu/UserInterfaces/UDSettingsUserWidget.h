@@ -34,9 +34,13 @@ public:
 	void SetBlueprintViewModel(UUDSettingsViewModel* model);
 protected:
 	/**
-	 * Automatically invoked by native construct.
+	 * Automatically invoked by native on initialized.
 	 */
 	virtual void BindDelegates() override;
+	/**
+	 * Automatically invoked by native on initialized.
+	 */
+	virtual void BindWidgets() override;
 	/**
 	 * Loads data from view model.
 	 */
@@ -44,19 +48,31 @@ protected:
 	void LoadOptions();
 protected:
 	// Bindings
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<UButton> BackButton;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<UButton> SaveButton;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<UButton> CreditsButton;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<UComboBoxString> WindowModeComboBox;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<UComboBoxString> ResolutionComboBox;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> SettingsTitleTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> BackTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> SaveTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> CreditsTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> WindowModeTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> ResolutionTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UButton> BackButtonWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UButton> SaveButtonWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UButton> CreditsButtonWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UComboBoxString> WindowModeComboBoxWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UComboBoxString> ResolutionComboBoxWidget;
 	// ViewModel
 	UPROPERTY()
-	TObjectPtr<UUDSettingsViewModel> ViewModel;
+	TWeakObjectPtr<UUDSettingsViewModel> ViewModel;
 private:
 	// Button Functions
 	UFUNCTION()

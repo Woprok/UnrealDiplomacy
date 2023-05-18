@@ -31,7 +31,7 @@ public:
 	 * This allows AIController to act by using same channel as remote client with PlayerController.
 	 * TODO simplify the register process for controllers.
 	 */
-	void RegisterActionMaker(TObjectPtr<IUDActionHandlingInterface> newListener);
+	void RegisterActionMaker(TScriptInterface<IUDActionHandlingInterface> newListener);
 	/**
 	 * Send message to all connected clients.
 	 * Server-owned actor with Multicast RPC invoked from the server -> Runs on server and all clients.

@@ -8,14 +8,25 @@ void UUDUserWidget::SetViewModel(TObjectPtr<UUDViewModel> viewModel)
 	return;
 }
 
-void UUDUserWidget::NativeConstruct()
+void UUDUserWidget::NativeOnInitialized()
 {
-	Super::NativeConstruct();
+	Super::NativeOnInitialized();
+	BindWidgets();
 	BindDelegates();
+}
+
+void UUDUserWidget::NativePreConstruct()
+{
+	Super::NativePreConstruct();
 	SetAppearance();
 }
 
 void UUDUserWidget::BindDelegates()
+{
+	return;
+}
+
+void UUDUserWidget::BindWidgets()
 {
 	return;
 }

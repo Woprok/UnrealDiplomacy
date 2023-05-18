@@ -14,7 +14,7 @@ TWeakObjectPtr<AUDSkirmishGameMode> AUDSkirmishGameState::GetCastGameMode()
 	return InternalCurrentGameMode;
 }
 
-void AUDSkirmishGameState::RegisterActionMaker(TObjectPtr<IUDActionHandlingInterface> newListener)
+void AUDSkirmishGameState::RegisterActionMaker(TScriptInterface<IUDActionHandlingInterface> newListener)
 {
 	newListener->OnActionDecidedDelegate.BindUObject(this, &AUDSkirmishGameState::OnServerSendAction);
 }

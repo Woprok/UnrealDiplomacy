@@ -31,22 +31,36 @@ public:
 	void SetBlueprintViewModel(UUDMenuViewModel* model);
 protected:
 	/**
-	 * Automatically invoked by native construct.
+	 * Automatically invoked by native on initialized.
 	 */
 	virtual void BindDelegates() override;
+	/**
+	 * Automatically invoked by native on initialized.
+	 */
+	virtual void BindWidgets() override;
 protected:
 	// Bindings
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<UButton> CreateGameButton;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<UButton> JoinGameButton;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<UButton> SettingsButton;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<UButton> QuitButton;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> GameTitleTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> CreateGameTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> JoinGameTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> SettingsTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> QuitTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UButton> CreateGameButtonWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UButton> JoinGameButtonWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UButton> SettingsButtonWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UButton> QuitButtonWidget;
 	// ViewModel
 	UPROPERTY()
-	TObjectPtr<UUDMenuViewModel> ViewModel;
+	TWeakObjectPtr<UUDMenuViewModel> ViewModel;
 private:
 	// Button Functions
 	UFUNCTION()

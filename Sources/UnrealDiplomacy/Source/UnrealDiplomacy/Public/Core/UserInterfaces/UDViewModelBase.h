@@ -7,6 +7,7 @@
 #include "Core/Simulation/UDActionAdministrator.h"
 
 #include "Components/SlateWrapperTypes.h"
+#include "Components/Button.h"
 
 #include "UDViewModelBase.generated.h"
 
