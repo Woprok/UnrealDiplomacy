@@ -19,6 +19,11 @@ class UNREALDIPLOMACY_API UUDGameInstance : public UGameInstance
 	GENERATED_BODY()
 public:
 	/**
+	 * Shortcut to retrieve casted GameInstance.
+	 * Requries World pointer that can be retrieved by GetWorld().
+	 */
+	static TObjectPtr<UUDGameInstance> Get(TObjectPtr<UWorld> world);
+	/**
 	 * Loads current global application settings.
 	 */
 	FUDApplicationSettings LoadSettings();
@@ -30,11 +35,6 @@ public:
 	 * Invokes application exit.
 	 */
 	void Quit();
-	/**
-	 * Shortcut to retrieve casted GameInstance.
-	 * Requries World pointer that can be retrieved by GetWorld()
-	 */
-	static TObjectPtr<UUDGameInstance> Get(TObjectPtr<UWorld> world);
 	/**
 	 * Initializes new session.
 	 */

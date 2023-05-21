@@ -4,19 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDUserWidget.h"
-#include "UDJoinGameUserWidget.generated.h"
+#include "UDCreateGameUserWidget.generated.h"
 
 // Forward Declarations
 
+class UCheckBox;
+class UEditableTextBox;
 class UTextBlock;
 class UButton;
-class UUDJoinGameViewModel;
+class UUDCreateGameViewModel;
 
 /**
  * Ancestor for blueprint.
  */
 UCLASS(Abstract)
-class UNREALDIPLOMACY_API UUDJoinGameUserWidget : public UUDUserWidget
+class UNREALDIPLOMACY_API UUDCreateGameUserWidget : public UUDUserWidget
 {
 	GENERATED_BODY()
 public:
@@ -28,7 +30,7 @@ public:
 	 * Enables blueprint to bind view model.
 	 */
 	UFUNCTION(BlueprintImplementableEvent)
-	void SetBlueprintViewModel(UUDJoinGameViewModel* model);
+	void SetBlueprintViewModel(UUDCreateGameViewModel* model);
 protected:
 	/**
 	 * Automatically invoked by native on initialized.
@@ -41,18 +43,34 @@ protected:
 protected:
 	// Bindings
 	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> JoinGameTitleTextWidget;
+	TWeakObjectPtr<UTextBlock> CreateGameTitleTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> BackTextWidget;
 	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> RefreshTextWidget;
+	TWeakObjectPtr<UTextBlock> NewGameTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> SessionNameTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> IsLANTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UCheckBox> IsLANCheckBoxWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UEditableTextBox> SessionNameEditableTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> BackButtonWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UButton> NewGameButtonWidget;
 	// ViewModel
 	UPROPERTY()
-	TWeakObjectPtr<UUDJoinGameViewModel> ViewModel;
+	TWeakObjectPtr<UUDCreateGameViewModel> ViewModel;
 private:
+	// Editable Bool Functions
+	// Editable Text Functions
+	UFUNCTION()
+	void SessionNameChanged(const FText& text, ETextCommit::Type commitMethod);
 	// Button Functions
 	UFUNCTION()
 	void Back();
+	UFUNCTION()
+	void NewGame();
 };

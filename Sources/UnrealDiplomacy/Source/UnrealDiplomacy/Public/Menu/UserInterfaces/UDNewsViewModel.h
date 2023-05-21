@@ -16,11 +16,11 @@ class UNREALDIPLOMACY_API UUDNewsViewModel : public UUDViewModel
 public:
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FString NewsTitleText;
+	FText NewsTitleText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FString MessageText;
+	FText MessageText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FString CloseText;
+	FText CloseText;
 protected:
 	/**
 	 * Invoked for each update.
@@ -28,10 +28,10 @@ protected:
 	virtual void Update() override;
 private:
 	// MVVM Setters & Getters
-	void SetNewsTitleText(FString newNewsTitleText);
-	FString GetNewsTitleText() const;
-	void SetMessageText(FString newMessageText);
-	FString GetMessageText() const;
-	void SetCloseText(FString newCloseText);
-	FString GetCloseText() const;
+	void SetNewsTitleText(FText newNewsTitleText);
+	FText GetNewsTitleText() const;
+	void SetMessageText(FText newMessageText);
+	FText GetMessageText() const;
+	void SetCloseText(FText newCloseText);
+	FText GetCloseText() const;
 };

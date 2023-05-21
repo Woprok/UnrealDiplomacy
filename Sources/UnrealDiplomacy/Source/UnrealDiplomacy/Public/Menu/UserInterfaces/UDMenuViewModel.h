@@ -16,15 +16,15 @@ class UNREALDIPLOMACY_API UUDMenuViewModel : public UUDViewModel
 public:
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FString GameTitleText;
+	FText GameTitleText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FString CreateGameText;
+	FText CreateGameText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FString JoinGameText;
+	FText JoinGameText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FString SettingsText;
+	FText SettingsText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FString QuitText;
+	FText QuitText;
 protected:
 	/**
 	 * Invoked for each update.
@@ -32,14 +32,14 @@ protected:
 	virtual void Update() override;
 private:
 	// MVVM Setters & Getters
-	void SetGameTitleText(FString newGameTitleText);
-	FString GetGameTitleText() const;
-	void SetCreateGameText(FString newCreateGameText);
-	FString GetCreateGameText() const;
-	void SetJoinGameText(FString newJoinGameText);
-	FString GetJoinGameText() const;
-	void SetSettingsText(FString newSettingsText);
-	FString GetSettingsText() const;
-	void SetQuitText(FString newQuitText);
-	FString GetQuitText() const;
+	void SetGameTitleText(FText newGameTitleText);
+	FText GetGameTitleText() const;
+	void SetCreateGameText(FText newCreateGameText);
+	FText GetCreateGameText() const;
+	void SetJoinGameText(FText newJoinGameText);
+	FText GetJoinGameText() const;
+	void SetSettingsText(FText newSettingsText);
+	FText GetSettingsText() const;
+	void SetQuitText(FText newQuitText);
+	FText GetQuitText() const;
 };

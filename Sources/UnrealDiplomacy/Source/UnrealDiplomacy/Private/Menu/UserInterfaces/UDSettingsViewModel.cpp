@@ -9,17 +9,17 @@
 
 void UUDSettingsViewModel::Update()
 {
-	FString settingsTitle = FText(LOCTEXT("Settings", "Settings")).ToString();
+	FText settingsTitle = FText(LOCTEXT("Settings", "Settings"));
 	SetSettingsTitleText(settingsTitle);
-	FString windowMode = FText(LOCTEXT("Settings", "Window Mode")).ToString();
+	FText windowMode = FText(LOCTEXT("Settings", "Window Mode"));
 	SetWindowModeText(windowMode);
-	FString resolution = FText(LOCTEXT("Settings", "Resolution")).ToString();
+	FText resolution = FText(LOCTEXT("Settings", "Resolution"));
 	SetResolutionText(resolution);
-	FString back = FText(LOCTEXT("Settings", "Back")).ToString();
+	FText back = FText(LOCTEXT("Settings", "Back"));
 	SetBackText(back);
-	FString save = FText(LOCTEXT("Settings", "Save")).ToString();
+	FText save = FText(LOCTEXT("Settings", "Save"));
 	SetSaveText(save);
-	FString credits = FText(LOCTEXT("Settings", "Credits")).ToString();
+	FText credits = FText(LOCTEXT("Settings", "Credits"));
 	SetCreditsText(credits);
 	// Load all settings.
 	RetrieveSettings();
@@ -81,62 +81,62 @@ void UUDSettingsViewModel::SetSelectedResolution(const FUDResolutionItem& select
 	SelectedResolution = selectedResolution.ItemCode;
 }
 
-void UUDSettingsViewModel::SetWindowModeText(FString newWindowModeText)
+void UUDSettingsViewModel::SetWindowModeText(FText newWindowModeText)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(WindowModeText, newWindowModeText);
 }
 
-FString UUDSettingsViewModel::GetWindowModeText() const
+FText UUDSettingsViewModel::GetWindowModeText() const
 {
 	return WindowModeText;
 }
 
-void UUDSettingsViewModel::SetResolutionText(FString newResolutionText)
+void UUDSettingsViewModel::SetResolutionText(FText newResolutionText)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(ResolutionText, newResolutionText);
 }
 
-FString UUDSettingsViewModel::GetResolutionText() const
+FText UUDSettingsViewModel::GetResolutionText() const
 {
 	return ResolutionText;
 }
 
-void UUDSettingsViewModel::SetBackText(FString newBackText)
+void UUDSettingsViewModel::SetBackText(FText newBackText)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(BackText, newBackText);
 }
 
-FString UUDSettingsViewModel::GetBackText() const
+FText UUDSettingsViewModel::GetBackText() const
 {
 	return BackText;
 }
 
-void UUDSettingsViewModel::SetSaveText(FString newSaveText)
+void UUDSettingsViewModel::SetSaveText(FText newSaveText)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(SaveText, newSaveText);
 }
 
-FString UUDSettingsViewModel::GetSaveText() const
+FText UUDSettingsViewModel::GetSaveText() const
 {
 	return SaveText;
 }
 
-void UUDSettingsViewModel::SetCreditsText(FString newCreditsText)
+void UUDSettingsViewModel::SetCreditsText(FText newCreditsText)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(CreditsText, newCreditsText);
 }
 
-FString UUDSettingsViewModel::GetCreditsText() const
+FText UUDSettingsViewModel::GetCreditsText() const
 {
 	return CreditsText;
 }
 
-void UUDSettingsViewModel::SetSettingsTitleText(FString newSettingsTitleText)
+void UUDSettingsViewModel::SetSettingsTitleText(FText newSettingsTitleText)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(SettingsTitleText, newSettingsTitleText);
 }
 
-FString UUDSettingsViewModel::GetSettingsTitleText() const
+FText UUDSettingsViewModel::GetSettingsTitleText() const
 {
 	return SettingsTitleText;
 }

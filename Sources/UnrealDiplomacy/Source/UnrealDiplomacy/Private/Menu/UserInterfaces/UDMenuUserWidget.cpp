@@ -38,6 +38,8 @@ void UUDMenuUserWidget::BindDelegates()
 void UUDMenuUserWidget::CreateGame()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDMenuUserWidget: CreateGame."));
+	TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
+	hud->SwitchScreen(hud->CreateGameScreen);
 }
 
 void UUDMenuUserWidget::JoinGame()

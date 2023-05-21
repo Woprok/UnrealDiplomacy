@@ -54,4 +54,22 @@ protected:
 	 */
 	UPROPERTY()
 	TObjectPtr<UUDActionAdministrator> Model = nullptr;
+
+	// HACK: Base class uses == and due to that FText is not supported.
+	// TODO: Change this after base class change or use custom macro.
+	using UMVVMViewModelBase::SetPropertyValue;
+	/** 
+	 * Set the new value and notify if the property value changed. 
+	 */
+	bool SetPropertyValue(FText& Value, const FText& NewValue, UE::FieldNotification::FFieldId FieldId)
+	{
+		if (Value.EqualTo(NewValue))
+		{
+			return false;
+		}
+
+		Value = NewValue;
+		BroadcastFieldValueChanged(FieldId);
+		return true;
+	}
 };

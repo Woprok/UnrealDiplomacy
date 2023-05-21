@@ -6,6 +6,13 @@
 #include "GameFramework/GameUserSettings.h"
 #include "Core/UDGlobalData.h"
 
+TObjectPtr<UUDGameInstance> UUDGameInstance::Get(TObjectPtr<UWorld> world)
+{
+    TObjectPtr<UGameInstance> gameInstance = UGameplayStatics::GetGameInstance(world);
+    check(gameInstance != nullptr);
+    return CastChecked<UUDGameInstance>(gameInstance);
+}
+
 FUDApplicationSettings UUDGameInstance::LoadSettings()
 {
     TObjectPtr<UGameUserSettings> globalSettings = GetGameUserSettings();
@@ -28,6 +35,8 @@ void UUDGameInstance::SaveSettings(FUDApplicationSettings newSettings)
     globalSettings->SetScreenResolution(newResolution);
     globalSettings->SetFullscreenMode(newWindowMode);
     // Apply & Save.
+    globalSettings->ApplyResolutionSettings(false);
+    globalSettings->SaveSettings();
     globalSettings->ApplySettings(false);
 }
 
@@ -43,11 +52,4 @@ TObjectPtr<UGameUserSettings> UUDGameInstance::GetGameUserSettings()
         return GEngine->GameUserSettings;
     }
     return nullptr;
-}
-
-TObjectPtr<UUDGameInstance> UUDGameInstance::Get(TObjectPtr<UWorld> world)
-{
-    TObjectPtr<UGameInstance> gameInstance = UGameplayStatics::GetGameInstance(world);
-    check(gameInstance != nullptr);
-    return CastChecked<UUDGameInstance>(gameInstance);
 }

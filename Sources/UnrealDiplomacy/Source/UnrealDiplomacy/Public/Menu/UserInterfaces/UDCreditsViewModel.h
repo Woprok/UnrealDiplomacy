@@ -16,11 +16,11 @@ class UNREALDIPLOMACY_API UUDCreditsViewModel : public UUDViewModel
 public:
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-		FString CreditsTitleText;
+	FText CreditsTitleText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-		FString ContentText;
+	FText ContentText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-		FString BackText;
+	FText BackText;
 protected:
 	/**
 	 * Invoked for each update.
@@ -28,10 +28,10 @@ protected:
 	virtual void Update() override;
 private:
 	// MVVM Setters & Getters
-	void SetCreditsTitleText(FString newCreditsTitleText);
-	FString GetCreditsTitleText() const;
-	void SetContentText(FString newContentText);
-	FString GetContentText() const;
-	void SetBackText(FString newBackText);
-	FString GetBackText() const;
+	void SetCreditsTitleText(FText newCreditsTitleText);
+	FText GetCreditsTitleText() const;
+	void SetContentText(FText newContentText);
+	FText GetContentText() const;
+	void SetBackText(FText newBackText);
+	FText GetBackText() const;
 };

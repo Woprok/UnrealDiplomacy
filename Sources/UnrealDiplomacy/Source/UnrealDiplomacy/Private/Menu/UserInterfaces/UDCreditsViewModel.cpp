@@ -4,53 +4,53 @@
 
 #define LOCTEXT_NAMESPACE "Credits"
 
-FString ConstructCredits()
+FText ConstructCredits()
 {
 	TStringBuilder<128> content;
 	content.Append(FText(LOCTEXT("Credits", "AUTHORS")).ToString());
 	content.Append(FText::FromString(TEXT("\n")).ToString());
 	content.Append(FText::FromString(TEXT("Miroslav Valach")).ToString());
-	return content.ToString();
+	return FText::FromString(content.ToString());
 }
 
 void UUDCreditsViewModel::Update()
 {
-	FString creditsTitle = FText(LOCTEXT("Credits", "Credits")).ToString();
+	FText creditsTitle = FText(LOCTEXT("Credits", "Credits"));
 	SetCreditsTitleText(creditsTitle);
-	FString content = ConstructCredits();
+	FText content = ConstructCredits();
 	SetContentText(content);
-	FString back = FText(LOCTEXT("Credits", "Back")).ToString();
+	FText back = FText(LOCTEXT("Credits", "Back"));
 	SetBackText(back);
 }
 
 #undef LOCTEXT_NAMESPACE
 
-void UUDCreditsViewModel::SetCreditsTitleText(FString newCreditsTitleText)
+void UUDCreditsViewModel::SetCreditsTitleText(FText newCreditsTitleText)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(CreditsTitleText, newCreditsTitleText);
 }
 
-FString UUDCreditsViewModel::GetCreditsTitleText() const
+FText UUDCreditsViewModel::GetCreditsTitleText() const
 {
 	return CreditsTitleText;
 }
 
-void UUDCreditsViewModel::SetContentText(FString newContentText)
+void UUDCreditsViewModel::SetContentText(FText newContentText)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(ContentText, newContentText);
 }
 
-FString UUDCreditsViewModel::GetContentText() const
+FText UUDCreditsViewModel::GetContentText() const
 {
 	return ContentText;
 }
 
-void UUDCreditsViewModel::SetBackText(FString newBackText)
+void UUDCreditsViewModel::SetBackText(FText newBackText)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(BackText, newBackText);
 }
 
-FString UUDCreditsViewModel::GetBackText() const
+FText UUDCreditsViewModel::GetBackText() const
 {
 	return BackText;
 }

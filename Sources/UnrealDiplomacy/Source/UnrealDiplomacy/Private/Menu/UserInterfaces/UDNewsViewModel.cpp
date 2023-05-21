@@ -4,44 +4,53 @@
 
 #define LOCTEXT_NAMESPACE "News"
 
+FText ConstructNews()
+{
+	TStringBuilder<128> content;
+	content.Append(FText(LOCTEXT("Credits", "You are playing development build.")).ToString());
+	content.Append(FText::FromString(TEXT("\n")).ToString());
+	content.Append(FText::FromString(TEXT("Most features is missing!")).ToString());
+	return FText::FromString(content.ToString());
+}
+
 void UUDNewsViewModel::Update()
 {
-	FString newsTitle = FText(LOCTEXT("News", "Welcome!")).ToString();
+	FText newsTitle = FText(LOCTEXT("News", "Welcome!"));
 	SetNewsTitleText(newsTitle);
-	FString message = FText(LOCTEXT("News", "This game is still in active development. You may encounter spooky bugs!")).ToString();
+	FText message = ConstructNews();
 	SetMessageText(message);
-	FString close = FText(LOCTEXT("News", "Close")).ToString();
+	FText close = FText(LOCTEXT("News", "Close"));
 	SetCloseText(close);
 }
 
 #undef LOCTEXT_NAMESPACE
 
-void UUDNewsViewModel::SetNewsTitleText(FString newNewsTitleText)
+void UUDNewsViewModel::SetNewsTitleText(FText newNewsTitleText)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(NewsTitleText, newNewsTitleText);
 }
 
-FString UUDNewsViewModel::GetNewsTitleText() const
+FText UUDNewsViewModel::GetNewsTitleText() const
 {
 	return NewsTitleText;
 }
 
-void UUDNewsViewModel::SetMessageText(FString newMessageText)
+void UUDNewsViewModel::SetMessageText(FText newMessageText)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(MessageText, newMessageText);
 }
 
-FString UUDNewsViewModel::GetMessageText() const
+FText UUDNewsViewModel::GetMessageText() const
 {
 	return MessageText;
 }
 
-void UUDNewsViewModel::SetCloseText(FString newCloseText)
+void UUDNewsViewModel::SetCloseText(FText newCloseText)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(CloseText, newCloseText);
 }
 
-FString UUDNewsViewModel::GetCloseText() const
+FText UUDNewsViewModel::GetCloseText() const
 {
 	return CloseText;
 }

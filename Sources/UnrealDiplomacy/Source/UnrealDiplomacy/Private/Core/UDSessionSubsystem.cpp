@@ -4,52 +4,79 @@
 #include "OnlineSessionSettings.h"
 #include "Online/OnlineSessionNames.h"
 #include "OnlineSubsystemUtils.h"
-// These are included due to networking.
-//#include "Online.h"
-//#include "Engine.h"
-//#include "Net/UnrealNetwork.h"
+#include "Core/UDGameInstance.h"
+#include "Core/UDGlobalData.h"
+
+TObjectPtr<UUDSessionSubsystem> UUDSessionSubsystem::Get(TObjectPtr<UWorld> world)
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDSessionSubsystem: Retrieving Subsystem from GameInstance."));
+	TObjectPtr<UUDGameInstance> gameInstance = UUDGameInstance::Get(world);
+	TObjectPtr<UUDSessionSubsystem> sessionSubsystem = gameInstance->GetSubsystem<UUDSessionSubsystem>();
+	check(sessionSubsystem != nullptr);
+	return sessionSubsystem;
+}
 
 UUDSessionSubsystem::UUDSessionSubsystem()
 	: CreateSessionCompleteDelegate(FOnCreateSessionCompleteDelegate::CreateUObject(this, 
-		&UUDSessionSubsystem::OnCreateSessionCompleted))
-	, UpdateSessionCompleteDelegate(FOnUpdateSessionCompleteDelegate::CreateUObject(this, 
-		&UUDSessionSubsystem::OnUpdateSessionCompleted))
-	, StartSessionCompleteDelegate(FOnStartSessionCompleteDelegate::CreateUObject(this, 
-		&UUDSessionSubsystem::OnStartSessionCompleted))
-	, EndSessionCompleteDelegate(FOnEndSessionCompleteDelegate::CreateUObject(this, 
-		&UUDSessionSubsystem::OnEndSessionCompleted))
-	, DestroySessionCompleteDelegate(FOnDestroySessionCompleteDelegate::CreateUObject(this, 
-		&UUDSessionSubsystem::OnDestroySessionCompleted))
-	, FindSessionsCompleteDelegate(FOnFindSessionsCompleteDelegate::CreateUObject(this, 
-		&UUDSessionSubsystem::OnFindSessionsCompleted))
-	, JoinSessionCompleteDelegate(FOnJoinSessionCompleteDelegate::CreateUObject(this, 
+		&UUDSessionSubsystem::OnCreateSessionCompleted)),
+	  UpdateSessionCompleteDelegate(FOnUpdateSessionCompleteDelegate::CreateUObject(this, 
+	 	&UUDSessionSubsystem::OnUpdateSessionCompleted)),
+	  StartSessionCompleteDelegate(FOnStartSessionCompleteDelegate::CreateUObject(this, 
+	 	&UUDSessionSubsystem::OnStartSessionCompleted)),
+	  EndSessionCompleteDelegate(FOnEndSessionCompleteDelegate::CreateUObject(this, 
+	 	&UUDSessionSubsystem::OnEndSessionCompleted)),
+	  DestroySessionCompleteDelegate(FOnDestroySessionCompleteDelegate::CreateUObject(this, 
+	 	&UUDSessionSubsystem::OnDestroySessionCompleted)),
+	  FindSessionsCompleteDelegate(FOnFindSessionsCompleteDelegate::CreateUObject(this, 
+	 	&UUDSessionSubsystem::OnFindSessionsCompleted)),
+	  JoinSessionCompleteDelegate(FOnJoinSessionCompleteDelegate::CreateUObject(this, 
 		&UUDSessionSubsystem::OnJoinSessionCompleted))
 {
 	// This needs only to assign delegates.
 }
 
-void UUDSessionSubsystem::CreateSettings(FString SettingLevelName, int32 NumPublicConnections, bool IsLANMatch)
+void UUDSessionSubsystem::CreateSettings(FString settingLevelName, int32 numPublicConnections)
 {
-	CurrentSessionSettings = MakeShareable(new FOnlineSessionSettings());
-	CurrentSessionSettings->NumPrivateConnections = 0;
-	CurrentSessionSettings->NumPublicConnections = NumPublicConnections;
-	CurrentSessionSettings->bAllowInvites = true;
-	CurrentSessionSettings->bAllowJoinInProgress = true;
-	CurrentSessionSettings->bAllowJoinViaPresence = true;
-	CurrentSessionSettings->bAllowJoinViaPresenceFriendsOnly = true;
-	CurrentSessionSettings->bIsDedicated = false;
-	CurrentSessionSettings->bUsesPresence = true;
-	CurrentSessionSettings->bIsLANMatch = IsLANMatch;
-	CurrentSessionSettings->bShouldAdvertise = true;
+	CurrentSessionSettings = MakeShareable(new FOnlineSessionSettings(*DefaultSessionSettings));
+	CurrentSessionSettings->NumPublicConnections = numPublicConnections;
 	// This has lot more options...
-	CurrentSessionSettings->Set(SETTING_MAPNAME, SettingLevelName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+	CurrentSessionSettings->Set(SETTING_MAPNAME, settingLevelName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 }
 
-void UUDSessionSubsystem::UpdateSettings(FString SettingLevelName)
+void UUDSessionSubsystem::UpdateSettings(FString settingLevelName)
 {
 	UpdatedSessionSettings = MakeShareable(new FOnlineSessionSettings(*CurrentSessionSettings));
 	// This has lot more options...
-	UpdatedSessionSettings->Set(SETTING_MAPNAME, SettingLevelName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+	UpdatedSessionSettings->Set(SETTING_MAPNAME, settingLevelName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+}
+
+void UUDSessionSubsystem::CreateDefaultSettings()
+{
+	DefaultSessionSettings = MakeShareable(new FOnlineSessionSettings());
+	DefaultSessionSettings->NumPrivateConnections = 0;
+	DefaultSessionSettings->NumPublicConnections = 32;
+	DefaultSessionSettings->bAllowInvites = true;
+	DefaultSessionSettings->bAllowJoinInProgress = true;
+	DefaultSessionSettings->bAllowJoinViaPresence = true;
+	DefaultSessionSettings->bAllowJoinViaPresenceFriendsOnly = true;
+	DefaultSessionSettings->bIsDedicated = false;
+	DefaultSessionSettings->bUsesPresence = true;
+	DefaultSessionSettings->bIsLANMatch = false;
+	DefaultSessionSettings->bShouldAdvertise = true;
+	// This has lot more options...
+	DefaultSessionSettings->Set(SETTING_MAPNAME, UUDGlobalData::DefaultLevelName(), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+}
+
+void UUDSessionSubsystem::ChangeDefaultSettings(bool isLANMatch)
+{
+	DefaultSessionSettings->bIsLANMatch = isLANMatch;
+}
+
+const FOnlineSessionSettings UUDSessionSubsystem::GetDefaultSettings()
+{
+	if (DefaultSessionSettings == nullptr)
+		CreateDefaultSettings();
+	return FOnlineSessionSettings(*DefaultSessionSettings);
 }
 
 FName UUDSessionSubsystem::GetDefaultSessionName()
@@ -94,11 +121,11 @@ bool UUDSessionSubsystem::IsSessionInterfaceValid(IOnlineSessionPtr& obtainedSes
 	return true;
 }
 
-void UUDSessionSubsystem::CreateSearchSettings(int32 MaxSearchResults, bool IsLANQuery)
+void UUDSessionSubsystem::CreateSearchSettings(int32 maxSearchResults, bool isLANQuery)
 {
 	CurrentSessionSearch = MakeShareable(new FOnlineSessionSearch());
-	CurrentSessionSearch->MaxSearchResults = MaxSearchResults;
-	CurrentSessionSearch->bIsLanQuery = IsLANQuery;
+	CurrentSessionSearch->MaxSearchResults = maxSearchResults;
+	CurrentSessionSearch->bIsLanQuery = isLANQuery;
 	CurrentSessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
 }
 
@@ -109,9 +136,9 @@ int32 UUDSessionSubsystem::GetFoundSessionCount()
 	return -1;
 }
 
-void UUDSessionSubsystem::CreateSession(FName SessionName)
+void UUDSessionSubsystem::CreateSession(FName sessionName)
 {
-	UE_LOG(LogTemp, Log, TEXT("Sessions: Creating %s."), SessionName);
+	UE_LOG(LogTemp, Log, TEXT("Sessions: Creating %s."), *sessionName.ToString());
 	// Check Session Interface.
 	IOnlineSessionPtr sessionInterface;
 	if (!IsSessionInterfaceValid(sessionInterface))
@@ -129,16 +156,16 @@ void UUDSessionSubsystem::CreateSession(FName SessionName)
 	// Subscribe Handle.
 	CreateSessionHandle = sessionInterface->AddOnCreateSessionCompleteDelegate_Handle(CreateSessionCompleteDelegate);
 	// Finally execute creation.
-	if (!sessionInterface->CreateSession(*localUniqueNetId, SessionName, *CurrentSessionSettings))
+	if (!sessionInterface->CreateSession(*localUniqueNetId, sessionName, *CurrentSessionSettings))
 	{
 		sessionInterface->ClearOnCreateSessionCompleteDelegate_Handle(CreateSessionHandle);
 		OnCreateSessionCompleteEvent.Broadcast(false);
 	}
 }
 
-void UUDSessionSubsystem::UpdateSession(FName SessionName)
+void UUDSessionSubsystem::UpdateSession(FName sessionName)
 {
-	UE_LOG(LogTemp, Log, TEXT("Sessions: Updating %s."), SessionName);
+	UE_LOG(LogTemp, Log, TEXT("Sessions: Updating %s."), *sessionName.ToString());
 	// Check Session Interface.
 	IOnlineSessionPtr sessionInterface;
 	if (!IsSessionInterfaceValid(sessionInterface))
@@ -149,7 +176,7 @@ void UUDSessionSubsystem::UpdateSession(FName SessionName)
 	// Subscribe Handle.
 	UpdateSessionHandle = sessionInterface->AddOnUpdateSessionCompleteDelegate_Handle(UpdateSessionCompleteDelegate);
 	// Finally execute update.
-	if (!sessionInterface->UpdateSession(SessionName, *UpdatedSessionSettings))
+	if (!sessionInterface->UpdateSession(sessionName, *UpdatedSessionSettings))
 	{
 		sessionInterface->ClearOnUpdateSessionCompleteDelegate_Handle(UpdateSessionHandle);
 		OnUpdateSessionCompleteEvent.Broadcast(false);
@@ -160,9 +187,9 @@ void UUDSessionSubsystem::UpdateSession(FName SessionName)
 	}
 }
 
-void UUDSessionSubsystem::StartSession(FName SessionName)
+void UUDSessionSubsystem::StartSession(FName sessionName)
 {
-	UE_LOG(LogTemp, Log, TEXT("Sessions: Starting %s."), SessionName);
+	UE_LOG(LogTemp, Log, TEXT("Sessions: Starting %s."), *sessionName.ToString());
 	// Check Session Interface.
 	IOnlineSessionPtr sessionInterface;
 	if (!IsSessionInterfaceValid(sessionInterface))
@@ -173,16 +200,16 @@ void UUDSessionSubsystem::StartSession(FName SessionName)
 	// Subscribe Handle.
 	StartSessionHandle = sessionInterface->AddOnStartSessionCompleteDelegate_Handle(StartSessionCompleteDelegate);
 	// Finally execute start.
-	if (!sessionInterface->StartSession(NAME_GameSession))
+	if (!sessionInterface->StartSession(sessionName))
 	{
 		sessionInterface->ClearOnStartSessionCompleteDelegate_Handle(StartSessionHandle);
 		OnStartSessionCompleteEvent.Broadcast(false);
 	}
 }
 
-void UUDSessionSubsystem::EndSession(FName SessionName)
+void UUDSessionSubsystem::EndSession(FName sessionName)
 {
-	UE_LOG(LogTemp, Log, TEXT("Sessions: Ending %s."), SessionName);
+	UE_LOG(LogTemp, Log, TEXT("Sessions: Ending %s."), *sessionName.ToString());
 	// Check Session Interface.
 	IOnlineSessionPtr sessionInterface;
 	if (!IsSessionInterfaceValid(sessionInterface))
@@ -193,16 +220,16 @@ void UUDSessionSubsystem::EndSession(FName SessionName)
 	// Subscribe Handle.
 	EndSessionHandle = sessionInterface->AddOnEndSessionCompleteDelegate_Handle(EndSessionCompleteDelegate);
 	// Finally execute end.
-	if (!sessionInterface->EndSession(NAME_GameSession))
+	if (!sessionInterface->EndSession(sessionName))
 	{
 		sessionInterface->ClearOnEndSessionCompleteDelegate_Handle(EndSessionHandle);
 		OnEndSessionCompleteEvent.Broadcast(false);
 	}
 }
 
-void UUDSessionSubsystem::DestroySession(FName SessionName)
+void UUDSessionSubsystem::DestroySession(FName sessionName)
 {
-	UE_LOG(LogTemp, Log, TEXT("Sessions: Destroying %s."), SessionName);
+	UE_LOG(LogTemp, Log, TEXT("Sessions: Destroying %s."), *sessionName.ToString());
 	// Check Session Interface.
 	IOnlineSessionPtr sessionInterface;
 	if (!IsSessionInterfaceValid(sessionInterface))
@@ -213,7 +240,7 @@ void UUDSessionSubsystem::DestroySession(FName SessionName)
 	// Subscribe Handle.
 	DestroySessionHandle = sessionInterface->AddOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegate);
 	// Finally execute destroy.
-	if (!sessionInterface->DestroySession(NAME_GameSession))
+	if (!sessionInterface->DestroySession(sessionName))
 	{
 		sessionInterface->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionHandle);
 		OnDestroySessionCompleteEvent.Broadcast(false);
@@ -247,9 +274,9 @@ void UUDSessionSubsystem::FindSessions()
 	}
 }
 
-void UUDSessionSubsystem::JoinGameSession(FName SessionName, const FOnlineSessionSearchResult& SessionResult)
+void UUDSessionSubsystem::JoinGameSession(FName sessionName, const FOnlineSessionSearchResult& sessionResult)
 {
-	UE_LOG(LogTemp, Log, TEXT("Sessions: Joining %s."), SessionName);
+	UE_LOG(LogTemp, Log, TEXT("Sessions: Joining %s."), *sessionName.ToString());
 	// Check Session Interface.
 	IOnlineSessionPtr sessionInterface;
 	if (!IsSessionInterfaceValid(sessionInterface))
@@ -267,16 +294,16 @@ void UUDSessionSubsystem::JoinGameSession(FName SessionName, const FOnlineSessio
 	// Subscribe Handle.
 	JoinSessionHandle = sessionInterface->AddOnJoinSessionCompleteDelegate_Handle(JoinSessionCompleteDelegate);
 	// Finally execute join.
-	if (!sessionInterface->JoinSession(*localUniqueNetId, SessionName, SessionResult))
+	if (!sessionInterface->JoinSession(*localUniqueNetId, sessionName, sessionResult))
 	{
 		sessionInterface->ClearOnJoinSessionCompleteDelegate_Handle(JoinSessionHandle);
 		OnJoinGameSessionCompleteEvent.Broadcast(EOnJoinSessionCompleteResult::UnknownError);
 	}
 }
 
-void UUDSessionSubsystem::OnCreateSessionCompleted(FName SessionName, bool Successful)
+void UUDSessionSubsystem::OnCreateSessionCompleted(FName sessionName, bool successful)
 {
-	UE_LOG(LogTemp, Log, TEXT("Sessions: OnCreate. %s -> %d."), SessionName, Successful);
+	UE_LOG(LogTemp, Log, TEXT("Sessions: OnCreate. %s -> %d."), *sessionName.ToString(), successful);
 	IOnlineSessionPtr sessionInterface;
 	// Unsubscribe.
 	if (IsSessionInterfaceValid(sessionInterface))
@@ -284,12 +311,12 @@ void UUDSessionSubsystem::OnCreateSessionCompleted(FName SessionName, bool Succe
 		sessionInterface->ClearOnCreateSessionCompleteDelegate_Handle(CreateSessionHandle);
 	}
 	// Propagate.
-	OnCreateSessionCompleteEvent.Broadcast(Successful);
+	OnCreateSessionCompleteEvent.Broadcast(successful);
 }
 
-void UUDSessionSubsystem::OnUpdateSessionCompleted(FName SessionName, bool Successful)
+void UUDSessionSubsystem::OnUpdateSessionCompleted(FName sessionName, bool successful)
 {
-	UE_LOG(LogTemp, Log, TEXT("Sessions: OnUpdate. %s -> %d."), SessionName, Successful);
+	UE_LOG(LogTemp, Log, TEXT("Sessions: OnUpdate. %s -> %d."), *sessionName.ToString(), successful);
 	IOnlineSessionPtr sessionInterface;
 	// Unsubscribe.
 	if (IsSessionInterfaceValid(sessionInterface))
@@ -297,12 +324,12 @@ void UUDSessionSubsystem::OnUpdateSessionCompleted(FName SessionName, bool Succe
 		sessionInterface->ClearOnUpdateSessionCompleteDelegate_Handle(UpdateSessionHandle);
 	}
 	// Propagate.
-	OnUpdateSessionCompleteEvent.Broadcast(Successful);
+	OnUpdateSessionCompleteEvent.Broadcast(successful);
 }
 
-void UUDSessionSubsystem::OnStartSessionCompleted(FName SessionName, bool Successful)
+void UUDSessionSubsystem::OnStartSessionCompleted(FName sessionName, bool successful)
 {
-	UE_LOG(LogTemp, Log, TEXT("Sessions: OnStart. %s -> %d."), SessionName, Successful);
+	UE_LOG(LogTemp, Log, TEXT("Sessions: OnStart. %s -> %d."), *sessionName.ToString(), successful);
 	IOnlineSessionPtr sessionInterface;
 	// Unsubscribe.
 	if (IsSessionInterfaceValid(sessionInterface))
@@ -310,12 +337,12 @@ void UUDSessionSubsystem::OnStartSessionCompleted(FName SessionName, bool Succes
 		sessionInterface->ClearOnStartSessionCompleteDelegate_Handle(StartSessionHandle);
 	}
 	// Propagate.
-	OnStartSessionCompleteEvent.Broadcast(Successful);
+	OnStartSessionCompleteEvent.Broadcast(successful);
 }
 
-void UUDSessionSubsystem::OnEndSessionCompleted(FName SessionName, bool Successful)
+void UUDSessionSubsystem::OnEndSessionCompleted(FName sessionName, bool successful)
 {
-	UE_LOG(LogTemp, Log, TEXT("Sessions: OnEnd. %s -> %d."), SessionName, Successful);
+	UE_LOG(LogTemp, Log, TEXT("Sessions: OnEnd. %s -> %d."), *sessionName.ToString(), successful);
 	IOnlineSessionPtr sessionInterface;
 	// Unsubscribe.
 	if (IsSessionInterfaceValid(sessionInterface))
@@ -323,12 +350,12 @@ void UUDSessionSubsystem::OnEndSessionCompleted(FName SessionName, bool Successf
 		sessionInterface->ClearOnEndSessionCompleteDelegate_Handle(EndSessionHandle);
 	}
 	// Propagate.
-	OnEndSessionCompleteEvent.Broadcast(Successful);
+	OnEndSessionCompleteEvent.Broadcast(successful);
 }
 
-void UUDSessionSubsystem::OnDestroySessionCompleted(FName SessionName, bool Successful)
+void UUDSessionSubsystem::OnDestroySessionCompleted(FName sessionName, bool successful)
 {
-	UE_LOG(LogTemp, Log, TEXT("Sessions: OnDestroy. %s -> %d."), SessionName, Successful);
+	UE_LOG(LogTemp, Log, TEXT("Sessions: OnDestroy. %s -> %d."), *sessionName.ToString(), successful);
 	IOnlineSessionPtr sessionInterface;
 	// Unsubscribe.
 	if (IsSessionInterfaceValid(sessionInterface))
@@ -336,12 +363,12 @@ void UUDSessionSubsystem::OnDestroySessionCompleted(FName SessionName, bool Succ
 		sessionInterface->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionHandle);
 	}
 	// Propagate.
-	OnDestroySessionCompleteEvent.Broadcast(Successful);
+	OnDestroySessionCompleteEvent.Broadcast(successful);
 }
 
-void UUDSessionSubsystem::OnJoinSessionCompleted(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
+void UUDSessionSubsystem::OnJoinSessionCompleted(FName sessionName, EOnJoinSessionCompleteResult::Type result)
 {
-	UE_LOG(LogTemp, Log, TEXT("Sessions: OnJoin. %s -> %d."), SessionName, Result);
+	UE_LOG(LogTemp, Log, TEXT("Sessions: OnJoin. %s -> %d."), *sessionName.ToString(), result);
 	IOnlineSessionPtr sessionInterface;
 	// Unsubscribe.
 	if (IsSessionInterfaceValid(sessionInterface))
@@ -349,12 +376,12 @@ void UUDSessionSubsystem::OnJoinSessionCompleted(FName SessionName, EOnJoinSessi
 		sessionInterface->ClearOnJoinSessionCompleteDelegate_Handle(JoinSessionHandle);
 	}
 	// Propagate.
-	OnJoinGameSessionCompleteEvent.Broadcast(Result);
+	OnJoinGameSessionCompleteEvent.Broadcast(result);
 }
 
-void UUDSessionSubsystem::OnFindSessionsCompleted(bool Successful)
+void UUDSessionSubsystem::OnFindSessionsCompleted(bool successful)
 {
-	UE_LOG(LogTemp, Log, TEXT("Sessions: OnFind. %d."), GetFoundSessionCount(), Successful);
+	UE_LOG(LogTemp, Log, TEXT("Sessions: OnFind. %d."), GetFoundSessionCount(), successful);
 	IOnlineSessionPtr sessionInterface;
 	// Unsubscribe.
 	if (IsSessionInterfaceValid(sessionInterface))
@@ -364,17 +391,17 @@ void UUDSessionSubsystem::OnFindSessionsCompleted(bool Successful)
 	// Propagate based on result count.
 	if (GetFoundSessionCount() > 0)
 	{
-		OnFindSessionsCompleteEvent.Broadcast(CurrentSessionSearch->SearchResults, Successful);
+		OnFindSessionsCompleteEvent.Broadcast(CurrentSessionSearch->SearchResults, successful);
 	}
 	else
 	{
-		OnFindSessionsCompleteEvent.Broadcast(TArray<FOnlineSessionSearchResult>(), Successful);
+		OnFindSessionsCompleteEvent.Broadcast(TArray<FOnlineSessionSearchResult>(), successful);
 	}
 }
 
-bool UUDSessionSubsystem::TryTravelToCurrentSession(FName SessionName)
+bool UUDSessionSubsystem::TryTravelToCurrentSession(FName sessionName)
 {
-	UE_LOG(LogTemp, Log, TEXT("Sessions: Traveling %s."), SessionName);
+	UE_LOG(LogTemp, Log, TEXT("Sessions: Traveling %s."), *sessionName.ToString());
 	// Check Session Interface.
 	IOnlineSessionPtr sessionInterface;
 	if (!IsSessionInterfaceValid(sessionInterface))
@@ -383,7 +410,7 @@ bool UUDSessionSubsystem::TryTravelToCurrentSession(FName SessionName)
 	}
 	// Retrieves connection / travel url.
 	FString connectString;
-	if (!sessionInterface->GetResolvedConnectString(SessionName, connectString))
+	if (!sessionInterface->GetResolvedConnectString(sessionName, connectString))
 	{
 		return false;
 	}

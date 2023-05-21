@@ -16,7 +16,7 @@ class UNREALDIPLOMACY_API AUDMenuHUD : public AUDHUD
 public:
 	/**
 	 * Shortcut to retrieve casted MenuHUD.
-	 * Requries World pointer that can be retrieved by GetWorld()
+	 * Requries World pointer that can be retrieved by GetWorld().
 	 */
 	static TObjectPtr<AUDMenuHUD> Get(TObjectPtr<UWorld> world);
 	/**
@@ -39,4 +39,9 @@ public:
 	 */
 	UPROPERTY(VisibleAnywhere, Category = "ScreenNames")
 	FName JoinGameScreen = TEXT("JoinGameScreen");
+	/**
+	 * Used by menu views to identify target screen.
+	 */
+	UPROPERTY(VisibleAnywhere, Category = "ScreenNames")
+	FName CreateGameScreen = TEXT("CreateGameScreen");
 };

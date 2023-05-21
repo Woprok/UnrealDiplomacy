@@ -31,6 +31,13 @@ public:
 	 * This Id is always reserved for Gaia for both player & state.
 	 */
 	static const int32 GaiaId = 0;
+	/**
+	 * Default level name that should be same as default level.
+	 */
+	static const FString DefaultLevelName()
+	{
+		return TEXT("Menu");
+	}
 };
 
 // Following types are wrappers around otherwise engine types or values.

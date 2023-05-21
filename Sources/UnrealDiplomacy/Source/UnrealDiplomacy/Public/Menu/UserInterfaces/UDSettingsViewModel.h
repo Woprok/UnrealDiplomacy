@@ -67,17 +67,17 @@ public:
 public:
 	// MVVM 
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FString WindowModeText;
+	FText WindowModeText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FString ResolutionText;
+	FText ResolutionText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FString BackText;
+	FText BackText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FString SaveText;
+	FText SaveText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FString CreditsText;
+	FText CreditsText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FString SettingsTitleText;
+	FText SettingsTitleText;
 	/**
 	 * Binding for non-primitive invoked by widget.
 	 */
@@ -105,18 +105,18 @@ protected:
 	void RetrieveSettings();
 private:
 	// MVVM Setters & Getters
-	void SetWindowModeText(FString newWindowModeText);
-	FString GetWindowModeText() const;
-	void SetResolutionText(FString newResolutionText);
-	FString GetResolutionText() const;
-	void SetBackText(FString newBackText);
-	FString GetBackText() const;
-	void SetSaveText(FString newSaveText);
-	FString GetSaveText() const;
-	void SetCreditsText(FString newCreditsText);
-	FString GetCreditsText() const;
-	void SetSettingsTitleText(FString newSettingsTitleText);
-	FString GetSettingsTitleText() const;
+	void SetWindowModeText(FText newWindowModeText);
+	FText GetWindowModeText() const;
+	void SetResolutionText(FText newResolutionText);
+	FText GetResolutionText() const;
+	void SetBackText(FText newBackText);
+	FText GetBackText() const;
+	void SetSaveText(FText newSaveText);
+	FText GetSaveText() const;
+	void SetCreditsText(FText newCreditsText);
+	FText GetCreditsText() const;
+	void SetSettingsTitleText(FText newSettingsTitleText);
+	FText GetSettingsTitleText() const;
 private:
 	// Fields
 	EUDWindowModeType SelectedWindowMode;
