@@ -20,6 +20,11 @@ public:
 	 */
 	static TObjectPtr<AUDMenuHUD> Get(TObjectPtr<UWorld> world);
 	/**
+	 * Used by menu views to identify target widget.
+	 */
+	UPROPERTY(VisibleAnywhere, Category = "ScreenNames")
+	FName NewsWidget = TEXT("News");
+	/**
 	 * Used by menu views to identify target screen.
 	 */
 	UPROPERTY(VisibleAnywhere, Category = "ScreenNames")

@@ -19,21 +19,29 @@ class UNREALDIPLOMACY_API UUDUserWidget : public UUserWidget
 	GENERATED_BODY()
 public:
 	/**
-	 * Enables to define view model used by this widet.
+	 * Finalizes binding between view and viewmodel.
+	 * Invokes BindViewModel followed by BindDelegates to ensure that they are linked.
 	 */
 	virtual void SetViewModel(TObjectPtr<UUDViewModel> viewModel);
 protected:
 	/**
 	 * Used to call all initializations for widget.
+	 * Use BindWidgets to initialize link between blueprint and abstract view.
 	 */
 	virtual void NativeOnInitialized() override;
 	/**
 	 * Used to call editor initializations for widget.
 	 * This is executed during the runtime as well.
+	 * For changing appearance use SetAppearance that is invoked by this.
 	 */
 	virtual void NativePreConstruct() override;
+protected:
 	/**
-	 * Automatically invoked by native on initialized.
+	 * Enables to define view model used by this widet.
+	 */
+	virtual void BindViewModel(TObjectPtr<UUDViewModel> viewModel);
+	/**
+	 * Automatically invoked after setting up view model.
 	 */
 	virtual void BindDelegates();
 	/**

@@ -24,15 +24,15 @@ class UNREALDIPLOMACY_API UUDSettingsUserWidget : public UUDUserWidget
 	GENERATED_BODY()
 public:
 	/**
-	 * Enables to define view model used by this widet for delegates.
-	 */
-	virtual void SetViewModel(TObjectPtr<UUDViewModel> viewModel) override;
-	/**
 	 * Enables blueprint to bind view model.
 	 */
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetBlueprintViewModel(UUDSettingsViewModel* model);
 protected:
+	/**
+	 * Enables to define view model used by this widet for delegates.
+	 */
+	virtual void BindViewModel(TObjectPtr<UUDViewModel> viewModel) override;
 	/**
 	 * Automatically invoked by native on initialized.
 	 */
@@ -74,25 +74,13 @@ protected:
 	UPROPERTY()
 	TWeakObjectPtr<UUDSettingsViewModel> ViewModel;
 private:
-	// Button Functions
-	UFUNCTION()
-	void Back();
-	UFUNCTION()
-	void Save();
-	UFUNCTION()
-	void Credits();
-	// ComboBox Functions
-	UFUNCTION()
-	void WindowModeChanged(FString SelectedItem, ESelectInfo::Type SelectionType);
-	UFUNCTION()
-	void ResolutionChanged(FString SelectedItem, ESelectInfo::Type SelectionType);
 	UFUNCTION()
 	void LoadWindowMode(); 
 	UFUNCTION()
 	void LoadResolution();
 private:
 	// ComboBox Arrays
-	TArray<FUDWindowModeItem> WindowModeItems;
-	TArray<FUDResolutionItem> ResolutionItems;
-	bool isReloading = false;
+	TArray<FString> WindowModeItems;
+	TArray<FString> ResolutionItems;
+	bool isLoading = false;
 };

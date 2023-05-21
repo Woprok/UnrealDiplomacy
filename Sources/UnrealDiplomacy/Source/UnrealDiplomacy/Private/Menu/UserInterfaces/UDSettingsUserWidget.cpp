@@ -5,15 +5,12 @@
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
 #include "Components/ComboBoxString.h"
-#include "Menu/UDMenuHUD.h"
 
-void UUDSettingsUserWidget::SetViewModel(TObjectPtr<UUDViewModel> viewModel)
+void UUDSettingsUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
 	UUDSettingsViewModel* settingsViewModel = CastChecked<UUDSettingsViewModel>(viewModel.Get());
 	ViewModel = settingsViewModel;
 	SetBlueprintViewModel(ViewModel.Get());
-	// Bind to updates.
-	ViewModel->OnUpdateFinishing.AddUniqueDynamic(this, &UUDSettingsUserWidget::LoadOptions);
 }
 
 void UUDSettingsUserWidget::BindWidgets()
@@ -33,104 +30,48 @@ void UUDSettingsUserWidget::BindWidgets()
 
 void UUDSettingsUserWidget::BindDelegates()
 {
-	BackButtonWidget->OnClicked.AddUniqueDynamic(this, &UUDSettingsUserWidget::Back);
-	SaveButtonWidget->OnClicked.AddUniqueDynamic(this, &UUDSettingsUserWidget::Save);
-	CreditsButtonWidget->OnClicked.AddUniqueDynamic(this, &UUDSettingsUserWidget::Credits);
-	WindowModeComboBoxWidget->OnSelectionChanged.AddUniqueDynamic(this, &UUDSettingsUserWidget::WindowModeChanged);
-	ResolutionComboBoxWidget->OnSelectionChanged.AddUniqueDynamic(this, &UUDSettingsUserWidget::ResolutionChanged);
-}
-
-void UUDSettingsUserWidget::Back()
-{
-	UE_LOG(LogTemp, Log, TEXT("UUDSettingsUserWidget: Back."));
-	LoadOptions();
-	TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
-	hud->SwitchScreen(hud->MenuScreen);
-}
-
-void UUDSettingsUserWidget::Save()
-{
-	UE_LOG(LogTemp, Log, TEXT("UUDSettingsUserWidget: Save."));
-	ViewModel->SaveChanges();
-	TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
-	hud->SwitchScreen(hud->MenuScreen);
-}
-
-void UUDSettingsUserWidget::Credits()
-{
-	UE_LOG(LogTemp, Log, TEXT("UUDSettingsUserWidget: Credits."));
-	LoadOptions();
-	TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
-	hud->SwitchScreen(hud->CreditsScreen);
-}
-
-void UUDSettingsUserWidget::WindowModeChanged(FString SelectedItem, ESelectInfo::Type SelectionType)
-{
-	if (isReloading)
-		return;
-
-	FUDWindowModeItem selected = *WindowModeItems.FindByPredicate(
-		[&SelectedItem](const FUDWindowModeItem& item) { return item.ItemText == SelectedItem; }
-	);
-	ViewModel->SetSelectedWindowMode(selected);
-}
-
-void UUDSettingsUserWidget::ResolutionChanged(FString SelectedItem, ESelectInfo::Type SelectionType)
-{
-	if (isReloading)
-		return;
-
-	FUDResolutionItem selected = *ResolutionItems.FindByPredicate(
-		[&SelectedItem](const FUDResolutionItem& item) { return item.ItemText == SelectedItem; }
-	);
-	ViewModel->SetSelectedResolution(selected);
+	// Bind view to updates.
+	ViewModel->OnUpdateFinishing.AddUniqueDynamic(this, &UUDSettingsUserWidget::LoadOptions);
+	// Bind viewmodel to widgets.
+	BackButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDSettingsViewModel::Back);
+	SaveButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDSettingsViewModel::Save);
+	CreditsButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDSettingsViewModel::Credits);
+	WindowModeComboBoxWidget->OnSelectionChanged.AddUniqueDynamic(ViewModel.Get(), &UUDSettingsViewModel::SetSelectedWindowMode);
+	ResolutionComboBoxWidget->OnSelectionChanged.AddUniqueDynamic(ViewModel.Get(), &UUDSettingsViewModel::SetSelectedResolution);
 }
 
 void UUDSettingsUserWidget::LoadOptions()
 {
-	isReloading = true;
+	isLoading = true;
 	LoadWindowMode();
 	LoadResolution();
-	isReloading = false;
+	isLoading = false;
 }
 
 void UUDSettingsUserWidget::LoadWindowMode()
 {
+	// Clear and Set
 	WindowModeComboBoxWidget->ClearOptions();
-	WindowModeItems = ViewModel->CreateWindowModeOptions();
-	for (FUDWindowModeItem& option : WindowModeItems)
+	WindowModeItems = ViewModel->GetWindowModeOptions();
+	for (FString& option : WindowModeItems)
 	{
-		WindowModeComboBoxWidget->AddOption(option.ItemText);
+		WindowModeComboBoxWidget->AddOption(option);
 	}
-	EUDWindowModeType selectedWindowMode = ViewModel->GetSelectedWindowMode();
 
-	FUDWindowModeItem selectedOption = *WindowModeItems.FindByPredicate(
-		[&selectedWindowMode](const FUDWindowModeItem& item) { return item.ItemCode == selectedWindowMode; }
-	);
-	WindowModeComboBoxWidget->SetSelectedOption(selectedOption.ItemText);
+	FString selectedWindowMode = ViewModel->GetSelectedWindowMode();
+	WindowModeComboBoxWidget->SetSelectedOption(selectedWindowMode);
 }
 
 void UUDSettingsUserWidget::LoadResolution()
 {
+	// Clear and Set
 	ResolutionComboBoxWidget->ClearOptions();
-	ResolutionItems = ViewModel->CreateResolutionOptions();
-	for (FUDResolutionItem& option : ResolutionItems)
+	ResolutionItems = ViewModel->GetResolutionOptions();
+	for (FString& option : ResolutionItems)
 	{
-		ResolutionComboBoxWidget->AddOption(option.ItemText);
+		ResolutionComboBoxWidget->AddOption(option);
 	}
 
-	FIntPoint selectedResolution = ViewModel->GetSelectedResolution();
-
-	FUDResolutionItem* foundOption = ResolutionItems.FindByPredicate(
-		[&selectedResolution](const FUDResolutionItem& item) { return item.ItemCode == selectedResolution; }
-	);
-
-	// Handles rare case where resolution could be altered to non-supported version.
-	FUDResolutionItem selectedOption;
-	if (!foundOption && ResolutionItems.Num() > 0)
-		selectedOption = ResolutionItems[0];
-	else
-		selectedOption = *foundOption;
-
-	ResolutionComboBoxWidget->SetSelectedOption(selectedOption.ItemText);
+	FString selectedResolution = ViewModel->GetSelectedResolution();
+	ResolutionComboBoxWidget->SetSelectedOption(selectedResolution);
 }

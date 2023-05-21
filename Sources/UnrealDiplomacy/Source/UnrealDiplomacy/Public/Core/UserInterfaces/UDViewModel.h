@@ -28,6 +28,7 @@ public:
 	/**
 	 * Notifies subscribers about incoming update.
 	 * Executes update and notifies again about the end of the update.
+	 * This updates is used for complete setup and full change.
 	 */
 	void FullUpdate();
 public:
@@ -45,7 +46,13 @@ public:
 	FUDViewModelUpdate OnUpdateFinishing;
 protected:
 	/**
+	 * Invoked for first update and for reloads.
+	 * Used for creating defaults such as these that are based on application settings.
+	 */
+	virtual void Initialize();
+	/**
 	 * Invoked for each update.
+	 * Should react to any possible data change.
 	 */
 	virtual void Update();
 protected:
@@ -54,7 +61,6 @@ protected:
 	 */
 	UPROPERTY()
 	TObjectPtr<UUDActionAdministrator> Model = nullptr;
-
 	// HACK: Base class uses == and due to that FText is not supported.
 	// TODO: Change this after base class change or use custom macro.
 	using UMVVMViewModelBase::SetPropertyValue;

@@ -1,6 +1,7 @@
 // Copyright Miroslav Valach
 
 #include "Menu/UserInterfaces/UDJoinGameViewModel.h"
+#include "Menu/UDMenuHUD.h"
 
 #define LOCTEXT_NAMESPACE "JoinGame"
 
@@ -15,6 +16,13 @@ void UUDJoinGameViewModel::Update()
 }
 
 #undef LOCTEXT_NAMESPACE
+
+void UUDJoinGameViewModel::Back()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDJoinGameViewModel: Back."));
+	TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
+	hud->SwitchScreen(hud->MenuScreen);
+}
 
 void UUDJoinGameViewModel::SetJoinGameTitleText(FText newJoinGameTitleText)
 {

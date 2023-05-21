@@ -19,14 +19,12 @@ class UNREALDIPLOMACY_API UUDBackgroundUserWidget : public UUDUserWidget
 	GENERATED_BODY()
 public:
 	/**
-	 * Enables to define view model used by this widet for delegates.
-	 */
-	virtual void SetViewModel(TObjectPtr<UUDViewModel> viewModel) override;
-	/**
 	 * Enables blueprint to bind view model.
 	 */
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetBlueprintViewModel(UUDBackgroundViewModel* model);
+protected:
+	virtual void BindViewModel(TObjectPtr<UUDViewModel> viewModel) override;
 protected:
 	// ViewModel
 	UPROPERTY()

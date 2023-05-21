@@ -1,6 +1,7 @@
 // Copyright Miroslav Valach
 
 #include "Menu/UserInterfaces/UDCreateGameViewModel.h"
+#include "Menu/UDMenuHUD.h"
 #include "Core/UDSessionSubsystem.h"
 #include "OnlineSessionSettings.h"
 
@@ -26,20 +27,44 @@ void UUDCreateGameViewModel::Update()
 
 #undef LOCTEXT_NAMESPACE
 
+//void UUDCreateGameViewModel::SessionNameChanged(const FText& text, ETextCommit::Type commitMethod)
+//{
+//	UE_LOG(LogTemp, Log, TEXT("UUDCreateGameUserWidget: SessionNameChanged %s."), *text.ToString());
+//	SetSessionName(text);
+//}
+
+//void UUDCreateGameViewModel::SetSessionName(FText inputText)
+//{
+//	SetSessionNameEditableText(inputText);
+//}
+
+	/**
+	 * Binding for a SessionName
+	 */
+	//void SetSessionName(FText inputText);
+
+void UUDCreateGameViewModel::Back()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDCreateGameViewModel: Back."));
+	TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
+	hud->SwitchScreen(hud->MenuScreen);
+}
+
+void UUDCreateGameViewModel::NewGame()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDCreateGameViewModel: NewGame."));
+	CreateNewGame();
+}
+
 void UUDCreateGameViewModel::Load()
 {
 	const FOnlineSessionSettings settings = UUDSessionSubsystem::Get(GetWorld())->GetDefaultSettings();
 	SetIsLANValue(ECheckBoxState::Unchecked);//settings.bIsLANMatch);
 }
 
-void UUDCreateGameViewModel::NewGame()
+void UUDCreateGameViewModel::CreateNewGame()
 {
 	//UUDSessionSubsystem::Get(GetWorld())->CreateSession(SessionNameText);
-}
-
-void UUDCreateGameViewModel::SetSessionName(FText inputText)
-{
-	SetSessionNameEditableText(inputText);
 }
 
 void UUDCreateGameViewModel::SetCreateGameTitleText(FText newCreateGameTitleText)

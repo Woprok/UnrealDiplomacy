@@ -4,10 +4,11 @@
 #include "GameFramework/GameUserSettings.h"
 #include "Core/UDGlobalData.h"
 #include "Core/UDGameInstance.h"
+#include "Menu/UDMenuHUD.h"
 
 #define LOCTEXT_NAMESPACE "Settings"
 
-void UUDSettingsViewModel::Update()
+void UUDSettingsViewModel::Initialize()
 {
 	FText settingsTitle = FText(LOCTEXT("Settings", "Settings"));
 	SetSettingsTitleText(settingsTitle);
@@ -21,64 +22,144 @@ void UUDSettingsViewModel::Update()
 	SetSaveText(save);
 	FText credits = FText(LOCTEXT("Settings", "Credits"));
 	SetCreditsText(credits);
+	CreateWindowModeOptions();
+	CreateResolutionOptions();
+}
+
+void UUDSettingsViewModel::Update()
+{
 	// Load all settings.
 	RetrieveSettings();
 }
 
-TArray<FUDWindowModeItem> UUDSettingsViewModel::CreateWindowModeOptions() const
+void UUDSettingsViewModel::CreateWindowModeOptions()
 {
-	return {
+	WindowModes = {
 		FUDWindowModeItem(EUDWindowModeType::Fullscreen, FText(LOCTEXT("Settings", "Fullscreen")).ToString()),
 		FUDWindowModeItem(EUDWindowModeType::Borderless, FText(LOCTEXT("Settings", "Borderless")).ToString()),
 		FUDWindowModeItem(EUDWindowModeType::Windowed, FText(LOCTEXT("Settings", "Windowed")).ToString()),
 	};
 }
 
-TArray<FUDResolutionItem> UUDSettingsViewModel::CreateResolutionOptions() const
+void UUDSettingsViewModel::CreateResolutionOptions()
 {
-	return {
+	Resolutions = {
 		FUDResolutionItem(FIntPoint(1280, 720), FText(LOCTEXT("Settings", "1280x720")).ToString()),
 		FUDResolutionItem(FIntPoint(1920, 1080), FText(LOCTEXT("Settings", "1920x1080")).ToString()),
 		FUDResolutionItem(FIntPoint(2560, 1440), FText(LOCTEXT("Settings", "2560x1440")).ToString()),
 	};
 }
 
+TArray<FString> UUDSettingsViewModel::GetWindowModeOptions() const
+{
+	TArray<FString> windowModes;
+	for (const FUDWindowModeItem& windowMode : WindowModes)
+	{
+		windowModes.Add(windowMode.ItemText);
+	}
+	return windowModes;
+}
+
+TArray<FString> UUDSettingsViewModel::GetResolutionOptions() const
+{
+	TArray<FString> resolutions;
+	for (const FUDResolutionItem& resolution : Resolutions)
+	{
+		resolutions.Add(resolution.ItemText);
+	}
+	return resolutions;
+}
+
 #undef LOCTEXT_NAMESPACE
+
+void UUDSettingsViewModel::Back()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDSettingsViewModel: Back."));
+	TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
+	hud->SwitchScreen(hud->MenuScreen);
+}
+
+void UUDSettingsViewModel::Save()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDSettingsViewModel: Save."));
+	SaveChanges();
+	TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
+	hud->SwitchScreen(hud->MenuScreen);
+}
+
+void UUDSettingsViewModel::Credits()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDSettingsViewModel: Credits."));
+	TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
+	hud->SwitchScreen(hud->CreditsScreen);
+}
+
+void UUDSettingsViewModel::SetSelectedWindowMode(FString SelectedItem, ESelectInfo::Type SelectionType)
+{
+	SelectedWindowMode = FindInWindowModes(SelectedItem, WindowModes);
+}
+
+FString UUDSettingsViewModel::GetSelectedWindowMode() const
+{
+	return SelectedWindowMode.ItemText;
+}
+
+void UUDSettingsViewModel::SetSelectedResolution(FString SelectedItem, ESelectInfo::Type SelectionType)
+{
+	SelectedResolution = FindInResolutions(SelectedItem, Resolutions);
+}
+
+FString UUDSettingsViewModel::GetSelectedResolution() const
+{
+	return SelectedResolution.ItemText;
+}
 
 void UUDSettingsViewModel::SaveChanges()
 {
 	FUDApplicationSettings newSettings = FUDApplicationSettings(
-		SelectedResolution,
-		SelectedWindowMode
+		SelectedResolution.ItemCode,
+		SelectedWindowMode.ItemCode
 	);
 	UUDGameInstance::Get(GetWorld())->SaveSettings(newSettings);
+}
+
+FUDWindowModeItem UUDSettingsViewModel::FindInWindowModes(EUDWindowModeType searchedItem, const TArray<FUDWindowModeItem>& items) const
+{
+	FUDWindowModeItem selected = *items.FindByPredicate(
+		[&searchedItem](const FUDWindowModeItem& item) { return item.ItemCode == searchedItem; }
+	);
+	return selected;
+}
+
+FUDWindowModeItem UUDSettingsViewModel::FindInWindowModes(FString searchedItem, const TArray<FUDWindowModeItem>& items) const
+{
+	FUDWindowModeItem selected = *items.FindByPredicate(
+		[&searchedItem](const FUDWindowModeItem& item) { return item.ItemText == searchedItem; }
+	);
+	return selected;
+}
+
+FUDResolutionItem UUDSettingsViewModel::FindInResolutions(FIntPoint searchedItem, const TArray<FUDResolutionItem>& items) const
+{
+	FUDResolutionItem selected = *items.FindByPredicate(
+		[&searchedItem](const FUDResolutionItem& item) { return item.ItemCode == searchedItem; }
+	);
+	return selected;
+}
+
+FUDResolutionItem UUDSettingsViewModel::FindInResolutions(FString searchedItem, const TArray<FUDResolutionItem>& items) const
+{
+	FUDResolutionItem selected = *items.FindByPredicate(
+		[&searchedItem](const FUDResolutionItem& item) { return item.ItemText == searchedItem; }
+	);
+	return selected;
 }
 
 void UUDSettingsViewModel::RetrieveSettings()
 {
 	FUDApplicationSettings settings = UUDGameInstance::Get(GetWorld())->LoadSettings();
-	SelectedResolution = settings.Resolution;
-	SelectedWindowMode = settings.WindowMode;
-}
-
-EUDWindowModeType UUDSettingsViewModel::GetSelectedWindowMode() const
-{
-	return SelectedWindowMode;
-}
-
-void UUDSettingsViewModel::SetSelectedWindowMode(const FUDWindowModeItem& selectedWindowMode)
-{
-	SelectedWindowMode = selectedWindowMode.ItemCode;
-}
-
-FIntPoint UUDSettingsViewModel::GetSelectedResolution() const
-{
-	return SelectedResolution;
-}
-
-void UUDSettingsViewModel::SetSelectedResolution(const FUDResolutionItem& selectedResolution)
-{
-	SelectedResolution = selectedResolution.ItemCode;
+	SelectedWindowMode = FindInWindowModes(settings.WindowMode, WindowModes);
+	SelectedResolution = FindInResolutions(settings.Resolution, Resolutions);
 }
 
 void UUDSettingsViewModel::SetWindowModeText(FText newWindowModeText)

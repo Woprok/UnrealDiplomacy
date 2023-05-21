@@ -4,21 +4,25 @@
 
 void UUDUserWidget::SetViewModel(TObjectPtr<UUDViewModel> viewModel) 
 {
-	// Abstract implementation cannot store this reference.
-	return;
+	BindViewModel(viewModel);
+	BindDelegates();
 }
 
 void UUDUserWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 	BindWidgets();
-	BindDelegates();
 }
 
 void UUDUserWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 	SetAppearance();
+}
+
+void UUDUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
+{
+	return;
 }
 
 void UUDUserWidget::BindDelegates()

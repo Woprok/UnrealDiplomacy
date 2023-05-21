@@ -14,6 +14,9 @@ class UNREALDIPLOMACY_API UUDJoinGameViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
+	// Button Functions
+	UFUNCTION()
+	void Back();
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText JoinGameTitleText;

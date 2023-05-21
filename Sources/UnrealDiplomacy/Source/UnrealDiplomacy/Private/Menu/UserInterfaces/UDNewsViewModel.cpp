@@ -1,6 +1,7 @@
 // Copyright Miroslav Valach
 
 #include "Menu/UserInterfaces/UDNewsViewModel.h"
+#include "Menu/UDMenuHUD.h"
 
 #define LOCTEXT_NAMESPACE "News"
 
@@ -13,7 +14,7 @@ FText ConstructNews()
 	return FText::FromString(content.ToString());
 }
 
-void UUDNewsViewModel::Update()
+void UUDNewsViewModel::Initialize()
 {
 	FText newsTitle = FText(LOCTEXT("News", "Welcome!"));
 	SetNewsTitleText(newsTitle);
@@ -24,6 +25,13 @@ void UUDNewsViewModel::Update()
 }
 
 #undef LOCTEXT_NAMESPACE
+
+void UUDNewsViewModel::Close()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDNewsViewModel: Close."));
+	TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
+	hud->HideWidget(hud->NewsWidget);
+}
 
 void UUDNewsViewModel::SetNewsTitleText(FText newNewsTitleText)
 {

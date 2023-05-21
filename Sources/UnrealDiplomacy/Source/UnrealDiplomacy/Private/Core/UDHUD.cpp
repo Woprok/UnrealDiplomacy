@@ -34,6 +34,25 @@ void AUDHUD::Initialize()
 	PrepareAllScreens();
 }
 
+void AUDHUD::HideWidget(const FName& widgetName)
+{
+	if (!Screens.Contains(CurrentScreenName))
+	{
+		UE_LOG(LogTemp, Log, TEXT("AUDHUD: Current Screen(%s) is not defined."), *CurrentScreenName.ToString());
+		return;
+	}
+	FUDScreenInfo screen = Screens[CurrentScreenName];
+
+	UE_LOG(LogTemp, Log, TEXT("AUDHUD: Trying to hide Widget(%s)."), *widgetName.ToString());
+	for (const auto& widget : screen.Widgets)
+	{
+		if (widget.Name == widgetName)
+		{
+			ViewManager->HideWidget(widget.Name);
+		}
+	}
+}
+
 bool AUDHUD::ShowScreen(const FName& screenName)
 {
 	if (!Screens.Contains(screenName))

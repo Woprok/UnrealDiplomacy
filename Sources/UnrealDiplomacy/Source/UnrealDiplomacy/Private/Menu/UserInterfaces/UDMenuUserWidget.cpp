@@ -4,10 +4,8 @@
 #include "Menu/UserInterfaces/UDMenuViewModel.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
-#include "Core/UDGameInstance.h"
-#include "Menu/UDMenuHUD.h"
 
-void UUDMenuUserWidget::SetViewModel(TObjectPtr<UUDViewModel> viewModel)
+void UUDMenuUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
 	UUDMenuViewModel* menuViewModel = CastChecked<UUDMenuViewModel>(viewModel.Get());
 	ViewModel = menuViewModel;
@@ -29,35 +27,9 @@ void UUDMenuUserWidget::BindWidgets()
 
 void UUDMenuUserWidget::BindDelegates()
 {
-	CreateGameButtonWidget->OnClicked.AddUniqueDynamic(this, &UUDMenuUserWidget::CreateGame);
-	JoinGameButtonWidget->OnClicked.AddUniqueDynamic(this, &UUDMenuUserWidget::JoinGame);
-	SettingsButtonWidget->OnClicked.AddUniqueDynamic(this, &UUDMenuUserWidget::Settings);
-	QuitButtonWidget->OnClicked.AddUniqueDynamic(this, &UUDMenuUserWidget::Quit);
-}
-
-void UUDMenuUserWidget::CreateGame()
-{
-	UE_LOG(LogTemp, Log, TEXT("UUDMenuUserWidget: CreateGame."));
-	TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
-	hud->SwitchScreen(hud->CreateGameScreen);
-}
-
-void UUDMenuUserWidget::JoinGame()
-{
-	UE_LOG(LogTemp, Log, TEXT("UUDMenuUserWidget: JoinGame."));
-	TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
-	hud->SwitchScreen(hud->JoinGameScreen);
-}
-
-void UUDMenuUserWidget::Settings()
-{
-	UE_LOG(LogTemp, Log, TEXT("UUDMenuUserWidget: Settings."));
-	TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
-	hud->SwitchScreen(hud->SettingsScreen);
-}
-
-void UUDMenuUserWidget::Quit()
-{
-	UE_LOG(LogTemp, Log, TEXT("UUDMenuUserWidget: Quit."));
-	UUDGameInstance::Get(GetWorld())->Quit();
+	// Bind viewmodel to widgets.
+	CreateGameButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMenuViewModel::CreateGame);
+	JoinGameButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMenuViewModel::JoinGame);
+	SettingsButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMenuViewModel::Settings);
+	QuitButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMenuViewModel::Quit);
 }

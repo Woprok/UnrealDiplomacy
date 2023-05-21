@@ -6,9 +6,8 @@
 #include "Components/EditableTextBox.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
-#include "Menu/UDMenuHUD.h"
 
-void UUDCreateGameUserWidget::SetViewModel(TObjectPtr<UUDViewModel> viewModel)
+void UUDCreateGameUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
 	UUDCreateGameViewModel* createGameViewModel = CastChecked<UUDCreateGameViewModel>(viewModel.Get());
 	ViewModel = createGameViewModel;
@@ -30,26 +29,7 @@ void UUDCreateGameUserWidget::BindWidgets()
 
 void UUDCreateGameUserWidget::BindDelegates()
 {
-	BackButtonWidget->OnClicked.AddUniqueDynamic(this, &UUDCreateGameUserWidget::Back);
-	NewGameButtonWidget->OnClicked.AddUniqueDynamic(this, &UUDCreateGameUserWidget::NewGame);
-	SessionNameEditableTextWidget->OnTextCommitted.AddUniqueDynamic(this, &UUDCreateGameUserWidget::SessionNameChanged);
-}
-
-void UUDCreateGameUserWidget::SessionNameChanged(const FText& text, ETextCommit::Type commitMethod)
-{
-	UE_LOG(LogTemp, Log, TEXT("UUDCreateGameUserWidget: SessionNameChanged %s."), *text.ToString());
-	ViewModel->SetSessionName(text);
-}
-
-void UUDCreateGameUserWidget::Back()
-{
-	UE_LOG(LogTemp, Log, TEXT("UUDCreateGameUserWidget: Back."));
-	TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
-	hud->SwitchScreen(hud->MenuScreen);
-}
-
-void UUDCreateGameUserWidget::NewGame()
-{
-	UE_LOG(LogTemp, Log, TEXT("UUDCreateGameUserWidget: NewGame."));
-	ViewModel->NewGame();
+	// Bind viewmodel to widgets.
+	BackButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDCreateGameViewModel::Back);
+	NewGameButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDCreateGameViewModel::NewGame);
 }

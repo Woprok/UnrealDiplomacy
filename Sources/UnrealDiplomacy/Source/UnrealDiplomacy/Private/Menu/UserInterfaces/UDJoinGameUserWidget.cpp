@@ -4,9 +4,8 @@
 #include "Menu/UserInterfaces/UDJoinGameViewModel.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
-#include "Menu/UDMenuHUD.h"
 
-void UUDJoinGameUserWidget::SetViewModel(TObjectPtr<UUDViewModel> viewModel)
+void UUDJoinGameUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
 	UUDJoinGameViewModel* joinGameViewModel = CastChecked<UUDJoinGameViewModel>(viewModel.Get());
 	ViewModel = joinGameViewModel;
@@ -23,12 +22,6 @@ void UUDJoinGameUserWidget::BindWidgets()
 
 void UUDJoinGameUserWidget::BindDelegates()
 {
-	BackButtonWidget->OnClicked.AddUniqueDynamic(this, &UUDJoinGameUserWidget::Back);
-}
-
-void UUDJoinGameUserWidget::Back()
-{
-	UE_LOG(LogTemp, Log, TEXT("UUDJoinGameUserWidget: Back."));
-	TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
-	hud->SwitchScreen(hud->MenuScreen);
+	// Bind viewmodel to widgets.
+	BackButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDJoinGameViewModel::Back);
 }

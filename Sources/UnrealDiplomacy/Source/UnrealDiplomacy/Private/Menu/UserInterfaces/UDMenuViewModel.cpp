@@ -1,10 +1,12 @@
 // Copyright Miroslav Valach
 
 #include "Menu/UserInterfaces/UDMenuViewModel.h"
+#include "Core/UDGameInstance.h"
+#include "Menu/UDMenuHUD.h"
 
 #define LOCTEXT_NAMESPACE "Menu"
 
-void UUDMenuViewModel::Update()
+void UUDMenuViewModel::Initialize()
 {
 	FText gameTitle = FText(LOCTEXT("Menu", "Koruna"));
 	SetGameTitleText(gameTitle);
@@ -19,6 +21,33 @@ void UUDMenuViewModel::Update()
 }
 
 #undef LOCTEXT_NAMESPACE
+
+void UUDMenuViewModel::CreateGame()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDMenuViewModel: CreateGame."));
+	TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
+	hud->SwitchScreen(hud->CreateGameScreen);
+}
+
+void UUDMenuViewModel::JoinGame()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDMenuViewModel: JoinGame."));
+	TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
+	hud->SwitchScreen(hud->JoinGameScreen);
+}
+
+void UUDMenuViewModel::Settings()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDMenuViewModel: Settings."));
+	TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
+	hud->SwitchScreen(hud->SettingsScreen);
+}
+
+void UUDMenuViewModel::Quit()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDMenuViewModel: Quit."));
+	UUDGameInstance::Get(GetWorld())->Quit();
+}
 
 void UUDMenuViewModel::SetGameTitleText(FText newGameTitleText)
 {

@@ -68,6 +68,10 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable)
 	void Initialize();
+	/**
+	 * Hides specified widget from the current screen.
+	 */
+	void HideWidget(const FName& name);
 protected:
 	/**
 	 * Adds selected screen to viewport.

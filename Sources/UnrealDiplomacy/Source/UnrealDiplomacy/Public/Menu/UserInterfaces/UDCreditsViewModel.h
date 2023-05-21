@@ -14,6 +14,9 @@ class UNREALDIPLOMACY_API UUDCreditsViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
+	// Button Functions
+	UFUNCTION()
+	void Back();
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText CreditsTitleText;
@@ -22,10 +25,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText BackText;
 protected:
-	/**
-	 * Invoked for each update.
-	 */
-	virtual void Update() override;
+	virtual void Initialize() override;
 private:
 	// MVVM Setters & Getters
 	void SetCreditsTitleText(FText newCreditsTitleText);

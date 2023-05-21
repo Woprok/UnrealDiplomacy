@@ -5,7 +5,7 @@
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
 
-void UUDNewsWidget::SetViewModel(TObjectPtr<UUDViewModel> viewModel)
+void UUDNewsWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
 	UUDNewsViewModel* newsViewModel = CastChecked<UUDNewsViewModel>(viewModel.Get());
 	ViewModel = newsViewModel;
@@ -22,11 +22,6 @@ void UUDNewsWidget::BindWidgets()
 
 void UUDNewsWidget::BindDelegates()
 {
-	CloseButtonWidget->OnClicked.AddUniqueDynamic(this, &UUDNewsWidget::Close);
-}
-
-void UUDNewsWidget::Close()
-{
-	UE_LOG(LogTemp, Log, TEXT("UUDNewsWidget: Close."));
-	RemoveFromParent();
+	// Bind viewmodel to widgets.
+	CloseButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDNewsViewModel::Close);
 }

@@ -21,22 +21,13 @@ class UNREALDIPLOMACY_API UUDMenuUserWidget : public UUDUserWidget
 	GENERATED_BODY()
 public:
 	/**
-	 * Enables to define view model used by this widet for delegates.
-	 */
-	virtual void SetViewModel(TObjectPtr<UUDViewModel> viewModel) override;
-	/**
 	 * Enables blueprint to bind view model.
 	 */
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetBlueprintViewModel(UUDMenuViewModel* model);
 protected:
-	/**
-	 * Automatically invoked by native on initialized.
-	 */
+	virtual void BindViewModel(TObjectPtr<UUDViewModel> viewModel) override;
 	virtual void BindDelegates() override;
-	/**
-	 * Automatically invoked by native on initialized.
-	 */
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
@@ -61,14 +52,4 @@ protected:
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDMenuViewModel> ViewModel;
-private:
-	// Button Functions
-	UFUNCTION()
-	void CreateGame();
-	UFUNCTION()
-	void JoinGame();
-	UFUNCTION()
-	void Settings();
-	UFUNCTION()
-	void Quit();
 };

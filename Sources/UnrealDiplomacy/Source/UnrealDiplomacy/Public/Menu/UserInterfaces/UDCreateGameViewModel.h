@@ -18,12 +18,11 @@ class UNREALDIPLOMACY_API UUDCreateGameViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Initializes new game session.
-	 */
+	// Button Functions
+	UFUNCTION()
+	void Back();
+	UFUNCTION()
 	void NewGame();
-
-public:
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText CreateGameTitleText;
@@ -39,19 +38,20 @@ public:
 	FText IsLANText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	ECheckBoxState IsLANValue;
-	/**
-	 * Binding for a SessionName
-	 */
-	void SetSessionName(FText inputText);
 protected:
 	/**
 	 * Invoked for each update.
 	 */
 	virtual void Update() override;
+private:
 	/**
-	 * Invoked for each update.
+	 * Invoked after each update.
 	 */
 	virtual void Load();
+	/**
+	 * Proceeds to create new game.
+	 */
+	virtual void CreateNewGame();
 private:
 	// MVVM Setters & Getters
 	void SetCreateGameTitleText(FText newCreateGameTitleText);

@@ -1,13 +1,13 @@
 // Copyright Miroslav Valach
 
 #include "Core/UserInterfaces/UDWindowUserWidget.h"
-#include "Components/SizeBox.h"
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
+#include "Components/SizeBox.h"
+#include "Components/GridPanel.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Engine/GameViewportClient.h"
 
 FReply UUDWindowUserWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {

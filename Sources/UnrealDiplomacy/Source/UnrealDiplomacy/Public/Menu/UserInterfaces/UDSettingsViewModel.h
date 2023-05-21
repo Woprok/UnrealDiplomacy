@@ -53,18 +53,21 @@ class UNREALDIPLOMACY_API UUDSettingsViewModel : public UUDViewModel
 	GENERATED_BODY()
 public:
 	/**
-	 * Creates new list of all supported window options.
+	 * Gets new list from all supported window options.
 	 */
-	TArray<FUDWindowModeItem> CreateWindowModeOptions() const;
+	TArray<FString> GetWindowModeOptions() const;
 	/**
-	 * Creates new list of all supported resolution options.
+	 * Gets new list from all supported resolution options.
 	 */
-	TArray<FUDResolutionItem> CreateResolutionOptions() const;
-	/**
-	 * Applies changes that are present in the view model.
-	 */
-	void SaveChanges();
+	TArray<FString> GetResolutionOptions() const;
 public:
+	// Button Functions
+	UFUNCTION()
+	void Back();
+	UFUNCTION()
+	void Save();
+	UFUNCTION()
+	void Credits();
 	// MVVM 
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText WindowModeText;
@@ -81,28 +84,45 @@ public:
 	/**
 	 * Binding for non-primitive invoked by widget.
 	 */
-	EUDWindowModeType GetSelectedWindowMode() const;
+	FString GetSelectedWindowMode() const;
 	/**
 	 * Binding for non-primitive invoked by widget.
 	 */
-	void SetSelectedWindowMode(const FUDWindowModeItem& selectedWindowMode);
+	UFUNCTION()
+	void SetSelectedWindowMode(FString SelectedItem, ESelectInfo::Type SelectionType);
 	/**
 	 * Binding for non-primitive invoked by widget.
 	 */
-	FIntPoint GetSelectedResolution() const;
+	FString GetSelectedResolution() const;
 	/**
 	 * Binding for non-primitive invoked by widget.
 	 */
-	void SetSelectedResolution(const FUDResolutionItem& selectedResolution);
+	UFUNCTION()
+	void SetSelectedResolution(FString SelectedItem, ESelectInfo::Type SelectionType);
 protected:
-	/**
-	 * Invoked for each update.
-	 */
+	virtual void Initialize() override;
 	virtual void Update() override;
+private:
 	/**
-	 * Loads settings from game instance.
+	 * Applies changes that are present in the view model to the settings in game instance.
+	 */
+	void SaveChanges();
+	/**
+	 * Loads current settings from game instance.
 	 */
 	void RetrieveSettings();
+	/**
+	 * Creates new list of all supported window options.
+	 */
+	void CreateWindowModeOptions();
+	/**
+	 * Creates new list of all supported resolution options.
+	 */
+	void CreateResolutionOptions();
+	FUDWindowModeItem FindInWindowModes(EUDWindowModeType searchedItem, const TArray<FUDWindowModeItem>& items) const;
+	FUDWindowModeItem FindInWindowModes(FString searchedItem, const TArray<FUDWindowModeItem>& items) const;
+	FUDResolutionItem FindInResolutions(FIntPoint searchedItem, const TArray<FUDResolutionItem>& items) const;
+	FUDResolutionItem FindInResolutions(FString searchedItem, const TArray<FUDResolutionItem>& items) const;
 private:
 	// MVVM Setters & Getters
 	void SetWindowModeText(FText newWindowModeText);
@@ -119,6 +139,8 @@ private:
 	FText GetSettingsTitleText() const;
 private:
 	// Fields
-	EUDWindowModeType SelectedWindowMode;
-	FIntPoint SelectedResolution;
+	TArray<FUDWindowModeItem> WindowModes;
+	TArray<FUDResolutionItem> Resolutions;
+	FUDWindowModeItem SelectedWindowMode;
+	FUDResolutionItem SelectedResolution;
 };

@@ -14,6 +14,9 @@ class UNREALDIPLOMACY_API UUDNewsViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
+	// Button Functions
+	UFUNCTION()
+	void Close();
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText NewsTitleText;
@@ -22,10 +25,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText CloseText;
 protected:
-	/**
-	 * Invoked for each update.
-	 */
-	virtual void Update() override;
+	virtual void Initialize() override;
 private:
 	// MVVM Setters & Getters
 	void SetNewsTitleText(FText newNewsTitleText);

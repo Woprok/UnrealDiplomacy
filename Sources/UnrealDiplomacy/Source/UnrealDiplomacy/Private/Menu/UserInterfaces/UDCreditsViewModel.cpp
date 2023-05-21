@@ -1,6 +1,7 @@
 // Copyright Miroslav Valach
 
 #include "Menu/UserInterfaces/UDCreditsViewModel.h"
+#include "Menu/UDMenuHUD.h"
 
 #define LOCTEXT_NAMESPACE "Credits"
 
@@ -13,7 +14,7 @@ FText ConstructCredits()
 	return FText::FromString(content.ToString());
 }
 
-void UUDCreditsViewModel::Update()
+void UUDCreditsViewModel::Initialize()
 {
 	FText creditsTitle = FText(LOCTEXT("Credits", "Credits"));
 	SetCreditsTitleText(creditsTitle);
@@ -24,6 +25,13 @@ void UUDCreditsViewModel::Update()
 }
 
 #undef LOCTEXT_NAMESPACE
+
+void UUDCreditsViewModel::Back()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDCreditsViewModel: Back."));
+	TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
+	hud->SwitchScreen(hud->SettingsScreen);
+}
 
 void UUDCreditsViewModel::SetCreditsTitleText(FText newCreditsTitleText)
 {
