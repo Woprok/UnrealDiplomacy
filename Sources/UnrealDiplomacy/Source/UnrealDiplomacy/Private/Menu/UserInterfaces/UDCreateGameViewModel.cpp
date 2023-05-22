@@ -2,12 +2,14 @@
 
 #include "Menu/UserInterfaces/UDCreateGameViewModel.h"
 #include "Menu/UDMenuHUD.h"
+#include "Core/UDGlobalData.h"
+#include "Core/UDGameInstance.h"
 #include "Core/UDSessionSubsystem.h"
 #include "OnlineSessionSettings.h"
 
 #define LOCTEXT_NAMESPACE "CreateGame"
 
-void UUDCreateGameViewModel::Update()
+void UUDCreateGameViewModel::Initialize()
 {
 	FText createGameTitle = FText(LOCTEXT("CreateGame", "Create Game"));
 	SetCreateGameTitleText(createGameTitle);
@@ -21,27 +23,14 @@ void UUDCreateGameViewModel::Update()
 	SetSessionNameEditableText(newSessionNameEditable);
 	FText newIsLANText = FText(LOCTEXT("CreateGame", "Is LAN"));
 	SetIsLANText(newIsLANText);
+}
 
+void UUDCreateGameViewModel::Update()
+{
 	Load();
 }
 
 #undef LOCTEXT_NAMESPACE
-
-//void UUDCreateGameViewModel::SessionNameChanged(const FText& text, ETextCommit::Type commitMethod)
-//{
-//	UE_LOG(LogTemp, Log, TEXT("UUDCreateGameUserWidget: SessionNameChanged %s."), *text.ToString());
-//	SetSessionName(text);
-//}
-
-//void UUDCreateGameViewModel::SetSessionName(FText inputText)
-//{
-//	SetSessionNameEditableText(inputText);
-//}
-
-	/**
-	 * Binding for a SessionName
-	 */
-	//void SetSessionName(FText inputText);
 
 void UUDCreateGameViewModel::Back()
 {
@@ -59,12 +48,25 @@ void UUDCreateGameViewModel::NewGame()
 void UUDCreateGameViewModel::Load()
 {
 	const FOnlineSessionSettings settings = UUDSessionSubsystem::Get(GetWorld())->GetDefaultSettings();
-	SetIsLANValue(ECheckBoxState::Unchecked);//settings.bIsLANMatch);
+	SetIsLANValue(UUDApplicationConverters::ToCheckBoxState(settings.bIsLANMatch));
 }
 
 void UUDCreateGameViewModel::CreateNewGame()
 {
+	UUDGameInstance::Get(GetWorld())->OpenSkirmishLevel();
 	//UUDSessionSubsystem::Get(GetWorld())->CreateSession(SessionNameText);
+}
+
+void UUDCreateGameViewModel::ApplySessionNameChange()
+{
+	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
+	sessions->SetSessionName(FName(GetSessionNameEditableText().ToString()));
+}
+
+void UUDCreateGameViewModel::ApplySessionSettingsChange()
+{
+	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
+	sessions->ChangeDefaultSettings(UUDApplicationConverters::FromCheckBoxState(GetIsLANValue()));
 }
 
 void UUDCreateGameViewModel::SetCreateGameTitleText(FText newCreateGameTitleText)
@@ -110,6 +112,7 @@ FText UUDCreateGameViewModel::GetSessionNameText() const
 void UUDCreateGameViewModel::SetSessionNameEditableText(FText newSessionNameEditableText)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(SessionNameEditableText, newSessionNameEditableText);
+	ApplySessionNameChange();
 }
 
 FText UUDCreateGameViewModel::GetSessionNameEditableText() const
@@ -130,6 +133,7 @@ FText UUDCreateGameViewModel::GetIsLANText() const
 void UUDCreateGameViewModel::SetIsLANValue(ECheckBoxState newIsLANValue)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(IsLANValue, newIsLANValue);
+	ApplySessionSettingsChange();
 }
 
 ECheckBoxState UUDCreateGameViewModel::GetIsLANValue() const

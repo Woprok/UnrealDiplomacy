@@ -90,7 +90,7 @@ protected:
 	/**
 	 * Assigns state to a Player/Ai.
 	 */
-	void AssignToSimulation(TScriptInterface<IUDControllerInterface> controller, bool isPlayerOrAi);
+	void AssignToSimulation(TScriptInterface<IUDControllerInterface>& controller, bool isPlayerOrAi);
 protected:
 	/**
 	 * Lazy access to a WorldSimulation.

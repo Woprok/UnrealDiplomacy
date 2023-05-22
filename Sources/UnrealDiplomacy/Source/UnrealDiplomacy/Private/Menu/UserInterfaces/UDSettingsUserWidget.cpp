@@ -42,10 +42,8 @@ void UUDSettingsUserWidget::BindDelegates()
 
 void UUDSettingsUserWidget::LoadOptions()
 {
-	isLoading = true;
 	LoadWindowMode();
 	LoadResolution();
-	isLoading = false;
 }
 
 void UUDSettingsUserWidget::LoadWindowMode()

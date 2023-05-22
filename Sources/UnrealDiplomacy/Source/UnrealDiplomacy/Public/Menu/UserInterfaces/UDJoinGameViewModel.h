@@ -25,10 +25,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText RefreshText;
 protected:
-	/**
-	 * Invoked for each update.
-	 */
-	virtual void Update() override;
+	virtual void Initialize() override;
 private:
 	// MVVM Setters & Getters
 	void SetJoinGameTitleText(FText newCreateGameTitleText);

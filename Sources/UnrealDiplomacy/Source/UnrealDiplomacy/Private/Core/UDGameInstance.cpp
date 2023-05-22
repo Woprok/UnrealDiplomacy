@@ -45,6 +45,16 @@ void UUDGameInstance::Quit()
 	UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, false);
 }
 
+void UUDGameInstance::OpenMenuLevel(FString options)
+{
+    UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), MenuLevel, true, options);
+}
+
+void UUDGameInstance::OpenSkirmishLevel(FString options)
+{
+    UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), SkirmishLevel, true, options);
+}
+
 TObjectPtr<UGameUserSettings> UUDGameInstance::GetGameUserSettings()
 {
     if (GEngine != nullptr)

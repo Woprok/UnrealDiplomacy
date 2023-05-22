@@ -38,6 +38,13 @@ public:
 	{
 		return TEXT("Menu");
 	}
+	/**
+	 * Option required for session travel.
+	 */
+	static const FString ListenOption()
+	{
+		return TEXT("listen");
+	}
 };
 
 // Following types are wrappers around otherwise engine types or values.
@@ -92,6 +99,14 @@ public:
 	 * Converts from module enum to engine enum.
 	 */
 	static EWindowMode::Type FromWindowModeType(EUDWindowModeType windowMode);
+	/**
+	 * Converts from engine enum to bool.
+	 */
+	static bool FromCheckBoxState(ECheckBoxState checkedState);
+	/**
+	 * Converts from bool to engine enum.
+	 */
+	static ECheckBoxState ToCheckBoxState(bool isChecked);
 };
 
 // DESC COMMENTS TO CHECK, CONSIDER, DELETE

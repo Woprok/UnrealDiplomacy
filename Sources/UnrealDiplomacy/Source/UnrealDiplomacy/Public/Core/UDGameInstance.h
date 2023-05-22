@@ -39,6 +39,25 @@ public:
 	 * Initializes new session.
 	 */
 	bool CreateSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, bool bIsLAN, bool bIsPresence, int32 MaxNumPlayers);
+	/**
+	 * Travels to associated level used for menu / non game state.
+	 */
+	void OpenMenuLevel(FString options = "");
+	/**
+	 * Travels to associated level used for game.
+	 */
+	void OpenSkirmishLevel(FString options = "");
+protected:
+	/**
+	 * Level that is used as menu and fallback.
+	 */
+	UPROPERTY(EditDefaultsOnly)
+	TSoftObjectPtr<UWorld> MenuLevel;
+	/**
+	 * Level that is used for skirmish game.
+	 */
+	UPROPERTY(EditDefaultsOnly)
+	TSoftObjectPtr<UWorld> SkirmishLevel;
 private:
 	TObjectPtr<UGameUserSettings> GetGameUserSettings();
 };

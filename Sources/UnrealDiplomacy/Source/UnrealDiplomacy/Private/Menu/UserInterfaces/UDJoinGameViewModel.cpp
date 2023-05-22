@@ -5,7 +5,7 @@
 
 #define LOCTEXT_NAMESPACE "JoinGame"
 
-void UUDJoinGameViewModel::Update()
+void UUDJoinGameViewModel::Initialize()
 {
 	FText joinGameTitle = FText(LOCTEXT("JoinGame", "Join Game"));
 	SetJoinGameTitleText(joinGameTitle);

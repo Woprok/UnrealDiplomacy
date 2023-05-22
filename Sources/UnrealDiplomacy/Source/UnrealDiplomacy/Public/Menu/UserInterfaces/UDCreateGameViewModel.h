@@ -39,19 +39,25 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	ECheckBoxState IsLANValue;
 protected:
-	/**
-	 * Invoked for each update.
-	 */
+	virtual void Initialize() override;
 	virtual void Update() override;
 private:
 	/**
 	 * Invoked after each update.
 	 */
-	virtual void Load();
+	void Load();
 	/**
 	 * Proceeds to create new game.
 	 */
-	virtual void CreateNewGame();
+	void CreateNewGame();
+	/**
+	 * Update settings, based on current values.
+	 */
+	void ApplySessionNameChange();
+	/**
+	 * Update settings, based on current values.
+	 */
+	void ApplySessionSettingsChange();
 private:
 	// MVVM Setters & Getters
 	void SetCreateGameTitleText(FText newCreateGameTitleText);

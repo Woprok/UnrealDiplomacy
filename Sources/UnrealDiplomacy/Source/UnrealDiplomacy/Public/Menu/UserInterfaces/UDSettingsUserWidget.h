@@ -82,5 +82,4 @@ private:
 	// ComboBox Arrays
 	TArray<FString> WindowModeItems;
 	TArray<FString> ResolutionItems;
-	bool isLoading = false;
 };

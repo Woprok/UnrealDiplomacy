@@ -35,6 +35,18 @@ UUDSessionSubsystem::UUDSessionSubsystem()
 	// This needs only to assign delegates.
 }
 
+void UUDSessionSubsystem::SetSessionName(const FName& sessionName)
+{
+	CurrentSessionName = sessionName;
+}
+
+FName UUDSessionSubsystem::GetSessionName()
+{
+	if (CurrentSessionName.GetStringLength() > 0)
+		return CurrentSessionName;
+	return GetDefaultSessionName();
+}
+
 void UUDSessionSubsystem::CreateSettings(FString settingLevelName, int32 numPublicConnections)
 {
 	CurrentSessionSettings = MakeShareable(new FOnlineSessionSettings(*DefaultSessionSettings));

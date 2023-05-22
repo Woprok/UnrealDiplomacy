@@ -34,3 +34,29 @@ EWindowMode::Type UUDApplicationConverters::FromWindowModeType(EUDWindowModeType
 		return EWindowMode::Fullscreen;
 	}
 }
+
+bool UUDApplicationConverters::FromCheckBoxState(ECheckBoxState checkedState)
+{
+	switch (checkedState)
+	{
+	case ECheckBoxState::Unchecked:
+		return false;
+	case ECheckBoxState::Checked:
+		return true;
+	case ECheckBoxState::Undetermined:
+	default:
+		return false;
+	}
+}
+
+ECheckBoxState UUDApplicationConverters::ToCheckBoxState(bool isChecked)
+{
+	if (isChecked)
+	{
+		return ECheckBoxState::Checked;
+	}
+	else
+	{
+		return ECheckBoxState::Unchecked;
+	}
+}

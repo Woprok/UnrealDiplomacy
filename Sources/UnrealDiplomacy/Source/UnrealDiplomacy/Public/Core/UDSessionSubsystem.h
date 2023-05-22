@@ -1,6 +1,5 @@
 // Copyright Miroslav Valach
 // Based on as there is nothing new to invent https://cedric-neukirchen.net/docs/session-management/sessions-in-cpp
-// https://unreal.gg-labs.com/v/4.25/wiki-archives/networking/how-to-use-sessions-in-c++
 // Blueprints were easier to setup, but due to almost everything being c++, this was changed as well.
 // These are included due to networking.
 //#include "Online.h"
@@ -97,9 +96,13 @@ public:
 	 */
 	void JoinGameSession(FName sessionName, const FOnlineSessionSearchResult& sessionResult);
 	/**
-	 * Provides default session name from OnlineSessionNames::NAME_GameSession.
+	 * Changes session name to specified value.
 	 */
-	FName GetDefaultSessionName();
+	void SetSessionName(const FName& sessionName);
+	/**
+	 * Retrieves session name or returns default.
+	 */
+	FName GetSessionName();
 	// Events for controlling session workflow
 	FUDOnCreateSessionComplete OnCreateSessionCompleteEvent;
 	FUDOnUpdateSessionComplete OnUpdateSessionCompleteEvent;
@@ -134,6 +137,10 @@ protected:
 	 * Creates default settings.
 	 */
 	void CreateDefaultSettings();
+	/**
+	 * Provides default session name from OnlineSessionNames::NAME_GameSession.
+	 */
+	FName GetDefaultSessionName();
 	// Internal Functions for Handles
 	void OnCreateSessionCompleted(FName sessionName, bool successful);
 	void OnUpdateSessionCompleted(FName sessionName, bool successful);
@@ -144,6 +151,7 @@ protected:
 	void OnJoinSessionCompleted(FName sessionName, EOnJoinSessionCompleteResult::Type result);
 private:
 	// Settings
+	FName CurrentSessionName = TEXT("");
 	/**
 	 * Settings that are used as base for creating new session settings.
 	 */
