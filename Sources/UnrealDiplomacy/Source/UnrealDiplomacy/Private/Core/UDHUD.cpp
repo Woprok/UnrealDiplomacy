@@ -53,6 +53,13 @@ void AUDHUD::HideWidget(const FName& widgetName)
 	}
 }
 
+TArray<TObjectPtr<UUDViewModel>>& AUDHUD::GetViewModelCollection(const FName& name, TSubclassOf<UUDViewModel> viewModelType, int32 desiredTotalCount)
+{
+	UE_LOG(LogTemp, Log, TEXT("AUDHUD: Obtaining collection for %s of size %d."), *name.ToString(), desiredTotalCount);
+	ViewModelManager->RegisterCollection(name, viewModelType, desiredTotalCount);
+	return ViewModelManager->GetCollection(name);
+}
+
 bool AUDHUD::ShowScreen(const FName& screenName)
 {
 	if (!Screens.Contains(screenName))

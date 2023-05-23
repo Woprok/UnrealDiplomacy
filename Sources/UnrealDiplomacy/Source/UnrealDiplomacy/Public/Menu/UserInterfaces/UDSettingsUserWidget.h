@@ -42,10 +42,10 @@ protected:
 	 */
 	virtual void BindWidgets() override;
 	/**
-	 * Loads data from view model.
+	 * Updates all data that are depending on view model.
 	 */
 	UFUNCTION()
-	void LoadOptions();
+	void SetOptions();
 protected:
 	// Bindings
 	UPROPERTY()
@@ -74,10 +74,16 @@ protected:
 	UPROPERTY()
 	TWeakObjectPtr<UUDSettingsViewModel> ViewModel;
 private:
+	/**
+	 * Retrives data from view model and set this widget to align with them.
+	 */
 	UFUNCTION()
-	void LoadWindowMode(); 
+	void SetWindowModeFromSource();
+	/**
+	 * Retrives data from view model and set this widget to align with them.
+	 */
 	UFUNCTION()
-	void LoadResolution();
+	void SetResolutionFromSource();
 private:
 	// ComboBox Arrays
 	TArray<FString> WindowModeItems;

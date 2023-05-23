@@ -14,6 +14,13 @@ void UUDCreateGameUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 	SetBlueprintViewModel(ViewModel.Get());
 }
 
+void UUDCreateGameUserWidget::BindDelegates()
+{
+	// Bind viewmodel to widgets.
+	BackButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDCreateGameViewModel::Back);
+	NewGameButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDCreateGameViewModel::NewGame);
+}
+
 void UUDCreateGameUserWidget::BindWidgets()
 {
 	CreateGameTitleTextWidget = GetWidget<UTextBlock>(TEXT("CreateGameTitleText"));
@@ -25,11 +32,4 @@ void UUDCreateGameUserWidget::BindWidgets()
 	SessionNameEditableTextWidget = GetWidget<UEditableTextBox>(TEXT("SessionNameEditableText"));
 	BackButtonWidget = GetWidget<UButton>(TEXT("BackButton"));
 	NewGameButtonWidget = GetWidget<UButton>(TEXT("NewGameButton"));
-}
-
-void UUDCreateGameUserWidget::BindDelegates()
-{
-	// Bind viewmodel to widgets.
-	BackButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDCreateGameViewModel::Back);
-	NewGameButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDCreateGameViewModel::NewGame);
 }

@@ -58,6 +58,11 @@ private:
 	 * Update settings, based on current values.
 	 */
 	void ApplySessionSettingsChange();
+	/**
+	 * Callback for session created.
+	 */
+	UFUNCTION()
+	void OnSessionCreated(bool success);
 private:
 	// MVVM Setters & Getters
 	void SetCreateGameTitleText(FText newCreateGameTitleText);

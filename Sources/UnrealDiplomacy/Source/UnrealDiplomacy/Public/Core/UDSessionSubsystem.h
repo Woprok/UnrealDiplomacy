@@ -14,7 +14,10 @@
 #include "UDSessionSubsystem.generated.h"
 
 // Forward Declarations
+
 class IOnlineSubsystem;
+
+#define UD_SETTING_SESSIONNAME FName(TEXT("UD_SESSIONNAME"))
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUDOnCreateSessionComplete, bool, Successful);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUDOnUpdateSessionComplete, bool, Successful);
@@ -22,7 +25,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUDOnStartSessionComplete, bool, Suc
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUDOnEndSessionComplete, bool, Successful);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUDOnDestroySessionComplete, bool, Successful);
 DECLARE_MULTICAST_DELEGATE_TwoParams(FUDOnFindSessionsComplete, const TArray<FOnlineSessionSearchResult>& SessionResults, bool Successful);
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDOnJoinSessionComplete, EOnJoinSessionCompleteResult::Type Result);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FUDOnJoinSessionComplete, FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 
 /**
  * Network subsystem for game instance.
@@ -96,13 +99,22 @@ public:
 	 */
 	void JoinGameSession(FName sessionName, const FOnlineSessionSearchResult& sessionResult);
 	/**
+	 * Attempts to join same world as host.
+	 */
+	bool TryTravelToCurrentSession(FName sessionName);
+	/**
 	 * Changes session name to specified value.
 	 */
-	void SetSessionName(const FName& sessionName);
+	void SetSessionName(const FString& sessionName);
+	/**
+	 * Retrieves session name or returns default.
+	 * This is converted value from FString.
+	 */
+	FName GetSessionName();
 	/**
 	 * Retrieves session name or returns default.
 	 */
-	FName GetSessionName();
+	FString GetSessionNameString();
 	// Events for controlling session workflow
 	FUDOnCreateSessionComplete OnCreateSessionCompleteEvent;
 	FUDOnUpdateSessionComplete OnUpdateSessionCompleteEvent;
@@ -112,10 +124,6 @@ public:
 	FUDOnFindSessionsComplete OnFindSessionsCompleteEvent;
 	FUDOnJoinSessionComplete OnJoinGameSessionCompleteEvent;
 protected:
-	/**
-	 * SEE ON_JOIN_SUCCESS_TRAVEL THIS IS SAME THING
-	 */
-	bool TryTravelToCurrentSession(FName sessionName);
 	/**
 	 * Retrieves UniqueNetId from local player.
 	 * TODO check if this can be exposed.
@@ -151,7 +159,7 @@ protected:
 	void OnJoinSessionCompleted(FName sessionName, EOnJoinSessionCompleteResult::Type result);
 private:
 	// Settings
-	FName CurrentSessionName = TEXT("");
+	FString CurrentSessionName = TEXT("");
 	/**
 	 * Settings that are used as base for creating new session settings.
 	 */
@@ -186,66 +194,6 @@ private:
 
 
 /*
-
-
-
-void UUDMenuUserWidget::Created(bool success)
-{
-
-	if (gi)
-	{
-		sessions->OnCreateSessionCompleteEvent.AddUniqueDynamic(this, &UUDMenuUserWidget::Created);
-		sessions->OnUpdateSessionCompleteEvent.AddUniqueDynamic(this, &UUDMenuUserWidget::Updated);
-		sessions->OnStartSessionCompleteEvent.AddUniqueDynamic(this, &UUDMenuUserWidget::Started);
-		sessions->CreateSettings("TEST");
-		sessions->CreateSession(NewSession);
-		//sessions->CreateSession(sessions->GetDefaultSessionName());
-	}
-	else
-	{
-		UE_LOG(LogTemp, Log, TEXT("UUDMenuUserWidget: FAILED."));
-	}
-	sessions->UpdateSettings("Standard");
-	sessions->UpdateSession(NewSession);
-	//sessions->UpdateSession(sessions->GetDefaultSessionName());
-}
-
-void UUDMenuUserWidget::Updated(bool success)
-{
-	sessions->StartSession(NewSession);
-	//sessions->StartSession(sessions->GetDefaultSessionName());
-}
-void UUDMenuUserWidget::Started(bool success)
-{
-	//sessions->EndSession(NewSession);
-	//sessions->DestroySession(NewSession);
-	//sessions->EndSession(sessions->GetDefaultSessionName());
-	//sessions->DestroySession(sessions->GetDefaultSessionName());
-}
-void UUDMenuUserWidget::Found(const TArray<FOnlineSessionSearchResult>& SessionResults, bool Successful)
-{
-
-	UE_LOG(LogTemp, Log, TEXT("UUDMenuUserWidget: CreateGame."));
-	if (gi)
-	{
-		UE_LOG(LogTemp, Log, TEXT("UUDMenuUserWidget: We have Subsystem."));
-		sessions->OnFindSessionsCompleteEvent.AddUObject(this, &UUDMenuUserWidget::Found);
-		sessions->CreateSearchSettings();
-		sessions->FindSessions();
-		//sessions->CreateSession(sessions->GetDefaultSessionName());
-	}
-	else
-	{
-		UE_LOG(LogTemp, Log, TEXT("UUDMenuUserWidget: FAILED."));
-	}
-
-	for (const auto& result : SessionResults)
-	{
-		sessions->JoinGameSession(NewSession, result);
-	}
-
-}
-#include "Core/UDSessionSubsystem.h"
 	 * Example of travel, if the start succeeded.
 void OnStartSuccessTravel()
 {
@@ -279,21 +227,8 @@ void OnJoinSuccessTravel()
 #include "OnlineSessionSettings.h"
 void UUDMenuUserWidget::Created(bool success)
 {
-
-	if (gi)
-	{
-		UE_LOG(LogTemp, Log, TEXT("UUDMenuUserWidget: We have Subsystem."));
-		sessions->OnCreateSessionCompleteEvent.AddUniqueDynamic(this, &UUDMenuUserWidget::Created);
-		sessions->OnUpdateSessionCompleteEvent.AddUniqueDynamic(this, &UUDMenuUserWidget::Updated);
-		sessions->OnStartSessionCompleteEvent.AddUniqueDynamic(this, &UUDMenuUserWidget::Started);
-		sessions->CreateSettings("TEST");
-		sessions->CreateSession(NewSession);
-		//sessions->CreateSession(sessions->GetDefaultSessionName());
-	}
-	else
-	{
-		UE_LOG(LogTemp, Log, TEXT("UUDMenuUserWidget: FAILED."));
-	}
+	sessions->OnUpdateSessionCompleteEvent.AddUniqueDynamic(this, &UUDMenuUserWidget::Updated);
+	sessions->OnStartSessionCompleteEvent.AddUniqueDynamic(this, &UUDMenuUserWidget::Started);
 	sessions->UpdateSettings("Standard");
 	sessions->UpdateSession(NewSession);
 	//sessions->UpdateSession(sessions->GetDefaultSessionName());
@@ -311,35 +246,8 @@ void UUDMenuUserWidget::Started(bool success)
 	//sessions->EndSession(sessions->GetDefaultSessionName());
 	//sessions->DestroySession(sessions->GetDefaultSessionName());
 }
-void UUDMenuUserWidget::Found(const TArray<FOnlineSessionSearchResult>& SessionResults, bool Successful)
-{
-
-	UE_LOG(LogTemp, Log, TEXT("UUDMenuUserWidget: CreateGame."));
-	if (gi)
-	{
-		UE_LOG(LogTemp, Log, TEXT("UUDMenuUserWidget: We have Subsystem."));
-		sessions->OnFindSessionsCompleteEvent.AddUObject(this, &UUDMenuUserWidget::Found);
-		sessions->CreateSearchSettings();
-		sessions->FindSessions();
-		//sessions->CreateSession(sessions->GetDefaultSessionName());
-	}
-	else
-	{
-		UE_LOG(LogTemp, Log, TEXT("UUDMenuUserWidget: FAILED."));
-	}
-
-	for (const auto& result : SessionResults)
-	{
-		sessions->JoinGameSession(NewSession, result);
-	}
-
-	UFUNCTION()
-		void Created(bool success);
 	UFUNCTION()
 		void Updated(bool success);
 	UFUNCTION()
 		void Started(bool success);
-	UPROPERTY()
-		FName NewSession = TEXT("NEW_SESSION");
-	void Found(const TArray<FOnlineSessionSearchResult>&SessionResults, bool Successful);
 }*/

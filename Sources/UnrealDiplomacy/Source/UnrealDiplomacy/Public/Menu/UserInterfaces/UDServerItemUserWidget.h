@@ -4,21 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDUserWidget.h"
-#include "UDJoinGameUserWidget.generated.h"
+#include "Blueprint/IUserObjectListEntry.h"
+#include "UDServerItemUserWidget.generated.h"
 
 // Forward Declarations
 
 class UTextBlock;
 class UButton;
-class UListView;
-class UUDJoinGameViewModel;
 class UUDServerItemViewModel;
 
 /**
  * Ancestor for blueprint.
+ * Supports IUserObjectListEntry for list view initializations.
+ * If used in list view it should manually call
  */
 UCLASS(Abstract)
-class UNREALDIPLOMACY_API UUDJoinGameUserWidget : public UUDUserWidget
+class UNREALDIPLOMACY_API UUDServerItemUserWidget : public UUDUserWidget, public IUserObjectListEntry
 {
 	GENERATED_BODY()
 public:
@@ -26,8 +27,12 @@ public:
 	 * Enables blueprint to bind view model.
 	 */
 	UFUNCTION(BlueprintImplementableEvent)
-	void SetBlueprintViewModel(UUDJoinGameViewModel* model);
+	void SetBlueprintViewModel(UUDServerItemViewModel* model);
 protected:
+	/**
+	 * Allows List View to define context.
+	 */
+	virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
 	/**
 	 * Enables to define view model used by this widet for delegates.
 	 */
@@ -40,25 +45,13 @@ protected:
 	 * Automatically invoked by native on initialized.
 	 */
 	virtual void BindWidgets() override;
-	/**
-	 * Callback to set data from view model.
-	 */
-	void SetSourceCollection(const TArray<TObjectPtr<UUDServerItemViewModel>>& serverItemViewModels);
 protected:
 	// Bindings
 	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> JoinGameTitleTextWidget;
+	TWeakObjectPtr<UTextBlock> NameTextWidget;
 	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> BackTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> RefreshTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UButton> BackButtonWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UButton> RefreshButtonWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UListView> ServerItemListWidget;
+	TWeakObjectPtr<UTextBlock> PingTextWidget;
 	// ViewModel
 	UPROPERTY()
-	TWeakObjectPtr<UUDJoinGameViewModel> ViewModel;
+	TWeakObjectPtr<UUDServerItemViewModel> ViewModel;
 };

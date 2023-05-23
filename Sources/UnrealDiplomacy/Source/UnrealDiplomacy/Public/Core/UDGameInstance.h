@@ -47,6 +47,10 @@ public:
 	 * Travels to associated level used for game.
 	 */
 	void OpenSkirmishLevel(FString options = "");
+	/**
+	 * Retrieves name associated with skirmish level used for game.
+	 */
+	FString GetSkirmishLevelName();
 protected:
 	/**
 	 * Level that is used as menu and fallback.

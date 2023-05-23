@@ -4,6 +4,7 @@
 #include "Menu/UserInterfaces/UDJoinGameViewModel.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
+#include "Components/ListView.h"
 
 void UUDJoinGameUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
@@ -12,16 +13,26 @@ void UUDJoinGameUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 	SetBlueprintViewModel(ViewModel.Get());
 }
 
+void UUDJoinGameUserWidget::BindDelegates()
+{
+	// Bind view to updates.
+	ViewModel->OnSessionSearchSourceUpdated.AddUObject(this, &UUDJoinGameUserWidget::SetSourceCollection);
+	// Bind viewmodel to widgets.
+	BackButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDJoinGameViewModel::Back);
+	RefreshButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDJoinGameViewModel::Refresh);
+}
+
 void UUDJoinGameUserWidget::BindWidgets()
 {
 	JoinGameTitleTextWidget = GetWidget<UTextBlock>(TEXT("JoinGameTitleText"));
 	BackTextWidget = GetWidget<UTextBlock>(TEXT("BackText"));
 	RefreshTextWidget = GetWidget<UTextBlock>(TEXT("RefreshText"));
 	BackButtonWidget = GetWidget<UButton>(TEXT("BackButton"));
+	RefreshButtonWidget = GetWidget<UButton>(TEXT("RefreshButton"));
+	ServerItemListWidget = GetWidget<UListView>(TEXT("ServerItemList"));
 }
 
-void UUDJoinGameUserWidget::BindDelegates()
+void UUDJoinGameUserWidget::SetSourceCollection(const TArray<TObjectPtr<UUDServerItemViewModel>>& serverItemViewModels)
 {
-	// Bind viewmodel to widgets.
-	BackButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDJoinGameViewModel::Back);
+	ServerItemListWidget->SetListItems(serverItemViewModels);
 }

@@ -55,6 +55,11 @@ void UUDGameInstance::OpenSkirmishLevel(FString options)
     UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), SkirmishLevel, true, options);
 }
 
+FString UUDGameInstance::GetSkirmishLevelName()
+{
+    return SkirmishLevel.GetAssetName();
+}
+
 TObjectPtr<UGameUserSettings> UUDGameInstance::GetGameUserSettings()
 {
     if (GEngine != nullptr)

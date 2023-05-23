@@ -13,6 +13,18 @@ void UUDSettingsUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 	SetBlueprintViewModel(ViewModel.Get());
 }
 
+void UUDSettingsUserWidget::BindDelegates()
+{
+	// Bind view to updates.
+	ViewModel->OnUpdateFinishing.AddUniqueDynamic(this, &UUDSettingsUserWidget::SetOptions);
+	// Bind viewmodel to widgets.
+	BackButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDSettingsViewModel::Back);
+	SaveButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDSettingsViewModel::Save);
+	CreditsButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDSettingsViewModel::Credits);
+	WindowModeComboBoxWidget->OnSelectionChanged.AddUniqueDynamic(ViewModel.Get(), &UUDSettingsViewModel::SetSelectedWindowMode);
+	ResolutionComboBoxWidget->OnSelectionChanged.AddUniqueDynamic(ViewModel.Get(), &UUDSettingsViewModel::SetSelectedResolution);
+}
+
 void UUDSettingsUserWidget::BindWidgets()
 {
 	SettingsTitleTextWidget = GetWidget<UTextBlock>(TEXT("SettingsTitleText"));
@@ -28,25 +40,13 @@ void UUDSettingsUserWidget::BindWidgets()
 	ResolutionComboBoxWidget = GetWidget<UComboBoxString>(TEXT("ResolutionComboBox"));
 }
 
-void UUDSettingsUserWidget::BindDelegates()
+void UUDSettingsUserWidget::SetOptions()
 {
-	// Bind view to updates.
-	ViewModel->OnUpdateFinishing.AddUniqueDynamic(this, &UUDSettingsUserWidget::LoadOptions);
-	// Bind viewmodel to widgets.
-	BackButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDSettingsViewModel::Back);
-	SaveButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDSettingsViewModel::Save);
-	CreditsButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDSettingsViewModel::Credits);
-	WindowModeComboBoxWidget->OnSelectionChanged.AddUniqueDynamic(ViewModel.Get(), &UUDSettingsViewModel::SetSelectedWindowMode);
-	ResolutionComboBoxWidget->OnSelectionChanged.AddUniqueDynamic(ViewModel.Get(), &UUDSettingsViewModel::SetSelectedResolution);
+	SetWindowModeFromSource();
+	SetResolutionFromSource();
 }
 
-void UUDSettingsUserWidget::LoadOptions()
-{
-	LoadWindowMode();
-	LoadResolution();
-}
-
-void UUDSettingsUserWidget::LoadWindowMode()
+void UUDSettingsUserWidget::SetWindowModeFromSource()
 {
 	// Clear and Set
 	WindowModeComboBoxWidget->ClearOptions();
@@ -60,7 +60,7 @@ void UUDSettingsUserWidget::LoadWindowMode()
 	WindowModeComboBoxWidget->SetSelectedOption(selectedWindowMode);
 }
 
-void UUDSettingsUserWidget::LoadResolution()
+void UUDSettingsUserWidget::SetResolutionFromSource()
 {
 	// Clear and Set
 	ResolutionComboBoxWidget->ClearOptions();

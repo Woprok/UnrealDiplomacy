@@ -12,6 +12,15 @@ void UUDMenuUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 	SetBlueprintViewModel(ViewModel.Get());
 }
 
+void UUDMenuUserWidget::BindDelegates()
+{
+	// Bind viewmodel to widgets.
+	CreateGameButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMenuViewModel::CreateGame);
+	JoinGameButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMenuViewModel::JoinGame);
+	SettingsButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMenuViewModel::Settings);
+	QuitButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMenuViewModel::Quit);
+}
+
 void UUDMenuUserWidget::BindWidgets()
 {
 	GameTitleTextWidget = GetWidget<UTextBlock>(TEXT("GameTitleText"));
@@ -23,13 +32,4 @@ void UUDMenuUserWidget::BindWidgets()
 	JoinGameButtonWidget = GetWidget<UButton>(TEXT("JoinGameButton"));
 	SettingsButtonWidget = GetWidget<UButton>(TEXT("SettingsButton"));
 	QuitButtonWidget = GetWidget<UButton>(TEXT("QuitButton"));
-}
-
-void UUDMenuUserWidget::BindDelegates()
-{
-	// Bind viewmodel to widgets.
-	CreateGameButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMenuViewModel::CreateGame);
-	JoinGameButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMenuViewModel::JoinGame);
-	SettingsButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMenuViewModel::Settings);
-	QuitButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMenuViewModel::Quit);
 }

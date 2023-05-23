@@ -72,6 +72,13 @@ public:
 	 * Hides specified widget from the current screen.
 	 */
 	void HideWidget(const FName& name);
+	/**
+	 * Obtains view model collection of desired size.
+	 * If collection does not exists it will be created.
+	 * If collection is not large enough it will be expanded.
+	 * Use this for filling ListViews or similiar use-cases.
+	 */
+	TArray<TObjectPtr<UUDViewModel>>& GetViewModelCollection(const FName& name, TSubclassOf<UUDViewModel> viewModelType, int32 desiredTotalCount);
 protected:
 	/**
 	 * Adds selected screen to viewport.

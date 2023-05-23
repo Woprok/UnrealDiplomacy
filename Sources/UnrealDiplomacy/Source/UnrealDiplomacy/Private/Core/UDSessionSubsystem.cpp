@@ -35,31 +35,42 @@ UUDSessionSubsystem::UUDSessionSubsystem()
 	// This needs only to assign delegates.
 }
 
-void UUDSessionSubsystem::SetSessionName(const FName& sessionName)
+void UUDSessionSubsystem::SetSessionName(const FString& sessionName)
 {
 	CurrentSessionName = sessionName;
 }
 
 FName UUDSessionSubsystem::GetSessionName()
 {
-	if (CurrentSessionName.GetStringLength() > 0)
-		return CurrentSessionName;
-	return GetDefaultSessionName();
+	if (CurrentSessionName.IsEmpty())
+		return GetDefaultSessionName();
+	return FName(CurrentSessionName);
+}
+
+FString UUDSessionSubsystem::GetSessionNameString()
+{
+	if (CurrentSessionName.IsEmpty())
+		return GetDefaultSessionName().ToString();
+	return CurrentSessionName;
 }
 
 void UUDSessionSubsystem::CreateSettings(FString settingLevelName, int32 numPublicConnections)
 {
+	UE_LOG(LogTemp, Log, TEXT("Sessions: Settings new level %s."), *settingLevelName);
 	CurrentSessionSettings = MakeShareable(new FOnlineSessionSettings(*DefaultSessionSettings));
 	CurrentSessionSettings->NumPublicConnections = numPublicConnections;
 	// This has lot more options...
 	CurrentSessionSettings->Set(SETTING_MAPNAME, settingLevelName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+	CurrentSessionSettings->Set(UD_SETTING_SESSIONNAME, GetSessionNameString(), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 }
 
 void UUDSessionSubsystem::UpdateSettings(FString settingLevelName)
 {
+	UE_LOG(LogTemp, Log, TEXT("Sessions: Settings updated level %s."), *settingLevelName);
 	UpdatedSessionSettings = MakeShareable(new FOnlineSessionSettings(*CurrentSessionSettings));
 	// This has lot more options...
 	UpdatedSessionSettings->Set(SETTING_MAPNAME, settingLevelName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+	UpdatedSessionSettings->Set(UD_SETTING_SESSIONNAME, GetSessionNameString(), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 }
 
 void UUDSessionSubsystem::CreateDefaultSettings()
@@ -77,6 +88,7 @@ void UUDSessionSubsystem::CreateDefaultSettings()
 	DefaultSessionSettings->bShouldAdvertise = true;
 	// This has lot more options...
 	DefaultSessionSettings->Set(SETTING_MAPNAME, UUDGlobalData::DefaultLevelName(), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+	DefaultSessionSettings->Set(UD_SETTING_SESSIONNAME, GetSessionNameString(), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 }
 
 void UUDSessionSubsystem::ChangeDefaultSettings(bool isLANMatch)
@@ -293,7 +305,7 @@ void UUDSessionSubsystem::JoinGameSession(FName sessionName, const FOnlineSessio
 	IOnlineSessionPtr sessionInterface;
 	if (!IsSessionInterfaceValid(sessionInterface))
 	{
-		OnJoinGameSessionCompleteEvent.Broadcast(EOnJoinSessionCompleteResult::UnknownError);
+		OnJoinGameSessionCompleteEvent.Broadcast(sessionName, EOnJoinSessionCompleteResult::UnknownError);
 		return;
 	}
 	// Check Local Player and get his UniqueNetId.
@@ -306,10 +318,10 @@ void UUDSessionSubsystem::JoinGameSession(FName sessionName, const FOnlineSessio
 	// Subscribe Handle.
 	JoinSessionHandle = sessionInterface->AddOnJoinSessionCompleteDelegate_Handle(JoinSessionCompleteDelegate);
 	// Finally execute join.
-	if (!sessionInterface->JoinSession(*localUniqueNetId, sessionName, sessionResult))
+	if (!sessionInterface->JoinSession(* localUniqueNetId, sessionName, sessionResult))
 	{
 		sessionInterface->ClearOnJoinSessionCompleteDelegate_Handle(JoinSessionHandle);
-		OnJoinGameSessionCompleteEvent.Broadcast(EOnJoinSessionCompleteResult::UnknownError);
+		OnJoinGameSessionCompleteEvent.Broadcast(sessionName, EOnJoinSessionCompleteResult::UnknownError);
 	}
 }
 
@@ -388,7 +400,7 @@ void UUDSessionSubsystem::OnJoinSessionCompleted(FName sessionName, EOnJoinSessi
 		sessionInterface->ClearOnJoinSessionCompleteDelegate_Handle(JoinSessionHandle);
 	}
 	// Propagate.
-	OnJoinGameSessionCompleteEvent.Broadcast(result);
+	OnJoinGameSessionCompleteEvent.Broadcast(sessionName, result);
 }
 
 void UUDSessionSubsystem::OnFindSessionsCompleted(bool successful)

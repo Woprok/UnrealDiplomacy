@@ -19,10 +19,13 @@ void UUDCreateGameViewModel::Initialize()
 	SetNewGameText(newGame);
 	FText newSessionName = FText(LOCTEXT("CreateGame", "Session Name"));
 	SetSessionNameText(newSessionName);
-	FText newSessionNameEditable = FText(LOCTEXT("CreateGame", "Session Name Editable"));
-	SetSessionNameEditableText(newSessionNameEditable);
 	FText newIsLANText = FText(LOCTEXT("CreateGame", "Is LAN"));
 	SetIsLANText(newIsLANText);
+	FText newSessionNameEditable = FText(LOCTEXT("CreateGame", "Session Name Editable"));
+	SetSessionNameEditableText(newSessionNameEditable);
+
+	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
+	sessions->OnCreateSessionCompleteEvent.AddUniqueDynamic(this, &UUDCreateGameViewModel::OnSessionCreated);
 }
 
 void UUDCreateGameViewModel::Update()
@@ -53,14 +56,29 @@ void UUDCreateGameViewModel::Load()
 
 void UUDCreateGameViewModel::CreateNewGame()
 {
-	UUDGameInstance::Get(GetWorld())->OpenSkirmishLevel();
-	//UUDSessionSubsystem::Get(GetWorld())->CreateSession(SessionNameText);
+	TObjectPtr<UUDGameInstance> instance = UUDGameInstance::Get(GetWorld());
+	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
+	sessions->CreateSettings(instance->GetSkirmishLevelName());
+	sessions->CreateSession(sessions->GetSessionName());
+}
+
+void UUDCreateGameViewModel::OnSessionCreated(bool success)
+{
+	if (success)
+	{
+		UUDGameInstance::Get(GetWorld())->OpenSkirmishLevel(UUDGlobalData::ListenOption());
+	}
+	else
+	{
+		TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
+		//hud->ShowNewError();
+	}
 }
 
 void UUDCreateGameViewModel::ApplySessionNameChange()
 {
 	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
-	sessions->SetSessionName(FName(GetSessionNameEditableText().ToString()));
+	sessions->SetSessionName(GetSessionNameEditableText().ToString());
 }
 
 void UUDCreateGameViewModel::ApplySessionSettingsChange()
