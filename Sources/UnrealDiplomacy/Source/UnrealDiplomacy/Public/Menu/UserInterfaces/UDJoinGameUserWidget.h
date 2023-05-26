@@ -1,4 +1,5 @@
 // Copyright Miroslav Valach
+// TODO Create list view that has exposed events (hover, select, click) to c++
 
 #pragma once
 
@@ -52,6 +53,10 @@ protected:
 	TWeakObjectPtr<UTextBlock> BackTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> RefreshTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> NameHeaderTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> PingHeaderTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> BackButtonWidget;
 	UPROPERTY()

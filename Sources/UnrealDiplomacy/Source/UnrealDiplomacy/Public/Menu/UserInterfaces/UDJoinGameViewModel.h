@@ -37,6 +37,12 @@ public:
 	FText BackText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText RefreshText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText NameHeaderText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText PingHeaderText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText SearchText;
 	// Events
 	FUDSearchSourceUpdated OnSessionSearchSourceUpdated;
 protected:
@@ -45,10 +51,12 @@ protected:
 private:
 	/**
 	 * Callback for session search attempt.
+	 * Finishes the search process by populating UI again.
 	 */
 	void OnSessionSearched(const TArray<FOnlineSessionSearchResult>& SessionResults, bool Successful);
 	/**
 	 * Callback for session joined.
+	 * Finishes the join process.
 	 */
 	void OnSessionJoined(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 private:
@@ -59,9 +67,16 @@ private:
 	FText GetBackText() const;
 	void SetRefreshText(FText newRefreshText);
 	FText GetRefreshText() const;
+	void SetNameHeaderText(FText newNameHeaderText);
+	FText GetNameHeaderText() const;
+	void SetPingHeaderText(FText newPingHeaderText);
+	FText GetPingHeaderText() const;
+	void SetSearchText(FText newSearchText);
+	FText GetSearchText() const;
 private:
 	// Fields
 	FName ViewModelCollectionName = TEXT("JoinServerItemCollection");
 	TSubclassOf<UUDViewModel> ViewModelType;
 	TArray<TObjectPtr<UUDServerItemViewModel>> InUseViewModelCollection;
+	const int32 SearchIndicator = -1;
 };

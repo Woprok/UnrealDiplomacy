@@ -8,9 +8,9 @@
 FText ConstructNews()
 {
 	TStringBuilder<128> content;
-	content.Append(FText(LOCTEXT("Credits", "You are playing development build.")).ToString());
+	content.Append(FText(LOCTEXT("News", "You are playing development build.")).ToString());
 	content.Append(FText::FromString(TEXT("\n")).ToString());
-	content.Append(FText::FromString(TEXT("Most features is missing!")).ToString());
+	content.Append(FText(LOCTEXT("News", "Most features is missing!")).ToString());
 	return FText::FromString(content.ToString());
 }
 

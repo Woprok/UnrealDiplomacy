@@ -1,6 +1,7 @@
 // Copyright Miroslav Valach
 
 #include "Menu/UserInterfaces/UDServerItemViewModel.h"
+#include "Menu/UDMenuHUD.h"
 #include "Core/UDSessionSubsystem.h"
 #include "Interfaces/OnlineSessionInterface.h"
 #include "OnlineSessionSettings.h"
@@ -22,6 +23,7 @@ void UUDServerItemViewModel::Update()
 	FString name;
 	auto& nameOption = Content->Session.SessionSettings.Settings[UD_SETTING_SESSIONNAME];
 	nameOption.Data.GetValue(name);
+	ContentName = FName(name);
 	SetNameText(FText::FromString(name));
 
 	auto ping = Content->PingInMs;
@@ -31,6 +33,22 @@ void UUDServerItemViewModel::Update()
 }
 
 #undef LOCTEXT_NAMESPACE
+
+void UUDServerItemViewModel::Join()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDServerItemViewModel: Join."));
+
+	TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
+	hud->SwitchScreen(hud->LoadingScreen);
+	// Changed to loading screen and will continue with joining the session.
+	StartJoiningGame();
+}
+
+void UUDServerItemViewModel::StartJoiningGame()
+{
+	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
+	sessions->JoinGameSession(ContentName, *Content);
+}
 
 void UUDServerItemViewModel::SetContent(const FOnlineSessionSearchResult& content)
 {

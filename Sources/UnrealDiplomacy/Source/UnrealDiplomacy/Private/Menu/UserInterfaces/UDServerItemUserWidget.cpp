@@ -23,10 +23,12 @@ void UUDServerItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 void UUDServerItemUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	ItemButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDServerItemViewModel::Join);
 }
 
 void UUDServerItemUserWidget::BindWidgets()
 {
 	NameTextWidget = GetWidget<UTextBlock>(TEXT("NameText"));
 	PingTextWidget = GetWidget<UTextBlock>(TEXT("PingText"));
+	ItemButtonWidget = GetWidget<UButton>(TEXT("ItemButton"));
 }

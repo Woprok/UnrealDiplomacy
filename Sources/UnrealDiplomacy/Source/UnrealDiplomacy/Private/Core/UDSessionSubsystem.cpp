@@ -318,7 +318,7 @@ void UUDSessionSubsystem::JoinGameSession(FName sessionName, const FOnlineSessio
 	// Subscribe Handle.
 	JoinSessionHandle = sessionInterface->AddOnJoinSessionCompleteDelegate_Handle(JoinSessionCompleteDelegate);
 	// Finally execute join.
-	if (!sessionInterface->JoinSession(* localUniqueNetId, sessionName, sessionResult))
+	if (!sessionInterface->JoinSession(*localUniqueNetId, sessionName, sessionResult))
 	{
 		sessionInterface->ClearOnJoinSessionCompleteDelegate_Handle(JoinSessionHandle);
 		OnJoinGameSessionCompleteEvent.Broadcast(sessionName, EOnJoinSessionCompleteResult::UnknownError);

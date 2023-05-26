@@ -27,6 +27,8 @@ void UUDJoinGameUserWidget::BindWidgets()
 	JoinGameTitleTextWidget = GetWidget<UTextBlock>(TEXT("JoinGameTitleText"));
 	BackTextWidget = GetWidget<UTextBlock>(TEXT("BackText"));
 	RefreshTextWidget = GetWidget<UTextBlock>(TEXT("RefreshText"));
+	NameHeaderTextWidget = GetWidget<UTextBlock>(TEXT("NameHeaderText"));
+	PingHeaderTextWidget = GetWidget<UTextBlock>(TEXT("PingHeaderText"));
 	BackButtonWidget = GetWidget<UButton>(TEXT("BackButton"));
 	RefreshButtonWidget = GetWidget<UButton>(TEXT("RefreshButton"));
 	ServerItemListWidget = GetWidget<UListView>(TEXT("ServerItemList"));

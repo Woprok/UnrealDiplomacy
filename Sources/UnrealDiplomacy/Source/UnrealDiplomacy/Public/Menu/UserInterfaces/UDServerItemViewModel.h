@@ -27,6 +27,12 @@ public:
 	 */
 	const FOnlineSessionSearchResult& GetContent() const;
 public:
+	// Button Functions
+	/**
+	 * Attempts to join the new session, hides UI until the end of join operation.
+	 */
+	UFUNCTION()
+	void Join();
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText NameText;
@@ -38,6 +44,11 @@ protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
 private:
+	/**
+	 * Starts join process.
+	 */
+	void StartJoiningGame();
+private:
 	// MVVM Setters & Getters
 	void SetNameText(FText newNameText);
 	FText GetNameText() const;
@@ -48,4 +59,5 @@ private:
 private:
 	// Fields
 	const FOnlineSessionSearchResult* Content;
+	FName ContentName = TEXT("");
 };

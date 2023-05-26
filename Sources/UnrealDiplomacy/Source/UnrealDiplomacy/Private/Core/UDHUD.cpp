@@ -34,23 +34,20 @@ void AUDHUD::Initialize()
 	PrepareAllScreens();
 }
 
+TObjectPtr<UUDViewModel> AUDHUD::ShowWidget(const FName& widgetName)
+{
+	UE_LOG(LogTemp, Log, TEXT("AUDHUD: Trying to show Widget(%s)."), *widgetName.ToString());
+	if (ViewManager->ShowWidget(widgetName))
+	{
+		return ViewModelManager->Get(widgetName);
+	};
+	return nullptr;
+}
+
 void AUDHUD::HideWidget(const FName& widgetName)
 {
-	if (!Screens.Contains(CurrentScreenName))
-	{
-		UE_LOG(LogTemp, Log, TEXT("AUDHUD: Current Screen(%s) is not defined."), *CurrentScreenName.ToString());
-		return;
-	}
-	FUDScreenInfo screen = Screens[CurrentScreenName];
-
 	UE_LOG(LogTemp, Log, TEXT("AUDHUD: Trying to hide Widget(%s)."), *widgetName.ToString());
-	for (const auto& widget : screen.Widgets)
-	{
-		if (widget.Name == widgetName)
-		{
-			ViewManager->HideWidget(widget.Name);
-		}
-	}
+	ViewManager->HideWidget(widgetName);
 }
 
 TArray<TObjectPtr<UUDViewModel>>& AUDHUD::GetViewModelCollection(const FName& name, TSubclassOf<UUDViewModel> viewModelType, int32 desiredTotalCount)

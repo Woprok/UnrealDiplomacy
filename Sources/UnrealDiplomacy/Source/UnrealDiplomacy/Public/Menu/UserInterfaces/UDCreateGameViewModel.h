@@ -21,6 +21,9 @@ public:
 	// Button Functions
 	UFUNCTION()
 	void Back();
+	/**
+	 * Attempts to create the new session, hides UI until the end of create operation.
+	 */
 	UFUNCTION()
 	void NewGame();
 	// MVVM Fields
@@ -45,7 +48,7 @@ private:
 	/**
 	 * Invoked after each update.
 	 */
-	void Load();
+	void SetOptions();
 	/**
 	 * Proceeds to create new game.
 	 */

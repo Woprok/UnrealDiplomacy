@@ -6,7 +6,6 @@
 #include "Core/UDGlobalData.h"
 #include "Core/UDGameInstance.h"
 #include "Core/UDSessionSubsystem.h"
-#include "Menu/UDExceptionManagerSubsystem.h"
 #include "Interfaces/OnlineSessionInterface.h"
 #include "OnlineSessionSettings.h"
 
@@ -53,36 +52,6 @@ void UUDJoinGameViewModel::Update()
 
 }
 
-FUDDialogueData GetSessionJoinFailed(EOnJoinSessionCompleteResult::Type result)
-{
-	FString content;
-	switch (result)
-	{
-	case EOnJoinSessionCompleteResult::SessionIsFull:
-		content = FText(LOCTEXT("JoinGame", "Session is full.")).ToString();
-		break;
-	case EOnJoinSessionCompleteResult::SessionDoesNotExist:
-		content = FText(LOCTEXT("JoinGame", "Session no longer exists.")).ToString();
-		break;
-	case EOnJoinSessionCompleteResult::CouldNotRetrieveAddress:
-		content = FText(LOCTEXT("JoinGame", "Could not retrieve the session address.")).ToString();
-		break;
-	case EOnJoinSessionCompleteResult::AlreadyInSession:
-		content = FText(LOCTEXT("JoinGame", "Already in the session.")).ToString();
-		break;
-	case EOnJoinSessionCompleteResult::Success:
-	case EOnJoinSessionCompleteResult::UnknownError:
-	default:
-		content = FText(LOCTEXT("JoinGame", "Unknown error occured during the joining session.")).ToString();
-		break;
-	}
-	return FUDDialogueData(
-		EUDDialogueContentType::Error,
-		FText(LOCTEXT("JoinGame", "Join Game Error")).ToString(),
-		content
-	);
-}
-
 #undef LOCTEXT_NAMESPACE
 
 void UUDJoinGameViewModel::Back()
@@ -125,9 +94,8 @@ void UUDJoinGameViewModel::OnSessionSearched(const TArray<FOnlineSessionSearchRe
 void UUDJoinGameViewModel::OnSessionJoined(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDJoinGameViewModel: Join %s."), LexToString(Result));
-
 	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
-	if (Result == EOnJoinSessionCompleteResult::Success && sessions->TryTravelToCurrentSession(SessionName))
+	if (sessions->TryTravelToCurrentSession(SessionName))
 	{
 		// On success travel to session level was invoked.
 	}
@@ -135,9 +103,8 @@ void UUDJoinGameViewModel::OnSessionJoined(FName SessionName, EOnJoinSessionComp
 	{
 		// Session Join Failed, we can provide error to user.
 		TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
-		hud->SwitchScreen(hud->JoinGameScreen);
-		FUDDialogueData dialogueData = GetSessionJoinFailed(Result);
-		UUDExceptionManagerSubsystem::Get(GetWorld())->ShowDialogue(dialogueData);
+		
+		//hud->ShowNewError();
 	}
 }
 

@@ -21,16 +21,17 @@ void UUDUserWidgetManager::Register(FName name, TSubclassOf<UUDUserWidget> viewT
 	UE_LOG(LogTemp, Log, TEXT("UUDUserWidgetManager: View(%s) successfully registered."), *name.ToString());
 }
 
-void UUDUserWidgetManager::ShowWidget(const FName& name)
+bool UUDUserWidgetManager::ShowWidget(const FName& name)
 {
 	if (!Views.Contains(name))
 	{
 		UE_LOG(LogTemp, Log, TEXT("UUDUserWidgetManager: View(%s) is not registered."), *name.ToString());
-		return;
+		return false;
 	}
 	TObjectPtr<UUDUserWidget> widget = Views[name];
 	widget->AddToViewport();
 	UE_LOG(LogTemp, Log, TEXT("UUDUserWidgetManager: View(%s) is now part of viewport."), *name.ToString());
+	return true;
 }
 
 void UUDUserWidgetManager::HideWidget(const FName& name)

@@ -49,4 +49,9 @@ public:
 	 */
 	UPROPERTY(VisibleAnywhere, Category = "ScreenNames")
 	FName CreateGameScreen = TEXT("CreateGameScreen");
+	/**
+	 * Used by menu views to identify target screen.
+	 */
+	UPROPERTY(VisibleAnywhere, Category = "ScreenNames")
+	FName LoadingScreen = TEXT("LoadingScreen");
 };

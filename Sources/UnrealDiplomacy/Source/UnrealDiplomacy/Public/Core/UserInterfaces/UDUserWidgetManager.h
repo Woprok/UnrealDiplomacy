@@ -28,7 +28,7 @@ public:
 	/**
 	 * Adds selected widget to viewport.
 	 */
-	virtual void ShowWidget(const FName& name);
+	virtual bool ShowWidget(const FName& name);
 	/**
 	 * Removes selected widget from viewport.
 	 */

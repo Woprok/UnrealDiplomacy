@@ -51,6 +51,8 @@ protected:
 	TWeakObjectPtr<UTextBlock> NameTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> PingTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UButton> ItemButtonWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDServerItemViewModel> ViewModel;

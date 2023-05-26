@@ -69,7 +69,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Initialize();
 	/**
-	 * Hides specified widget from the current screen.
+	 * Show specified widget on the viewport.
+	 * Returns view model that is associated with the widget.
+	 * This expects view and view model to be registered under same name.
+	 */
+	TObjectPtr<UUDViewModel> ShowWidget(const FName& name);
+	/**
+	 * Hides specified widget from the viewport.
 	 */
 	void HideWidget(const FName& name);
 	/**
