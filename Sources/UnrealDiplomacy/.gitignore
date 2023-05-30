@@ -1,5 +1,7 @@
 #Prototypes
 
+# TMP folder created by Visual Studio
+/enc_temp_folder/*
 
 # Visual Studio Hint
 *.ipch
