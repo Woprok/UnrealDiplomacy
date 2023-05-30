@@ -23,7 +23,7 @@ public:
 	 */
 	void SetContent(const FOnlineSessionSearchResult& content);
 	/**
-	 * Set content of the session.
+	 * Get content of the session.
 	 */
 	const FOnlineSessionSearchResult& GetContent() const;
 public:
