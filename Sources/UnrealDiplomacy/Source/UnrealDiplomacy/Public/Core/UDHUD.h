@@ -54,6 +54,11 @@ class UNREALDIPLOMACY_API AUDHUD : public AHUD
 	GENERATED_BODY()
 public:
 	/**
+	 * Shortcut to retrieve casted MenuHUD.
+	 * Requries World pointer that can be retrieved by GetWorld().
+	 */
+	static TObjectPtr<AUDHUD> Get(TObjectPtr<UWorld> world);
+	/**
 	 * Invokes update on all view models.
 	 */
 	UFUNCTION(BlueprintCallable)

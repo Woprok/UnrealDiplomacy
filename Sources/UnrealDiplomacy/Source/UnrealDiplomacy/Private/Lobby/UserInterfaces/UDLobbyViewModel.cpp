@@ -1,6 +1,9 @@
 // Copyright Miroslav Valach
 
 #include "Lobby/UserInterfaces/UDLobbyViewModel.h"
+#include "Core/UDGameInstance.h"
+#include "Core/UDSessionSubsystem.h"
+#include "Kismet/GameplayStatics.h"
 
 #define LOCTEXT_NAMESPACE "Lobby"
 
@@ -16,6 +19,9 @@ void UUDLobbyViewModel::Initialize()
 	SetLeaveText(leave);
 	FText start = FText(LOCTEXT("Lobby", "Start"));
 	SetStartText(start);
+
+	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
+	sessions->OnStartSessionCompleteEvent.AddUniqueDynamic(this, &UUDLobbyViewModel::OnSessionStarted);
 }
 
 void UUDLobbyViewModel::Update()
@@ -27,23 +33,54 @@ void UUDLobbyViewModel::Update()
 
 void UUDLobbyViewModel::Back()
 {
-
+	UE_LOG(LogTemp, Log, TEXT("UUDLobbyViewModel: Back."));
+	// Back is from Host perspective.
+	QuitGame();
 }
 
 void UUDLobbyViewModel::Leave()
 {
-
+	UE_LOG(LogTemp, Log, TEXT("UUDLobbyViewModel: Leave."));
+	// Leave is from Client perspective.
+	LeaveGame();
 }
 
 void UUDLobbyViewModel::Start()
 {
-	// TODO
-	//#include "Core/Simulation/UDActionAdministrator.h"
-	//#include "Core/Simulation/Actions/UDSystemActionGameStart.h"
-	// TODO
-	//ActionModel->RequestAction(ActionModel->GetAction(UUDSystemActionGameStart::ActionTypeId));
+	UE_LOG(LogTemp, Log, TEXT("UUDLobbyViewModel: Start."));
+	StartGame();
 }
 
+void UUDLobbyViewModel::StartGame()
+{
+	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
+	UE_LOG(LogTemp, Log, TEXT("UUDLobbyViewModel: Starting session name %s."), *sessions->GetSessionNameString());
+
+	sessions->StartSession(sessions->GetSessionName());
+}
+
+void UUDLobbyViewModel::QuitGame()
+{
+	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
+	UE_LOG(LogTemp, Log, TEXT("UUDLobbyViewModel: Host quit the game -> %s."), *sessions->GetSessionNameString());
+
+	sessions->QuitSession();
+}
+
+void UUDLobbyViewModel::LeaveGame()
+{
+	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
+	UE_LOG(LogTemp, Log, TEXT("UUDLobbyViewModel: Client left the game -> %s."), *sessions->GetSessionNameString());
+
+	sessions->LeaveSession();
+
+}
+
+void UUDLobbyViewModel::OnSessionStarted(bool success)
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDLobbyViewModel: OnSessionStarted."));
+	// Session was started, we can proceed to different UI and call GameMode to handle rest.
+}
 
 void UUDLobbyViewModel::SetLobbyTitleText(FText newLobbyTitleText)
 {

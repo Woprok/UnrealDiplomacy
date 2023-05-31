@@ -37,6 +37,28 @@ protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
 private:
+	/**
+	 * Starts current session.
+	 */
+	void StartGame();
+	/**
+	 * Host requested for this session and level to be destroyed.
+	 * All players will be disconnected and returned to menu.
+	 * Clients will most likely have to handle network error.
+	 * End current game.
+	 */
+	void QuitGame();
+	/**
+	 * Client requested to leave session and level. 
+	 * Leaves current game.
+	 */
+	void LeaveGame();
+	/**
+	 * Callback for session start.
+	 */
+	UFUNCTION()
+	void OnSessionStarted(bool success);
+private:
 	// MVVM Setters & Getters
 	void SetLobbyTitleText(FText newLobbyTitleText);
 	FText GetLobbyTitleText() const;

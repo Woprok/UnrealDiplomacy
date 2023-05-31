@@ -1,10 +1,5 @@
 // Copyright Miroslav Valach
-// Based on as there is nothing new to invent https://cedric-neukirchen.net/docs/session-management/sessions-in-cpp
-// Blueprints were easier to setup, but due to almost everything being c++, this was changed as well.
-// These are included due to networking.
-//#include "Online.h"
-//#include "Engine.h"
-//#include "Net/UnrealNetwork.h"
+// Based on https://cedric-neukirchen.net/docs/session-management/sessions-in-cpp
 
 #pragma once
 
@@ -30,7 +25,7 @@ DECLARE_MULTICAST_DELEGATE_TwoParams(FUDOnJoinSessionComplete, FName SessionName
 /**
  * Network subsystem for game instance.
  */
-UCLASS()
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDSessionSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
@@ -102,6 +97,20 @@ public:
 	 * Attempts to join same world as host.
 	 */
 	bool TryTravelToCurrentSession(FName sessionName);
+	/**
+	 * Wrapper around destroy, disconnect and return for client.
+	 * Client requested to leave session and level. 
+	 * Leaves current game.
+	 */
+	void LeaveSession();
+	/**
+	 * Wrapper around destroy, disconnect and return for host.
+	 * Host requested for this session and level to be destroyed.
+	 * All players will be disconnected and returned to menu.
+	 * Clients will most likely have to handle network error.
+	 * End current game.
+	 */
+	void QuitSession();
 	/**
 	 * Changes session name to specified value.
 	 */
@@ -190,64 +199,3 @@ private:
 	FOnJoinSessionCompleteDelegate JoinSessionCompleteDelegate;
 	FDelegateHandle JoinSessionHandle;
 };
-
-
-
-/*
-	 * Example of travel, if the start succeeded.
-void OnStartSuccessTravel()
-{
-	// If the start was successful, we can open a NewMap if we want. Make sure to
-	// use "listen" as a parameter!
-	//UGameplayStatics::OpenLevel(GetWorld(), "NewMap", true, "listen");
-}
- * Example of travel, if the destroyed succeeded.
-void OnDestroySuccessTravel()
-{
-	//UGameplayStatics::OpenLevel(GetWorld(), "ThirdPersonExampleMap", true);
-}
- * Example of travel, if the join succeeded.
-void OnJoinSuccessTravel()
-{
-	// Get the first local PlayerController, so we can call "ClientTravel" to get to the Server Map
-	// This is something the Blueprint Node "Join Session" does automatically!
-	// We need a FString to use ClientTravel and we can let the SessionInterface contruct such a
-	// String for us by giving him the SessionName and an empty String. We want to do this, because
-	// Every OnlineSubsystem uses different TravelURLs
-	//APlayerController* const PlayerController = GetFirstLocalPlayerController();
-	//FString TravelURL;
-	//if (PlayerController && Sessions->GetResolvedConnectString(SessionName, TravelURL))
-	//{
-	//	// Finally call the ClienTravel. If you want, you could print the TravelURL to see
-	//	// how it really looks like
-	//	PlayerController->ClientTravel(TravelURL, ETravelType::TRAVEL_Absolute);
-	//}
-}
-
-#include "OnlineSessionSettings.h"
-void UUDMenuUserWidget::Created(bool success)
-{
-	sessions->OnUpdateSessionCompleteEvent.AddUniqueDynamic(this, &UUDMenuUserWidget::Updated);
-	sessions->OnStartSessionCompleteEvent.AddUniqueDynamic(this, &UUDMenuUserWidget::Started);
-	sessions->UpdateSettings("Standard");
-	sessions->UpdateSession(NewSession);
-	//sessions->UpdateSession(sessions->GetDefaultSessionName());
-}
-
-void UUDMenuUserWidget::Updated(bool success)
-{
-	sessions->StartSession(NewSession);
-	//sessions->StartSession(sessions->GetDefaultSessionName());
-}
-void UUDMenuUserWidget::Started(bool success)
-{
-	//sessions->EndSession(NewSession);
-	//sessions->DestroySession(NewSession);
-	//sessions->EndSession(sessions->GetDefaultSessionName());
-	//sessions->DestroySession(sessions->GetDefaultSessionName());
-}
-	UFUNCTION()
-		void Updated(bool success);
-	UFUNCTION()
-		void Started(bool success);
-}*/

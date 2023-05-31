@@ -79,7 +79,7 @@ void UUDSessionSubsystem::CreateDefaultSettings()
 	DefaultSessionSettings->NumPrivateConnections = 0;
 	DefaultSessionSettings->NumPublicConnections = 32;
 	DefaultSessionSettings->bAllowInvites = true;
-	DefaultSessionSettings->bAllowJoinInProgress = true;
+	DefaultSessionSettings->bAllowJoinInProgress = false;
 	DefaultSessionSettings->bAllowJoinViaPresence = true;
 	DefaultSessionSettings->bAllowJoinViaPresenceFriendsOnly = true;
 	DefaultSessionSettings->bIsDedicated = false;
@@ -392,7 +392,7 @@ void UUDSessionSubsystem::OnDestroySessionCompleted(FName sessionName, bool succ
 
 void UUDSessionSubsystem::OnJoinSessionCompleted(FName sessionName, EOnJoinSessionCompleteResult::Type result)
 {
-	UE_LOG(LogTemp, Log, TEXT("Sessions: OnJoin. %s -> %d."), *sessionName.ToString(), result);
+	UE_LOG(LogTemp, Log, TEXT("Sessions: OnJoin. %s -> %d."), *sessionName.ToString(), LexToString(result));
 	IOnlineSessionPtr sessionInterface;
 	// Unsubscribe.
 	if (IsSessionInterfaceValid(sessionInterface))
@@ -405,7 +405,7 @@ void UUDSessionSubsystem::OnJoinSessionCompleted(FName sessionName, EOnJoinSessi
 
 void UUDSessionSubsystem::OnFindSessionsCompleted(bool successful)
 {
-	UE_LOG(LogTemp, Log, TEXT("Sessions: OnFind. %d."), GetFoundSessionCount(), successful);
+	UE_LOG(LogTemp, Log, TEXT("Sessions: OnFind. Count %d -> Success ? %d."), GetFoundSessionCount(), successful);
 	IOnlineSessionPtr sessionInterface;
 	// Unsubscribe.
 	if (IsSessionInterfaceValid(sessionInterface))
@@ -442,4 +442,25 @@ bool UUDSessionSubsystem::TryTravelToCurrentSession(FName sessionName)
 	APlayerController* playerController = GetWorld()->GetFirstPlayerController();
 	playerController->ClientTravel(connectString, TRAVEL_Absolute);
 	return true;
+}
+
+void UUDSessionSubsystem::LeaveSession()
+{
+	// Session is destroyed so player can reconnect to other games without restarting / killing process.
+	DestroySession(GetSessionName());
+	// Session is dead on our side, we can return to menu by disconnecting.
+	TObjectPtr<UUDGameInstance> gameInstance = UUDGameInstance::Get(GetWorld());
+	gameInstance->ReturnToMainMenu();
+	//gameInstance->OpenMenuLevel();
+}
+
+void UUDSessionSubsystem::QuitSession()
+{
+	// This might fail, if session was not started yet.
+	EndSession(GetSessionName());
+	// This should always succeed, if session exists.
+	DestroySession(GetSessionName());
+	// Session is dead on our side, we can return to menu by disconnecting.
+	TObjectPtr<UUDGameInstance> gameInstance = UUDGameInstance::Get(GetWorld());
+	gameInstance->ReturnToMainMenu();
 }

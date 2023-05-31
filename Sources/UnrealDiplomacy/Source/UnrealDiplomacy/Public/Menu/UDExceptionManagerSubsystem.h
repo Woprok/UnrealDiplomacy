@@ -49,11 +49,16 @@ public:
  * Subsystem for handling error messages.
  * Primarily used by returning player to menu and showing error dialogue.
  */
-UCLASS()
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDExceptionManagerSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 public:
+	/**
+	 * Used to initialize custom game instance class.
+	 * This is subscribing to network related events.
+	 */
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	/**
 	 * Shortcut to retrieve casted ExceptionManagerSubsystem from GameInstance.
 	 * Requries World pointer that can be retrieved by GetWorld().
@@ -68,6 +73,17 @@ public:
 	 */
 	void HideDialogue();
 	/**
+	 * Displayes dialogue with the stored message.
+	 * Stored message is removed.
+	 */
+	UFUNCTION(BlueprintCallable)
+	void ShowStoredDialogue();
+	/**
+	 * Stores the message for future use.
+	 * Primarily for use after world travel.
+	 */
+	void StoreDialogue(FUDDialogueData data);
+	/**
 	 * Used by views to identify target widget.
 	 */
 	UPROPERTY(VisibleAnywhere, Category = "ScreenNames")
@@ -77,4 +93,13 @@ public:
 	 */
 	UPROPERTY(VisibleAnywhere, Category = "ScreenNames")
 	FName DialogueScreen = TEXT("DialogueScreen");
+private:
+	/**
+	 * Handles all cases for session being ended by host or connection / travel error.
+	 */
+	void OnSessionFailure(FUDDialogueData errorData);
+	void OnTravelFailureMessages(UWorld* InWorld, ETravelFailure::Type FailureType, const FString& ErrorString);
+	void OnNetworkFailureMessages(UWorld* InWorld, UNetDriver* NetDriver, ENetworkFailure::Type FailureType, const FString& ErrorString);
+	bool IsDialogueStored = false;
+	FUDDialogueData LastStoredDialogue;
 };

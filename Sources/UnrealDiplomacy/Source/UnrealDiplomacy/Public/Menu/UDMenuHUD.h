@@ -20,6 +20,11 @@ public:
 	 */
 	static TObjectPtr<AUDMenuHUD> Get(TObjectPtr<UWorld> world);
 	/**
+	 * Attempts to show stored dialogue.
+	 */
+	UFUNCTION(BlueprintCallable)
+	void ShowDialoguePostInitialization();
+	/**
 	 * Used by menu views to identify target widget.
 	 */
 	UPROPERTY(VisibleAnywhere, Category = "ScreenNames")
@@ -27,7 +32,7 @@ public:
 	/**
 	 * Used by menu views to identify target screen.
 	 */
-	UPROPERTY(VisibleAnywhere, Category = "ScreenNames")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ScreenNames")
 	FName MenuScreen = TEXT("MenuScreen");
 	/**
 	 * Used by menu views to identify target screen.

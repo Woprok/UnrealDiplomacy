@@ -36,10 +36,6 @@ public:
 	 */
 	void Quit();
 	/**
-	 * Initializes new session.
-	 */
-	bool CreateSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, bool bIsLAN, bool bIsPresence, int32 MaxNumPlayers);
-	/**
 	 * Travels to associated level used for menu / non game state.
 	 */
 	void OpenMenuLevel(FString options = "");

@@ -50,7 +50,7 @@ protected:
 	UPROPERTY()
 	TWeakObjectPtr<UEditableTextBox> NationNameEditableTextWidget;
 	UPROPERTY()
-	TWeakObjectPtr<UTileView> StrategyOptionsTilesWidget;
+	TWeakObjectPtr<UTileView> StrategyOptionTilesWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDLobbyMemberViewModel> ViewModel;

@@ -5,6 +5,16 @@
 #include "Core/UserInterfaces/UDViewModel.h"
 #include "Core/UserInterfaces/UDUserWidgetManager.h"
 #include "Core/UserInterfaces/UDViewModelManager.h"
+#include "Kismet/GameplayStatics.h"
+
+TObjectPtr<AUDHUD> AUDHUD::Get(TObjectPtr<UWorld> world)
+{
+	TObjectPtr<APlayerController> pc = UGameplayStatics::GetPlayerController(world, 0);
+	check(pc != nullptr);
+	TObjectPtr<AHUD> hud = pc->GetHUD();
+	check(hud != nullptr);
+	return CastChecked<AUDHUD>(hud);
+}
 
 void AUDHUD::ForceUpdate()
 {
