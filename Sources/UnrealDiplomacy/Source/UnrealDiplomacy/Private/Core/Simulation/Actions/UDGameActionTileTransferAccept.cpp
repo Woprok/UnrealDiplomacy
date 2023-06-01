@@ -31,5 +31,5 @@ void UUDGameActionTileTransferAccept::Revert(const FUDActionData& action, TObjec
 	FUDActionData originalActionData = FUDActionData::AsPredecessorOf(action, UUDGameActionTileTransfer::ActionTypeId);
 	AddPendingTargetRequest(originalActionData, data.TargetId, world);
 	// Revert change based on data that were used for confirmation..
-	world->Map->GetTile(tile)->OwnerUniqueId = action.InvokerPlayerId;
+	world->Map->GetTile(tile)->OwnerUniqueId = action.InvokerFactionId;
 }

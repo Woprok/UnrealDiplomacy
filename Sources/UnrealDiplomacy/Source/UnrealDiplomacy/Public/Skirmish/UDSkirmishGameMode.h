@@ -41,6 +41,15 @@ public:
 	 * firstKnwon - optional (0 = all) id of first already owned action.
 	 */
 	virtual void SendPartialHistoricData(int32 controllerId, int32 firstKnown);
+public:
+	/**
+	 * Invokes call to register newly joined PlayerController for a game.
+	 */
+	virtual void PostLogin(APlayerController* NewPlayer) override;
+	/**
+	 * Called when a Controller with a PlayerState leaves the game or is destroyed.
+	 */
+	virtual void Logout(AController* Exiting) override;
 protected:
 	/**
 	 * Handles decision how to propagate action that was successfully executed.
@@ -62,10 +71,6 @@ protected:
 	 * Creates sufficient amount of Ai controllers.
 	 */
 	virtual void CreateAiPlayers(int32 count);
-	/**
-	 * Invokes call to register newly joined PlayerController for a game.
-	 */
-	virtual void PostLogin(APlayerController* NewPlayer) override;
 	/**
 	 * Create Ai by initializing new AiController.
 	 */

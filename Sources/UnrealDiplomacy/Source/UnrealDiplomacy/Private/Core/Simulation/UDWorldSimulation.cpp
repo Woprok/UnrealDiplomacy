@@ -4,7 +4,7 @@
 #include "Core/Simulation/UDWorldSimulation.h"
 #include "Core/Simulation/UDActionManager.h"
 #include "Core/UDGlobalData.h"
-
+#include "Core/Simulation/UDWorldState.h"
 #include "Core/Simulation/Actions/UDSystemActionPlayerAdd.h"
 
 void AUDWorldSimulation::Initialize()
@@ -40,8 +40,12 @@ void AUDWorldSimulation::CreateState(int32 playerId, bool isPlayerOrAi)
 		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Invalid combination of Id(%d) and isPlayerOrAi."), playerId);
 		return;
 	}
+	TObjectPtr<UUDWorldState> newState;
+	if (isPlayerOrAi)
+		newState = UUDWorldState::CreateState(playerId, EUDWorldPerspective::Faction);
+	else
+		newState = UUDWorldState::CreateState(playerId, EUDWorldPerspective::Everything);
 
-	TObjectPtr<UUDWorldState> newState = UUDWorldState::CreateState(playerId, isPlayerOrAi);
 	States.Add(playerId, newState);
 }
 
@@ -50,8 +54,8 @@ void AUDWorldSimulation::CreateStateAndSynchronize(int32 playerId, bool isPlayer
 	CreateState(playerId, isPlayerOrAi);
 	SynchronizeNewPlayerState(States[playerId]);
 	// After that push new synchronize action to all, including new joined player.
-	FUDActionData joinPlayer(UUDSystemActionPlayerAdd::ActionTypeId, States[playerId]->PerspectivePlayerId);
-	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Calling join action for player id(%d)."), States[playerId]->PerspectivePlayerId);
+	FUDActionData joinPlayer(UUDSystemActionPlayerAdd::ActionTypeId, States[playerId]->FactionPerspective);
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Calling join action for player id(%d)."), States[playerId]->FactionPerspective);
 	ExecuteAction(joinPlayer);
 }
 

@@ -29,7 +29,7 @@ void AUDSkirmishGameState::OnServerSendAction(FUDActionData clientData)
 void AUDSkirmishGameState::MulticastSendActionToAllClients_Implementation(FUDActionData serverData)
 {
 	// TODO this most likely does not work on listen server/standalone server and requires change to GetNetMode condition.
-	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameState: Multicast invoked by GameMode. AUID(%d of %d)"), serverData.UniqueId, serverData.InvokerPlayerId);
+	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameState: Multicast invoked by GameMode. AUID(%d of %d)"), serverData.UniqueId, serverData.InvokerFactionId);
 
 	// TODO verify that this works in all possible conditions.
 	TObjectPtr<APlayerController> controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);

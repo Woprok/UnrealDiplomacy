@@ -6,13 +6,18 @@
 #include "UDActionData.generated.h"
 
 /**
- * Actions are passed between Client and Server as pure data of an absolute change.
- * Struct is used to comply with default serialization and avoid further complexity with pointers.
- * Most weight is carried by ActionTypeId and InvokerPlayerId.
- * Remaning data are filled whenever they are needed. UniqueId is set by Server. Client set value is ignored!
+ * Actions represent changes to the world state.
+ * Each action is carrying all necessary data for the action to be executed by it's executor.
  * 
- * Note: default comparison == is done based purely on UniqueId, if you need complete value comparison
- * use IsValueEqual...
+ * ActionTypeId associated with executor.
+ * InvokerFactionId associated wtih faction.
+ * UniqueId is always set by server. Represents order of the action on the timeline.
+ * 
+ * Default == is defined as UniqueId compare.
+ * For value compare use IsValueEqual.
+ * 
+ * This is struct and should serialize without any addtional serialization required.
+ * Pointers should never be used in this struct as this needs to comply with standard serialization.
  */
 USTRUCT(BlueprintType)
 struct UNREALDIPLOMACY_API FUDActionData
@@ -93,7 +98,7 @@ public:
 			ActionTypeId == rhs.ActionTypeId && 
 			UniqueId == rhs.UniqueId &&
 			SourceUniqueId == rhs.SourceUniqueId &&
-			InvokerPlayerId == rhs.InvokerPlayerId &&
+			InvokerFactionId == rhs.InvokerFactionId &&
 			ValueParameters == rhs.ValueParameters &&
 			TextParameter == rhs.TextParameter;
 	}
@@ -125,7 +130,7 @@ public:
 	 * This is required to be filled by creator of the action or filled for him.
 	 */
 	UPROPERTY(BlueprintReadOnly)
-	int32 InvokerPlayerId = 0;
+	int32 InvokerFactionId = 0;
 	/**
 	 * Optional parameters, e.g. target player id, tile, amount...
 	 */

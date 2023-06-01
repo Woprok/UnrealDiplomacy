@@ -18,7 +18,7 @@ void UUDDealActionPointAdd::Execute(const FUDActionData& action, TObjectPtr<UUDW
 	IUDActionInterface::Execute(action, world);
 	// Creates new point with current SourceUniqueId.
 	FUDDealData data(action.ValueParameters);
-	world->Deals[data.DealId]->Points.Add(action.SourceUniqueId, UUDDiscussionItem::CreateState(action.InvokerPlayerId));
+	world->Deals[data.DealId]->Points.Add(action.SourceUniqueId, UUDDiscussionItem::CreateState(action.InvokerFactionId));
 	world->Deals[data.DealId]->PrimaryPoints.Add(action.SourceUniqueId);
 }
 

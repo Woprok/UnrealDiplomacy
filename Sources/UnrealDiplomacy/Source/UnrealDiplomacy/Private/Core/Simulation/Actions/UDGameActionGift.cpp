@@ -8,7 +8,7 @@
 bool UUDGameActionGift::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
 	FUDGameDataTargetAmount data(action.ValueParameters);
-	bool isDifferentPlayer = action.InvokerPlayerId != data.TargetId;
+	bool isDifferentPlayer = action.InvokerFactionId != data.TargetId;
 	bool isPositiveAmount = data.Amount > 0;
 	return IUDActionInterface::CanExecute(action, world) && isDifferentPlayer && isPositiveAmount;
 }

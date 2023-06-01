@@ -17,8 +17,8 @@ void UUDGameActionGiftAccept::Execute(const FUDActionData& action, TObjectPtr<UU
 	IUDActionInterface::Execute(action, world);
 	// Execute change based on data contained in confirm.
 	FUDGameDataTargetAmount data(action.ValueParameters);
-	world->Players[action.InvokerPlayerId]->ResourceGold -= data.Amount;
-	world->Players[data.TargetId]->ResourceGold += data.Amount;
+	world->Factions[action.InvokerFactionId]->ResourceGold -= data.Amount;
+	world->Factions[data.TargetId]->ResourceGold += data.Amount;
 	// Remove request from queue.
 	RemovePendingTargetRequest(action, data.TargetId, world);
 }
@@ -31,6 +31,6 @@ void UUDGameActionGiftAccept::Revert(const FUDActionData& action, TObjectPtr<UUD
 	FUDActionData originalActionData = FUDActionData::AsPredecessorOf(action, UUDGameActionGift::ActionTypeId);
 	AddPendingTargetRequest(originalActionData, data.TargetId, world);
 	// Revert change based on data that were used for confirmation..
-	world->Players[action.InvokerPlayerId]->ResourceGold += data.Amount;
-	world->Players[data.TargetId]->ResourceGold -= data.Amount;
+	world->Factions[action.InvokerFactionId]->ResourceGold += data.Amount;
+	world->Factions[data.TargetId]->ResourceGold -= data.Amount;
 }

@@ -72,7 +72,7 @@ void AUDSkirmishAIController::DoTurn()
 	{
 		if (request.ActionTypeId == UUDGameActionGift::ActionTypeId)
 		{
-			gifters.Add(request.InvokerPlayerId);
+			gifters.Add(request.InvokerFactionId);
 			OnActionDecidedDelegate.ExecuteIfBound(GetPersonalAdministrator()->GetAcceptAction(UUDGameActionGiftAccept::ActionTypeId, 
 				request));
 		}

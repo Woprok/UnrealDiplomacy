@@ -10,7 +10,7 @@ bool UUDDealActionParticipantKick::CanExecute(const FUDActionData& action, TObje
 	FUDDealDataTarget data(action.ValueParameters);
 	bool isStateOpen = world->Deals[data.DealId]->DealSimulationState <= EUDDealSimulationState::FinalizingDraft;
 	bool isResultOpen = world->Deals[data.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
-	bool isModerator = world->Deals[data.DealId]->OwnerUniqueId == action.InvokerPlayerId;
+	bool isModerator = world->Deals[data.DealId]->OwnerUniqueId == action.InvokerFactionId;
 	bool isKickedPresent = world->Deals[data.DealId]->Participants.Contains(data.TargetId);
 	return IUDActionInterface::CanExecute(action, world) && isStateOpen && isResultOpen && isModerator && isKickedPresent;
 }

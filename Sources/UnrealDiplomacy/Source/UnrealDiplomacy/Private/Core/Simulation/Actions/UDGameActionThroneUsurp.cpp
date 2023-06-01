@@ -15,7 +15,7 @@ void UUDGameActionThroneUsurp::Execute(const FUDActionData& action, TObjectPtr<U
 {
 	IUDActionInterface::Execute(action, world);
 	// Takeover the empty throne.
-	world->ImperialThrone.Ruler = action.InvokerPlayerId;
+	world->ImperialThrone.Ruler = action.InvokerFactionId;
 }
 
 void UUDGameActionThroneUsurp::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)

@@ -18,7 +18,7 @@ void UUDDealActionPointChildAdd::Execute(const FUDActionData& action, TObjectPtr
 	IUDActionInterface::Execute(action, world);
 	// Creates new sub-point for a specified Point with current SourceUniqueId.
 	FUDDealDataPoint data(action.ValueParameters);
-	world->Deals[data.DealId]->Points.Add(action.SourceUniqueId, UUDDiscussionItem::CreateState(action.InvokerPlayerId));
+	world->Deals[data.DealId]->Points.Add(action.SourceUniqueId, UUDDiscussionItem::CreateState(action.InvokerFactionId));
 	world->Deals[data.DealId]->Points[data.PointId]->Consequencies.Add(action.SourceUniqueId);
 }
 

@@ -8,7 +8,7 @@
 bool UUDDealActionVoteYes::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
 	FUDDealData data(action.ValueParameters);
-	bool isNotVoting = !world->Deals[data.DealId]->PositiveVotePlayerList.Contains(action.InvokerPlayerId);
+	bool isNotVoting = !world->Deals[data.DealId]->PositiveVotePlayerList.Contains(action.InvokerFactionId);
 	return IUDActionInterface::CanExecute(action, world) && isNotVoting;
 }
 
@@ -17,7 +17,7 @@ void UUDDealActionVoteYes::Execute(const FUDActionData& action, TObjectPtr<UUDWo
 	IUDActionInterface::Execute(action, world);
 	// Vote yes.
 	FUDDealData data(action.ValueParameters);
-	world->Deals[data.DealId]->PositiveVotePlayerList.Add(action.InvokerPlayerId);
+	world->Deals[data.DealId]->PositiveVotePlayerList.Add(action.InvokerFactionId);
 }
 
 void UUDDealActionVoteYes::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -25,5 +25,5 @@ void UUDDealActionVoteYes::Revert(const FUDActionData& action, TObjectPtr<UUDWor
 	IUDActionInterface::Revert(action, world);
 	// Revert to no vote.
 	FUDDealData data(action.ValueParameters);
-	world->Deals[data.DealId]->PositiveVotePlayerList.Remove(action.InvokerPlayerId);
+	world->Deals[data.DealId]->PositiveVotePlayerList.Remove(action.InvokerFactionId);
 }

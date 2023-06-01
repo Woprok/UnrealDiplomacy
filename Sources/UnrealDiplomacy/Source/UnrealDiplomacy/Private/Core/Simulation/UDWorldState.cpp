@@ -51,9 +51,9 @@ TObjectPtr<UUDMapState> UUDMapState::Duplicate(TObjectPtr<UUDMapState> existingS
 	return newState;
 }
 
-TObjectPtr<UUDNationState> UUDNationState::CreateState(int32 playerId)
+TObjectPtr<UUDFactionState> UUDFactionState::CreateState(int32 playerId)
 {
-	TObjectPtr<UUDNationState> newState = NewObject<UUDNationState>();
+	TObjectPtr<UUDFactionState> newState = NewObject<UUDFactionState>();
 	newState->PlayerUniqueId = playerId;
 	newState->PendingRequests.Empty(0);
 	return newState;
@@ -90,11 +90,11 @@ TObjectPtr<UUDDiscussionItem> UUDDiscussionItem::CreateState(int32 ownerId)
 	return newState;
 }
 
-TObjectPtr<UUDWorldState> UUDWorldState::CreateState(int32 playerId, bool isPlayerPerspectiveOnly)
+TObjectPtr<UUDWorldState> UUDWorldState::CreateState(int32 playerId, EUDWorldPerspective perspectiveType)
 {
 	TObjectPtr<UUDWorldState> newState = NewObject<UUDWorldState>();
-	newState->IsPlayerPerspectiveOnly = isPlayerPerspectiveOnly;
-	newState->PerspectivePlayerId = playerId;
+	newState->Perspective = perspectiveType;
+	newState->FactionPerspective = playerId;
 	newState->ImperialThrone = FUDThroneState(UUDGlobalData::GaiaId);
 	return newState;
 }

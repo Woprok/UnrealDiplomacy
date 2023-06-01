@@ -7,8 +7,8 @@
 
 bool UUDDealActionCreate::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	bool isPlayer = action.InvokerPlayerId != UUDGlobalData::GaiaId;
-	bool isNotModeratingDeal = !IsDealModerator(world, action.InvokerPlayerId);
+	bool isPlayer = action.InvokerFactionId != UUDGlobalData::GaiaId;
+	bool isNotModeratingDeal = !IsDealModerator(world, action.InvokerFactionId);
 	return IUDActionInterface::CanExecute(action, world) && isPlayer && isNotModeratingDeal;
 }
 
@@ -16,15 +16,15 @@ void UUDDealActionCreate::Execute(const FUDActionData& action, TObjectPtr<UUDWor
 {
 	IUDActionInterface::Execute(action, world);
 	// Creates new deal state with Id same as this action SourceUniqueId.
-	world->Deals.Add(action.SourceUniqueId, UUDDealState::CreateState(action.SourceUniqueId, action.InvokerPlayerId));
-	world->Deals[action.SourceUniqueId]->Participants.Add(action.InvokerPlayerId);
+	world->Deals.Add(action.SourceUniqueId, UUDDealState::CreateState(action.SourceUniqueId, action.InvokerFactionId));
+	world->Deals[action.SourceUniqueId]->Participants.Add(action.InvokerFactionId);
 }
 
 void UUDDealActionCreate::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Revert(action, world);
 	// Removes deal with key equal to SourceUniqueId of the original action.
-	world->Deals[action.SourceUniqueId]->Participants.Remove(action.InvokerPlayerId);
+	world->Deals[action.SourceUniqueId]->Participants.Remove(action.InvokerFactionId);
 	world->Deals.Remove(action.SourceUniqueId);
 }
 

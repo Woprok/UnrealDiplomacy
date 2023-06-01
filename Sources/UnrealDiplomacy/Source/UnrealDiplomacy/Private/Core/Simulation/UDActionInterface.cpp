@@ -10,7 +10,7 @@
 bool IUDActionInterface::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
 	UE_LOG(LogTemp, Log, TEXT("INSTANCE(%d): Verifying...\n%s\n%s"), 
-		world->PerspectivePlayerId, *action.ToString(), *ToString());
+		world->FactionPerspective, *action.ToString(), *ToString());
 	
 	bool isActionSame = action.ActionTypeId == GetId();
 	bool isParameterCountSame = action.ValueParameters.Num() == GetParameterCount();
@@ -20,13 +20,13 @@ bool IUDActionInterface::CanExecute(const FUDActionData& action, TObjectPtr<UUDW
 void IUDActionInterface::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	UE_LOG(LogTemp, Log, TEXT("INSTANCE(%d): Executing %s"), 
-		world->PerspectivePlayerId, *action.ToString());
+		world->FactionPerspective, *action.ToString());
 }
 
 void IUDActionInterface::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	UE_LOG(LogTemp, Log, TEXT("INSTANCE(%d): Reverting %s"), 
-		world->PerspectivePlayerId, *action.ToString());
+		world->FactionPerspective, *action.ToString());
 }
 
 int32 IUDActionInterface::GetId() const
@@ -97,22 +97,22 @@ void IUDActionInterface::AddPendingTargetRequest(FUDActionData action, int32 tar
 		LogTemp,
 		Log,
 		TEXT("INSTANCE(%d): Player(%d) started with (%d) requests. Adding request(%d)"),
-		world->PerspectivePlayerId,
+		world->FactionPerspective,
 		targetId,
-		world->Players[targetId]->PendingRequests.Num(),
+		world->Factions[targetId]->PendingRequests.Num(),
 		action.SourceUniqueId
 	);
 
 	// Item is added as key value pair.
-	world->Players[targetId]->PendingRequests.Add(action.SourceUniqueId, action);
+	world->Factions[targetId]->PendingRequests.Add(action.SourceUniqueId, action);
 
 	UE_LOG(
 		LogTemp,
 		Log,
 		TEXT("INSTANCE(%d): Player(%d) ended with (%d) requests."),
-		world->PerspectivePlayerId,
+		world->FactionPerspective,
 		targetId,
-		world->Players[targetId]->PendingRequests.Num()
+		world->Factions[targetId]->PendingRequests.Num()
 	);
 }
 
@@ -122,22 +122,22 @@ void IUDActionInterface::RemovePendingTargetRequest(const FUDActionData& action,
 		LogTemp, 
 		Log,
 		TEXT("INSTANCE(%d): Player(%d) started with (%d) requests. Deleting request(%d)"),
-		world->PerspectivePlayerId, 
+		world->FactionPerspective, 
 		targetId,
-		world->Players[targetId]->PendingRequests.Num(),
+		world->Factions[targetId]->PendingRequests.Num(),
 		action.SourceUniqueId
 	);
 	
 	// Item is removed based on the key.
-	world->Players[targetId]->PendingRequests.Remove(action.SourceUniqueId);
+	world->Factions[targetId]->PendingRequests.Remove(action.SourceUniqueId);
 
 	UE_LOG(
 		LogTemp, 
 		Log,
 		TEXT("INSTANCE(%d): Player(%d) ended with (%d) requests."),
-		world->PerspectivePlayerId,
+		world->FactionPerspective,
 		targetId,
-		world->Players[targetId]->PendingRequests.Num()
+		world->Factions[targetId]->PendingRequests.Num()
 	);
 }
 
@@ -147,22 +147,22 @@ bool IUDActionInterface::IsPendingTargetRequest(const FUDActionData& action, int
 		LogTemp,
 		Log,
 		TEXT("INSTANCE(%d): Player(%d) has (%d) requests. Finding request(%d)"),
-		world->PerspectivePlayerId,
+		world->FactionPerspective,
 		targetId,
-		world->Players[targetId]->PendingRequests.Num(),
+		world->Factions[targetId]->PendingRequests.Num(),
 		action.SourceUniqueId
 	);
 
 	// Item is found based on the key.
-	if (world->Players[targetId]->PendingRequests.Contains(action.SourceUniqueId))
+	if (world->Factions[targetId]->PendingRequests.Contains(action.SourceUniqueId))
 	{
 		UE_LOG(
 			LogTemp,
 			Log,
 			TEXT("INSTANCE(%d): Player(%d) has (%d) requests. Including request(%d)."),
-			world->PerspectivePlayerId,
+			world->FactionPerspective,
 			targetId,
-			world->Players[targetId]->PendingRequests.Num(),
+			world->Factions[targetId]->PendingRequests.Num(),
 			action.SourceUniqueId
 		);
 		return true;
@@ -172,9 +172,9 @@ bool IUDActionInterface::IsPendingTargetRequest(const FUDActionData& action, int
 		LogTemp,
 		Log,
 		TEXT("INSTANCE(%d): Player(%d) has (%d) requests. Did not found request(%d)"),
-		world->PerspectivePlayerId,
+		world->FactionPerspective,
 		targetId,
-		world->Players[targetId]->PendingRequests.Num(),
+		world->Factions[targetId]->PendingRequests.Num(),
 		action.SourceUniqueId
 	);
 	return false;
@@ -186,16 +186,16 @@ bool IUDActionInterface::IsPendingInterchangeableTargetRequest(const FUDActionDa
 		LogTemp,
 		Log,
 		TEXT("INSTANCE(%d): Player(%d) has (%d) requests. Finding request(%d)"),
-		world->PerspectivePlayerId,
+		world->FactionPerspective,
 		targetId,
-		world->Players[targetId]->PendingRequests.Num(),
+		world->Factions[targetId]->PendingRequests.Num(),
 		action.SourceUniqueId
 	);
 
 	// Item is found based on the key.
 	bool hasSameActionQueued = false;
 
-	for (const TPair<int32, FUDActionData>& key_action : world->Players[targetId]->PendingRequests)
+	for (const TPair<int32, FUDActionData>& key_action : world->Factions[targetId]->PendingRequests)
 	{
 		if (key_action.Value.IsValueEqual(action))
 		{
@@ -210,9 +210,9 @@ bool IUDActionInterface::IsPendingInterchangeableTargetRequest(const FUDActionDa
 			LogTemp,
 			Log,
 			TEXT("INSTANCE(%d): Player(%d) has (%d) requests. Including request(%d)."),
-			world->PerspectivePlayerId,
+			world->FactionPerspective,
 			targetId,
-			world->Players[targetId]->PendingRequests.Num(),
+			world->Factions[targetId]->PendingRequests.Num(),
 			action.SourceUniqueId
 		);
 		return true;
@@ -222,9 +222,9 @@ bool IUDActionInterface::IsPendingInterchangeableTargetRequest(const FUDActionDa
 		LogTemp,
 		Log,
 		TEXT("INSTANCE(%d): Player(%d) has (%d) requests. Did not found request(%d)"),
-		world->PerspectivePlayerId,
+		world->FactionPerspective,
 		targetId,
-		world->Players[targetId]->PendingRequests.Num(),
+		world->Factions[targetId]->PendingRequests.Num(),
 		action.SourceUniqueId
 	);
 	return false;

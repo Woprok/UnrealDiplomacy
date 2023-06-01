@@ -132,7 +132,7 @@ public:
 
  // TODO LIST
  // TODO extend by adding more functions that do verify & check restriction
- // UUDUnconditionalGiftAction is missing condition (action.InvokerPlayerId != action.TargetPlayerId)
+ // UUDUnconditionalGiftAction is missing condition (action.InvokerFactionId != action.TargetPlayerId)
  // TODO CanExecute overloads that check if the action is still queued in PendingRequests.
  // TODO Create action class that has function RemovePendingTargetRequest as default implementation.
  // TODO reverting confirm or reject does not result in same action, if the action would be modified, e.g.

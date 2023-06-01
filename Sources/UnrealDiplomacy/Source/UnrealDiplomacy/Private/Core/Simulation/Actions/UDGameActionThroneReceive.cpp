@@ -7,7 +7,7 @@
 
 bool UUDGameActionThroneReceive::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	bool isGaia = action.InvokerPlayerId == UUDGlobalData::GaiaId;
+	bool isGaia = action.InvokerFactionId == UUDGlobalData::GaiaId;
 	bool isThroneEmpty = world->ImperialThrone.Ruler == UUDGlobalData::GaiaId;
 	return IUDActionInterface::CanExecute(action, world) && isGaia && isThroneEmpty;
 }

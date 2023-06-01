@@ -9,8 +9,8 @@ bool UUDGameActionTileTransfer::CanExecute(const FUDActionData& action, TObjectP
 {
 	FUDGameDataTargetTile data(action.ValueParameters);
 	FIntPoint tile(data.X, data.Y);
-	bool isDifferentPlayer = action.InvokerPlayerId != data.TargetId;
-	bool isOwner = action.InvokerPlayerId == world->Map->GetTile(tile)->OwnerUniqueId;
+	bool isDifferentPlayer = action.InvokerFactionId != data.TargetId;
+	bool isOwner = action.InvokerFactionId == world->Map->GetTile(tile)->OwnerUniqueId;
 	return IUDActionInterface::CanExecute(action, world) && isDifferentPlayer && isOwner;
 }
 

@@ -9,8 +9,8 @@ void UDEPRECATED_UDSystemActionPlayerRemove::Execute(const FUDActionData& action
 {
 	IUDActionInterface::Execute(action, world);
 	// Player is removed from the state.
-	world->PlayerOrder.Remove(action.InvokerPlayerId);
-	world->Players.Remove(action.InvokerPlayerId);
+	world->FactionOrder.Remove(action.InvokerFactionId);
+	world->Factions.Remove(action.InvokerFactionId);
 }
 
 void UDEPRECATED_UDSystemActionPlayerRemove::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -18,16 +18,16 @@ void UDEPRECATED_UDSystemActionPlayerRemove::Revert(const FUDActionData& action,
 	IUDActionInterface::Revert(action, world);
 	// Player is added to the state.
 	// TODO Requires backup recovery to unserialize original state.
-	world->PlayerOrder.Add(action.InvokerPlayerId);
-	world->Players.Add(action.InvokerPlayerId, UUDNationState::CreateState(action.InvokerPlayerId));
+	world->FactionOrder.Add(action.InvokerFactionId);
+	world->Factions.Add(action.InvokerFactionId, UUDFactionState::CreateState(action.InvokerFactionId));
 }
 
 void UDEPRECATED_UDSystemActionPlayerIgnore::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Execute(action, world);
 	// Player is removed from the state.
-	world->PlayerOrder.Remove(action.InvokerPlayerId);
-	//world->Players[action.InvokerPlayerId]->IsIgnored = true;
+	world->FactionOrder.Remove(action.InvokerFactionId);
+	//world->Players[action.InvokerFactionId]->IsIgnored = true;
 }
 
 void UDEPRECATED_UDSystemActionPlayerIgnore::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -35,6 +35,6 @@ void UDEPRECATED_UDSystemActionPlayerIgnore::Revert(const FUDActionData& action,
 	IUDActionInterface::Revert(action, world);
 	// Player is added to the state.
 	// TODO Requires backup recovery to restore original position.
-	world->PlayerOrder.Add(action.InvokerPlayerId);
-	//world->Players[action.InvokerPlayerId]->IsIgnored = false;
+	world->FactionOrder.Add(action.InvokerFactionId);
+	//world->Players[action.InvokerFactionId]->IsIgnored = false;
 }

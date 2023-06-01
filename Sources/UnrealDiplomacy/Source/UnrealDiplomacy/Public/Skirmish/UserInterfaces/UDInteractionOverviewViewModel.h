@@ -136,7 +136,7 @@ protected:
 		auto rs2 = FText::Format(
 			LOCTEXT("Gift", "A{0} Player {1} offered gift. Do we accept ?"),
 			action.ActionTypeId,
-			action.InvokerPlayerId
+			action.InvokerFactionId
 		).ToString();
 		SetCurrentItemDescription(rs2);
 	}

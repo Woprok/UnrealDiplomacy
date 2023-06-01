@@ -18,7 +18,7 @@ void UUDDealActionContractPointSabotage::Execute(const FUDActionData& action, TO
 	// Apply sabotage flag.
 	FUDDealDataContractPoint data(action.ValueParameters);
 	world->Deals[data.DealId]->DealActionList[data.ContractPointId].WasSabotaged = true;
-	world->Deals[data.DealId]->DealActionList[data.ContractPointId].SabotageId = action.InvokerPlayerId;
+	world->Deals[data.DealId]->DealActionList[data.ContractPointId].SabotageId = action.InvokerFactionId;
 }
 
 void UUDDealActionContractPointSabotage::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)

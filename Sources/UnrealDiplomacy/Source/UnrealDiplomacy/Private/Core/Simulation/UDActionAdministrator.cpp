@@ -9,22 +9,22 @@ TObjectPtr<UUDMapState> UUDActionAdministrator::GetMapState()
 
 FUDActionData UUDActionAdministrator::GetAction(int32 actionId)
 {
-	return FUDActionData(actionId, OverseeingState->PerspectivePlayerId);
+	return FUDActionData(actionId, OverseeingState->FactionPerspective);
 }
 
 FUDActionData UUDActionAdministrator::GetAction(int32 actionId, TArray<int32> optionalValues)
 {
-	return FUDActionData(actionId, OverseeingState->PerspectivePlayerId, optionalValues);
+	return FUDActionData(actionId, OverseeingState->FactionPerspective, optionalValues);
 }
 
 FUDActionData UUDActionAdministrator::GetAction(int32 actionId, TArray<int32> optionalValues, FString optionaString)
 {
-	return FUDActionData(actionId, OverseeingState->PerspectivePlayerId, optionalValues, optionaString);
+	return FUDActionData(actionId, OverseeingState->FactionPerspective, optionalValues, optionaString);
 }
 
 FUDActionData UUDActionAdministrator::GetAction(int32 actionId, FString optionaString)
 {
-	return FUDActionData(actionId, OverseeingState->PerspectivePlayerId, optionaString);
+	return FUDActionData(actionId, OverseeingState->FactionPerspective, optionaString);
 }
 
 FUDActionData UUDActionAdministrator::GetAcceptAction(int32 actionId, FUDActionData sourceAction)

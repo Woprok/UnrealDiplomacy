@@ -32,6 +32,11 @@ void AUDSkirmishGameMode::PostLogin(APlayerController* NewPlayer)
 	RegisterPlayer(NewPlayer);
 }
 
+void AUDSkirmishGameMode::Logout(AController* Exiting)
+{
+	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Player left."));
+}
+
 void AUDSkirmishGameMode::CreateAiPlayers(int32 count)
 {
 	for (int32 i = 0; i < count; i++)

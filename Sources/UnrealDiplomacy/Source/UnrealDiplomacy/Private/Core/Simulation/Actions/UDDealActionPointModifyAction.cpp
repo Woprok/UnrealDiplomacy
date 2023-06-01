@@ -46,7 +46,7 @@ TArray<FUDActionData> UUDDealActionPointModifyAction::GetContinuations(const FUD
 	return {
 		FUDActionData(
 			UUDDealActionPointModifyResetParameters::ActionTypeId,
-			parentAction.InvokerPlayerId,
+			parentAction.InvokerFactionId,
 			{ data.DealId, data.PointId }
 		)
 	};

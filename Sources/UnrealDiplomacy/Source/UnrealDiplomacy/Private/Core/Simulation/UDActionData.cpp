@@ -12,7 +12,7 @@ FUDActionData::FUDActionData(const FUDActionData& action)
 	ActionTypeId(action.ActionTypeId),
 	UniqueId(action.UniqueId),
 	SourceUniqueId(action.SourceUniqueId),
-	InvokerPlayerId(action.InvokerPlayerId),
+	InvokerFactionId(action.InvokerFactionId),
 	ValueParameters(action.ValueParameters),
 	TextParameter(action.TextParameter)
 {
@@ -22,7 +22,7 @@ FUDActionData::FUDActionData(const FUDActionData& action)
 FUDActionData FUDActionData::CreateDataCopy(const FUDActionData& existingAction)
 {
 	FUDActionData action = FUDActionData();
-	action.InvokerPlayerId = existingAction.InvokerPlayerId;
+	action.InvokerFactionId = existingAction.InvokerFactionId;
 	action.ValueParameters = existingAction.ValueParameters;
 	action.TextParameter = existingAction.TextParameter;
 	return action;
@@ -71,7 +71,7 @@ FString FUDActionData::ToString() const
 	formatArgs.Add(TEXT("aid"), ActionTypeId);
 	formatArgs.Add(TEXT("uid"), UniqueId);
 	formatArgs.Add(TEXT("sid"), SourceUniqueId);
-	formatArgs.Add(TEXT("invoker"), InvokerPlayerId);
+	formatArgs.Add(TEXT("invoker"), InvokerFactionId);
 	formatArgs.Add(TEXT("values"), ValueParameters.Num());
 	formatArgs.Add(TEXT("backup"), BackupValueParameters.Num());
 	formatArgs.Add(TEXT("text"), TextParameter.Len());
@@ -83,25 +83,25 @@ OPTIONAL={values},{backup},{text}]"), formatArgs);
 }
 
 FUDActionData::FUDActionData(int32 actionTypeId, int32 invokerPlayerId)
-	: ActionTypeId(actionTypeId), InvokerPlayerId(invokerPlayerId)
+	: ActionTypeId(actionTypeId), InvokerFactionId(invokerPlayerId)
 {
 
 }
 
 FUDActionData::FUDActionData(int32 actionTypeId, int32 invokerPlayerId, TArray<int32> valueParameters)
-	: ActionTypeId(actionTypeId), InvokerPlayerId(invokerPlayerId), ValueParameters(valueParameters)
+	: ActionTypeId(actionTypeId), InvokerFactionId(invokerPlayerId), ValueParameters(valueParameters)
 {
 
 }
 
 FUDActionData::FUDActionData(int32 actionTypeId, int32 invokerPlayerId, FString textParameter)
-	: ActionTypeId(actionTypeId), InvokerPlayerId(invokerPlayerId), TextParameter(textParameter)
+	: ActionTypeId(actionTypeId), InvokerFactionId(invokerPlayerId), TextParameter(textParameter)
 {
 
 }
 
 FUDActionData::FUDActionData(int32 actionTypeId, int32 invokerPlayerId, TArray<int32> valueParameters, FString textParameter)
-	: ActionTypeId(actionTypeId), InvokerPlayerId(invokerPlayerId), ValueParameters(valueParameters), TextParameter(textParameter)
+	: ActionTypeId(actionTypeId), InvokerFactionId(invokerPlayerId), ValueParameters(valueParameters), TextParameter(textParameter)
 {
 
 }

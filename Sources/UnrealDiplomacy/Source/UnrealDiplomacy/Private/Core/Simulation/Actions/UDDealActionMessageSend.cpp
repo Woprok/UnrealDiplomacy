@@ -8,7 +8,7 @@
 bool UUDDealActionMessageSend::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
 	FUDDealData data(action.ValueParameters);
-	bool isParticipant = world->Deals[data.DealId]->Participants.Contains(action.InvokerPlayerId);
+	bool isParticipant = world->Deals[data.DealId]->Participants.Contains(action.InvokerFactionId);
 	bool isNotEmptyMessage = action.TextParameter.Len() > 0;
 	return IUDActionInterface::CanExecute(action, world) && isParticipant && isNotEmptyMessage;
 }

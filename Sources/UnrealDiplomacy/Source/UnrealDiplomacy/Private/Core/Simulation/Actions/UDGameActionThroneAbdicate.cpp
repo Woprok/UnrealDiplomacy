@@ -7,7 +7,7 @@
 
 bool UUDGameActionThroneAbdicate::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	bool isRuler = world->ImperialThrone.Ruler == action.InvokerPlayerId;
+	bool isRuler = world->ImperialThrone.Ruler == action.InvokerFactionId;
 	return IUDActionInterface::CanExecute(action, world) && isRuler;
 }
 
@@ -22,5 +22,5 @@ void UUDGameActionThroneAbdicate::Revert(const FUDActionData& action, TObjectPtr
 {
 	IUDActionInterface::Revert(action, world);
 	// Player is returned to throne.
-	world->ImperialThrone.Ruler = action.InvokerPlayerId;
+	world->ImperialThrone.Ruler = action.InvokerFactionId;
 }

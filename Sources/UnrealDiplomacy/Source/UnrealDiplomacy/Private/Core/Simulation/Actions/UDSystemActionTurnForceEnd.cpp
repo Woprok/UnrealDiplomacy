@@ -7,7 +7,7 @@
 
 bool UUDSystemActionTurnForceEnd::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	bool isGaia = action.InvokerPlayerId == UUDGlobalData::GaiaId;
+	bool isGaia = action.InvokerFactionId == UUDGlobalData::GaiaId;
 	return IUDActionInterface::CanExecute(action, world) && isGaia;
 }
 

@@ -109,7 +109,7 @@ protected:
 	{
 		return InternalPersonalAdministrator;
 	}
-		/**
+	/**
 	 * Initializes all fields and prepares all objects for use.
 	 */
 	void InitializeSimulation();

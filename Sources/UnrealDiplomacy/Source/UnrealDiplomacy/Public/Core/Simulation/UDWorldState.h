@@ -110,17 +110,19 @@ public:
 };
 
 /**
- * Represents single Player/Ai state.
+ * Faction is primary control unit of each player or AI.
+ * World is considered faction as well: Gaia Faction.
+ * TODO Factions can be combined to Nation.
  */
 UCLASS()
-class UNREALDIPLOMACY_API UUDNationState : public UObject
+class UNREALDIPLOMACY_API UUDFactionState : public UObject
 {
 	GENERATED_BODY()
 public:
 	/**
 	 * Creates new instance of the player state for specified player.
 	 */
-	static TObjectPtr<UUDNationState> CreateState(int32 playerId);
+	static TObjectPtr<UUDFactionState> CreateState(int32 playerId);
 public:
 	/**
 	 * List of unresolved requests created by actions 
@@ -145,30 +147,6 @@ public:
 	 */
 	UPROPERTY()
 	int32 ResourceGold = 0;
-};
-
-/**
- * Explains the current state of world in relation to state of play.
- */
-UENUM(BlueprintType)
-enum class EUDWorldSimulationState : uint8
-{
-	/**
-	 * World is being prepared for play.
-	 * System,Gaia
-	 */
-	Preparing,
-	/**
-	 * Players action are allowed.
-	 * System,Gaia,Game
-	 */
-	Simulating,
-	/**
-	 * Players action are no longer be allowed.
-	 * System
-	 */
-	Finished,
-	MAX UMETA(Hidden)
 };
 
 /**
@@ -487,7 +465,61 @@ public:
 };
 
 /**
- * Holds the state of a world.
+ * Explains the current state of world in relation to state of play.
+ */
+UENUM(BlueprintType)
+enum class EUDWorldSimulationState : uint8
+{
+	/**
+	 * World is being prepared for play.
+	 * System,Gaia
+	 */
+	Preparing,
+	/**
+	 * Players action are allowed.
+	 * System,Gaia,Game
+	 */
+	Simulating,
+	/**
+	 * Players action are no longer be allowed.
+	 * System
+	 */
+	Finished,
+	MAX UMETA(Hidden)
+};
+
+/**
+ * Defines how is world state supposed to be seen.
+ */
+UENUM(BlueprintType)
+enum class EUDWorldPerspective : uint8
+{
+	/**
+	 * Gaia faction. 
+	 */
+	Everything = 0,
+	/**
+	 * For non-playing members of the game.
+	 */
+	Observer = 1,
+	/**
+	 * For current ruler of the nation.
+	 */
+	Nation = 2,
+	/**
+	 * For single faction.
+	 */
+	Faction = 3,
+	/**
+	 * Quite and literally nothing.
+	 */
+	Nothing = 4
+};
+
+/**
+ * World state represents whole world as seen by certain Faction.
+ * Gaia Faction always has access to full information.
+ * Player & AI factions should have access to the parts they know about.
  */
 UCLASS()
 class UNREALDIPLOMACY_API UUDWorldState : public UObject
@@ -498,12 +530,27 @@ public:
 	 * Creates new instance of the world state.
 	 * IsPlayerPerspectiveOnly defines if this state is supposed to hold all knowledge about the world.
 	 */
-	static TObjectPtr<UUDWorldState> CreateState(int32 playerId, bool isPlayerPerspectiveOnly);
-	/**
-	 * Gaia id.
-	 */
-	//static const int32 GaiaWorldStateId = 0;
+	static TObjectPtr<UUDWorldState> CreateState(int32 playerId, EUDWorldPerspective perspectiveType);
 public:
+	// State Informations
+	/**
+	 * Owner of this state. Specific faction from Factions table.
+	 */
+	UPROPERTY()
+	int32 FactionPerspective;
+	/**
+	 * Defines what can this state see.
+	 */
+	UPROPERTY()
+	EUDWorldPerspective Perspective = EUDWorldPerspective::Nothing;
+	/**
+	 * Describes what is the state based on simulation changes.
+	 * State is not completely safe to read if it's not yet in PLAYING.
+	 */
+	UPROPERTY()
+	EUDWorldSimulationState WorldSimulationState = EUDWorldSimulationState::Preparing;
+public:
+	// State Data
 	/**
 	 * Current Map of tiles.
 	 */
@@ -513,22 +560,12 @@ public:
 	 * Map of players with key as their id.
 	 */
 	UPROPERTY()
-	TMap<int32, TObjectPtr<UUDNationState>> Players;
+	TMap<int32, TObjectPtr<UUDFactionState>> Factions;
 	/**
 	 * List of players in turn order, represented only by their unique id.
 	 */
 	UPROPERTY()
-	TArray<int32> PlayerOrder;
-	/**
-	 * Id associated with a Player/Ai, that controls this simulation.
-	 */
-	UPROPERTY()
-	int32 PerspectivePlayerId;
-	/**
-	 * State either belongs to specific Player/Ai or is global.
-	 */
-	UPROPERTY()
-	bool IsPlayerPerspectiveOnly;
+	TArray<int32> FactionOrder;
 	/**
 	 * Current Player/Ai/Server that is able to act.
 	 * Default value is 0.
@@ -541,12 +578,6 @@ public:
 	 */
 	UPROPERTY()
 	int32 CurrentTurn = 0;
-	/**
-	 * Describes what is the state based on simulation changes.
-	 * State is not completely safe to read if it's not yet in PLAYING.
-	 */
-	UPROPERTY()
-	EUDWorldSimulationState WorldSimulationState = EUDWorldSimulationState::Preparing;
 	/**
 	 * All deals that are / were done during the game.
 	 * key is Source / BySource

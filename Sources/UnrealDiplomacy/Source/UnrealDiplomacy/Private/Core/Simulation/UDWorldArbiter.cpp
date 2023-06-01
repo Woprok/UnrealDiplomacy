@@ -62,7 +62,7 @@ void UUDWorldArbiter::EvaluateTurnGameOverState(TObjectPtr<UUDWorldState> gaiaWo
 		// TODO add legitimacy
 		// This determines final usurper based on gold
 		int32 mostGold = -1;
-		for (auto& player : gaiaWorldState->Players)
+		for (auto& player : gaiaWorldState->Factions)
 		{
 			if (player.Value->ResourceGold > mostGold && player.Value->PlayerUniqueId != UUDGlobalData::GaiaId)
 			{

@@ -8,7 +8,7 @@
 bool UUDDealActionResultVeto::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
 	FUDDealData data(action.ValueParameters);
-	bool isModerator = world->Deals[data.DealId]->OwnerUniqueId == action.InvokerPlayerId;
+	bool isModerator = world->Deals[data.DealId]->OwnerUniqueId == action.InvokerFactionId;
 	bool isStateBefore = world->Deals[data.DealId]->DealSimulationResult == EUDDealSimulationResult::Opened;
 	return IUDActionInterface::CanExecute(action, world) && isModerator && isStateBefore;
 }

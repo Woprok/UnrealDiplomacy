@@ -19,7 +19,7 @@ void UUDGameActionTileTake::Execute(const FUDActionData& action, TObjectPtr<UUDW
 	// Take the tile
 	FUDGameDataTargetTile data(action.ValueParameters);
 	FIntPoint tile(data.X, data.Y);
-	world->Map->GetTile(tile)->OwnerUniqueId = action.InvokerPlayerId;
+	world->Map->GetTile(tile)->OwnerUniqueId = action.InvokerFactionId;
 }
 
 void UUDGameActionTileTake::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)

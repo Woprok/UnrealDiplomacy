@@ -96,7 +96,7 @@ public:
 			data.ActionTypeId).ToString()
 		);
 		desc.Append(FText::Format(LOCTEXT("ActionPreview", "Invoked by: {0}. "),
-			data.InvokerPlayerId).ToString()
+			data.InvokerFactionId).ToString()
 
 		);
 		desc.Append(FText(LOCTEXT("ActionPreview", "Text param: ")).ToString());
@@ -203,7 +203,7 @@ public:
 			action.ActionTypeId).ToString()
 		);
 		desc.Append(FText::Format(LOCTEXT("ActionPreview", "Invoked by: {0}. "),
-			action.InvokerPlayerId).ToString()
+			action.InvokerFactionId).ToString()
 
 		);
 		desc.Append(FText(LOCTEXT("ActionPreview", "Text param: ")).ToString());
@@ -1142,7 +1142,7 @@ protected:
 		auto rs2 = FText::Format(
 			LOCTEXT("Gift", "A{0} Player {1} offered {2} as gift. Do we accept ?"),
 			action.ActionTypeId,
-			action.InvokerPlayerId,
+			action.InvokerFactionId,
 			action.ValueParameter
 		).ToString();
 		SetCurrentItemDescription(rs2);*/

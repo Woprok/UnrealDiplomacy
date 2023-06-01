@@ -8,7 +8,7 @@
 bool UUDGameActionGiftIrrevocable::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
 	FUDGameDataTargetAmount data(action.ValueParameters);
-	bool isDifferentPlayer = action.InvokerPlayerId != data.TargetId;
+	bool isDifferentPlayer = action.InvokerFactionId != data.TargetId;
 	bool isPositiveAmount = data.Amount > 0;
 	return IUDActionInterface::CanExecute(action, world) && isDifferentPlayer && isPositiveAmount;
 }
@@ -18,8 +18,8 @@ void UUDGameActionGiftIrrevocable::Execute(const FUDActionData& action, TObjectP
 	IUDActionInterface::Execute(action, world);
 	// Transfer resource to target.
 	FUDGameDataTargetAmount data(action.ValueParameters);
-	world->Players[action.InvokerPlayerId]->ResourceGold -= data.Amount;
-	world->Players[data.TargetId]->ResourceGold += data.Amount;
+	world->Factions[action.InvokerFactionId]->ResourceGold -= data.Amount;
+	world->Factions[data.TargetId]->ResourceGold += data.Amount;
 }
 
 void UUDGameActionGiftIrrevocable::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -27,6 +27,6 @@ void UUDGameActionGiftIrrevocable::Revert(const FUDActionData& action, TObjectPt
 	IUDActionInterface::Revert(action, world);
 	// Transfer resource back from target.
 	FUDGameDataTargetAmount data(action.ValueParameters);
-	world->Players[action.InvokerPlayerId]->ResourceGold += data.Amount;
-	world->Players[data.TargetId]->ResourceGold -= data.Amount;
+	world->Factions[action.InvokerFactionId]->ResourceGold += data.Amount;
+	world->Factions[data.TargetId]->ResourceGold -= data.Amount;
 }
