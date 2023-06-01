@@ -6,36 +6,42 @@
 #include "UDControllerInterface.generated.h"
 
 /**
- * Interface for setting and retrieving unique Id assigned by GameMode to players.
- * This is required by UE compiler. This can't contain UNREALDIPLOMACY_API macro.
+ * Stumb for Action Interface.
+ * Unreal Engine requires Interface to be first defined as empty stumb.
+ * https://docs.unrealengine.com/5.2/en-US/interfaces-in-unreal-engine/
  */
-UINTERFACE(MinimalAPI, Blueprintable)
+UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
 class UUDControllerInterface : public UInterface
 {
 	GENERATED_BODY()
 };
 
 /**
- * Interface for setting and retrieving unique Id assigned by GameMode to players.
+ * Gamemode associated each controller with unique id.
+ * Each controller can control single faction.
+ * Multiple controllers can control same faction.
  */
 class UNREALDIPLOMACY_API IUDControllerInterface
 {
 	GENERATED_BODY()
 public:
 	/**
-	 * Set unique Id used by this controller to identify yourself.
+	 * Change unique id associated with this controller.
 	 */
-	virtual void SetControllerUniqueId(int32 uniqueControllerId) 
-	{
-		// Default Interface call is empty.
-	}
+	virtual void SetControllerUniqueId(int32 uniqueControllerId);
 	/**
 	 * Returns unique Id assigned to this controller.
-	 * This has to be overriden, otherwise the controller might be discarded as invalid (valid values are 0 - int32.MAX).
+	 * Always return last set unique id.
+	 * Valid values are 0 - int32.MAX. 
 	 */
-	virtual int32 GetControllerUniqueId()
-	{
-		// Default Interface call returns invalid value, e.g. -1.
-		return -1;
-	}
+	virtual int32 GetControllerUniqueId();
+	/**
+	 * Change controlled faction id.
+	 * Clients should follow this by changing their perspective.
+	 */
+	virtual void SetControlledFactionId(int32 factionId);
+	/**
+	 * Retrieve controlled faction id.
+	 */
+	virtual int32 GetControlledFactionId();
 };

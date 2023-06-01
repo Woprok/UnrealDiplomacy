@@ -16,6 +16,14 @@ class UNREALDIPLOMACY_API UUDGlobalData : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 public:
 	/**
+	 * This Id is always considered invalid for all controllers operations.
+	 */
+	static const int32 InvalidControllerId = -1;
+	/**
+	 * This Id is always considered invalid for all factions operations.
+	 */
+	static const int32 InvalidFactionId = -1;
+	/**
 	 * This Id is always considered invalid for all action operations.
 	 */
 	static const int32 InvalidActionId = -1;

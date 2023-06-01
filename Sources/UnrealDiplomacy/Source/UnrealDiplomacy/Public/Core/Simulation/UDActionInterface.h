@@ -62,7 +62,7 @@ public:
 /** 
  * Stumb for Action Interface.
  * Unreal Engine requires Interface to be first defined as empty stumb.
- * https://docs.unrealengine.com/5.1/en-US/interfaces-in-unreal-engine/
+ * https://docs.unrealengine.com/5.2/en-US/interfaces-in-unreal-engine/
  */
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
 class UUDActionInterface : public UInterface
