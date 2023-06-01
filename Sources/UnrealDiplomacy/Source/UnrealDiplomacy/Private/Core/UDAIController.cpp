@@ -65,7 +65,10 @@ void AUDAIController::OnActionExecuted(FUDActionData executedAction)
 
 void AUDAIController::SetSimulatedStateAccess(TObjectPtr<UUDWorldState> factionWorldState)
 {
-	UE_LOG(LogTemp, Log, TEXT("AUDAIController(%d): Obtained state for faction(%d) as controller of faction(%d)."), factionWorldState->FactionPerspective);
+	UE_LOG(LogTemp, Log, TEXT("AUDAIController(%d): Obtained state for faction(%d) as controller of faction(%d)."), 
+		GetControllerUniqueId(),
+		factionWorldState->FactionPerspective,
+		GetControlledFactionId());
 	FactionState = factionWorldState;
 	GetAdministrator()->SetOverseeingState(factionWorldState);
 }

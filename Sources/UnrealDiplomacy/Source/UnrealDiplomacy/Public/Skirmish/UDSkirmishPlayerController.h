@@ -4,27 +4,43 @@
 
 #include "CoreMinimal.h"
 #include "Core/UDPlayerController.h"
-#include "Core/UDControllerInterface.h"
-#include "Core/Simulation/UDWorldState.h"
-#include "Core/Simulation/UDActionData.h"
-#include "Core/Simulation/UDActionAdministrator.h"
-#include "Core/Tiles/UDSquareGrid.h"
-#include "UDSkirmishGameState.h"
-#include "Core/Simulation/UDWorldSimulation.h"
 #include "UDSkirmishPlayerController.generated.h"
 
+// Forward Declarations
+
+struct FUDActionData;
+class AUDSkirmishGameState;
+class UUDActionAdministrator;
+class AUDWorldSimulation;
+class AUDSquareGrid;
+
 /**
- * Primarily a communication device with GameMode / GameState and User Inputs. 
- * HUD is similiarly just a bridge between Model and ViewModel.
- * State is not used a.t.m.
+ * Defines current state of synchronization.
+ */
+UENUM(BlueprintType)
+enum class EUDSynchronizationState : uint8
+{
+	Undefined,
+	SynchronizingData,
+	Synchronized
+};
+
+/**
+ * Defines client side part of communication protocol between client and server.
+ * Exposes data to UI and World. Handles World Input and executes requests from UI Input.
  */
 UCLASS()
-class UNREALDIPLOMACY_API AUDSkirmishPlayerController : public AUDPlayerController, public IUDControllerInterface
+class UNREALDIPLOMACY_API AUDSkirmishPlayerController : public AUDPlayerController
 {
 	GENERATED_BODY()
+#pragma region Client-Server RPCs
 public:
-	UFUNCTION()
-	void OnRep_SetUniqueControllerId(const int32& oldId);
+	/**
+	 * Passes received action to world simulation.
+	 * Used whenever Multicast is the sender of an action from the server.
+	 * Invoked by GameState during the Multicast broadcast.
+	 */
+	void MulticastReceiveActionFromServer_Local(FUDActionData& action);
 	/**
 	 * Receives action from server to this client.
 	 * Client-owned actor with Server RPC invoked from the server -> Runs on actor's owning client.
@@ -52,23 +68,76 @@ public:
 	 */
 	UFUNCTION(Server, Reliable)
 	void ServercastInitialSyncRequestToServer(int32 controllerId, int32 firstKnown);
-public:
+protected:
 	/**
-	 * Allows replication of properties.
-	 * This is used for initial sync as we need to ensure that both
-	 * client and server have controller prepared for action.
+	 * Retrieves current GameState that is associated with the running level and handles RPCs.
 	 */
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	UFUNCTION()
-	virtual void SetControllerUniqueId(int32 uniqueControllerId) override
-	{
-		UniqueControllerId = uniqueControllerId;
-	}
-	UFUNCTION(BlueprintPure)
-	virtual int32 GetControllerUniqueId() override
-	{
-		return UniqueControllerId;
-	}
+	TWeakObjectPtr<AUDSkirmishGameState> GetCastGameState();
+private:
+	/**
+	 * Saved pointer for the GameState to reduce amount of access casts.
+	 * Access through the GetCastGameState(), this does not have to be initialized or valid.
+	 */
+	UPROPERTY()
+	TWeakObjectPtr<AUDSkirmishGameState> InternalCurrentGameState = nullptr;
+#pragma endregion
+
+#pragma region Synchronization
+protected:
+	virtual void StartClientSynchronization() override;
+	virtual void StartFactionChange() override;
+	/**
+	 * Starts initial sync by sending new request to server.
+	 */
+	void StartJoinDataSynchronization();
+	/**
+	 * Process all data received from server.
+	 * Invoked on receiving new action from synchronization channel.
+	 */
+	void FinishDataSynchronization(FUDActionArray& actionArray);
+	/**
+	 * Determines how to deal with the action and executes it if possible.
+	 * Requires client to be synchronized, otherwise it will store action and attempt to synchronize.
+	 */
+	void ReceiveAction(FUDActionData& action);
+private:
+	/**
+	 * Saves action to be executed later.
+	 */
+	void StoreAction(FUDActionData& action);
+	/**
+	 * Verifies that sync is requested and if it is not then start it.
+	 * Invoked on receiving new action from standard channel.
+	 */
+	void AttemptSynchronization();
+	/**
+	 * Returns invalid or existing action id recevied from server.
+	 */
+	int32 GetFirstKnownActionId();
+	/**
+	 * Determines state of synchronization.
+	 */
+	UPROPERTY()
+	EUDSynchronizationState SynchronizationState = EUDSynchronizationState::Undefined;
+	/**
+	 * Holds history and all actions received, until this client was fully synchronized.
+	 */
+	UPROPERTY()
+	TArray<FUDActionData> StoredActions;
+#pragma endregion
+
+#pragma region Action Execution
+	void ChangeFaction();
+	void RunAction(FUDActionData& actionData);
+	void RunAllActions(TArray<FUDActionData>& actionArray);
+#pragma endregion
+
+#pragma region Player Input & UI
+
+#pragma endregion
+
+
+
 public:
 	/**
 	 * Called by whoever is responsible for propagating UI requests.
@@ -79,19 +148,13 @@ public:
 	 * Allows UI elements to read state and enabled generation of game world from input.
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
-	void OnSynchronizationFinished();
+		void OnSynchronizationFinished();
 	/**
 	 * Invoked by simulation finishing processing incoming change.
 	 * All Widgets and World needs to check if they can update themselves from the state change.
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
-	void OnWorldStateUpdated();
-public:
-	/**
-	 * Passes received action to world simulation.
-	 * Used whenever Multicast is the sender of an action from the server.
-	 */
-	void MulticastReceiveActionFromServer_Local(FUDActionData& action);
+		void OnWorldStateUpdated();
 protected:
 	/**
 	 * Binding to delegate of WorldSimulation.
@@ -105,10 +168,7 @@ protected:
 	 * Accessor for blueprints and others to PersonalAdministrator of this controller.
 	 */
 	UFUNCTION(BlueprintCallable)
-	UUDActionAdministrator* GetPersonalAdministrator()
-	{
-		return InternalPersonalAdministrator;
-	}
+	UUDActionAdministrator* GetAdministrator();
 	/**
 	 * Initializes all fields and prepares all objects for use.
 	 */
@@ -117,61 +177,13 @@ protected:
 	 * Lazy access to a WorldSimulation.
 	 * Necessary to prevent early call of uninitialized fields.
 	 */
-	TWeakObjectPtr<AUDWorldSimulation> GetWorldSimulation()
-	{
-		if (!InternalWorldSimulation.IsValid())
-		{
-			UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController: New simulation required."));
-			InitializeSimulation();
-		}
-		return InternalWorldSimulation;
-	}
-	/**
-	 * Retrieves current GameState that is associated with the running level.
-	 */
-	TWeakObjectPtr<AUDSkirmishGameState> GetCastGameState()
-	{
-		if (!InternalCurrentGameState.IsValid())
-		{
-			InternalCurrentGameState = Cast<AUDSkirmishGameState>(GetWorld()->GetGameState());
-		}
-		return InternalCurrentGameState;
-	}
-	/**
-	 * Determines how to deal with the action and executes it if possible.
-	 * Requires client to be synchronized.
-	 */
-	void ProcessAction(FUDActionData& action);
-	/**
-	 * Saves unresolveable actions for later.
-	 */
-	void SaveActionUntilSynchronization(FUDActionData& action);
-	/**
-	 * Verifies that sync is requested and if it is not then start it.
-	 * Invoked on receiving new action from standard channel.
-	 */
-	void VerifySyncInProgress();
-	/**
-	 * Starts initial sync by sending new request to server.
-	 */
-	void StartSynchronization();
-	/**
-	 * Process all data received...
-	 */
-	void FinishSynchronization(FUDActionArray& actionArray);
+	TWeakObjectPtr<AUDWorldSimulation> GetWorldSimulation();
+
 	/**
 	 * Creates instance and setups all relevant links to players controller.
 	 */
 	void InitializeGrid();
 private:
-	UPROPERTY(ReplicatedUsing = OnRep_SetUniqueControllerId)
-	int32 UniqueControllerId;
-	/**
-	 * Saved pointer for the GameState to reduce amount of access casts.
-	 * Access through the GetCastGameState(), this does not have to be initialized.
-	 */
-	UPROPERTY()
-	TWeakObjectPtr<AUDSkirmishGameState> InternalCurrentGameState = nullptr;
 	/**
 	 * Simulation that is responsible for maintaining and managing all interactions.
 	 * Local simulation that is used by specific client to present current results to user.
@@ -182,35 +194,21 @@ private:
 	 */
 	UPROPERTY()
 	TWeakObjectPtr<AUDWorldSimulation> InternalWorldSimulation = nullptr;
-	/**
-	 * Determines if this client asked & finished for initial history catch-up.
-	 */
-	UPROPERTY()
-	bool IsSynchronized = false;
-	/**
-	 * Determines if this client asked for initial history catch-up.
-	 */
-	UPROPERTY()
-	bool IsSyncInProgress = false;
-	/**
-	 * Holds history and all actions received, until this client was fully synchronized.
-	 */
-	UPROPERTY()
-	TArray<FUDActionData> TemporaryActionHolder;
+
 	/**
 	 * Handles logic verfication and game rules access over the state owned by this controller.
 	 */
 	UPROPERTY()
-	TObjectPtr<UUDActionAdministrator> InternalPersonalAdministrator = nullptr;
+		TObjectPtr<UUDActionAdministrator> InternalPersonalAdministrator = nullptr;
 protected:
 	/**
 	 * World representation.
 	 */
 	UPROPERTY(BlueprintReadOnly)
-	TWeakObjectPtr<AUDSquareGrid> SquareGrid = nullptr;
+		TWeakObjectPtr<AUDSquareGrid> SquareGrid = nullptr;
 	/**
 	 * Grid blueprint used by this controller.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SkirmishController|Config")
-	TSubclassOf<AUDSquareGrid> GridBlueprintClass;
+		TSubclassOf<AUDSquareGrid> GridBlueprintClass;
 };

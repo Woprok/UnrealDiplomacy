@@ -26,11 +26,11 @@ class UNREALDIPLOMACY_API AUDAIController : public AModularAIController, public 
 public:
 	UFUNCTION()
 	virtual void SetControllerUniqueId(int32 uniqueControllerId) override;
-	UFUNCTION()
+	UFUNCTION(BlueprintPure)
 	virtual int32 GetControllerUniqueId() override;
 	UFUNCTION()
 	virtual void SetControlledFactionId(int32 factionId) override;
-	UFUNCTION()
+	UFUNCTION(BlueprintPure)
 	virtual int32 GetControlledFactionId() override;
 public:
 	/**

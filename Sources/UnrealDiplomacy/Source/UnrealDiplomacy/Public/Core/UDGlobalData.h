@@ -16,6 +16,10 @@ class UNREALDIPLOMACY_API UUDGlobalData : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 public:
 	/**
+	 * This Id should always belong to first action in action history.
+	 */
+	static const int32 FirstActionId = 0;
+	/**
 	 * This Id is always considered invalid for all controllers operations.
 	 */
 	static const int32 InvalidControllerId = -1;

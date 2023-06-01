@@ -11,6 +11,7 @@
 #include "UDActionInterface.h"
 #include "UDActionHandlingInterface.h"
 #include "UDWorldState.h"
+#include "Core/UDGlobalData.h"
 #include "UDWorldSimulation.generated.h"
 
 class UUDActionManager;
@@ -103,23 +104,23 @@ protected:
 	 */
 	bool IsValidAssignableActionId(int32 currentId)
 	{
-		return currentId != 0;
+		return currentId != UUDGlobalData::InvalidActionId;
 	}
 	/**
 	 * Id assigned to actions, that were passed for execution. If action already has an id,
 	 * it will not get new id.
-	 * Id with value 0 is considered invalid.
-	 * TODO maybe we should not really on 0 as invalid value :)
+	 * Id with value -1 is considered invalid.
+	 * TODO maybe we should really on -1 as invalid value :)
 	 */
 	int32 GetAssignableActionId()
 	{
 		++AssignableActionId;
-		while (AssignableActionId == 0)
+		while (AssignableActionId == UUDGlobalData::InvalidActionId)
 		{
-			// returns can be only non 0 value.
+			// returns can be only non -1 value.
 			++AssignableActionId;
 		}
-		// finally returning non 0 value.
+		// finally returning non -1 value.
 		return AssignableActionId;
 	}
 private:
@@ -151,8 +152,8 @@ private:
 	/**
 	 * Id assigned to actions, that were passed for execution. If action already has an id,
 	 * it will not get new id.
-	 * Id with value 0 is considered invalid.
+	 * Id with value 0 is considered valid.
 	 */
 	UPROPERTY()
-	int32 AssignableActionId = 0;
+	int32 AssignableActionId = -1;
 };
