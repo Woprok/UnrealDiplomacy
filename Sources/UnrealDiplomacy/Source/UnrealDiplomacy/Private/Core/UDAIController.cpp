@@ -27,6 +27,16 @@ int32 AUDAIController::GetControlledFactionId()
 	return ControlledFactionId;
 }
 
+void AUDAIController::SetControllerType(EUDControllerType type)
+{
+	Type = type;
+}
+
+EUDControllerType AUDAIController::GetControllerType()
+{
+	return Type;
+}
+
 void AUDAIController::OnActionExecuted(FUDActionData executedAction)
 {
 	// AI is not allowed to act before the game is in progress.

@@ -7,10 +7,12 @@
 #include "UDMenuPlayerController.generated.h"
 
 /**
- * 
+ * Default menu controller used for non match purposes.
  */
 UCLASS()
 class UNREALDIPLOMACY_API AUDMenuPlayerController : public AUDPlayerController
 {
 	GENERATED_BODY()
+public:
+	AUDMenuPlayerController();
 };

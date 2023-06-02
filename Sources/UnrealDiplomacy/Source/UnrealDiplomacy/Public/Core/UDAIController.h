@@ -11,6 +11,7 @@
 
 // Forward Declarations
 
+enum class EUDControllerType : uint8;
 struct FUDActionData;
 class UUDWorldState;
 class UUDActionAdministrator;
@@ -19,7 +20,7 @@ class UUDActionAdministrator;
  * Common ancestor for all AI variations.
  * AI should never change Faction it can control once it was assigned.
  */
-UCLASS()
+UCLASS(Abstract)
 class UNREALDIPLOMACY_API AUDAIController : public AModularAIController, public IUDControllerInterface, public IUDActionHandlingInterface
 {
 	GENERATED_BODY()
@@ -32,6 +33,10 @@ public:
 	virtual void SetControlledFactionId(int32 factionId) override;
 	UFUNCTION(BlueprintPure)
 	virtual int32 GetControlledFactionId() override;
+	UFUNCTION()
+	virtual void SetControllerType(EUDControllerType type) override;
+	UFUNCTION(BlueprintPure)
+	virtual EUDControllerType GetControllerType() override;
 public:
 	/**
 	 * Use Process functions to handle AI turns.
@@ -44,6 +49,8 @@ protected:
 	int32 UniqueControllerId;
 	UPROPERTY()
 	int32 ControlledFactionId;
+	UPROPERTY()
+	EUDControllerType Type;
 	UPROPERTY()
 	TWeakObjectPtr<UUDWorldState> FactionState = nullptr;
 protected:

@@ -10,6 +10,11 @@
 #include "Core/Simulation/Actions/UDGameActionThroneUsurp.h"
 #include "Core/Simulation/Actions/UDSystemActionTurnEnd.h"
 
+AUDSkirmishAIController::AUDSkirmishAIController()
+{
+	Type = EUDControllerType::AI;
+}
+
 void AUDSkirmishAIController::ProcessOutTurnPlay()
 {
 	// Resolve requests

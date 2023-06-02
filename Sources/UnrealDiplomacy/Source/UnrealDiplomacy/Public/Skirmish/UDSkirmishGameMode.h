@@ -20,6 +20,22 @@ class AUDSkirmishGameState;
 class AUDWorldSimulation;
 
 /**
+ * Defines all available and supported commands for server.
+ */
+UENUM(BlueprintType)
+enum class EUDMatchState : uint8
+{
+	/**
+	 * Players that join will be assigned new faction.
+	 */
+	Lobby = 0,
+	/**
+	 * Players that join will be assigned AI observer faction.
+	 */
+	Match = 1
+};
+
+/**
  * 
  */
 UCLASS()
@@ -106,9 +122,6 @@ protected:
 #pragma endregion
 
 #pragma region Controllers
-
-#pragma endregion
-
 protected:
 	/**
 	 * Creates sufficient amount of Ai controllers.
@@ -117,7 +130,7 @@ protected:
 	/**
 	 * Create Ai by initializing new AiController.
 	 */
-	virtual TWeakObjectPtr<AUDSkirmishAIController> CreateAi();
+	virtual TWeakObjectPtr<AUDSkirmishAIController> CreateAiPlayer();
 	/**
 	 * Create Server player by initializing new AiController.
 	 * This player acts as the world.
@@ -126,9 +139,14 @@ protected:
 	/**
 	 * Assigns state to Player and saves Player in PlayerControllers.
 	 */
-	void RegisterPlayer(APlayerController* NewPlayer);
+	void RegisterPlayer(TObjectPtr<AUDSkirmishPlayerController> NewPlayer);
+	/**
+	 * Assigns state to player and saves Player in PlayerControllers.
+	 */
+	void RegisterObserver(TObjectPtr<AUDSkirmishPlayerController> controller);
 	/**
 	 * Assigns state to Gaia.
+	 * This should always happen first for server as it will use Gaia for all consequent actions.
 	 */
 	void RegisterGaiaAi();
 	/**
@@ -139,14 +157,11 @@ protected:
 	 * Assigns state to a Player/Ai.
 	 */
 	void AssignToSimulation(TScriptInterface<IUDControllerInterface>& controller, bool isPlayerOrAi);
-protected:
+protected
 	/**
 	 * Provides Id to agents, that we have full control over.
 	 */
-	int32 GetNextUniqueControllerId()
-	{
-		return NextUniqueControllerIdCount++;
-	}
+	void DefineUniqueControllerId(TScriptInterface<IUDControllerInterface>& controller);
 private:
 	/**
 	 * Instance of Gaia.
@@ -170,4 +185,8 @@ private:
 	 */
 	UPROPERTY()
 	int32 NextUniqueControllerIdCount = 0;
+#pragma endregion
+
+	UPROPERTY()
+	EUDMatchState MatchState = EUDMatchState::Lobby;
 };

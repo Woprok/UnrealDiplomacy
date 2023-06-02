@@ -23,7 +23,7 @@ AUDSkirmishGameMode::AUDSkirmishGameMode()
 	HUDClass = AUDSkirmishHUD::StaticClass();
 	PlayerControllerClass = AUDSkirmishPlayerController::StaticClass();
 	PlayerStateClass = AUDSkirmishPlayerState::StaticClass();
-	UE_LOG(LogTemp, Log, TEXT("Defined static classes for SkirmishGameMode."));
+	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Defined static classes for SkirmishGameMode."));
 }
 
 void AUDSkirmishGameMode::CreateWorldSimulation()
@@ -32,9 +32,10 @@ void AUDSkirmishGameMode::CreateWorldSimulation()
 
 	GetWorldSimulation()->Initialize();
 	RegisterAsListenerToWorldSimulation();
-	UE_LOG(LogTemp, Log, TEXT("Finalized initialization of UObjects and Actors for GameMode."));
+	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Finalized initialization of UObjects and Actors for GameMode."));
+	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Setting up new Gaia player."));
 	RegisterGaiaAi();
-	UE_LOG(LogTemp, Log, TEXT("Finalized creation of Gaia state for GameMode. Follows game log..."));
+	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Finalized creation of Gaia state for GameMode. Follows game log..."));
 }
 
 TWeakObjectPtr<AUDWorldSimulation> AUDSkirmishGameMode::GetWorldSimulation()
@@ -70,13 +71,28 @@ void AUDSkirmishGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: New player joined."));
 	Super::PostLogin(NewPlayer);
-	RegisterPlayer(NewPlayer);
+	TObjectPtr<AUDSkirmishPlayerController> player = Cast<AUDSkirmishPlayerController>(NewPlayer);
+	switch (MatchState)
+	{
+	case EUDMatchState::Lobby:
+		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Player joined as player."));
+		RegisterPlayer(player);
+		break;
+	case EUDMatchState::Match:
+		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Player joined as observer."));
+		RegisterObserver(player);
+		break;
+	default:
+		unimplemented();
+		break;
+	}
 }
 
 void AUDSkirmishGameMode::Logout(AController* Exiting)
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Player left."));
 	Super::Logout(Exiting);
+	OnAITakeOver(Exiting);
 }
 
 #pragma endregion
@@ -100,7 +116,7 @@ void AUDSkirmishGameMode::ProcessCommand(FUDCommandData& command)
 		OnStartGameCommand();
 		break;
 	default:
-		unimplemented()
+		unimplemented();
 		break;
 	}
 }
@@ -112,7 +128,7 @@ void AUDSkirmishGameMode::OnStartGameCommand()
 	// - Create AI players
 	// - Create Map
 	// - Start Game
-
+	EUDMatchState MatchState = EUDMatchState::Match;
 	// TODO READ LOBBY CONFIG
 	CreateAiPlayers(2);
 
@@ -154,17 +170,23 @@ void AUDSkirmishGameMode::ActionExecutionFinished(FUDActionData& action)
 
 #pragma region Controllers
 
-#pragma endregion
+void AUDSkirmishGameMode::DefineUniqueControllerId(TScriptInterface<IUDControllerInterface>& controller)
+{
+	// Define new controller ID.
+	controller->SetControllerUniqueId(NextUniqueControllerIdCount++);
+	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Finishing initialization of controller with Id: %d"), controller->GetControllerUniqueId());
+}
 
 void AUDSkirmishGameMode::CreateAiPlayers(int32 count)
 {
 	for (int32 i = 0; i < count; i++)
 	{
+		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Setting up %d. Ai player."), i);
 		RegisterAi();
 	}
 }
 
-TWeakObjectPtr<AUDSkirmishAIController> AUDSkirmishGameMode::CreateAi()
+TWeakObjectPtr<AUDSkirmishAIController> AUDSkirmishGameMode::CreateAiPlayer()
 {
 	return GetWorld()->SpawnActor<AUDSkirmishAIController>();
 }
@@ -174,53 +196,50 @@ TWeakObjectPtr<AUDSkirmishGaiaAIController> AUDSkirmishGameMode::CreateServerPla
 	return GetWorld()->SpawnActor<AUDSkirmishGaiaAIController>();
 }
 
-void AUDSkirmishGameMode::RegisterPlayer(APlayerController* NewPlayer)
+void AUDSkirmishGameMode::RegisterPlayer(TObjectPtr<AUDSkirmishPlayerController> controller)
 {
-	UE_LOG(LogTemp, Log, TEXT("Setting up new Player."));
-	// Cast obtained controller and save it.
-	TWeakObjectPtr<AUDSkirmishPlayerController> controller = Cast<AUDSkirmishPlayerController>(NewPlayer);
+	// Save to collection.
 	PlayerControllers.Add(controller);
 
+	// Assign Faction state to player
 	TScriptInterface<IUDControllerInterface> idController = controller.Get();
-
 	AssignToSimulation(idController, true);
+}
+
+void AUDSkirmishGameMode::RegisterObserver(TObjectPtr<AUDSkirmishPlayerController> controller)
+{
+	// Save to collection.
+	PlayerControllers.Add(controller);
+
 }
 
 void AUDSkirmishGameMode::RegisterAi()
 {
-	UE_LOG(LogTemp, Log, TEXT("Setting up new Ai."));
 	// Create new controller and save it.
-	TWeakObjectPtr<AUDSkirmishAIController> controller = CreateAi();
+	TWeakObjectPtr<AUDSkirmishAIController> controller = CreateAiPlayer();
 	AiControllers.Add(controller);
 
+	// 
 	TScriptInterface<IUDControllerInterface> idController = controller.Get();
-
 	AssignToSimulation(idController, true);
-
 	controller->SetSimulatedStateAccess(GetWorldSimulation()->GetSpecificState(controller->GetControllerUniqueId()));
 
+	// Bind AI action invokes.
 	TScriptInterface<IUDActionHandlingInterface> actionHandlingController = controller.Get();
-
 	GetCastGameState()->RegisterActionMaker(actionHandlingController);
 }
 
 void AUDSkirmishGameMode::RegisterGaiaAi()
 {
-	UE_LOG(LogTemp, Log, TEXT("Setting up new Gaia."));
 	// Create new controller and save it.
 	GaiaController = CreateServerPlayer();
 
 	TScriptInterface<IUDControllerInterface> idController = GaiaController.Get();
-	
-	// This is supposed to be first call, if this ever becomes out of order, it will cause
-	// more issues as the initialization will not be able to handle a player that
-	// initialized sooner then server class.
 	AssignToSimulation(idController, false);
-
 	GaiaController->SetSimulatedStateAccess(GetWorldSimulation()->GetSpecificState(GaiaController->GetControllerUniqueId()));
 
+	// Bind AI action invokes.
 	TScriptInterface<IUDActionHandlingInterface> actionHandlingController = GaiaController.Get();
-	
 	GetCastGameState()->RegisterActionMaker(actionHandlingController);
 }
 
@@ -228,9 +247,10 @@ void AUDSkirmishGameMode::AssignToSimulation(TScriptInterface<IUDControllerInter
 {
 	// Always retrieve this before calling anything that might depend on it.
 	TWeakObjectPtr<AUDWorldSimulation> worldSim = GetWorldSimulation();
-	// Define new controller ID.
-	controller->SetControllerUniqueId(GetNextUniqueControllerId());
-	UE_LOG(LogTemp, Log, TEXT("Finishing initialization of player with Id: %d"), controller->GetControllerUniqueId());
+
+
 	// Register controller for WorldSimulation, so it has it's own unique representation in the server simulation.
 	worldSim->CreateStateAndSynchronize(controller->GetControllerUniqueId(), isPlayerOrAi);
 }
+
+#pragma endregion

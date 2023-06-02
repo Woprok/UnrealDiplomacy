@@ -11,6 +11,14 @@
 #include "Skirmish/UDSkirmishGameState.h"
 #include "Core/Simulation/UDWorldSimulation.h"
 
+AUDSkirmishPlayerController::AUDSkirmishPlayerController()
+{
+	// By default this controller expects to be a player.
+	// Server can change the role of this controller.
+	// This should probably be not used by client as it provides less reliable information the controlled Faction.
+	Type = EUDControllerType::Player;
+}
+
 #pragma region Client-Server RPCs
 void AUDSkirmishPlayerController::MulticastReceiveActionFromServer_Local(FUDActionData& action)
 {

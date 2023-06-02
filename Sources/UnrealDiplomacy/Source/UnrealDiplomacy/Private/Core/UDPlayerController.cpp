@@ -1,5 +1,6 @@
 // Copyright Miroslav Valach
 // TODO verify that pure server will never execute OnRep functions.
+// TODO make use of Type on a client.
 
 #include "Core/UDPlayerController.h"
 #include "Core/UDGlobalData.h"
@@ -55,11 +56,19 @@ void AUDPlayerController::OnRep_SetControlledFactionId(const int32& oldControlle
 	}
 }
 
+void AUDPlayerController::OnRep_SetType(const EUDControllerType& oldControllerType)
+{
+	UE_LOG(LogTemp, Log, TEXT("AUDPlayerController(%d): Server changed type of this controller."),
+		GetControllerUniqueId());
+	OnTypeChanged();
+}
+
 void AUDPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(AUDPlayerController, UniqueControllerId);
 	DOREPLIFETIME(AUDPlayerController, ControlledFactionId);
+	DOREPLIFETIME(AUDPlayerController, Type);
 }
 
 void AUDPlayerController::SetControllerUniqueId(int32 uniqueControllerId)
@@ -82,6 +91,16 @@ int32 AUDPlayerController::GetControlledFactionId()
 	return ControlledFactionId;
 }
 
+void AUDPlayerController::SetControllerType(EUDControllerType type)
+{
+	Type = type;
+}
+
+EUDControllerType AUDPlayerController::GetControllerType()
+{
+	return Type;
+}
+
 bool AUDPlayerController::IsPropertySynchronized()
 {
 	bool hasUniqueId = UniqueControllerId != UUDGlobalData::InvalidControllerId;
@@ -95,6 +114,11 @@ void AUDPlayerController::StartClientSynchronization()
 }
 
 void AUDPlayerController::StartFactionChange()
+{
+	return;
+}
+
+void AUDPlayerController::OnTypeChanged()
 {
 	return;
 }

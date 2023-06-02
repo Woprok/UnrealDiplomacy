@@ -19,6 +19,8 @@ UCLASS()
 class UNREALDIPLOMACY_API AUDSkirmishGaiaAIController : public AUDAIController
 {
 	GENERATED_BODY()
+public:
+	AUDSkirmishGaiaAIController();
 protected:
 	// Action Execution
 	virtual void ProcessInTurnPlay() override;

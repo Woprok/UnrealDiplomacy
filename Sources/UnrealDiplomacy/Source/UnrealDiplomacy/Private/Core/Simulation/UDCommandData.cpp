@@ -24,7 +24,7 @@ FString FUDCommandData::ToString() const
 		formatArgs.Add(TEXT("commnadName"), TEXT("StartGame"));
 		break;
 	default:
-		unimplemented()
+		unimplemented();
 		formatArgs.Add(TEXT("commnadName"), TEXT("ERROR"));
 		break;
 	}

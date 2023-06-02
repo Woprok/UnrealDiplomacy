@@ -14,8 +14,22 @@ void AUDWorldSimulation::Initialize()
 	Arbiter = NewObject<UUDWorldArbiter>(this);
 
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering Actions."));
-	// THIS REGISTER ALL ACTIONS IF CORRECTLY DONE
 	ActionManager->Initialize();
+}
+
+int32 AUDWorldSimulation::CreateNewState(EUDWorldPerspective stateType)
+{
+	int32 newStateId = GetNewStateId();
+
+	// if observer get existing or create observer
+
+	// if gaia do gaia
+
+	// if faction do faction
+
+	// if nation do nation...
+
+	return newStateId;
 }
 
 void AUDWorldSimulation::CreateState(int32 playerId, bool isPlayerOrAi)
@@ -57,6 +71,17 @@ void AUDWorldSimulation::CreateStateAndSynchronize(int32 playerId, bool isPlayer
 	FUDActionData joinPlayer(UUDSystemActionPlayerAdd::ActionTypeId, States[playerId]->FactionPerspective);
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Calling join action for player id(%d)."), States[playerId]->FactionPerspective);
 	ExecuteAction(joinPlayer);
+}
+
+void AUDWorldSimulation::SynchronizeNewPlayerState(TObjectPtr<UUDWorldState> newState)
+{
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Synchrinizing new Player."));
+	// New player state must be synchronzied from old action list first.
+	// This directly executes action over the supplied state.
+	for (auto& action : ExecutionHistory)
+	{
+		ActionManager->GetAction(action.ActionTypeId)->Execute(action, newState);
+	}
 }
 
 void AUDWorldSimulation::NaiveExecuteAction(FUDActionData& trustworthyAction)
@@ -139,17 +164,6 @@ void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
 		{
 			ExecuteAction(action);
 		}
-	}
-}
-
-void AUDWorldSimulation::SynchronizeNewPlayerState(TObjectPtr<UUDWorldState> newState)
-{
-	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Synchrinizing new Player."));
-	// New player state must be synchronzied from old action list first.
-	// This directly executes action over the supplied state.
-	for (auto& action : ExecutionHistory)
-	{
-		ActionManager->GetAction(action.ActionTypeId)->Execute(action, newState);
 	}
 }
 

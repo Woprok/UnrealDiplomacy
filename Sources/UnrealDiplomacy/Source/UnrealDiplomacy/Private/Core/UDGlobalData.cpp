@@ -14,7 +14,7 @@ EUDWindowModeType UUDApplicationConverters::ToWindowModeType(EWindowMode::Type w
 		return EUDWindowModeType::Windowed;
 	case EWindowMode::NumWindowModes:
 	default:
-		unimplemented()
+		unimplemented();
 		return EUDWindowModeType::Fullscreen;
 	}
 }
@@ -30,7 +30,7 @@ EWindowMode::Type UUDApplicationConverters::FromWindowModeType(EUDWindowModeType
 	case EUDWindowModeType::Windowed:
 		return EWindowMode::Windowed;
 	default:
-		unimplemented()
+		unimplemented();
 		return EWindowMode::Fullscreen;
 	}
 }

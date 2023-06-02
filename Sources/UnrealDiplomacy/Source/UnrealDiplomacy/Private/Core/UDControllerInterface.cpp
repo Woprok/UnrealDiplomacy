@@ -22,3 +22,13 @@ int32 IUDControllerInterface::GetControlledFactionId()
 {
 	return UUDGlobalData::InvalidFactionId;
 }
+
+void IUDControllerInterface::SetControllerType(EUDControllerType type)
+{
+	return;
+}
+
+EUDControllerType IUDControllerInterface::GetControllerType()
+{
+	return EUDControllerType::Menu;
+}
