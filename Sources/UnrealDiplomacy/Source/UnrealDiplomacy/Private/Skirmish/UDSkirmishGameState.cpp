@@ -4,6 +4,7 @@
 #include "Skirmish/UDSkirmishGameState.h"
 #include "Skirmish/UDSkirmishGameMode.h"
 #include "Core/Simulation/UDActionData.h"
+#include "Core/Simulation/UDCommandData.h"
 #include "Core/Simulation/UDActionHandlingInterface.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -26,6 +27,12 @@ void AUDSkirmishGameState::OnServerSendAction(FUDActionData clientData)
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameState: Received Action for GameMode."));
 	GetCastGameMode()->ProcessAction(clientData);
+}
+
+void AUDSkirmishGameState::OnServerSendCommand(FUDCommandData clientData)
+{
+	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameState: Received Command for GameMode."));
+	GetCastGameMode()->ProcessCommand(clientData);
 }
 
 // Header part for this is automatically generated from RPC definition.

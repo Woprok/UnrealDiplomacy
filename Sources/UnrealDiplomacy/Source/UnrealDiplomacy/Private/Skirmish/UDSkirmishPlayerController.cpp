@@ -4,6 +4,7 @@
 #include "Skirmish/UDSkirmishPlayerController.h"
 #include "Core/UDGlobalData.h"
 #include "Core/Simulation/UDWorldState.h"
+#include "Core/Simulation/UDCommandData.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Core/Tiles/UDSquareGrid.h"
@@ -53,6 +54,13 @@ TWeakObjectPtr<AUDSkirmishGameState> AUDSkirmishPlayerController::GetCastGameSta
 		InternalCurrentGameState = Cast<AUDSkirmishGameState>(GetWorld()->GetGameState());
 	}
 	return InternalCurrentGameState;
+}
+
+// Header part for this is automatically generated from RPC definition.
+void AUDSkirmishPlayerController::ServercastSendCommandToServer_Implementation(FUDCommandData clientData)
+{
+	UE_LOG(LogTemp, Log, TEXT("UDSkirmishPlayerController(%d): Servercast Command Send."), GetControllerUniqueId());
+	GetCastGameState()->OnServerSendCommand(clientData);
 }
 #pragma endregion
 

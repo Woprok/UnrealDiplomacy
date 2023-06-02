@@ -4,16 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "Core/UDGameMode.h"
-#include "Core/UDControllerInterface.h"
-#include "Core/Simulation/UDWorldSimulation.h"
-#include "Core/Simulation/UDActionData.h"
-#include "UDSkirmishGameState.h"
-#include "UDSkirmishHUD.h"
-#include "UDSkirmishAIController.h"
-#include "UDSkirmishGaiaAIController.h"
-#include "UDSkirmishPlayerController.h"
-#include "UDSkirmishPlayerState.h"
 #include "UDSkirmishGameMode.generated.h"
+
+// Forward Declarations
+
+struct FUDActionData;
+struct FUDCommandData;
+class AController;
+class APlayerController;
+class IUDControllerInterface;
+class AUDSkirmishGaiaAIController;
+class AUDSkirmishAIController;
+class AUDSkirmishPlayerController;
+class AUDSkirmishGameState;
+class AUDWorldSimulation;
 
 /**
  * 
@@ -22,25 +26,43 @@ UCLASS()
 class UNREALDIPLOMACY_API AUDSkirmishGameMode : public AUDGameMode
 {
 	GENERATED_BODY()
+#pragma region Constructors & Initialization
 public:
 	AUDSkirmishGameMode();
-public:
+protected:
 	/**
-	 * Process action that was invoked by Client. TODO as well for AI ?
+	 * Initializes all fields and prepares all objects for use.
 	 */
-	virtual void ProcessAction(FUDActionData& action);
+	void CreateWorldSimulation();
 	/**
-	 * Required to be called as last thing during game setup.
-	 * This will invoke UUDStartGameAction that handles pre-first turn play.
+	 * Registers listen to world simulation owned by this GameMode.
 	 */
-	virtual void StartGame(FUDActionData& action);
+	UFUNCTION()
+	virtual void RegisterAsListenerToWorldSimulation();
 	/**
-	 * Gathers and sends back requested historic data to specified controller.
-	 * Parameters:
-	 * controllerId
-	 * firstKnwon - optional (0 = all) id of first already owned action.
+	 * Lazy access to a WorldSimulation.
+	 * Necessary to prevent early call of uninitialized fields.
 	 */
-	virtual void SendPartialHistoricData(int32 controllerId, int32 firstKnown);
+	TWeakObjectPtr<AUDWorldSimulation> GetWorldSimulation();
+	/**
+	 * Retrieves current GameState that is associated with the running level.
+	 */
+	TWeakObjectPtr<AUDSkirmishGameState> GetCastGameState();
+private:
+	/**
+	 * Simulation that is responsible for maintaining and managing all interactions.
+	 */
+	UPROPERTY()
+	TWeakObjectPtr<AUDWorldSimulation> InternalWorldSimulation = nullptr;
+	/**
+	 * Saved pointer for the GameState to reduce amount of access casts.
+	 * Access through the GetCastGameState(), this does not have to be initialized.
+	 */
+	UPROPERTY()
+	TWeakObjectPtr<AUDSkirmishGameState> InternalCurrentGameState = nullptr;
+#pragma endregion
+
+#pragma region Login & Logout
 public:
 	/**
 	 * Invokes call to register newly joined PlayerController for a game.
@@ -50,6 +72,25 @@ public:
 	 * Called when a Controller with a PlayerState leaves the game or is destroyed.
 	 */
 	virtual void Logout(AController* Exiting) override;
+#pragma endregion
+
+#pragma region Actions & Commands
+public:
+	/**
+	 * Process action that was invoked by Client. TODO as well for AI ?
+	 */
+	virtual void ProcessAction(FUDActionData& action);
+	/**
+	 * Process action that was invoked by Client.
+	 */
+	virtual void ProcessCommand(FUDCommandData& command);
+	/**
+	 * Gathers and sends back requested historic data to specified controller.
+	 * Parameters:
+	 * controllerId
+	 * firstKnwon - optional (0 = all) id of first already owned action.
+	 */
+	virtual void SendPartialHistoricData(int32 controllerId, int32 firstKnown);
 protected:
 	/**
 	 * Handles decision how to propagate action that was successfully executed.
@@ -58,14 +99,16 @@ protected:
 	UFUNCTION()
 	virtual void ActionExecutionFinished(FUDActionData& action);
 	/**
-	 * Initializes all fields and prepares all objects for use.
+	 * Required to be called as last thing during game setup.
+	 * This will invoke UUDStartGameAction that handles pre-first turn play.
 	 */
-	void Initialize();
-	/**
-	 * Registers listen to world simulation owned by this GameMode.
-	 */
-	UFUNCTION()
-	virtual void RegisterAsListenerToWorldSimulation();
+	virtual void OnStartGameCommand();
+#pragma endregion
+
+#pragma region Controllers
+
+#pragma endregion
+
 protected:
 	/**
 	 * Creates sufficient amount of Ai controllers.
@@ -98,43 +141,13 @@ protected:
 	void AssignToSimulation(TScriptInterface<IUDControllerInterface>& controller, bool isPlayerOrAi);
 protected:
 	/**
-	 * Lazy access to a WorldSimulation.
-	 * Necessary to prevent early call of uninitialized fields.
-	 */
-	TWeakObjectPtr<AUDWorldSimulation> GetWorldSimulation()
-	{
-		if (!InternalWorldSimulation.IsValid())
-		{
-			UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: New simulation required."));
-			Initialize();
-		}
-		return InternalWorldSimulation;
-	}
-	/**
 	 * Provides Id to agents, that we have full control over.
 	 */
 	int32 GetNextUniqueControllerId()
 	{
 		return NextUniqueControllerIdCount++;
 	}
-	/**
-	 * Retrieves current GameState that is associated with the running level.
-	 */
-	TWeakObjectPtr<AUDSkirmishGameState> GetCastGameState()
-	{
-		if (!InternalCurrentGameState.IsValid())
-		{
-			UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: New GameState required."));
-			InternalCurrentGameState = Cast<AUDSkirmishGameState>(GameState);
-		}
-		return InternalCurrentGameState;
-	}
 private:
-	/**
-	 * Simulation that is responsible for maintaining and managing all interactions.
-	 */
-	UPROPERTY()
-	TWeakObjectPtr<AUDWorldSimulation> InternalWorldSimulation = nullptr;
 	/**
 	 * Instance of Gaia.
 	 */
@@ -157,10 +170,4 @@ private:
 	 */
 	UPROPERTY()
 	int32 NextUniqueControllerIdCount = 0;
-	/**
-	 * Saved pointer for the GameState to reduce amount of access casts.
-	 * Access through the GetCastGameState(), this does not have to be initialized.
-	 */
-	UPROPERTY()
-	TWeakObjectPtr<AUDSkirmishGameState> InternalCurrentGameState = nullptr;
 };

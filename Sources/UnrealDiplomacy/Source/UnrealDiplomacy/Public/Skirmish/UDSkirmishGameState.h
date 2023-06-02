@@ -9,6 +9,7 @@
 // Forward declaration.
 
 struct FUDActionData;
+struct FUDCommandData;
 class AUDSkirmishGameMode;
 class IUDActionHandlingInterface;
 
@@ -26,6 +27,12 @@ public:
 	 */
 	UFUNCTION()
 	void OnServerSendAction(FUDActionData clientData);
+	/**
+	 * Propagates command to GameMode that will resolve it.
+	 * This will cause GameMode to send a response.
+	 */
+	UFUNCTION()
+	void OnServerSendCommand(FUDCommandData clientData);
 	/**
 	 * This allows AIController to act by using same channel as remote client with PlayerController.
 	 * TODO simplify the register process for controllers.

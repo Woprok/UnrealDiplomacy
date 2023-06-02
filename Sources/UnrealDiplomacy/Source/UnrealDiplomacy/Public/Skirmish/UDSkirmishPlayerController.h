@@ -9,6 +9,7 @@
 // Forward Declarations
 
 struct FUDActionData;
+struct FUDCommandData;
 class AUDSkirmishGameState;
 class UUDActionAdministrator;
 class AUDWorldSimulation;
@@ -68,6 +69,12 @@ public:
 	 */
 	UFUNCTION(Server, Reliable)
 	void ServercastInitialSyncRequestToServer(int32 controllerId, int32 firstKnown);
+	/**
+	 * Sends command to server from this client.
+	 * Owned by invoking client with Client RPC invoked from a client -> Runs on server.
+	 */
+	UFUNCTION(BlueprintCallable, Server, Reliable)
+	void ServercastSendCommandToServer(FUDCommandData clientData);
 protected:
 	/**
 	 * Retrieves current GameState that is associated with the running level and handles RPCs.

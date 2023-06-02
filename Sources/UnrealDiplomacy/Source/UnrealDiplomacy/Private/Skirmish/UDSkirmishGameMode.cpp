@@ -4,9 +4,21 @@
 #include "Core/UDGlobalData.h"
 #include "Core/Simulation/Actions/UDSystemActionWorldCreate.h"
 #include "Core/Simulation/Actions/UDSystemActionGameStart.h"
+#include "Core/UDControllerInterface.h"
+#include "Core/Simulation/UDWorldSimulation.h"
+#include "Core/Simulation/UDActionData.h"
+#include "Core/Simulation/UDCommandData.h"
+#include "Skirmish/UDSkirmishGameState.h"
+#include "Skirmish/UDSkirmishHUD.h"
+#include "Skirmish/UDSkirmishAIController.h"
+#include "Skirmish/UDSkirmishGaiaAIController.h"
+#include "Skirmish/UDSkirmishPlayerController.h"
+#include "Skirmish/UDSkirmishPlayerState.h"
 
-AUDSkirmishGameMode::AUDSkirmishGameMode() 
-{	
+#pragma region Constructors & Initialization
+
+AUDSkirmishGameMode::AUDSkirmishGameMode()
+{
 	GameStateClass = AUDSkirmishGameState::StaticClass();
 	HUDClass = AUDSkirmishHUD::StaticClass();
 	PlayerControllerClass = AUDSkirmishPlayerController::StaticClass();
@@ -14,7 +26,7 @@ AUDSkirmishGameMode::AUDSkirmishGameMode()
 	UE_LOG(LogTemp, Log, TEXT("Defined static classes for SkirmishGameMode."));
 }
 
-void AUDSkirmishGameMode::Initialize()
+void AUDSkirmishGameMode::CreateWorldSimulation()
 {
 	InternalWorldSimulation = GetWorld()->SpawnActor<AUDWorldSimulation>();
 
@@ -24,6 +36,35 @@ void AUDSkirmishGameMode::Initialize()
 	RegisterGaiaAi();
 	UE_LOG(LogTemp, Log, TEXT("Finalized creation of Gaia state for GameMode. Follows game log..."));
 }
+
+TWeakObjectPtr<AUDWorldSimulation> AUDSkirmishGameMode::GetWorldSimulation()
+{
+	if (!InternalWorldSimulation.IsValid())
+	{
+		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: New simulation required."));
+		CreateWorldSimulation();
+	}
+	return InternalWorldSimulation;
+}
+
+TWeakObjectPtr<AUDSkirmishGameState> AUDSkirmishGameMode::GetCastGameState()
+{
+	if (!InternalCurrentGameState.IsValid())
+	{
+		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: New GameState required."));
+		InternalCurrentGameState = Cast<AUDSkirmishGameState>(GameState);
+	}
+	return InternalCurrentGameState;
+}
+
+void AUDSkirmishGameMode::RegisterAsListenerToWorldSimulation()
+{
+	GetWorldSimulation()->OnBroadcastVerifiedActionExecutedDelegate.AddUObject(this, &AUDSkirmishGameMode::ActionExecutionFinished);
+}
+
+#pragma endregion
+
+#pragma region Login & Logout
 
 void AUDSkirmishGameMode::PostLogin(APlayerController* NewPlayer)
 {
@@ -35,7 +76,85 @@ void AUDSkirmishGameMode::PostLogin(APlayerController* NewPlayer)
 void AUDSkirmishGameMode::Logout(AController* Exiting)
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Player left."));
+	Super::Logout(Exiting);
 }
+
+#pragma endregion
+
+#pragma region Actions & Commands
+
+void AUDSkirmishGameMode::ProcessAction(FUDActionData& action)
+{
+	// All actions are straight up passed to simulation as obtained from client.
+	GetWorldSimulation()->ExecuteAction(action);
+}
+
+void AUDSkirmishGameMode::ProcessCommand(FUDCommandData& command)
+{
+	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: %s."), *command.ToString());
+	switch (command.Command)
+	{
+	case EUDCommandType::None:
+		break;
+	case EUDCommandType::StartGame:
+		OnStartGameCommand();
+		break;
+	default:
+		unimplemented()
+		break;
+	}
+}
+
+void AUDSkirmishGameMode::OnStartGameCommand()
+{
+	// Executes sequence of commands required to start the game.
+	// Sequence:
+	// - Create AI players
+	// - Create Map
+	// - Start Game
+
+	// TODO READ LOBBY CONFIG
+	CreateAiPlayers(2);
+
+	FUDActionData mapGen(UUDSystemActionWorldCreate::ActionTypeId, UUDGlobalData::GaiaId, { 4, 5, 5 });
+	GetWorldSimulation()->ExecuteAction(mapGen);
+
+	FUDActionData startGame(UUDSystemActionGameStart::ActionTypeId, UUDGlobalData::GaiaId);
+	GetWorldSimulation()->ExecuteAction(startGame);
+}
+
+void AUDSkirmishGameMode::SendPartialHistoricData(int32 controllerId, int32 firstKnown)
+{
+	FUDActionArray actions = GetWorldSimulation()->GetHistoryUntil(firstKnown);
+	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Sending history to Player(%d)"), controllerId);
+	for (auto& controller : PlayerControllers)
+	{
+		if (controller->GetControllerUniqueId() == controllerId)
+		{
+			controller->ClientcastInitialSyncReceiveFromServer(actions);
+			break;
+		}
+	}
+}
+
+void AUDSkirmishGameMode::ActionExecutionFinished(FUDActionData& action)
+{
+	// Gaia always receives action notification.
+	GaiaController->OnActionExecuted(action);
+	// Players will receive action notification.
+	GetCastGameState()->MulticastSendActionToAllClients(action);
+	// AI will receive action notification.
+	for (auto& controller : AiControllers)
+	{
+		controller->OnActionExecuted(action);
+	}
+}
+
+#pragma endregion
+
+#pragma region Controllers
+
+#pragma endregion
 
 void AUDSkirmishGameMode::CreateAiPlayers(int32 count)
 {
@@ -114,88 +233,4 @@ void AUDSkirmishGameMode::AssignToSimulation(TScriptInterface<IUDControllerInter
 	UE_LOG(LogTemp, Log, TEXT("Finishing initialization of player with Id: %d"), controller->GetControllerUniqueId());
 	// Register controller for WorldSimulation, so it has it's own unique representation in the server simulation.
 	worldSim->CreateStateAndSynchronize(controller->GetControllerUniqueId(), isPlayerOrAi);
-}
-
-void AUDSkirmishGameMode::StartGame(FUDActionData& startAction)
-{
-	// TODO implement lobby functionality
-	// TODO really do something about this
-	// Start game requires mapGen to be done before it as everything after it depends on it.
-	CreateAiPlayers(2);
-
-	FUDActionData mapGen(UUDSystemActionWorldCreate::ActionTypeId, UUDGlobalData::GaiaId, { 4, 5, 5 });
-	GetWorldSimulation()->ExecuteAction(mapGen);
-
-	GetWorldSimulation()->ExecuteAction(startAction);
-}
-
-void AUDSkirmishGameMode::ProcessAction(FUDActionData& action)
-{
-	// Certain action require additional calls
-	// TODO merge this additional calls to action execution.
-	// This would require additional way for creating merged actions or
-	// allowing actions to invoke additional actions.
-	if (action.ActionTypeId == UUDSystemActionGameStart::ActionTypeId)
-	{
-		StartGame(action);
-	}
-	// Execute action as obtained.
-	else 
-	{
-		GetWorldSimulation()->ExecuteAction(action);
-	}
-}
-
-void AUDSkirmishGameMode::ActionExecutionFinished(FUDActionData& action)
-{
-	// GAMEMODE decides who will receive which action, based on expected requirements passed by simulation.
-	
-	// Gaia always receives action notification.
-	GaiaController->OnActionExecuted(action);
-	// TODO all
-
-	// if all
-	GetCastGameState()->MulticastSendActionToAllClients(action);
-	// AI
-	for (auto& controller : AiControllers)
-	{
-		controller->OnActionExecuted(action);
-	}
-
-	/*
-	// TODO selection or single
-	// else
-	for (auto& controller : PlayerControllers)
-	{
-		// if is part
-		controller->ClientcastReceiveActionFromServer(data);
-	}
-	// AI
-	for (auto& controller : AiControllers)
-	{ //if is in range
-		controller->OnActionExecuted(data);
-	}
-	*/
-}
-
-void AUDSkirmishGameMode::SendPartialHistoricData(int32 controllerId, int32 firstKnown)
-{
-	// TODO add more strict checks for validity of request
-	FUDActionArray actions = GetWorldSimulation()->GetHistoryUntil(firstKnown);
-	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Sending history to Player(%d)"), controllerId);
-	// TODO swap this for map access, if we ever add a map
-	// TODO swap this for array access, if we ever merge controllers to single array
-	for (auto& controller : PlayerControllers)
-	{
-		if (controller->GetControllerUniqueId() == controllerId)
-		{
-			controller->ClientcastInitialSyncReceiveFromServer(actions);
-			break;
-		}
-	}
-}
-
-void AUDSkirmishGameMode::RegisterAsListenerToWorldSimulation()
-{
-	GetWorldSimulation()->OnBroadcastVerifiedActionExecutedDelegate.AddUObject(this, &AUDSkirmishGameMode::ActionExecutionFinished);
 }
