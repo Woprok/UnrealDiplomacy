@@ -28,18 +28,6 @@ FUDActionData FUDActionData::CreateDataCopy(const FUDActionData& existingAction)
 	return action;
 }
 
-//FUDActionData FUDActionData::AsChildOf(const FUDActionData& parentAction, int32 parentUniqueId)
-//{
-//	FUDActionData child = FUDActionData::CreateDataCopy(parentAction);
-//	child.ActionTypeId = parentAction.ActionTypeId;
-//
-//	// child inherits UniqueId as ParentUniqueId
-//	child.SourceUniqueId = parentUniqueId;
-//	// child.UniqueId remains default value 0, so it can be assigned by WorldSimulation
-//
-//	return child;
-//}
-
 FUDActionData FUDActionData::AsSuccessorOf(const FUDActionData& parentAction, int32 ActionTypeId)
 {
 	FUDActionData child = FUDActionData::CreateDataCopy(parentAction);

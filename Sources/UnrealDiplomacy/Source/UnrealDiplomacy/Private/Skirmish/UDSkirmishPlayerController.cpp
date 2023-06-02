@@ -174,54 +174,6 @@ void AUDSkirmishPlayerController::ChangeFaction()
 	GetAdministrator()->SetOverseeingState(GetWorldSimulation()->GetSpecificState(GetControlledFactionId()));
 }
 
-#pragma endregion
-
-void AUDSkirmishPlayerController::FinishDataSynchronization(FUDActionArray& actionArray)
-{
-	// Run all synchronizations
-	ChangeFaction();
-	RunAllActions(actionArray.Actions);
-	RunAllActions(StoredActions);
-	StoredActions.Empty();
-	SynchronizationState = EUDSynchronizationState::Synchronized;
-
-	// This is required and done only here as it requires valid state to exists.
-	InitializeGrid();
-	// Call event that is used by UI&World elements.
-	OnSynchronizationFinished();
-}
-
-void AUDSkirmishPlayerController::InitializeGrid()
-{
-	SquareGrid = GetWorld()->SpawnActor<AUDSquareGrid>(GridBlueprintClass, FVector(0, 0, 0), FRotator::ZeroRotator);
-	SquareGrid->SetAuthority(GetAdministrator());
-}
-
-void AUDSkirmishPlayerController::OnUserActionRequested(FUDActionData requestedAction)
-{
-	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Action choosed by user."), GetControllerUniqueId());
-	ServercastSendActionToServer(requestedAction);
-}
-
-void AUDSkirmishPlayerController::InitializeAdministrator()
-{
-	InternalPersonalAdministrator = NewObject<UUDActionAdministrator>();
-	InternalPersonalAdministrator->OnUserActionRequestedDelegate.BindUObject(this, &AUDSkirmishPlayerController::OnUserActionRequested);
-	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Initialized personal administrator."), GetControllerUniqueId());
-}
-
-void AUDSkirmishPlayerController::OnWorldSimulationUpdated(FUDActionData& action)
-{
-	// Currently this has no use for data as we are not parsing actions.
-	// We do through propagate the change for anyone who is interested in hearing about it.
-	// Currently only UI elements and World...
-	// TODO revisit this commentary that questions our decisions.
-	if (SynchronizationState == EUDSynchronizationState::Synchronized)
-	{
-		OnWorldStateUpdated();
-	}
-}
-
 void AUDSkirmishPlayerController::InitializeSimulation()
 {
 	InternalWorldSimulation = GetWorld()->SpawnActor<AUDWorldSimulation>();
@@ -230,15 +182,11 @@ void AUDSkirmishPlayerController::InitializeSimulation()
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Initialized with temporary Id."), GetControllerUniqueId());
 }
 
-
-UUDActionAdministrator* AUDSkirmishPlayerController::GetAdministrator()
+void AUDSkirmishPlayerController::InitializeAdministrator()
 {
-	if (InternalPersonalAdministrator == nullptr)
-	{
-		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController: New administrator required."));
-		InitializeAdministrator();
-	}
-	return InternalPersonalAdministrator;
+	InternalPersonalAdministrator = NewObject<UUDActionAdministrator>();
+	InternalPersonalAdministrator->OnUserActionRequestedDelegate.BindUObject(this, &AUDSkirmishPlayerController::OnUserActionRequested);
+	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Initialized personal administrator."), GetControllerUniqueId());
 }
 
 TWeakObjectPtr<AUDWorldSimulation> AUDSkirmishPlayerController::GetWorldSimulation()
@@ -250,3 +198,72 @@ TWeakObjectPtr<AUDWorldSimulation> AUDSkirmishPlayerController::GetWorldSimulati
 	}
 	return InternalWorldSimulation;
 }
+
+UUDActionAdministrator* AUDSkirmishPlayerController::GetAdministrator()
+{
+	if (InternalPersonalAdministrator == nullptr)
+	{
+		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController: New administrator required."));
+		InitializeAdministrator();
+	}
+	return InternalPersonalAdministrator;
+}
+
+#pragma endregion
+
+void AUDSkirmishPlayerController::FinishDataSynchronization(FUDActionArray& actionArray)
+{
+	// Run all synchronizations
+	ChangeFaction();
+	RunAllActions(actionArray.Actions);
+	RunAllActions(StoredActions);
+	StoredActions.Empty();
+	SynchronizationState = EUDSynchronizationState::Synchronized;
+
+	// Finally notify everyone that this has finished.
+	OnSynchronizationCompleted();
+}
+
+#pragma region Player Input & UI & Updates
+
+void AUDSkirmishPlayerController::OnUserActionRequested(FUDActionData requestedAction)
+{
+	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Action choosed by user."), GetControllerUniqueId());
+	ServercastSendActionToServer(requestedAction);
+}
+
+void AUDSkirmishPlayerController::OnWorldSimulationUpdated(FUDActionData& action)
+{
+	if (SynchronizationState == EUDSynchronizationState::Synchronized)
+	{
+		OnWorldStateUpdated();
+	}
+}
+
+void AUDSkirmishPlayerController::OnSynchronizationCompleted()
+{
+	if (SynchronizationState == EUDSynchronizationState::Synchronized)
+	{
+		// This is required and done only here as it requires valid state to exists.
+		InitializeGrid();
+		OnSynchronizationFinished();
+	}
+}
+
+#pragma endregion
+
+#pragma region World
+
+void AUDSkirmishPlayerController::InitializeGrid()
+{
+	if (SquareGrid.IsValid())
+	{
+		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): World Grid is already initialzied."), GetControllerUniqueId());
+		return;
+	}
+	SquareGrid = GetWorld()->SpawnActor<AUDSquareGrid>(GridBlueprintClass, FVector(0, 0, 0), FRotator::ZeroRotator);
+	SquareGrid->SetAuthority(GetAdministrator());
+	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): World Grid initialzied."), GetControllerUniqueId());
+}
+
+#pragma endregion

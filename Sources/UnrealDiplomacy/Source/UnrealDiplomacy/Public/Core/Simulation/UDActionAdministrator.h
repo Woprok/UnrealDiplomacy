@@ -386,7 +386,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool CanEndTurn()
 	{
-		if (OverseeingState->CurrentTurnPlayerId == OverseeingState->FactionPerspective)
+		if (OverseeingState->TurnData.PlayingFaction == OverseeingState->FactionPerspective)
 		{
 			return true;
 		}
@@ -398,7 +398,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDTurnInfo GetCurrentTurnState()
 	{
-		return FUDTurnInfo(OverseeingState->CurrentTurn, OverseeingState->CurrentTurnPlayerId);
+		return FUDTurnInfo(OverseeingState->TurnData.Turn, OverseeingState->TurnData.PlayingFaction);
 	}
 	/**
 	 * Checks if supplied Id belongs to valid nation.

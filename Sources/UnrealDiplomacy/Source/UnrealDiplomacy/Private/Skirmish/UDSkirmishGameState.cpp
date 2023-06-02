@@ -1,8 +1,11 @@
 // Copyright Miroslav Valach
+// TODO if any synchronization issues are present, then multicast might not work as intended.
 
 #include "Skirmish/UDSkirmishGameState.h"
 #include "Skirmish/UDSkirmishGameMode.h"
-#include <Kismet/GameplayStatics.h>
+#include "Core/Simulation/UDActionData.h"
+#include "Core/Simulation/UDActionHandlingInterface.h"
+#include "Kismet/GameplayStatics.h"
 
 TWeakObjectPtr<AUDSkirmishGameMode> AUDSkirmishGameState::GetCastGameMode()
 {
@@ -28,27 +31,16 @@ void AUDSkirmishGameState::OnServerSendAction(FUDActionData clientData)
 // Header part for this is automatically generated from RPC definition.
 void AUDSkirmishGameState::MulticastSendActionToAllClients_Implementation(FUDActionData serverData)
 {
-	// TODO this most likely does not work on listen server/standalone server and requires change to GetNetMode condition.
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameState: Multicast invoked by GameMode. AUID(%d of %d)"), serverData.UniqueId, serverData.InvokerFactionId);
 
-	// TODO verify that this works in all possible conditions.
 	TObjectPtr<APlayerController> controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	//TObjectPtr<APlayerController> controller = GEngine->GetFirstLocalPlayerController(GetWorld());
 	if (!IsValid(controller))
 	{
-		//controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 		UE_LOG(LogTemp, Log, TEXT("UDSkirmishGameState: Multicast failed to retrieve player controller."));
 		return;
 	}
 	TObjectPtr<AUDSkirmishPlayerController> skirmishController = Cast<AUDSkirmishPlayerController>(controller);
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameState: Multicast can attempt to execute on controller(%d)."), skirmishController->GetControllerUniqueId());
-
-	// TODO potential BUG
-	//if (GetNetMode() < ENetMode::NM_Client)
-	//{
-	//	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameState: Multicast halted by being Server (%d)."), skirmishController->GetControllerUniqueId());
-	//	return;
-	//}
 
 	skirmishController->MulticastReceiveActionFromServer_Local(serverData);
 }

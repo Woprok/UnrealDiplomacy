@@ -49,7 +49,7 @@ TArray<FUDActionData> UUDWorldArbiter::EndGame()
 void UUDWorldArbiter::EvaluateTurnGameOverState(TObjectPtr<UUDWorldState> gaiaWorldState)
 {
 	// Winner was found
-	if (gaiaWorldState->CurrentTurn < CurrentRuleSet.MaxTurnCount)
+	if (gaiaWorldState->TurnData.Turn < CurrentRuleSet.MaxTurnCount)
 	{
 		return;
 	}

@@ -127,17 +127,42 @@ private:
 #pragma endregion
 
 #pragma region Action Execution
+private:
 	void ChangeFaction();
 	void RunAction(FUDActionData& actionData);
 	void RunAllActions(TArray<FUDActionData>& actionArray);
+private:
+	/**
+	 * Initializes all fields and prepares all objects for use.
+	 */
+	void InitializeSimulation();
+	/**
+	 * Initializes Overseer for handling game rules over this player.
+	 */
+	void InitializeAdministrator();
+	/**
+	 * Lazy access to a WorldSimulation.
+	 * Necessary to prevent early call of uninitialized fields.
+	 */
+	TWeakObjectPtr<AUDWorldSimulation> GetWorldSimulation();
+	/**
+	 * Accessor for blueprints and others to Administrator of this controller.
+	 */
+	UFUNCTION(BlueprintCallable)
+	UUDActionAdministrator* GetAdministrator();
+	/**
+	 * Local version of the simulation. 
+	 */
+	UPROPERTY()
+	TWeakObjectPtr<AUDWorldSimulation> InternalWorldSimulation = nullptr;
+	/**
+	 * Handles logic verfication and game rules access over the state owned by this controller.
+	 */
+	UPROPERTY()
+	TObjectPtr<UUDActionAdministrator> InternalPersonalAdministrator = nullptr;
 #pragma endregion
 
-#pragma region Player Input & UI
-
-#pragma endregion
-
-
-
+#pragma region Player Input & UI & Updates
 public:
 	/**
 	 * Called by whoever is responsible for propagating UI requests.
@@ -148,67 +173,40 @@ public:
 	 * Allows UI elements to read state and enabled generation of game world from input.
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
-		void OnSynchronizationFinished();
+	void OnSynchronizationFinished();
 	/**
 	 * Invoked by simulation finishing processing incoming change.
 	 * All Widgets and World needs to check if they can update themselves from the state change.
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
-		void OnWorldStateUpdated();
+	void OnWorldStateUpdated();
 protected:
 	/**
 	 * Binding to delegate of WorldSimulation.
 	 */
 	void OnWorldSimulationUpdated(FUDActionData& action);
 	/**
-	 * Initializes Overseer for handling game rules over this player.
+	 * Binding to delegate of WorldSimulation.
 	 */
-	void InitializeAdministrator();
-	/**
-	 * Accessor for blueprints and others to PersonalAdministrator of this controller.
-	 */
-	UFUNCTION(BlueprintCallable)
-	UUDActionAdministrator* GetAdministrator();
-	/**
-	 * Initializes all fields and prepares all objects for use.
-	 */
-	void InitializeSimulation();
-	/**
-	 * Lazy access to a WorldSimulation.
-	 * Necessary to prevent early call of uninitialized fields.
-	 */
-	TWeakObjectPtr<AUDWorldSimulation> GetWorldSimulation();
+	void OnSynchronizationCompleted();
+#pragma endregion
 
+#pragma region World
+protected:
 	/**
 	 * Creates instance and setups all relevant links to players controller.
 	 */
 	void InitializeGrid();
-private:
-	/**
-	 * Simulation that is responsible for maintaining and managing all interactions.
-	 * Local simulation that is used by specific client to present current results to user.
-	 * This is allowed to only execute actions, that are delivered through the network.
-	 * If this would execute localy created action, it would cause desyncs.
-	 *
-	 * TODO added handling for premature apply and possible revert on fail to minimize input delay.
-	 */
-	UPROPERTY()
-	TWeakObjectPtr<AUDWorldSimulation> InternalWorldSimulation = nullptr;
-
-	/**
-	 * Handles logic verfication and game rules access over the state owned by this controller.
-	 */
-	UPROPERTY()
-		TObjectPtr<UUDActionAdministrator> InternalPersonalAdministrator = nullptr;
 protected:
 	/**
 	 * World representation.
 	 */
 	UPROPERTY(BlueprintReadOnly)
-		TWeakObjectPtr<AUDSquareGrid> SquareGrid = nullptr;
+	TWeakObjectPtr<AUDSquareGrid> SquareGrid = nullptr;
 	/**
-	 * Grid blueprint used by this controller.
+	 * Grid blueprint used by this controller and thus determines how will world look and operate on data.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SkirmishController|Config")
-		TSubclassOf<AUDSquareGrid> GridBlueprintClass;
+	TSubclassOf<AUDSquareGrid> GridBlueprintClass;
+#pragma endregion
 };

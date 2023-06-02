@@ -9,7 +9,7 @@ void UUDSystemActionPlayerAdd::Execute(const FUDActionData& action, TObjectPtr<U
 {
 	IUDActionInterface::Execute(action, world);
 	// Player is added to the state.
-	world->FactionOrder.Add(action.InvokerFactionId);
+	world->TurnData.FactionTurnOrder.Add(action.InvokerFactionId);
 	world->Factions.Add(action.InvokerFactionId, UUDFactionState::CreateState(action.InvokerFactionId));
 }
 
@@ -17,6 +17,6 @@ void UUDSystemActionPlayerAdd::Revert(const FUDActionData& action, TObjectPtr<UU
 {
 	IUDActionInterface::Revert(action, world);
 	// Player is removed from the state.
-	world->FactionOrder.Remove(action.InvokerFactionId);
+	world->TurnData.FactionTurnOrder.Remove(action.InvokerFactionId);
 	world->Factions.Remove(action.InvokerFactionId);
 }

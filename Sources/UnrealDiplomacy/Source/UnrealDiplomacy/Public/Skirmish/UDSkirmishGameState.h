@@ -4,14 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Core/UDGameState.h"
-#include "Core/Simulation/UDActionData.h"
-#include "Core/Simulation/UDActionHandlingInterface.h"
 #include "UDSkirmishGameState.generated.h"
 
-// This class is used by both GameMode and PlayerController as middle man.
-// Due to that it requires several forward declaration to resolve circular dependencies.
 // Forward declaration.
+
+struct FUDActionData;
 class AUDSkirmishGameMode;
+class IUDActionHandlingInterface;
 
 /**
  * Communication middle man between GameMode and PlayerControllers

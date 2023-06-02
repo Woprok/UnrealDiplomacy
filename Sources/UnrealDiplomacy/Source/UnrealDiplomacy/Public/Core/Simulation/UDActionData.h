@@ -37,37 +37,33 @@ public:
 	 * Default constructor used for actions that require no additional parameters.
 	 * Example: Simple actions like end turn.
 	 */
-	FUDActionData(int32 actionTypeId, int32 invokerPlayerId);
+	FUDActionData(int32 actionTypeId, int32 invokerFactionId);
 	/**
 	 * Constructor used for actions that require additional value parameters.
 	 * Example: Most actions such as these that requires target, value etc.
 	 */
-	FUDActionData(int32 actionTypeId, int32 invokerPlayerId, TArray<int32> valuePrameters);
+	FUDActionData(int32 actionTypeId, int32 invokerFactionId, TArray<int32> valuePrameters);
 	/**
 	 * Constructor used for actions that require additional text parameter.
 	 * Example: Changing faction name.
 	 */
-	FUDActionData(int32 actionTypeId, int32 invokerPlayerId, FString textPrameters);
+	FUDActionData(int32 actionTypeId, int32 invokerFactionId, FString textPrameters);
 	/**
 	 * Constructor used for actions that require additional value parameters and text parameter.
 	 * Example: Chat messages inside of an deal.
 	 */
-	FUDActionData(int32 actionTypeId, int32 invokerPlayerId, TArray<int32> valuePrameters, FString textPrameters);
-
+	FUDActionData(int32 actionTypeId, int32 invokerFactionId, TArray<int32> valuePrameters, FString textPrameters);
 	/**
 	 * Creates child from its parent. Usefull for action that are responses.
 	 */
 	static FUDActionData AsSuccessorOf(const FUDActionData& parentAction, int32 ActionTypeId);
 	/**
-	 * Converts action to child action.
-	 * Note: existance of this is purely toxic for code health.
-	 */
-	//static FUDActionData AsChildOf(const FUDActionData& parentAction, int32 parentUniqueId);
-	/**
 	 * Creates parent from its child. Usefull for action that is reverting it's effect.
 	 */
 	static FUDActionData AsPredecessorOf(const FUDActionData& childAction, int32 ActionTypeId);
-
+	/**
+	 * Returns debug friendly string from this action data.
+	 */
 	FString ToString() const;
 private:	
 	 /**

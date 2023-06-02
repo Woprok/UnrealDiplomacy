@@ -23,8 +23,11 @@ class UUDActionManager;
 DECLARE_MULTICAST_DELEGATE_OneParam(BroadcastActionExecutedDelegate, FUDActionData&);
 
 /**
- * Handles all operations over the UDWorldState and 
- * holds all Player/Ai and server states.
+ * Simulation that is responsible for maintaining and managing all interactions.
+ * Basically all actions go through this before they are processed and send to clients.
+ * Clients utilize specific function to execute naively without checks everything received from server.
+ * Server on other hand has function that always checks validity of the action on Gaia Faction State.
+ * Due to this client should never execute actions that were not received from server as it would cause desyncs.
  */
 UCLASS()
 class UNREALDIPLOMACY_API AUDWorldSimulation : public AUDActor

@@ -465,6 +465,34 @@ public:
 };
 
 /**
+ * Stores all information related to turns.
+ */
+USTRUCT(BlueprintType)
+struct UNREALDIPLOMACY_API FUDTurnState
+{
+	GENERATED_BODY()
+public:
+	FUDTurnState() {}
+	 /**
+	  * Turn order of all Factions, represented by their FactionId.
+	  */
+	UPROPERTY()
+	TArray<int32> FactionTurnOrder;
+	/**
+	 * Current Faction that is playing.
+	 * Default value is 0.
+	 */
+	UPROPERTY()
+	int32 PlayingFaction = 0;
+	/**
+	 * Current turn, has no purpose other than flavor info.
+	 * Default value is 0.
+	 */
+	UPROPERTY()
+	int32 Turn = 0;
+};
+
+/**
  * Explains the current state of world in relation to state of play.
  */
 UENUM(BlueprintType)
@@ -562,28 +590,16 @@ public:
 	UPROPERTY()
 	TMap<int32, TObjectPtr<UUDFactionState>> Factions;
 	/**
-	 * List of players in turn order, represented only by their unique id.
-	 */
-	UPROPERTY()
-	TArray<int32> FactionOrder;
-	/**
-	 * Current Player/Ai/Server that is able to act.
-	 * Default value is 0.
-	 */
-	UPROPERTY()
-	int32 CurrentTurnPlayerId = 0;
-	/**
-	 * Current turn, has no purpose other than flavor info.
-	 * Default value is 0.
-	 */
-	UPROPERTY()
-	int32 CurrentTurn = 0;
-	/**
 	 * All deals that are / were done during the game.
 	 * key is Source / BySource
 	 */
 	UPROPERTY()
 	TMap<int32, TObjectPtr<UUDDealState>> Deals;
+	/**
+	 * Contains all necessary data for turn manipulation.
+	 */
+	UPROPERTY()
+	FUDTurnState TurnData;
 	/**
 	 * Represents current state of imperial throne. 
 	 * Winnerr is determined by the owner of the throne at the end of the game.
