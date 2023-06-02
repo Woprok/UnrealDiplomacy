@@ -7,11 +7,6 @@
 #include "Core/Simulation/Actions/UDGaiaActionResourcesAllAdd.h"
 #include "Core/Simulation/Actions/UDSystemActionTurnEnd.h"
 
-AUDSkirmishGaiaAIController::AUDSkirmishGaiaAIController()
-{
-	Type = EUDControllerType::Server;
-}
-
 void AUDSkirmishGaiaAIController::ProcessInTurnPlay()
 {
 	OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetAction(UUDGaiaActionResourcesAllAdd::ActionTypeId));

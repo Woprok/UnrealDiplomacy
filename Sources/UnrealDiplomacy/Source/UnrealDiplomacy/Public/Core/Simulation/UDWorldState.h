@@ -523,25 +523,21 @@ UENUM(BlueprintType)
 enum class EUDWorldPerspective : uint8
 {
 	/**
-	 * Gaia faction. 
+	 * Gaia faction can perceive everything. 
 	 */
-	Everything = 0,
+	Gaia = 0,
 	/**
-	 * For non-playing members of the game.
+	 * Observer is faction neutral and can perceive everything.
 	 */
 	Observer = 1,
 	/**
-	 * For current ruler of the nation.
+	 * Rulers of the nation can perceive everything that is happening inside of their nation.
 	 */
 	Nation = 2,
 	/**
-	 * For single faction.
+	 * Factions are parts of nation and can perceive only their domain and sphere of influence.
 	 */
-	Faction = 3,
-	/**
-	 * Quite and literally nothing.
-	 */
-	Nothing = 4
+	Faction = 3
 };
 
 /**
@@ -570,7 +566,7 @@ public:
 	 * Defines what can this state see.
 	 */
 	UPROPERTY()
-	EUDWorldPerspective Perspective = EUDWorldPerspective::Nothing;
+	EUDWorldPerspective Perspective = EUDWorldPerspective::Faction;
 	/**
 	 * Describes what is the state based on simulation changes.
 	 * State is not completely safe to read if it's not yet in PLAYING.

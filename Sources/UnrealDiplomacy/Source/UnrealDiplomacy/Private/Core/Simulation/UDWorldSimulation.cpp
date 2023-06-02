@@ -2,14 +2,23 @@
 
 
 #include "Core/Simulation/UDWorldSimulation.h"
-#include "Core/Simulation/UDActionManager.h"
 #include "Core/UDGlobalData.h"
+#include "Core/Simulation/UDActionData.h"
+#include "Core/Simulation/UDActionManager.h"
+#include "Core/Simulation/UDWorldArbiter.h"
+#include "Core/Simulation/UDWorldState.h"
+#include "Core/Simulation/UDWorldGenerator.h"
+#include "Core/Simulation/UDModifierManager.h"
+#include "Core/Simulation/UDActionInterface.h"
+#include "Core/Simulation/UDActionHandlingInterface.h"
 #include "Core/Simulation/UDWorldState.h"
 #include "Core/Simulation/Actions/UDSystemActionPlayerAdd.h"
 
 void AUDWorldSimulation::Initialize()
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Initializing."));
+	NextUniqueFactionId = UUDGlobalData::FirstUseableFactionId;
+	NextUniqueActionId = UUDGlobalData::FirstUseableActionId;
 	ActionManager = NewObject<UUDActionManager>(this);
 	Arbiter = NewObject<UUDWorldArbiter>(this);
 
@@ -17,79 +26,134 @@ void AUDWorldSimulation::Initialize()
 	ActionManager->Initialize();
 }
 
-int32 AUDWorldSimulation::CreateNewState(EUDWorldPerspective stateType)
+#pragma region Assigns of controllers to specific state.
+int32 AUDWorldSimulation::CreateGaiaFaction()
 {
-	int32 newStateId = GetNewStateId();
+	if (States.Contains(UUDGlobalData::GaiaFactionId))
+	{
+		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Gaia Faction already exists under Id %d."), UUDGlobalData::GaiaFactionId);
+		return UUDGlobalData::GaiaFactionId;
+	}
 
-	// if observer get existing or create observer
-
-	// if gaia do gaia
-
-	// if faction do faction
-
-	// if nation do nation...
-
-	return newStateId;
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering new Gaia Faction %d."), UUDGlobalData::GaiaFactionId);
+	CreateSynchronizedState(UUDGlobalData::GaiaFactionId, EUDWorldPerspective::Gaia);
+	return UUDGlobalData::GaiaFactionId;
 }
 
-void AUDWorldSimulation::CreateState(int32 playerId, bool isPlayerOrAi)
+int32 AUDWorldSimulation::CreateObserverFaction()
 {
-	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Creating new State."));
-	if (States.Contains(playerId))
+	if (States.Contains(UUDGlobalData::ObserverFactionId))
 	{
-		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Duplicate initialization of player state for player with id(%d)."), playerId);
+		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Observer Faction already exists under Id %d."), UUDGlobalData::ObserverFactionId);
+		return UUDGlobalData::ObserverFactionId;
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering new Observer Faction %d."), UUDGlobalData::ObserverFactionId);
+	CreateSynchronizedState(UUDGlobalData::ObserverFactionId, EUDWorldPerspective::Observer);
+	return UUDGlobalData::ObserverFactionId;
+}
+
+int32 AUDWorldSimulation::CreatePlayerFaction()
+{
+	int32 newFactionId = GetNewFactionId();
+	if (States.Contains(newFactionId))
+	{
+		// This should never happen, so just do the most obvious thing -> crash!
+		ensureMsgf(false, TEXT("AUDWorldSimulation: Encountered same Id(%d) registration!"), newFactionId);
+		return UUDGlobalData::InvalidFactionId;
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering new Player Faction %d."), newFactionId);
+	CreateSynchronizedState(newFactionId, EUDWorldPerspective::Faction);
+	return newFactionId;
+}
+
+void AUDWorldSimulation::CreatePrivatePlayerFaction(int32 factionId)
+{
+	EUDWorldPerspective perspective = EUDWorldPerspective::Faction;
+	switch (factionId)
+	{
+	case UUDGlobalData::GaiaFactionId:
+		perspective = EUDWorldPerspective::Gaia;
+		break;
+	case UUDGlobalData::ObserverFactionId:
+		perspective = EUDWorldPerspective::Observer;
+		break;
+	default:
+		perspective = EUDWorldPerspective::Faction;
+		break;
+	}
+	if (States.Contains(factionId))
+	{
+		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Specified local Player Faction already exists under Id %d."), factionId);
 		return;
 	}
-
-	if (!isPlayerOrAi && playerId == UUDGlobalData::GaiaId)
-	{
-		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering Gaia as Id(%d)."), playerId);
-	}
-	else if (isPlayerOrAi && playerId != UUDGlobalData::GaiaId)
-	{
-		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering Player or Ai as Id(%d)."), playerId);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Invalid combination of Id(%d) and isPlayerOrAi."), playerId);
-		return;
-	}
-	TObjectPtr<UUDWorldState> newState;
-	if (isPlayerOrAi)
-		newState = UUDWorldState::CreateState(playerId, EUDWorldPerspective::Faction);
-	else
-		newState = UUDWorldState::CreateState(playerId, EUDWorldPerspective::Everything);
-
-	States.Add(playerId, newState);
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Created local Player Faction %d."), factionId);
+	CreateNewState(factionId, perspective);
 }
 
-void AUDWorldSimulation::CreateStateAndSynchronize(int32 playerId, bool isPlayerOrAi)
+int32 AUDWorldSimulation::GetNewFactionId()
 {
-	CreateState(playerId, isPlayerOrAi);
-	SynchronizeNewPlayerState(States[playerId]);
-	// After that push new synchronize action to all, including new joined player.
-	FUDActionData joinPlayer(UUDSystemActionPlayerAdd::ActionTypeId, States[playerId]->FactionPerspective);
-	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Calling join action for player id(%d)."), States[playerId]->FactionPerspective);
-	ExecuteAction(joinPlayer);
+	return NextUniqueFactionId++;
 }
 
-void AUDWorldSimulation::SynchronizeNewPlayerState(TObjectPtr<UUDWorldState> newState)
+void AUDWorldSimulation::CreateSynchronizedState(int32 factionId, EUDWorldPerspective perspective)
+{
+	CreateNewState(factionId, perspective);
+	SynchronizeNewFactionState(States[factionId]);
+	CreateFactionCreationEvent(factionId);
+}
+
+void AUDWorldSimulation::CreateNewState(int32 factionId, EUDWorldPerspective perspective)
+{
+	TObjectPtr<UUDWorldState> newState = UUDWorldState::CreateState(factionId, EUDWorldPerspective::Faction);
+	States.Add(factionId, newState);
+}
+
+void AUDWorldSimulation::SynchronizeNewFactionState(TObjectPtr<UUDWorldState> newFactionState)
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Synchrinizing new Player."));
-	// New player state must be synchronzied from old action list first.
-	// This directly executes action over the supplied state.
 	for (auto& action : ExecutionHistory)
 	{
-		ActionManager->GetAction(action.ActionTypeId)->Execute(action, newState);
+		ActionManager->GetAction(action.ActionTypeId)->Execute(action, newFactionState);
 	}
 }
 
-void AUDWorldSimulation::NaiveExecuteAction(FUDActionData& trustworthyAction)
+void AUDWorldSimulation::CreateFactionCreationEvent(int32 factionId)
 {
-	// This expects action data that passed through ExecuteAction and thus are valid and complete.
-	// This avoids checks over full state, thus allowing execution even if full state is not present.
-	// This also ignores simulation call for broadcast. Maybe this is actually useful ?
-	// TODO move these comments and verify their trustworthyness.
+	FUDActionData joinPlayer(UUDSystemActionPlayerAdd::ActionTypeId, factionId);
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Calling join action for player id(%d)."), factionId);
+	CheckAndExecuteAction(joinPlayer);
+}
+#pragma endregion
+
+#pragma region Data
+TObjectPtr<UUDWorldState> AUDWorldSimulation::GetFactionState(int32 factionId)
+{
+	if (States.Contains(factionId))
+	{
+		return States[factionId];
+	}
+	return nullptr;
+};
+#pragma endregion
+
+#pragma region Actions
+
+bool AUDWorldSimulation::HasValidActionId(int32 currentId)
+{
+	return currentId != UUDGlobalData::InvalidActionId;
+}
+
+int32 AUDWorldSimulation::GetNewActionId()
+{
+	return NextUniqueActionId++;
+}
+
+void AUDWorldSimulation::OnlyExecuteAction(FUDActionData& trustworthyAction)
+{
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: OnlyExecuteAction UID(%d)."), trustworthyAction.UniqueId);
+	// Run action on the all available states without any checks.
 	for (auto& pair : States)
 	{
 		ActionManager->GetAction(trustworthyAction.ActionTypeId)->Execute(trustworthyAction, pair.Value);
@@ -97,100 +161,110 @@ void AUDWorldSimulation::NaiveExecuteAction(FUDActionData& trustworthyAction)
 	OnBroadcastActionAppliedDelegate.Broadcast(trustworthyAction);
 }
 
-void AUDWorldSimulation::ExecuteAction(FUDActionData& newAction)
+void AUDWorldSimulation::CheckAndExecuteAction(FUDActionData& newAction)
 {
-	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Executing Action."));
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: CheckAndExecuteAction Started."));
 
-	auto actionExecutor = ActionManager->GetAction(newAction.ActionTypeId);
+	// Retrieves Executor for this action from the Action Manager.
+	TScriptInterface<IUDActionInterface> actionExecutor = ActionManager->GetAction(newAction.ActionTypeId);
+	TObjectPtr<UUDWorldState> gaiaFactionState = GetFactionState(UUDGlobalData::GaiaFactionId);
 
-	//if (!Actions.Contains(newAction.ActionTypeId))
-	//{
-	//	// Blocked execution of non-existing action.
-	//	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Action executor for action id(%d) is not defined."), newAction.ActionTypeId);
-	//	return;
-	//}
-	//// Obtained executor for this action.
-	//auto& actionExecutor = Actions[newAction.ActionTypeId];
-
-	if (!actionExecutor->CanExecute(newAction, GetSpecificState(UUDGlobalData::GaiaId)))
+	// Check if action can be executed with the retrieved executor.
+	if (!actionExecutor->CanExecute(newAction, gaiaFactionState))
 	{
-		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Action executor was halted for action id(%d) due to executor id(%d)."),
+		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Executor halted for action type id(%d) due to executor type id(%d)."),
 			newAction.ActionTypeId, actionExecutor->GetId());
 		return;
 	}
 
-	if (!IsValidAssignableActionId(newAction.UniqueId))
+	// Prepare action.
+	AssignActionIds(newAction);
+	CreateActionBackup(newAction, actionExecutor, gaiaFactionState);
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Executing Action UID(%d)."), newAction.UniqueId);
+	
+	// Incorporate into the history.
+	ExecutionHistory.Add(newAction);
+	
+	// Updated all current states with this action.
+	OnlyExecuteAction(newAction);
+	
+	// Notifies everyone about the verified action.
+	OnBroadcastVerifiedActionExecutedDelegate.Broadcast(newAction);
+	
+	// Continue execution if it has any continuations.
+	if (actionExecutor->HasContinuations())
 	{
-		newAction.UniqueId = GetAssignableActionId();
+		RunActionContinuations(newAction, actionExecutor, gaiaFactionState);
 	}
-	// If action has non valid parent Id, then it's parent to self.
-	// Inherited action already have parent from their constructor.
-	// Thus only actions that are new/root do not have parent. And thus their parent is them.
-	if (newAction.SourceUniqueId == 0)
+
+	// Check endgame
+	PostActionStateCheck(actionExecutor->GetId(), gaiaFactionState);
+	
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: CheckAndExecuteAction Ended for Action UID(%d)."), 
+		newAction.UniqueId);
+}
+
+#pragma endregion
+
+#pragma region CheckAndExecute Helpers
+void AUDWorldSimulation::AssignActionIds(FUDActionData& newAction)
+{
+	// Each action has UniqueId.
+	if (!HasValidActionId(newAction.UniqueId))
+	{
+		newAction.UniqueId = GetNewActionId();
+	}
+	// Action that has parent will always carry the specified as SourceUniqueId.
+	// Otherwise this must assign the new UniqueId to it.
+	if (!HasValidActionId(newAction.SourceUniqueId))
 	{
 		newAction.SourceUniqueId = newAction.UniqueId;
 	}
-
+}
+void AUDWorldSimulation::CreateActionBackup(FUDActionData& newAction,
+	TScriptInterface<IUDActionInterface>& actionExecutor,
+	TObjectPtr<UUDWorldState>& gaiaFactionState)
+{
+	// Backup
 	if (actionExecutor->IsBackupRequired())
 	{
 		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Backup by UID(%d)."), newAction.UniqueId);
-		actionExecutor->Backup(newAction, GetSpecificState(UUDGlobalData::GaiaId));
+		actionExecutor->Backup(newAction, gaiaFactionState);
 	}
-
-	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Action UID(%d)."), newAction.UniqueId);
-
-	// Saved for future reference
-	ExecutionHistory.Add(newAction);
-	// Updated all current states with this action.
-	NaiveExecuteAction(newAction);
-	// Notifies everyone about the action.
-	OnBroadcastVerifiedActionExecutedDelegate.Broadcast(newAction);
-	// Continue notifying about the subsequent actions...
-	if (actionExecutor->HasContinuations())
+}
+void AUDWorldSimulation::RunActionContinuations(FUDActionData& newAction,
+	TScriptInterface<IUDActionInterface>& actionExecutor,
+	TObjectPtr<UUDWorldState>& gaiaFactionState)
+{
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Composite Action UID(%d) Started."), newAction.UniqueId);
+	TArray<FUDActionData> subactions = actionExecutor->GetContinuations(newAction, gaiaFactionState);
+	for (auto& action : subactions)
 	{
-		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Composite Action UID(%d) Started."), newAction.UniqueId);
-		TArray<FUDActionData> subactions = actionExecutor->GetContinuations(newAction, GetSpecificState(UUDGlobalData::GaiaId));
-		for (auto& action : subactions)
-		{
-			ExecuteAction(action);
-		}
-		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Composite Action UID(%d) Finished."), newAction.UniqueId);
+		CheckAndExecuteAction(action);
 	}
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Composite Action UID(%d) Finished."), newAction.UniqueId);
+}
+void AUDWorldSimulation::PostActionStateCheck(int32 actionExecutorId,
+	TObjectPtr<UUDWorldState>& gaiaFactionState)
+{
 	// This is basically required to check after every action due to current structure.
 	// In return we are only checking actions we think can end the game.
-	if (Arbiter->OnActionExecutionFinished(actionExecutor->GetId(), GetSpecificState(UUDGlobalData::GaiaId)))
+	if (Arbiter->OnActionExecutionFinished(actionExecutorId, gaiaFactionState))
 	{
 		for (auto& action : Arbiter->EndGame())
 		{
-			ExecuteAction(action);
+			CheckAndExecuteAction(action);
 		}
 	}
 }
+#pragma endregion
 
-void AUDWorldSimulation::RevertAction()
-{
-	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Reverting Action."));
-	if (ExecutionHistory.Num() == 0)
-	{
-		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Action executor couldn't unload action due to empty history."));
-		return;
-	}
-	FUDActionData oldAction = ExecutionHistory.Pop();
-
-	// Revert all current states with this action.
-	for (auto& pair : States)
-	{
-		ActionManager->GetAction(oldAction.ActionTypeId)->Revert(oldAction, pair.Value);
-	}
-	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Action executor reverted action last successful action."));
-	UndoHistory.Add(oldAction);
-}
-
+#pragma region Server Sync
 FUDActionArray AUDWorldSimulation::GetHistoryUntil(int32 historyPoint)
 {
 	FUDActionArray newHistory;
 	newHistory.Actions.SetNumZeroed(0);
-	if (historyPoint == 0)
+	if (historyPoint == UUDGlobalData::InvalidActionId)
 	{
 		for (auto& historic : ExecutionHistory)
 		{
@@ -223,3 +297,27 @@ FUDActionArray AUDWorldSimulation::GetHistoryUntil(int32 historyPoint)
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Returning %d historic actions from %d to %d."), newHistory.Actions.Num(), first, last);
 	return newHistory;
 }
+#pragma endregion
+
+#pragma region Revert
+
+void AUDWorldSimulation::RevertAction()
+{
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Reverting Action."));
+	if (ExecutionHistory.Num() == 0)
+	{
+		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Action executor couldn't unload action due to empty history."));
+		return;
+	}
+	FUDActionData oldAction = ExecutionHistory.Pop();
+
+	// Revert all current states with this action.
+	for (auto& pair : States)
+	{
+		ActionManager->GetAction(oldAction.ActionTypeId)->Revert(oldAction, pair.Value);
+	}
+	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Action executor reverted action last successful action."));
+	UndoHistory.Add(oldAction);
+}
+
+#pragma endregion

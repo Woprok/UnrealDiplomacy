@@ -4,6 +4,8 @@
 #include "Core/UDGlobalData.h"
 #include "Core/Simulation/Actions/UDSystemActionWorldCreate.h"
 #include "Core/Simulation/Actions/UDSystemActionGameStart.h"
+#include "Core/Simulation/Actions/UDSystemActionLog.h"
+#include "Core/Simulation/Actions/UDSystemActionPlayerRemove.h"
 #include "Core/UDControllerInterface.h"
 #include "Core/Simulation/UDWorldSimulation.h"
 #include "Core/Simulation/UDActionData.h"
@@ -23,6 +25,7 @@ AUDSkirmishGameMode::AUDSkirmishGameMode()
 	HUDClass = AUDSkirmishHUD::StaticClass();
 	PlayerControllerClass = AUDSkirmishPlayerController::StaticClass();
 	PlayerStateClass = AUDSkirmishPlayerState::StaticClass();
+	NextUniqueControllerId = UUDGlobalData::FirstUseableControllerId;
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Defined static classes for SkirmishGameMode."));
 }
 
@@ -91,8 +94,9 @@ void AUDSkirmishGameMode::PostLogin(APlayerController* NewPlayer)
 void AUDSkirmishGameMode::Logout(AController* Exiting)
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Player left."));
+	TObjectPtr<AUDSkirmishPlayerController> player = Cast<AUDSkirmishPlayerController>(Exiting);
+	OnPlayerLeaving(player);
 	Super::Logout(Exiting);
-	OnAITakeOver(Exiting);
 }
 
 #pragma endregion
@@ -102,7 +106,7 @@ void AUDSkirmishGameMode::Logout(AController* Exiting)
 void AUDSkirmishGameMode::ProcessAction(FUDActionData& action)
 {
 	// All actions are straight up passed to simulation as obtained from client.
-	GetWorldSimulation()->ExecuteAction(action);
+	GetWorldSimulation()->CheckAndExecuteAction(action);
 }
 
 void AUDSkirmishGameMode::ProcessCommand(FUDCommandData& command)
@@ -128,15 +132,15 @@ void AUDSkirmishGameMode::OnStartGameCommand()
 	// - Create AI players
 	// - Create Map
 	// - Start Game
-	EUDMatchState MatchState = EUDMatchState::Match;
+	MatchState = EUDMatchState::Match;
 	// TODO READ LOBBY CONFIG
 	CreateAiPlayers(2);
 
-	FUDActionData mapGen(UUDSystemActionWorldCreate::ActionTypeId, UUDGlobalData::GaiaId, { 4, 5, 5 });
-	GetWorldSimulation()->ExecuteAction(mapGen);
+	FUDActionData mapGen(UUDSystemActionWorldCreate::ActionTypeId, UUDGlobalData::GaiaFactionId, { 4, 5, 5 });
+	GetWorldSimulation()->CheckAndExecuteAction(mapGen);
 
-	FUDActionData startGame(UUDSystemActionGameStart::ActionTypeId, UUDGlobalData::GaiaId);
-	GetWorldSimulation()->ExecuteAction(startGame);
+	FUDActionData startGame(UUDSystemActionGameStart::ActionTypeId, UUDGlobalData::GaiaFactionId);
+	GetWorldSimulation()->CheckAndExecuteAction(startGame);
 }
 
 void AUDSkirmishGameMode::SendPartialHistoricData(int32 controllerId, int32 firstKnown)
@@ -170,10 +174,34 @@ void AUDSkirmishGameMode::ActionExecutionFinished(FUDActionData& action)
 
 #pragma region Controllers
 
+void AUDSkirmishGameMode::OnPlayerLeaving(TObjectPtr<AUDSkirmishPlayerController> existingPlayer)
+{
+	FUDActionData removeFaction(UUDSystemActionLog::ActionTypeId, UUDGlobalData::GaiaFactionId);
+	FUDActionData aiTakeOverAction(UUDSystemActionLog::ActionTypeId, UUDGlobalData::GaiaFactionId);
+
+	switch (MatchState)
+	{
+	case EUDMatchState::Lobby:
+		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Player escaped from lobby."));
+		// TODO replace it with Faction remove / ignore instead of replacing it with AI.
+		RegisterSubstiteAi(existingPlayer->GetControlledFactionId());
+		GetWorldSimulation()->CheckAndExecuteAction(removeFaction);
+		break;
+	case EUDMatchState::Match:
+		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Player left during the match."));
+		RegisterSubstiteAi(existingPlayer->GetControlledFactionId());
+		GetWorldSimulation()->CheckAndExecuteAction(aiTakeOverAction);
+		break;
+	default:
+		unimplemented();
+		break;
+	}
+}
+
 void AUDSkirmishGameMode::DefineUniqueControllerId(TScriptInterface<IUDControllerInterface>& controller)
 {
 	// Define new controller ID.
-	controller->SetControllerUniqueId(NextUniqueControllerIdCount++);
+	controller->SetControllerUniqueId(NextUniqueControllerId++);
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Finishing initialization of controller with Id: %d"), controller->GetControllerUniqueId());
 }
 
@@ -196,36 +224,62 @@ TWeakObjectPtr<AUDSkirmishGaiaAIController> AUDSkirmishGameMode::CreateServerPla
 	return GetWorld()->SpawnActor<AUDSkirmishGaiaAIController>();
 }
 
-void AUDSkirmishGameMode::RegisterPlayer(TObjectPtr<AUDSkirmishPlayerController> controller)
+void AUDSkirmishGameMode::RegisterSubstiteAi(int32 claimableFactionId)
 {
-	// Save to collection.
-	PlayerControllers.Add(controller);
+	// Create new controller and save it.
+	TWeakObjectPtr<AUDSkirmishAIController> aiController = CreateAiPlayer();
+	AiControllers.Add(aiController);
+	// Assign Controller Id
+	TScriptInterface<IUDControllerInterface> controller = aiController.Get();
+	DefineUniqueControllerId(controller);
 
-	// Assign Faction state to player
-	TScriptInterface<IUDControllerInterface> idController = controller.Get();
-	AssignToSimulation(idController, true);
+	controller->SetControlledFactionId(claimableFactionId);
+
+	// Bind remaining AI functionality.
+	aiController->SetSimulatedStateAccess(GetWorldSimulation()->GetFactionState(controller->GetControlledFactionId()));
+	TScriptInterface<IUDActionHandlingInterface> actionHandlingController = aiController.Get();
+	GetCastGameState()->RegisterActionMaker(actionHandlingController);
 }
 
-void AUDSkirmishGameMode::RegisterObserver(TObjectPtr<AUDSkirmishPlayerController> controller)
+void AUDSkirmishGameMode::RegisterPlayer(TObjectPtr<AUDSkirmishPlayerController> playerController)
 {
 	// Save to collection.
-	PlayerControllers.Add(controller);
+	PlayerControllers.Add(playerController);
+	// Assign Controller Id
+	TScriptInterface<IUDControllerInterface> controller = playerController.Get();
+	DefineUniqueControllerId(controller);
 
+	int32 factionId = GetWorldSimulation()->CreatePlayerFaction();
+	controller->SetControlledFactionId(factionId);
+}
+
+void AUDSkirmishGameMode::RegisterObserver(TObjectPtr<AUDSkirmishPlayerController> playerController)
+{
+	// Save to collection.
+	PlayerControllers.Add(playerController);
+	// Assign Controller Id
+	TScriptInterface<IUDControllerInterface> controller = playerController.Get();
+	DefineUniqueControllerId(controller);
+
+	int32 factionId = GetWorldSimulation()->CreateObserverFaction();
+	controller->SetControlledFactionId(factionId);
 }
 
 void AUDSkirmishGameMode::RegisterAi()
 {
 	// Create new controller and save it.
-	TWeakObjectPtr<AUDSkirmishAIController> controller = CreateAiPlayer();
-	AiControllers.Add(controller);
+	TWeakObjectPtr<AUDSkirmishAIController> aiController = CreateAiPlayer();
+	AiControllers.Add(aiController);
+	// Assign Controller Id
+	TScriptInterface<IUDControllerInterface> controller = aiController.Get();
+	DefineUniqueControllerId(controller);
 
-	// 
-	TScriptInterface<IUDControllerInterface> idController = controller.Get();
-	AssignToSimulation(idController, true);
-	controller->SetSimulatedStateAccess(GetWorldSimulation()->GetSpecificState(controller->GetControllerUniqueId()));
+	int32 factionId = GetWorldSimulation()->CreatePlayerFaction();
+	controller->SetControlledFactionId(factionId);
 
-	// Bind AI action invokes.
-	TScriptInterface<IUDActionHandlingInterface> actionHandlingController = controller.Get();
+	// Bind remaining AI functionality.
+	aiController->SetSimulatedStateAccess(GetWorldSimulation()->GetFactionState(controller->GetControlledFactionId()));
+	TScriptInterface<IUDActionHandlingInterface> actionHandlingController = aiController.Get();
 	GetCastGameState()->RegisterActionMaker(actionHandlingController);
 }
 
@@ -233,24 +287,17 @@ void AUDSkirmishGameMode::RegisterGaiaAi()
 {
 	// Create new controller and save it.
 	GaiaController = CreateServerPlayer();
+	// Assign Controller Id that is expected by global definition.
+	TScriptInterface<IUDControllerInterface> controller = GaiaController.Get();
+	controller->SetControllerUniqueId(UUDGlobalData::GaiaControllerId);
 
-	TScriptInterface<IUDControllerInterface> idController = GaiaController.Get();
-	AssignToSimulation(idController, false);
-	GaiaController->SetSimulatedStateAccess(GetWorldSimulation()->GetSpecificState(GaiaController->GetControllerUniqueId()));
+	int32 factionId = GetWorldSimulation()->CreateGaiaFaction();
+	controller->SetControlledFactionId(factionId);
 
-	// Bind AI action invokes.
+	// Bind remaining AI functionality.
+	GaiaController->SetSimulatedStateAccess(GetWorldSimulation()->GetFactionState(GaiaController->GetControlledFactionId()));
 	TScriptInterface<IUDActionHandlingInterface> actionHandlingController = GaiaController.Get();
 	GetCastGameState()->RegisterActionMaker(actionHandlingController);
-}
-
-void AUDSkirmishGameMode::AssignToSimulation(TScriptInterface<IUDControllerInterface>& controller, bool isPlayerOrAi)
-{
-	// Always retrieve this before calling anything that might depend on it.
-	TWeakObjectPtr<AUDWorldSimulation> worldSim = GetWorldSimulation();
-
-
-	// Register controller for WorldSimulation, so it has it's own unique representation in the server simulation.
-	worldSim->CreateStateAndSynchronize(controller->GetControllerUniqueId(), isPlayerOrAi);
 }
 
 #pragma endregion

@@ -15,34 +15,42 @@ class UNREALDIPLOMACY_API UUDGlobalData : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * This Id should always belong to first action in action history.
-	 */
-	static const int32 FirstActionId = 0;
-	/**
-	 * This Id is always considered invalid for all controllers operations.
-	 */
-	static const int32 InvalidControllerId = -1;
-	/**
-	 * This Id is always considered invalid for all factions operations.
-	 */
-	static const int32 InvalidFactionId = -1;
-	/**
-	 * This Id is always considered invalid for all action operations.
-	 */
+	/** This Id is always used by first action in action list / history. */
+	static const int32 FirstUseableActionId = 0;
+	/** This is first Id that can be assigned to player / AI Faction. */
+	static const int32 FirstUseableFactionId = 2;
+	/** This is first Id that can be assigned to player / AI State. */
+	static const int32 FirstUseableStateId = 2;
+	/** This is first Id that can be assigned to player / AI Controller. */
+	static const int32 FirstUseableControllerId = 1;
+
+	/** This Id is always considered invalid for all action operations. */
 	static const int32 InvalidActionId = -1;
+	/** This Id is always considered invalid for all faction operations. */
+	static const int32 InvalidFactionId = -1;
+	/** This Id is always considered invalid for all state operations. */
+	static const int32 InvalidStateId = -1;
+	/** This Id is always considered invalid for all controller operations. */
+	static const int32 InvalidControllerId = -1;
+
+	/** This Id is always reserved for Gaia / Server Faction. */
+	static const int32 GaiaFactionId = 0;     
+	/** This Id is always reserved for Gaia / Server State. */
+	static const int32 GaiaStateId = 0;	      
+	/** This Id is always reserved for Gaia / Server Controller. */
+	static const int32 GaiaControllerId = 0;
+
+	/** This Id is always reserved for Observer Faction. */
+	static const int32 ObserverFactionId = 1;
+	/** This Id is always reserved for Observer State. */
+	static const int32 ObserverStateId = 1;
+public:
+	// Default values that are expected to exists or be used.
+
 	/**
-	 * Amount of optional parameters required for actions. 
+	 * Amount of optional parameters required for actions.
 	 */
 	static const int32 DefaultActionParameterCount = 0;
-	/**
-	 * This Id is always considered invalid for all state types.
-	 */
-	static const int32 InvalidStateId = -1;
-	/**
-	 * This Id is always reserved for Gaia for both player & state.
-	 */
-	static const int32 GaiaId = 0;
 	/**
 	 * Default level name that should be same as default level.
 	 */

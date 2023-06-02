@@ -1,20 +1,23 @@
 // Copyright Miroslav Valach
+// TODO change ActionId to long, so there is even smaller chance of someone using all action Ids.
+// TODO create client version of this class.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Core/UDActor.h"
-#include "UDActionData.h"
-#include "UDWorldArbiter.h"
-#include "UDWorldGenerator.h"
-#include "UDModifierManager.h"
-#include "UDActionInterface.h"
-#include "UDActionHandlingInterface.h"
-#include "UDWorldState.h"
-#include "Core/UDGlobalData.h"
 #include "UDWorldSimulation.generated.h"
 
+// Forward Declarations
+
+enum class EUDWorldPerspective : uint8;
+struct FUDActionData;
+struct FUDActionArray;
+class IUDControllerInterface;
+class IUDActionInterface;
 class UUDActionManager;
+class UUDWorldArbiter;
+class UUDWorldState;
 
 /**
  * Allows controllers to register for incoming messages from the simulation about the state change.
@@ -38,125 +41,181 @@ public:
 	 * Initialize all necessary fields for actions and simulation.
 	 */
 	void Initialize();
+#pragma region Assigns of controllers to specific state.
+public:
 	/**
-	 * Delegate for broadcast of an action being executed, thus resulting in state changing.
-	 * Action that was done is passed ?
-	 * TODO reevaluate restraints.
+	 * Faction for Gaia / Server.
+	 * This will never create more then one instance.
 	 */
-	BroadcastActionExecutedDelegate OnBroadcastVerifiedActionExecutedDelegate;
+	int32 CreateGaiaFaction();
 	/**
-	 * Simplified version of OnBroadcastVerifiedActionExecutedDelegate
-	 * Invoked by the other execution function, that does no verification NaiveExecuteAction.
+	 * Faction for Observer.
+	 * This will never create more then one instance.
 	 */
-	BroadcastActionExecutedDelegate OnBroadcastActionAppliedDelegate;
+	int32 CreateObserverFaction();
 	/**
-	 * Creates new state that will be simultenuosly simulated along with all others.
+	 * Player faction is unique for each player.
+	 */
+	int32 CreatePlayerFaction();
+	/**
+	 * Creates faction state for local purposes.
+	 * This is used only on client.
+	 */
+	void CreatePrivatePlayerFaction(int32 factionId);
+protected:
+	/**
+	 * Synchronizes specified state by
+	 * -> updating state from history.
+	 * -> executing relevant actions such as join.
 	 * Note: Player and Ai are both considered player. Only world/gaia is considered non-player.
 	 * Automatically synchronizes data with this state.
 	 */
-	void CreateStateAndSynchronize(int32 playerId, bool isPlayerOrAi);
+	void CreateSynchronizedState(int32 factionId, EUDWorldPerspective perspective);
 	/**
-	 * Creates new state that will be simultenuosly simulated along with all others.
-	 * Note: Player and Ai are both considered player. Only world/gaia is considered non-player.
-	 * Creates only empty state.
+ 	 * Provides Id to agents, that we have full control over.
 	 */
-	void CreateState(int32 playerId, bool isPlayerOrAi);
+	int32 GetNewFactionId();
+private:
 	/**
-	 * Verifies viability of the action and executes it.
-	 * TODO FAIL TYPE
+	 * Fully initializes new faction state as part of simulation.
+	 * All factions states are by default empty.
 	 */
-	void ExecuteAction(FUDActionData& newAction);
+	void CreateNewState(int32 factionId, EUDWorldPerspective perspective);
 	/**
-	 * Reverse execution of single action.
-	 * Can be called repeateadly to revert all actions.
-	 * Can and will break execution of used too much.
-	 * TODO improve this, if there will be good reason to make it a full feature.
+	 * Synchronizes specified state by applying all actions in ExecutionHistory.
 	 */
-	void RevertAction();
+	void SynchronizeNewFactionState(TObjectPtr<UUDWorldState> newFactionState);
+	/**
+	 * Announces to everyone that new faction (player) was added to the game world.
+	 */
+	void CreateFactionCreationEvent(int32 factionId);
+	UPROPERTY()
+	int32 NextUniqueFactionId;
+#pragma endregion
+
+#pragma region Data
+public:
 	/**
 	 * Returns state for read only purposes. Exposed for controllers.
 	 */
-	TObjectPtr<UUDWorldState> GetSpecificState(int32 stateOwnerId)
-	{
-		if (States.Contains(stateOwnerId))
-		{
-			return States[stateOwnerId];
-		}
-		return nullptr;
-	};
-	/**
-	 * Creates copy of history until the specified point.
-	 * 0 = all
-	 */
-	FUDActionArray GetHistoryUntil(int32 historyPoint);
-	/**
-	 * Executes action without any verification.
-	 * Useful for actions that are believed to be absolutely correct. e.g. previously executed.
-	 */
-	void NaiveExecuteAction(FUDActionData& trustworthyAction);
+	TObjectPtr<UUDWorldState> GetFactionState(int32 factionId);
 private:
 	/**
-	 * Synchronize new player state to be on par with the old ones.
-	 * This will result in modification of all states as new player must be added to them as well.
-	 */
-	void SynchronizeNewPlayerState(TObjectPtr<UUDWorldState> newState);
-protected:
-	/**
-	 * Returns true if the current id is proper, otherwise false.
-	 * Id with value of 0 is not valid.
-	 */
-	bool IsValidAssignableActionId(int32 currentId)
-	{
-		return currentId != UUDGlobalData::InvalidActionId;
-	}
-	/**
-	 * Id assigned to actions, that were passed for execution. If action already has an id,
-	 * it will not get new id.
-	 * Id with value -1 is considered invalid.
-	 * TODO maybe we should really on -1 as invalid value :)
-	 */
-	int32 GetAssignableActionId()
-	{
-		++AssignableActionId;
-		while (AssignableActionId == UUDGlobalData::InvalidActionId)
-		{
-			// returns can be only non -1 value.
-			++AssignableActionId;
-		}
-		// finally returning non -1 value.
-		return AssignableActionId;
-	}
-private:
-	/**
-	 * Each Player/Ai and Server have their own instance/state of the world.
+	 * All factions have their own state, that contains everything from their point of view.
 	 */
 	UPROPERTY()
 	TMap<int32, TObjectPtr<UUDWorldState>> States;
 	/**
-	 * List of all actions in chronological order of execution over the GaiaState.
-	 * Due to that it's necessary tool for synchronizing new players as well as old, if
-	 * desync would ever happen.
+	 * Chronological order of all actions that were correct and completely executed.
+	 * If action is reverted then it needs to be removed from this list.
+	 * Reverting is only allowed for last available action in this list.
+	 * Beaware, if this rules are not followed new factions will start pernamently desynced.
 	 */
 	UPROPERTY()
 	TArray<FUDActionData> ExecutionHistory;
 	/**
-	 * List of all actions that were reverted.
-	 * TODO improve this, if there will be good reason to make it a full feature.
-	 */
-	UPROPERTY()
-	TArray<FUDActionData> UndoHistory;
-	/**
-	 * Current modifier manager used by this simulation.
+	 * Arbiter used to check on simulation execution state.
 	 */
 	UPROPERTY()
 	TObjectPtr<UUDWorldArbiter> Arbiter = nullptr;
+	/**
+	 * Manager that is responsible for providing actions for execution.
+	 */
 	UPROPERTY()
 	TObjectPtr<UUDActionManager> ActionManager = nullptr;
+#pragma endregion
+
+#pragma region Actions
+public:
+	/**
+	 * Executes action without any verification.
+	 * Useful for actions that were already executed.
+	 * e.g client executing action from server...
+	 * This is sub-call of the CheckAndExecuteAction.
+	 */
+	void OnlyExecuteAction(FUDActionData& trustworthyAction);
+	/**
+	 * Properly checks and only then executes action.
+	 * Actions that fail the check are discarded.
+	 */
+	void CheckAndExecuteAction(FUDActionData& newAction);
+	/**
+	 * Delegate for broadcast of an action being executed, thus resulting in state changing.
+	 * This is executed after the other broadcast. 
+	 * Always indicates that action was also verified before execution.
+	 */
+	BroadcastActionExecutedDelegate OnBroadcastVerifiedActionExecutedDelegate;
+	/**
+	 * Simplified version of OnBroadcastVerifiedActionExecutedDelegate
+	 * Invoked by OnlyExecuteAction after it finishes.
+	 */
+	BroadcastActionExecutedDelegate OnBroadcastActionAppliedDelegate;
+protected:
+	/**
+	 * Checks if this id is considerd invalid as defined by UUDGlobalData
+	 */
+	bool HasValidActionId(int32 currentId);
+	/**
+	 * Each action that is being processed will receive new unique id.
+	 * Actions have invalid id defined in UUDGlobalData.
+	 */
+	int32 GetNewActionId();
+private:
 	/**
 	 * Id assigned to actions, that were passed for execution. If action already has an id,
 	 * it will not get new id.
 	 * Id with value 0 is considered valid.
 	 */
 	UPROPERTY()
-	int32 AssignableActionId = -1;
+	int32 NextUniqueActionId;
+#pragma endregion
+
+#pragma region CheckAndExecute Helpers
+	void AssignActionIds(FUDActionData& newAction);
+
+	void CreateActionBackup(FUDActionData& newAction,
+		TScriptInterface<IUDActionInterface>& actionExecutor,
+		TObjectPtr<UUDWorldState>& gaiaFactionState);
+
+	void RunActionContinuations(FUDActionData& newAction,
+		TScriptInterface<IUDActionInterface>& actionExecutor,
+		TObjectPtr<UUDWorldState>& gaiaFactionState);
+
+	void PostActionStateCheck(int32 actionExecutorId,
+		TObjectPtr<UUDWorldState>& gaiaFactionState);
+#pragma endregion
+
+#pragma region Server Sync
+public:
+	/**
+	 * Creates copy of history until the specified point.
+	 * If UUDGlobalData InvalidActionId is provied this will return all actions.
+	 */
+	FUDActionArray GetHistoryUntil(int32 historyPoint);
+#pragma endregion
+
+#pragma region Revert
+	// TODO Revert functionality and testing.
+	// - There is issue with how is this supposed to work in multiplayer environment.
+	// - AI is not aware of this system.
+	// - AI needs to be able to store data and backtrack if this is used.
+	// - This would require either strict client side simulation.
+	// - Or turns would have to prevent all others players from acting.
+	// - Current turn implementation is simultaneus and thus not suitable for this.
+	// - Current implementation allows only last played action to be removed.
+public:
+	/**
+	 * Reverse execution of single action.
+	 * Can be called repeateadly to revert all actions.
+	 * This is experimental feature and it's not stable.
+	 * Currently AI will not work properly with it.
+	 */
+	void RevertAction();
+private:
+	/**
+	 * List of all actions that were reverted.
+	 */
+	UPROPERTY()
+	TArray<FUDActionData> UndoHistory;
+#pragma endregion
 };

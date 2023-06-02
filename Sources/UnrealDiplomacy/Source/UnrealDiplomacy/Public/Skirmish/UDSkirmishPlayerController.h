@@ -34,8 +34,6 @@ UCLASS()
 class UNREALDIPLOMACY_API AUDSkirmishPlayerController : public AUDPlayerController
 {
 	GENERATED_BODY()
-public:
-	AUDSkirmishPlayerController();
 #pragma region Client-Server RPCs
 public:
 	/**

@@ -15,7 +15,7 @@ void AUDDevelopmentGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	TWeakObjectPtr<AUDWorldSimulation> sim = GetWorldSimulation();
-	auto test = sim->GetSpecificState(0);
+	auto test = sim->GetFactionState(0);
 	if (IsValid(test))
 	{
 		UE_LOG(LogTemp, Log, TEXT("AUDDevelopmentGameMode: Tick detected valid world."));

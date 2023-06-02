@@ -7,7 +7,7 @@
 
 bool UUDGameActionThroneUsurp::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	bool isThroneEmpty = world->ImperialThrone.Ruler == UUDGlobalData::GaiaId;
+	bool isThroneEmpty = world->ImperialThrone.Ruler == UUDGlobalData::GaiaFactionId;
 	return IUDActionInterface::CanExecute(action, world) && isThroneEmpty;
 }
 
@@ -22,5 +22,5 @@ void UUDGameActionThroneUsurp::Revert(const FUDActionData& action, TObjectPtr<UU
 {
 	IUDActionInterface::Revert(action, world);
 	// Rollback to the empty throne.
-	world->ImperialThrone.Ruler = UUDGlobalData::GaiaId;
+	world->ImperialThrone.Ruler = UUDGlobalData::GaiaFactionId;
 }

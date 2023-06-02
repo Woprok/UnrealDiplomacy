@@ -111,7 +111,7 @@ public:
 	 * Actually they can't share this like ever...
 	 */
 	UPROPERTY(BlueprintReadOnly)
-	int32 UniqueId = 0;
+	int32 UniqueId = -1;
 	/**
 	 * By default this is same as UniqueId. 
 	 * For composite action this will contain UniqueId of the original action.
@@ -120,13 +120,13 @@ public:
 	 * to the WorldState.
 	 */
 	UPROPERTY(BlueprintReadOnly)
-	int32 SourceUniqueId = 0;
+	int32 SourceUniqueId = -1;
 	/**
 	 * Player/Ai/Server that created this action and asked for it to be executed.
 	 * This is required to be filled by creator of the action or filled for him.
 	 */
 	UPROPERTY(BlueprintReadOnly)
-	int32 InvokerFactionId = 0;
+	int32 InvokerFactionId = -1;
 	/**
 	 * Optional parameters, e.g. target player id, tile, amount...
 	 */

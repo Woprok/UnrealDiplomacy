@@ -74,7 +74,7 @@ TArray<FUDDiscussionAction> UUDDealActionContractCreate::WrapActions(TArray<FUDA
 			action,
 			EUDDealActionResult::Unresolved,
 			false,
-			UUDGlobalData::GaiaId)
+			UUDGlobalData::GaiaFactionId)
 		);
 	}
 	return dealActions;

@@ -10,11 +10,6 @@
 #include "Core/Simulation/Actions/UDGameActionThroneUsurp.h"
 #include "Core/Simulation/Actions/UDSystemActionTurnEnd.h"
 
-AUDSkirmishAIController::AUDSkirmishAIController()
-{
-	Type = EUDControllerType::AI;
-}
-
 void AUDSkirmishAIController::ProcessOutTurnPlay()
 {
 	// Resolve requests
@@ -30,7 +25,7 @@ void AUDSkirmishAIController::ProcessInTurnPlay()
 		{
 			OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetAction(UUDGameActionTileTake::ActionTypeId,
 				{
-					UUDGlobalData::GaiaId, tile.X, tile.Y
+					UUDGlobalData::GaiaFactionId, tile.X, tile.Y
 				}));
 		}
 	}

@@ -9,7 +9,7 @@ TObjectPtr<UUDTileState> UUDTileState::CreateState(int32 x, int32 y)
 {
 	TObjectPtr<UUDTileState> newState = NewObject<UUDTileState>();
 	newState->Position = FIntPoint(x, y);
-	newState->OwnerUniqueId = UUDGlobalData::GaiaId;
+	newState->OwnerUniqueId = UUDGlobalData::GaiaFactionId;
 	newState->Type = 0;
 	return newState;
 }
@@ -95,6 +95,6 @@ TObjectPtr<UUDWorldState> UUDWorldState::CreateState(int32 playerId, EUDWorldPer
 	TObjectPtr<UUDWorldState> newState = NewObject<UUDWorldState>();
 	newState->Perspective = perspectiveType;
 	newState->FactionPerspective = playerId;
-	newState->ImperialThrone = FUDThroneState(UUDGlobalData::GaiaId);
+	newState->ImperialThrone = FUDThroneState(UUDGlobalData::GaiaFactionId);
 	return newState;
 }

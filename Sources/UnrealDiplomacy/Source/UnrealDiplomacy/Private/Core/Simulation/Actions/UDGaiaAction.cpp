@@ -7,6 +7,6 @@
 
 bool UUDGaiaAction::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	bool isGaia = action.InvokerFactionId == UUDGlobalData::GaiaId;
+	bool isGaia = action.InvokerFactionId == UUDGlobalData::GaiaFactionId;
 	return IUDActionInterface::CanExecute(action, world) && isGaia;
 }

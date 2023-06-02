@@ -15,7 +15,7 @@ void UUDGameActionThroneAbdicate::Execute(const FUDActionData& action, TObjectPt
 {
 	IUDActionInterface::Execute(action, world);
 	// Player is removed from the throne..
-	world->ImperialThrone.Ruler = UUDGlobalData::GaiaId;
+	world->ImperialThrone.Ruler = UUDGlobalData::GaiaFactionId;
 }
 
 void UUDGameActionThroneAbdicate::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)

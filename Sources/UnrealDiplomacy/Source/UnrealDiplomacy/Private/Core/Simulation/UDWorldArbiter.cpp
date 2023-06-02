@@ -56,7 +56,7 @@ void UUDWorldArbiter::EvaluateTurnGameOverState(TObjectPtr<UUDWorldState> gaiaWo
 	// Game will end with this action.
 	GameReachedEnd = true;
 	// New ruler will be crowned.
-	if (gaiaWorldState->ImperialThrone.Ruler == UUDGlobalData::GaiaId)
+	if (gaiaWorldState->ImperialThrone.Ruler == UUDGlobalData::GaiaFactionId)
 	{
 		CrownIsEmpty = true;
 		// TODO add legitimacy
@@ -64,7 +64,7 @@ void UUDWorldArbiter::EvaluateTurnGameOverState(TObjectPtr<UUDWorldState> gaiaWo
 		int32 mostGold = -1;
 		for (auto& player : gaiaWorldState->Factions)
 		{
-			if (player.Value->ResourceGold > mostGold && player.Value->PlayerUniqueId != UUDGlobalData::GaiaId)
+			if (player.Value->ResourceGold > mostGold && player.Value->PlayerUniqueId != UUDGlobalData::GaiaFactionId)
 			{
 				mostGold = player.Value->ResourceGold;
 				CrownableRuler = player.Value->PlayerUniqueId;
@@ -75,10 +75,10 @@ void UUDWorldArbiter::EvaluateTurnGameOverState(TObjectPtr<UUDWorldState> gaiaWo
 
 FUDActionData UUDWorldArbiter::DetermineNewRuler()
 {
-	return FUDActionData(UUDGameActionThroneReceive::ActionTypeId, UUDGlobalData::GaiaId, { CrownableRuler });
+	return FUDActionData(UUDGameActionThroneReceive::ActionTypeId, UUDGlobalData::GaiaFactionId, { CrownableRuler });
 }
 
 FUDActionData UUDWorldArbiter::CreateEndGame()
 {
-	return FUDActionData(UUDSystemActionTurnEnd::ActionTypeId, UUDGlobalData::GaiaId);
+	return FUDActionData(UUDSystemActionTurnEnd::ActionTypeId, UUDGlobalData::GaiaFactionId);
 }

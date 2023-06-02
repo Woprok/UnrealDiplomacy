@@ -11,7 +11,6 @@
 
 // Forward Declarations
 
-enum class EUDControllerType : uint8;
 struct FUDActionData;
 class UUDWorldState;
 class UUDActionAdministrator;
@@ -33,10 +32,6 @@ public:
 	virtual void SetControlledFactionId(int32 factionId) override;
 	UFUNCTION(BlueprintPure)
 	virtual int32 GetControlledFactionId() override;
-	UFUNCTION()
-	virtual void SetControllerType(EUDControllerType type) override;
-	UFUNCTION(BlueprintPure)
-	virtual EUDControllerType GetControllerType() override;
 public:
 	/**
 	 * Use Process functions to handle AI turns.
@@ -49,8 +44,6 @@ protected:
 	int32 UniqueControllerId;
 	UPROPERTY()
 	int32 ControlledFactionId;
-	UPROPERTY()
-	EUDControllerType Type;
 	UPROPERTY()
 	TWeakObjectPtr<UUDWorldState> FactionState = nullptr;
 protected:

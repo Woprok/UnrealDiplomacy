@@ -7,7 +7,7 @@
 
 bool UUDDealActionCreate::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	bool isPlayer = action.InvokerFactionId != UUDGlobalData::GaiaId;
+	bool isPlayer = action.InvokerFactionId != UUDGlobalData::GaiaFactionId;
 	bool isNotModeratingDeal = !IsDealModerator(world, action.InvokerFactionId);
 	return IUDActionInterface::CanExecute(action, world) && isPlayer && isNotModeratingDeal;
 }

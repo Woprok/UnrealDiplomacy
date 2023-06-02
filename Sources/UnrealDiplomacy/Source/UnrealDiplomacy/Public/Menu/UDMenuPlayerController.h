@@ -14,5 +14,4 @@ class UNREALDIPLOMACY_API AUDMenuPlayerController : public AUDPlayerController
 {
 	GENERATED_BODY()
 public:
-	AUDMenuPlayerController();
 };

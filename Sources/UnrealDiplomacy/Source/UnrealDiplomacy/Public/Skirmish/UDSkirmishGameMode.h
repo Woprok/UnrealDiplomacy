@@ -124,6 +124,11 @@ protected:
 #pragma region Controllers
 protected:
 	/**
+	 * Handles AI taking over the player.
+	 */
+	virtual void OnPlayerLeaving(TObjectPtr<AUDSkirmishPlayerController> existingPlayer);
+protected:
+	/**
 	 * Creates sufficient amount of Ai controllers.
 	 */
 	virtual void CreateAiPlayers(int32 count);
@@ -136,6 +141,10 @@ protected:
 	 * This player acts as the world.
 	 */
 	virtual TWeakObjectPtr<AUDSkirmishGaiaAIController> CreateServerPlayer();
+	/**
+	 * RegisterAi that claims specified Faction.
+	 */
+	void RegisterSubstiteAi(int32 claimableFactionId);
 	/**
 	 * Assigns state to Player and saves Player in PlayerControllers.
 	 */
@@ -153,13 +162,9 @@ protected:
 	 * Assigns state to Ai and saves Ai in AiControllers.
 	 */
 	void RegisterAi();
+protected:
 	/**
-	 * Assigns state to a Player/Ai.
-	 */
-	void AssignToSimulation(TScriptInterface<IUDControllerInterface>& controller, bool isPlayerOrAi);
-protected
-	/**
-	 * Provides Id to agents, that we have full control over.
+	 * Assigns to controller new Id that will server as communication identificator.
 	 */
 	void DefineUniqueControllerId(TScriptInterface<IUDControllerInterface>& controller);
 private:
@@ -179,14 +184,13 @@ private:
 	UPROPERTY()
 	TArray<TWeakObjectPtr<AUDSkirmishPlayerController>> PlayerControllers;
 	/**
-	 * Each controller posses unique Id, that is assigned to it via interface.
-	 * This is then used for managing it state.
-	 * Starts at 0, which is expected to be assigned always to world.
+	 * All controllers have unique id.
+	 * Server controller is reserved in UUDGlobalData.
+	 * Value of this starts based on FirstUSeableControllerId defined UUDGlobalData.
 	 */
 	UPROPERTY()
-	int32 NextUniqueControllerIdCount = 0;
+	int32 NextUniqueControllerId;
 #pragma endregion
-
 	UPROPERTY()
 	EUDMatchState MatchState = EUDMatchState::Lobby;
 };

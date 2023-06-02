@@ -27,5 +27,5 @@ void UUDDealActionContractPointSabotage::Revert(const FUDActionData& action, TOb
 	// Removes sabotage flag.
 	FUDDealDataContractPoint data(action.ValueParameters);
 	world->Deals[data.DealId]->DealActionList[data.ContractPointId].WasSabotaged = false;
-	world->Deals[data.DealId]->DealActionList[data.ContractPointId].SabotageId = UUDGlobalData::GaiaId;
+	world->Deals[data.DealId]->DealActionList[data.ContractPointId].SabotageId = UUDGlobalData::GaiaFactionId;
 }
