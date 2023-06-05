@@ -21,7 +21,10 @@ FString FUDCommandData::ToString() const
 		formatArgs.Add(TEXT("commnadName"), TEXT("None"));
 		break;
 	case EUDCommandType::StartGame:
-		formatArgs.Add(TEXT("commnadName"), TEXT("StartGame"));
+		formatArgs.Add(TEXT("commnadName"), TEXT("Start Game"));
+		break;
+	case EUDCommandType::HostClosedGame:
+		formatArgs.Add(TEXT("commnadName"), TEXT("Host Closed Game"));
 		break;
 	default:
 		unimplemented();

@@ -44,6 +44,10 @@ public:
 #pragma region Assigns of controllers to specific state.
 public:
 	/**
+	 * Checks if the specified faction is associated with player or is non-playable faction.
+	 */
+	bool IsPlayerFaction(int32 factionId);
+	/**
 	 * Faction for Gaia / Server.
 	 * This will never create more then one instance.
 	 */

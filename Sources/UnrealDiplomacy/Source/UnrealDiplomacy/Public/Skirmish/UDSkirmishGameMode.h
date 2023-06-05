@@ -1,4 +1,13 @@
 // Copyright Miroslav Valach
+// TODO Reconnect feature
+// -> Add session support for joining in progress game.
+// --> Add functionality that allows server to disable the AI
+// --> Add functionality that enables the AI, if player leaves the game after taking over the AI faction.
+// -> Add UI support for joining in progress game.
+// --> Observer UI for spectating.
+// --> Takeover UI for taking over the AI controlled nation.
+// --> Experimental in prgoress game faction creation ?
+// -> Create command for taking over the specified AI faction.
 
 #pragma once
 
@@ -32,7 +41,12 @@ enum class EUDMatchState : uint8
 	/**
 	 * Players that join will be assigned AI observer faction.
 	 */
-	Match = 1
+	Match = 1,
+	/**
+	 * This instance is being killed and should not continue to do anything.
+	 * Reason can be unexpected shut down of application or host leaving lobby.
+	 */
+	Closed = 2,
 };
 
 /**
@@ -119,6 +133,10 @@ protected:
 	 * This will invoke UUDStartGameAction that handles pre-first turn play.
 	 */
 	virtual void OnStartGameCommand();
+	/**
+	 * Required for gracefull shutdown of the gamemode.
+	 */
+	virtual void OnCloseGameCommand();
 #pragma endregion
 
 #pragma region Controllers
@@ -162,6 +180,12 @@ protected:
 	 * Assigns state to Ai and saves Ai in AiControllers.
 	 */
 	void RegisterAi();
+	/**
+	 * Remove reference on a specified player from all relevant places.
+	 * It should be enough to remove only from PlayerControllers array.
+	 * AI players do not need to be killed in this way as they can be halted by server, if needed.
+	 */
+	void DestroyPlayer(int32 controllerId);
 protected:
 	/**
 	 * Assigns to controller new Id that will server as communication identificator.

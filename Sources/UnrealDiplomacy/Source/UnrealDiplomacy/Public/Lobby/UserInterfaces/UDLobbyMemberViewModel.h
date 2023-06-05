@@ -18,12 +18,12 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText MemberSettingsTitleText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FText NationNameText;
+	FText FactionNameText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText StrategyText;
 
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FText NationNameEditableText;
+	FText FactionNameEditableText;
 protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
@@ -36,10 +36,10 @@ private:
 	// MVVM Setters & Getters
 	void SetMemberSettingsTitleText(FText newMemberSettingsTitleText);
 	FText GetMemberSettingsTitleText() const;
-	void SetNationNameText(FText newNationNameText);
-	FText GetNationNameText() const;
+	void SetFactionNameText(FText newFactionNameText);
+	FText GetFactionNameText() const;
 	void SetStrategyText(FText newStrategyText);
 	FText GetStrategyText() const;
-	void SetNationNameEditableText(FText newNationNameEditableText);
-	FText GetNationNameEditableText() const;
+	void SetFactionNameEditableText(FText newFactionNameEditableText);
+	FText GetFactionNameEditableText() const;
 };

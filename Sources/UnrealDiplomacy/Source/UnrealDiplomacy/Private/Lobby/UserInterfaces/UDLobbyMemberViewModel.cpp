@@ -8,12 +8,12 @@ void UUDLobbyMemberViewModel::Initialize()
 {
 	FText memberSettingsTitle = FText(LOCTEXT("LobbyMember", "Game Settings"));
 	SetMemberSettingsTitleText(memberSettingsTitle);
-	FText nationName = FText(LOCTEXT("LobbyMember", "Nation Name"));
-	SetNationNameText(nationName);
+	FText factionName = FText(LOCTEXT("LobbyMember", "Faction Name"));
+	SetFactionNameText(factionName);
 	FText strategy = FText(LOCTEXT("LobbyMember", "Stratagems"));
 	SetStrategyText(strategy);
 	FText nationNameEditable = FText(LOCTEXT("LobbyMember", "Generic Nation Name"));
-	SetNationNameEditableText(nationNameEditable);
+	SetFactionNameEditableText(nationNameEditable);
 }
 
 void UUDLobbyMemberViewModel::Update()
@@ -38,14 +38,14 @@ FText UUDLobbyMemberViewModel::GetMemberSettingsTitleText() const
 	return MemberSettingsTitleText;
 }
 
-void UUDLobbyMemberViewModel::SetNationNameText(FText newNationNameText)
+void UUDLobbyMemberViewModel::SetFactionNameText(FText newFactionNameText)
 {
-	UE_MVVM_SET_PROPERTY_VALUE(NationNameText, newNationNameText);
+	UE_MVVM_SET_PROPERTY_VALUE(FactionNameText, newFactionNameText);
 }
 
-FText UUDLobbyMemberViewModel::GetNationNameText() const
+FText UUDLobbyMemberViewModel::GetFactionNameText() const
 {
-	return NationNameText;
+	return FactionNameText;
 }
 
 void UUDLobbyMemberViewModel::SetStrategyText(FText newStrategyText)
@@ -58,13 +58,13 @@ FText UUDLobbyMemberViewModel::GetStrategyText() const
 	return StrategyText;
 }
 
-void UUDLobbyMemberViewModel::SetNationNameEditableText(FText newNationNameEditableText)
+void UUDLobbyMemberViewModel::SetFactionNameEditableText(FText newFactionNameEditableText)
 {
-	UE_MVVM_SET_PROPERTY_VALUE(NationNameEditableText, newNationNameEditableText);
+	UE_MVVM_SET_PROPERTY_VALUE(FactionNameEditableText, newFactionNameEditableText);
 	ApplyNationNameChange();
 }
 
-FText UUDLobbyMemberViewModel::GetNationNameEditableText() const
+FText UUDLobbyMemberViewModel::GetFactionNameEditableText() const
 {
-	return NationNameEditableText;
+	return FactionNameEditableText;
 }

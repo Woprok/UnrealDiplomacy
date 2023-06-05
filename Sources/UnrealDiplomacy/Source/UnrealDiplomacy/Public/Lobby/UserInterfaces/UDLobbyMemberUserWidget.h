@@ -44,11 +44,11 @@ protected:
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> MemberSettingsTitleTextWidget;
 	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> NationNameTextWidget;
+	TWeakObjectPtr<UTextBlock> FactionNameTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> StrategyTextWidget;
 	UPROPERTY()
-	TWeakObjectPtr<UEditableTextBox> NationNameEditableTextWidget;
+	TWeakObjectPtr<UEditableTextBox> FactionNameEditableTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UTileView> StrategyOptionTilesWidget;
 	// ViewModel

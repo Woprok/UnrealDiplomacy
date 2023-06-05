@@ -21,8 +21,8 @@ void UUDLobbyMemberUserWidget::BindDelegates()
 void UUDLobbyMemberUserWidget::BindWidgets()
 {
 	MemberSettingsTitleTextWidget = GetWidget<UTextBlock>(TEXT("MemberSettingsTitleText"));
-	NationNameTextWidget = GetWidget<UTextBlock>(TEXT("NationNameText"));
+	FactionNameTextWidget = GetWidget<UTextBlock>(TEXT("FactionNameText"));
 	StrategyTextWidget = GetWidget<UTextBlock>(TEXT("StrategyText"));
-	NationNameEditableTextWidget = GetWidget<UEditableTextBox>(TEXT("NationNameEditableText"));
+	FactionNameEditableTextWidget = GetWidget<UEditableTextBox>(TEXT("FactionNameEditableText"));
 	StrategyOptionTilesWidget = GetWidget<UTileView>(TEXT("StrategyOptionTiles"));
 }

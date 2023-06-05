@@ -27,6 +27,16 @@ void AUDWorldSimulation::Initialize()
 }
 
 #pragma region Assigns of controllers to specific state.
+
+bool AUDWorldSimulation::IsPlayerFaction(int32 factionId)
+{
+	// This is just shortcut at the moment for checking against Gaia & Observer.
+	bool notGaia = factionId != UUDGlobalData::GaiaFactionId;
+	bool notObserver = factionId != UUDGlobalData::ObserverFactionId;
+	bool isPlayable = factionId >= UUDGlobalData::FirstUseableFactionId;
+	return notGaia && notObserver && isPlayable;
+}
+
 int32 AUDWorldSimulation::CreateGaiaFaction()
 {
 	if (States.Contains(UUDGlobalData::GaiaFactionId))

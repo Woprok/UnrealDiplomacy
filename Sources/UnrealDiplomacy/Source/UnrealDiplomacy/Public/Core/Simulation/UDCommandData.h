@@ -18,7 +18,11 @@ enum class EUDCommandType : uint8
 	/**
 	 * Server will attempt to start the game.
 	 */
-	StartGame = 1
+	StartGame = 1,
+	/**
+	 * Server will acknowledge that host left the game and it should do the same.
+	 */
+	HostClosedGame = 2,
 };
 
 /**

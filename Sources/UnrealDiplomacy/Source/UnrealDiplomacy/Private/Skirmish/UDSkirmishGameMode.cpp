@@ -85,6 +85,9 @@ void AUDSkirmishGameMode::PostLogin(APlayerController* NewPlayer)
 		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Player joined as observer."));
 		RegisterObserver(player);
 		break;
+	case EUDMatchState::Closed:
+		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Player joined during the end of the match."));
+		break;
 	default:
 		unimplemented();
 		break;
@@ -96,6 +99,7 @@ void AUDSkirmishGameMode::Logout(AController* Exiting)
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Player left."));
 	TObjectPtr<AUDSkirmishPlayerController> player = Cast<AUDSkirmishPlayerController>(Exiting);
 	OnPlayerLeaving(player);
+	DestroyPlayer(player->GetControllerUniqueId());
 	Super::Logout(Exiting);
 }
 
@@ -119,10 +123,19 @@ void AUDSkirmishGameMode::ProcessCommand(FUDCommandData& command)
 	case EUDCommandType::StartGame:
 		OnStartGameCommand();
 		break;
+	case EUDCommandType::HostClosedGame:
+		OnCloseGameCommand();
+		break;
 	default:
 		unimplemented();
 		break;
 	}
+}
+
+void AUDSkirmishGameMode::OnCloseGameCommand()
+{
+	MatchState = EUDMatchState::Closed;
+	// TODO endgame evalutation...
 }
 
 void AUDSkirmishGameMode::OnStartGameCommand()
@@ -174,8 +187,31 @@ void AUDSkirmishGameMode::ActionExecutionFinished(FUDActionData& action)
 
 #pragma region Controllers
 
+void AUDSkirmishGameMode::DestroyPlayer(int32 controllerUniqueId)
+{
+	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Removing controller (%d) from total (%d)."), 
+		controllerUniqueId, PlayerControllers.Num());
+	// Removes the player controller.
+	// This is using RemoveAll variant so we can just filter it with predicate.
+	// There should always be only one reference.
+	PlayerControllers.RemoveAll(
+		[&controllerUniqueId](const TWeakObjectPtr<AUDSkirmishPlayerController>& item) 
+		{ 
+			return item->GetControllerUniqueId() == controllerUniqueId; 
+		}
+	);
+	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Removed controller (%d) kept only (%d)."),
+		controllerUniqueId, PlayerControllers.Num());
+}
+
 void AUDSkirmishGameMode::OnPlayerLeaving(TObjectPtr<AUDSkirmishPlayerController> existingPlayer)
 {
+	if (!GetWorldSimulation()->IsPlayerFaction(existingPlayer->GetControlledFactionId()))
+	{
+		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Player was not playing for playable faction."));
+		return;
+	}
+
 	FUDActionData removeFaction(UUDSystemActionLog::ActionTypeId, UUDGlobalData::GaiaFactionId);
 	FUDActionData aiTakeOverAction(UUDSystemActionLog::ActionTypeId, UUDGlobalData::GaiaFactionId);
 
@@ -188,9 +224,11 @@ void AUDSkirmishGameMode::OnPlayerLeaving(TObjectPtr<AUDSkirmishPlayerController
 		GetWorldSimulation()->CheckAndExecuteAction(removeFaction);
 		break;
 	case EUDMatchState::Match:
-		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Player left during the match."));
 		RegisterSubstiteAi(existingPlayer->GetControlledFactionId());
 		GetWorldSimulation()->CheckAndExecuteAction(aiTakeOverAction);
+		break;
+	case EUDMatchState::Closed:
+		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Game is being closed and AITakeover is disabled."));
 		break;
 	default:
 		unimplemented();
@@ -228,6 +266,14 @@ void AUDSkirmishGameMode::RegisterSubstiteAi(int32 claimableFactionId)
 {
 	// Create new controller and save it.
 	TWeakObjectPtr<AUDSkirmishAIController> aiController = CreateAiPlayer();
+
+	if (aiController == nullptr)
+	{
+		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Failed to set up Ai player, changing state to Closed."));
+		MatchState = EUDMatchState::Closed;
+		return;
+	}
+
 	AiControllers.Add(aiController);
 	// Assign Controller Id
 	TScriptInterface<IUDControllerInterface> controller = aiController.Get();

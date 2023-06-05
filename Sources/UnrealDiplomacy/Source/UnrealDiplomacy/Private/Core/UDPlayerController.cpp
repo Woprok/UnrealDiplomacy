@@ -1,6 +1,5 @@
 // Copyright Miroslav Valach
 // TODO verify that pure server will never execute OnRep functions.
-// TODO make use of Type on a client.
 
 #include "Core/UDPlayerController.h"
 #include "Core/UDGlobalData.h"
@@ -44,15 +43,15 @@ void AUDPlayerController::OnRep_SetControlledFactionId(const int32& oldControlle
 {
 	if (IsLocalPlayerController() && IsPropertySynchronized())
 	{
-		UE_LOG(LogTemp, Log, TEXT("AUDPlayerController(%d): Changed faction id from original %d. [CLIENT]"), 
-			GetControlledFactionId(), oldControlledFactionId);
+		UE_LOG(LogTemp, Log, TEXT("AUDPlayerController(%d): Changed faction id(%d) from original id(%d). [CLIENT]"), 
+			GetControllerUniqueId(), GetControlledFactionId(), oldControlledFactionId);
 		// This will never fire on client that runs server...
 		StartFactionChange();
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("AUDPlayerController(%d): [SERVER] attempted sync faction id on client actor."), 
-			GetControlledFactionId());
+		UE_LOG(LogTemp, Log, TEXT("AUDPlayerController(%d): [SERVER] attempted sync faction id(%d) on client actor."), 
+			GetControllerUniqueId(), GetControlledFactionId());
 	}
 }
 
