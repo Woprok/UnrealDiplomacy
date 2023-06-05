@@ -51,11 +51,13 @@ TObjectPtr<UUDMapState> UUDMapState::Duplicate(TObjectPtr<UUDMapState> existingS
 	return newState;
 }
 
-TObjectPtr<UUDFactionState> UUDFactionState::CreateState(int32 playerId)
+TObjectPtr<UUDFactionState> UUDFactionState::CreateState(int32 factionId)
 {
 	TObjectPtr<UUDFactionState> newState = NewObject<UUDFactionState>();
-	newState->PlayerUniqueId = playerId;
+	newState->PlayerUniqueId = factionId;
 	newState->PendingRequests.Empty(0);
+	newState->StratagemOptions.Empty(0);
+	newState->Name = FString::Format(TEXT("Faction {0}"), { factionId });
 	return newState;
 }
 
@@ -95,6 +97,11 @@ TObjectPtr<UUDWorldState> UUDWorldState::CreateState(int32 playerId, EUDWorldPer
 	TObjectPtr<UUDWorldState> newState = NewObject<UUDWorldState>();
 	newState->Perspective = perspectiveType;
 	newState->FactionPerspective = playerId;
+	newState->TurnData = FUDTurnState();
+	newState->Settings = FUDSettings();
+	newState->Settings.MapWidth = 5;
+	newState->Settings.MapHeight = 5;
+	newState->Settings.StratagemPoints = 3;
 	newState->ImperialThrone = FUDThroneState(UUDGlobalData::GaiaFactionId);
 	return newState;
 }

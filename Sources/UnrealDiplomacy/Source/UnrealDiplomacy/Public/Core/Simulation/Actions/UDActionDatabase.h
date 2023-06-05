@@ -34,4 +34,8 @@ public:
 	 * Returns new instances of deal of actions.
 	 */
 	static TArray<TScriptInterface<IUDActionInterface>> GetDealActions(UObject* parent);
+	/**
+	 * Returns new instances of setting of actions.
+	 */
+	static TArray<TScriptInterface<IUDActionInterface>> GetSettingActions(UObject* parent);
 };

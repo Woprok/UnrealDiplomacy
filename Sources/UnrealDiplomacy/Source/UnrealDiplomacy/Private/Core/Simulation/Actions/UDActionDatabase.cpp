@@ -65,6 +65,16 @@
 #include "Core/Simulation/Actions/UDGameActionTileTransfer.h"
 #include "Core/Simulation/Actions/UDGameActionTileTransferAccept.h"
 #include "Core/Simulation/Actions/UDGameActionTileTransferReject.h"
+// Setting
+#include "Core/Simulation/Actions/UDSettingAction.h"
+#include "Core/Simulation/Actions/UDSettingActionAICountChange.h"
+#include "Core/Simulation/Actions/UDSettingActionFactionRename.h"
+#include "Core/Simulation/Actions/UDSettingActionMapSeedChange.h"
+#include "Core/Simulation/Actions/UDSettingActionMapWidthChange.h"
+#include "Core/Simulation/Actions/UDSettingActionMapHeightChange.h"
+#include "Core/Simulation/Actions/UDSettingActionStratagemPointsChange.h"
+#include "Core/Simulation/Actions/UDSettingActionStratagemOptionSelect.h"
+#include "Core/Simulation/Actions/UDSettingActionStratagemOptionDeselect.h"
 // System
 #include "Core/Simulation/Actions/UDSystemAction.h"
 #include "Core/Simulation/Actions/UDSystemActionGameEnd.h"
@@ -170,5 +180,20 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetDealActions(U
 		NewObject<UUDDealActionStateExtendingDraft>(parent),
 		NewObject<UUDDealActionVoteNo>(parent),
 		NewObject<UUDDealActionVoteYes>(parent)
+	};
+}
+
+TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetSettingActions(UObject* parent)
+{
+	return {
+		//NewObject<UUDSettingAction>(parent),
+		NewObject<UUDSettingActionAICountChange>(parent),
+		NewObject<UUDSettingActionFactionRename>(parent),
+		NewObject<UUDSettingActionMapSeedChange>(parent),
+		NewObject<UUDSettingActionMapWidthChange>(parent),
+		NewObject<UUDSettingActionMapHeightChange>(parent),
+		NewObject<UUDSettingActionStratagemPointsChange>(parent),
+		NewObject<UUDSettingActionStratagemOptionSelect>(parent),
+		NewObject<UUDSettingActionStratagemOptionDeselect>(parent)
 	};
 }

@@ -145,6 +145,11 @@ public:
 	 */
 	UPROPERTY(BlueprintReadOnly)
 	FString TextParameter;
+	/**
+	 * Same as for value parameters, this creates backup for text parameter...
+	 */
+	UPROPERTY(BlueprintReadOnly)
+	FString BackupTextParameter;
 };
 
 /**

@@ -57,6 +57,7 @@ void UUDActionManager::RegisterCoreActions()
 	RegisterActionList(UUDActionDatabase::GetSystemActions(this));
 	RegisterActionList(UUDActionDatabase::GetGameActions(this));
 	RegisterActionList(UUDActionDatabase::GetDealActions(this));
+	RegisterActionList(UUDActionDatabase::GetSettingActions(this));
 }
 
 void UUDActionManager::RegisterAdditionalActions()

@@ -33,6 +33,8 @@ class UUDModifierManager;
 // Deal Point Tile Value
 // Deal Target
 // Deal ConstructPoint
+// SETTINGS
+// Value
 
 // TODO move this
 USTRUCT()

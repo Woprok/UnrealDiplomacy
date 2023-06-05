@@ -122,7 +122,7 @@ public:
 	/**
 	 * Creates new instance of the player state for specified player.
 	 */
-	static TObjectPtr<UUDFactionState> CreateState(int32 playerId);
+	static TObjectPtr<UUDFactionState> CreateState(int32 factionId);
 public:
 	/**
 	 * List of unresolved requests created by actions 
@@ -147,6 +147,14 @@ public:
 	 */
 	UPROPERTY()
 	int32 ResourceGold = 0;
+	/**
+	 * List of all available stratagem options to use.
+	 * On other words what kind of expensive actions can be used.
+	 */
+	UPROPERTY()
+	TSet<int32> StratagemOptions = { };
+	UPROPERTY()
+	FString Name;
 };
 
 /**
@@ -456,7 +464,7 @@ struct UNREALDIPLOMACY_API FUDThroneState
 	GENERATED_BODY()
 public:
 	FUDThroneState() {}
-	FUDThroneState(int32 currentUsurper) : Ruler(currentUsurper) {}
+	FUDThroneState(int32 currentRuler) : Ruler(currentRuler) {}
 	/**
 	 * Current Usurper. 0 is invalid/empty. Generally invalid when owned by World.
 	 */
@@ -477,7 +485,7 @@ public:
 	  * Turn order of all Factions, represented by their FactionId.
 	  */
 	UPROPERTY()
-	TArray<int32> FactionTurnOrder;
+	TArray<int32> FactionTurnOrder = { };
 	/**
 	 * Current Faction that is playing.
 	 * Default value is 0.
@@ -490,6 +498,42 @@ public:
 	 */
 	UPROPERTY()
 	int32 Turn = 0;
+};
+
+/**
+ * Stores all information related to victory and loss conditions.
+ */
+USTRUCT(BlueprintType)
+struct UNREALDIPLOMACY_API FUDSettings
+{
+	GENERATED_BODY()
+public:
+	FUDSettings() {}
+	/** 
+	 * AI player count that will be add to game. 
+	 */
+	UPROPERTY(BlueprintReadOnly)
+	int32 AICount = 0;
+	/** 
+	 * Seed used for generation. 
+	 */
+	UPROPERTY(BlueprintReadOnly)
+	int32 MapSeed = 0;
+	/** 
+	 * Width of the final map. 
+	 */
+	UPROPERTY(BlueprintReadOnly)
+	int32 MapWidth = 0;
+	/** 
+	 * Height of the final map. 
+	 */
+	UPROPERTY(BlueprintReadOnly)
+	int32 MapHeight = 0;
+	/** 
+	 * Amount of points available for use. 
+	 */
+	UPROPERTY(BlueprintReadOnly)
+	int32 StratagemPoints = 0;
 };
 
 /**
@@ -603,4 +647,9 @@ public:
 	 */
 	UPROPERTY()
 	FUDThroneState ImperialThrone;
+	/**
+	 * Default or current setting override.
+	 */
+	UPROPERTY()
+	FUDSettings Settings;
 };

@@ -63,9 +63,10 @@ FString FUDActionData::ToString() const
 	formatArgs.Add(TEXT("values"), ValueParameters.Num());
 	formatArgs.Add(TEXT("backup"), BackupValueParameters.Num());
 	formatArgs.Add(TEXT("text"), TextParameter.Len());
+	formatArgs.Add(TEXT("backupText"), BackupTextParameter.Len());
 
 	FString formatted = FString::Format(TEXT("Action[ID={aid}, UID={uid}, SID={sid}, INVOKER={invoker}, \
-OPTIONAL={values},{backup},{text}]"), formatArgs);
+OPTIONAL={values}, {backup}, {text}, {backupText}]"), formatArgs);
 
 	return formatted;
 }
