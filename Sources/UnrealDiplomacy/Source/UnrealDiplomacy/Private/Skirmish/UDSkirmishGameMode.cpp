@@ -126,6 +126,9 @@ void AUDSkirmishGameMode::ProcessCommand(FUDCommandData& command)
 	case EUDCommandType::HostClosedGame:
 		OnCloseGameCommand();
 		break;
+	case EUDCommandType::PlayerLeftGame:
+		// Ignored until we receive logout event.
+		break;
 	default:
 		unimplemented();
 		break;

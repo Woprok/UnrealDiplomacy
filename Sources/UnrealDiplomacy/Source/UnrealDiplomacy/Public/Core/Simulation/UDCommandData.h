@@ -23,6 +23,11 @@ enum class EUDCommandType : uint8
 	 * Server will acknowledge that host left the game and it should do the same.
 	 */
 	HostClosedGame = 2,
+	/**
+	 * Graceful notification to server that player is about to leave the game.
+	 * Server does not need to do anything special.
+	 */
+	PlayerLeftGame = 3,
 };
 
 /**

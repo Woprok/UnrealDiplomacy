@@ -4,6 +4,8 @@
 #include "Core/UDGameInstance.h"
 #include "Core/UDSessionSubsystem.h"
 #include "Kismet/GameplayStatics.h"
+#include "Core/Simulation/UDCommandData.h"
+#include "Skirmish/UDSkirmishPlayerController.h"
 
 #define LOCTEXT_NAMESPACE "Lobby"
 
@@ -57,23 +59,25 @@ void UUDLobbyViewModel::StartGame()
 	UE_LOG(LogTemp, Log, TEXT("UUDLobbyViewModel: Starting session name %s."), *sessions->GetSessionNameString());
 
 	sessions->StartSession(sessions->GetSessionName());
+	AUDSkirmishPlayerController::Get(GetWorld())->OnUserCommandRequested(FUDCommandData(EUDCommandType::StartGame));
 }
 
 void UUDLobbyViewModel::QuitGame()
 {
+	AUDSkirmishPlayerController::Get(GetWorld())->OnUserCommandRequested(FUDCommandData(EUDCommandType::HostClosedGame));
+
 	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
 	UE_LOG(LogTemp, Log, TEXT("UUDLobbyViewModel: Host quit the game -> %s."), *sessions->GetSessionNameString());
-
 	sessions->QuitSession();
 }
 
 void UUDLobbyViewModel::LeaveGame()
 {
+	AUDSkirmishPlayerController::Get(GetWorld())->OnUserCommandRequested(FUDCommandData(EUDCommandType::PlayerLeftGame));
+
 	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
 	UE_LOG(LogTemp, Log, TEXT("UUDLobbyViewModel: Client left the game -> %s."), *sessions->GetSessionNameString());
-
 	sessions->LeaveSession();
-
 }
 
 void UUDLobbyViewModel::OnSessionStarted(bool success)

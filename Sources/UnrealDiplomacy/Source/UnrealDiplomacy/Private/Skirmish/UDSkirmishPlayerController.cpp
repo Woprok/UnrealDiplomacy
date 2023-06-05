@@ -3,6 +3,7 @@
 
 #include "Skirmish/UDSkirmishPlayerController.h"
 #include "Core/UDGlobalData.h"
+#include "Kismet/GameplayStatics.h"
 #include "Core/Simulation/UDWorldState.h"
 #include "Core/Simulation/UDCommandData.h"
 #include "Core/Simulation/UDActionData.h"
@@ -10,6 +11,14 @@
 #include "Core/Tiles/UDSquareGrid.h"
 #include "Skirmish/UDSkirmishGameState.h"
 #include "Core/Simulation/UDWorldSimulation.h"
+
+TObjectPtr<AUDSkirmishPlayerController> AUDSkirmishPlayerController::Get(TObjectPtr<UWorld> world)
+{
+	// Return primary controller associated with this world.
+	TObjectPtr<APlayerController> pc = UGameplayStatics::GetPlayerController(world, 0);
+	check(pc != nullptr);
+	return CastChecked<AUDSkirmishPlayerController>(pc);
+}
 
 #pragma region Client-Server RPCs
 void AUDSkirmishPlayerController::MulticastReceiveActionFromServer_Local(FUDActionData& action)
@@ -81,12 +90,19 @@ void AUDSkirmishPlayerController::StartFactionChange()
 	// -> works easily by starting new sync
 	StartJoinDataSynchronization();
 	// 2. existing start
-	//
+	// -> works in same way at the moment
+	// -> TDOO verify this will work as intended if reconnect is added.
 	return;
 }
 
 void AUDSkirmishPlayerController::StartJoinDataSynchronization()
 {
+	if (SynchronizationState == EUDSynchronizationState::Ignored)
+	{
+		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController: Halting synchronization due to leaving the game already."));
+		return;
+	}
+
 	if (SynchronizationState == EUDSynchronizationState::SynchronizingData)
 	{
 		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Simultaneous attempts are not allowed for data synchronization."), GetControllerUniqueId());
@@ -185,8 +201,8 @@ void AUDSkirmishPlayerController::ChangeFaction()
 void AUDSkirmishPlayerController::InitializeSimulation()
 {
 	InternalWorldSimulation = GetWorld()->SpawnActor<AUDWorldSimulation>();
-	GetWorldSimulation()->Initialize();
-	GetWorldSimulation()->OnBroadcastActionAppliedDelegate.AddUObject(this, &AUDSkirmishPlayerController::OnWorldSimulationUpdated);
+	InternalWorldSimulation->Initialize();
+	InternalWorldSimulation->OnBroadcastActionAppliedDelegate.AddUObject(this, &AUDSkirmishPlayerController::OnWorldSimulationUpdated);
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Initialized with temporary Id."), GetControllerUniqueId());
 }
 
@@ -221,6 +237,12 @@ UUDActionAdministrator* AUDSkirmishPlayerController::GetAdministrator()
 
 void AUDSkirmishPlayerController::FinishDataSynchronization(FUDActionArray& actionArray)
 {
+	// This is special handle for host leaving hosted game without receiving any data from server.
+	if (SynchronizationState == EUDSynchronizationState::Ignored)
+	{
+		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController: Halting synchronization due to missing simulation."));
+		return;
+	}
 	// Run all synchronizations
 	ChangeFaction();
 	RunAllActions(actionArray.Actions);
@@ -238,6 +260,17 @@ void AUDSkirmishPlayerController::OnUserActionRequested(FUDActionData requestedA
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Action choosed by user."), GetControllerUniqueId());
 	ServercastSendActionToServer(requestedAction);
+}
+
+void AUDSkirmishPlayerController::OnUserCommandRequested(FUDCommandData requestedCommand)
+{
+	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Command choosed by user."), GetControllerUniqueId());
+	// Prevent updating state.
+	if (requestedCommand.Command == EUDCommandType::PlayerLeftGame || requestedCommand.Command == EUDCommandType::HostClosedGame)
+	{
+		SynchronizationState = EUDSynchronizationState::Ignored;
+	}
+	ServercastSendCommandToServer(requestedCommand);
 }
 
 void AUDSkirmishPlayerController::OnWorldSimulationUpdated(FUDActionData& action)

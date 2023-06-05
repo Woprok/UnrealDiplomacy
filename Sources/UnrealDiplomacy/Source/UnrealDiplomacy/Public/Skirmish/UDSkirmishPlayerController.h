@@ -23,7 +23,11 @@ enum class EUDSynchronizationState : uint8
 {
 	Undefined,
 	SynchronizingData,
-	Synchronized
+	Synchronized,
+	/** 
+	 * Handles edge cases around disconnect and leaving the game. 
+	 */
+	Ignored
 };
 
 /**
@@ -34,6 +38,13 @@ UCLASS()
 class UNREALDIPLOMACY_API AUDSkirmishPlayerController : public AUDPlayerController
 {
 	GENERATED_BODY()
+public:
+	/**
+ 	 * Shortcut to retrieve casted AUDSkirmishPlayerController.
+	 * Requries World pointer that can be retrieved by GetWorld().
+	 * This will return first player controller in the world. (By default this is desired one.)
+	 */
+	static TObjectPtr<AUDSkirmishPlayerController> Get(TObjectPtr<UWorld> world);
 #pragma region Client-Server RPCs
 public:
 	/**
@@ -172,9 +183,13 @@ private:
 #pragma region Player Input & UI & Updates
 public:
 	/**
-	 * Called by whoever is responsible for propagating UI requests.
+	 * Called by whoever is responsible for propagating UI requests for actions.
 	 */
 	void OnUserActionRequested(FUDActionData requestedAction);
+	/**
+	 * Called by whoever is responsible for propagating UI requests for commands.
+	 */
+	void OnUserCommandRequested(FUDCommandData requestedCommand);
 	/**
 	 * Executed once a client has finished synchronization.
 	 * Allows UI elements to read state and enabled generation of game world from input.
