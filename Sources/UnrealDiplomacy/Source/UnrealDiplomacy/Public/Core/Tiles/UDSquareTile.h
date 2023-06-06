@@ -46,26 +46,17 @@ public:
 	 * Position inside of the grid.
 	 */
 	UFUNCTION()
-	void SetTilePosition(FIntPoint tilePosition) 
-	{
-		TilePosition = tilePosition;
-	};
+	void SetTilePosition(FIntPoint tilePosition);
 	/**
 	 * Retrieves position of this tile inside of the grid.
 	 */
 	UFUNCTION(BlueprintCallable)
-	FIntPoint GetTilePosition()
-	{
-		return TilePosition;
-	}
+	FIntPoint GetTilePosition();
 	/**
-	 * Called from blueprint whenever is this tile selected.
+	 * Called after notifying UI for any tile subscriber about tile being selected.
 	 */
 	UFUNCTION(BlueprintCallable)
-	void NotifyTileSelected() 
-	{
-		Selected.ExecuteIfBound(this);
-	}
+	void NotifyTileSelected();
 	/**
 	 * Grid invoked event on the tile. Tile is responsible for visually updating itself.
 	 */
@@ -76,6 +67,11 @@ public:
 	 * Grid is handling what it means to be selected.
 	 */
 	TileSelectedDelegate Selected;
+public:
+	/** 
+	 * Event when this actor is clicked by the mouse when using the clickable interface. 
+	 */
+	virtual void NotifyActorOnClicked(FKey ButtonPressed = EKeys::LeftMouseButton) override;
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Tile")
 	ESquareTileType TileType;

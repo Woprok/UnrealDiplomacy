@@ -6,6 +6,9 @@
 #include "Core/UDHUD.h"
 #include "UDSkirmishHUD.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUDOnTileSelected, FIntPoint, tile);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUDOnFactionSelected, int32, factionId);
+
 /**
  * UI for lobby & game.
  */
@@ -24,4 +27,32 @@ public:
 	 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ScreenNames")
 	FName LobbyScreen = TEXT("LobbyScreen");
+public:
+	/**
+	 * Invoked by tiles, whenever user clicks on them.
+	 */
+	FUDOnTileSelected OnTileSelectedEvent;
+	/**
+	 * Invoked by UI elements that want other UI elements to acknowledge that
+	 * faction was selected.
+	 */
+	FUDOnFactionSelected OnFactionSelectedEvent;
+	/**
+	 * Notification invokeable by corresponding elements.
+	 */
+	void RequestNotifyOnTileSelected(FIntPoint tile);
+	/**
+	 * Notification invokeable by corresponding elements.
+	 */
+	void RequestNotifyOnFactionSelected(int32 factionId);
+	/**
+	 * Notification invokeable for BP to handle.
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "SelectionEvent")
+	void BP_OnTileSelected(FIntPoint tile);
+	/**
+	 * Notification invokeable for BP to handle.
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "SelectionEvent")
+	void BP_OnFactionSelected(int32 factionId);
 };

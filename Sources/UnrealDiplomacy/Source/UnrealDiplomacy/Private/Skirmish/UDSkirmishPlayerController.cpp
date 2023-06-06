@@ -277,6 +277,7 @@ void AUDSkirmishPlayerController::OnWorldSimulationUpdated(FUDActionData& action
 {
 	if (SynchronizationState == EUDSynchronizationState::Synchronized)
 	{
+		FUDOnWorldSimulationUpdatedEvent.Broadcast(action);
 		OnWorldStateUpdated();
 	}
 }
@@ -287,6 +288,7 @@ void AUDSkirmishPlayerController::OnSynchronizationCompleted()
 	{
 		// This is required and done only here as it requires valid state to exists.
 		InitializeGrid();
+		OnSynchronizationFinishedEvent.Broadcast();
 		OnSynchronizationFinished();
 	}
 }
@@ -304,6 +306,7 @@ void AUDSkirmishPlayerController::InitializeGrid()
 	}
 	SquareGrid = GetWorld()->SpawnActor<AUDSquareGrid>(GridBlueprintClass, FVector(0, 0, 0), FRotator::ZeroRotator);
 	SquareGrid->SetAuthority(GetAdministrator());
+
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): World Grid initialzied."), GetControllerUniqueId());
 }
 

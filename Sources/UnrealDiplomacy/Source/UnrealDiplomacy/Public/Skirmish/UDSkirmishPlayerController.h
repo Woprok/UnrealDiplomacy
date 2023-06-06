@@ -15,6 +15,10 @@ class UUDActionAdministrator;
 class AUDWorldSimulation;
 class AUDSquareGrid;
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDOnSynchronizationFinished);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUDOnWorldSimulationUpdated, const FUDActionData&, action);
+
 /**
  * Defines current state of synchronization.
  */
@@ -202,6 +206,14 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void OnWorldStateUpdated();
+	/**
+	 * Subscribeable event for complete synchronization finishing.
+	 */
+	FUDOnSynchronizationFinished OnSynchronizationFinishedEvent;
+	/**
+	 * Subscribeable event for any simulation state change.
+	 */
+	FUDOnWorldSimulationUpdated FUDOnWorldSimulationUpdatedEvent;
 protected:
 	/**
 	 * Binding to delegate of WorldSimulation.

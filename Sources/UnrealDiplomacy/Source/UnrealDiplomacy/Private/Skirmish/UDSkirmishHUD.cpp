@@ -11,3 +11,15 @@ TObjectPtr<AUDSkirmishHUD> AUDSkirmishHUD::Get(TObjectPtr<UWorld> world)
 	check(hud != nullptr);
 	return CastChecked<AUDSkirmishHUD>(hud);
 }
+
+void AUDSkirmishHUD::RequestNotifyOnTileSelected(FIntPoint tile)
+{
+	OnTileSelectedEvent.Broadcast(tile);
+	BP_OnTileSelected(tile);
+}
+
+void AUDSkirmishHUD::RequestNotifyOnFactionSelected(int32 factionId)
+{
+	OnFactionSelectedEvent.Broadcast(factionId);
+	BP_OnFactionSelected(factionId);
+}
