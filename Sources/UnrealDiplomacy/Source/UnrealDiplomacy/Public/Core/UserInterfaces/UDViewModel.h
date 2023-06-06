@@ -55,6 +55,10 @@ protected:
 	 * Should react to any possible data change.
 	 */
 	virtual void Update();
+	/**
+	 * Invoked after each set model call.
+	 */
+	virtual void OnModelChanged();
 protected:
 	/**
 	 * Model is used to communicate with the game logic.

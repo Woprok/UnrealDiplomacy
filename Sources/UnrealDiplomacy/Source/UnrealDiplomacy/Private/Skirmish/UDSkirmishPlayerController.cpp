@@ -210,6 +210,9 @@ void AUDSkirmishPlayerController::InitializeAdministrator()
 {
 	InternalPersonalAdministrator = NewObject<UUDActionAdministrator>();
 	InternalPersonalAdministrator->OnUserActionRequestedDelegate.BindUObject(this, &AUDSkirmishPlayerController::OnUserActionRequested);
+	OnSynchronizationFinishedEvent.AddUniqueDynamic(InternalPersonalAdministrator, &UUDActionAdministrator::OnDataReloaded);
+	OnWorldSimulationUpdatedEvent.AddUniqueDynamic(InternalPersonalAdministrator, &UUDActionAdministrator::OnDataChanged);
+
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Initialized personal administrator."), GetControllerUniqueId());
 }
 

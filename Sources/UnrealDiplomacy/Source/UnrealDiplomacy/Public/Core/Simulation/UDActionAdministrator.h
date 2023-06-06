@@ -232,6 +232,8 @@ public:
  * Invoked everytime an action was decided by this controller.
  */
 DECLARE_DELEGATE_OneParam(UserActionRequestedDelegate, FUDActionData);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUDOnDataChanged, const FUDActionData&, action);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDOnDataReloaded);
 
 /**
  * Overseeing state with many functions for conversion to Info.
@@ -249,6 +251,30 @@ public:
 	 * TODO bind also AI controller and merge it with the delegate that is AI using a.t.m.?
 	 */
 	UserActionRequestedDelegate OnUserActionRequestedDelegate;
+	/**
+	 * Allows models to subscribe their update function to automatically update.
+	 */
+	FUDOnDataChanged OnDataChangedEvent;
+	/**
+	 * Allows models to subscribe their update function to automatically update.
+	 */
+	FUDOnDataReloaded OnDataReloadedEvent;
+	/**
+	 * Notifies all viewmodel subscribers about the subtle change.
+	 */
+	UFUNCTION()
+	void OnDataChanged(const FUDActionData& action)
+	{
+		OnDataChangedEvent.Broadcast(action);
+	}
+	/**
+	 * Notifies all viewmodel subscribers about the reload.
+	 */
+	UFUNCTION()
+	void OnDataReloaded()
+	{
+		OnDataReloadedEvent.Broadcast();
+	}
 	/**
 	 * Request
 	 * TODO refactor all these delegates
