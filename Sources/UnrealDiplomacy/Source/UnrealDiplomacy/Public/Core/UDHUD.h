@@ -72,7 +72,7 @@ public:
 	 * Safely initializes all dependencies.
 	 */
 	UFUNCTION(BlueprintCallable)
-	void Initialize();
+	virtual void Initialize();
 	/**
 	 * Show specified widget on the viewport.
 	 * Returns view model that is associated with the widget.
@@ -126,6 +126,11 @@ protected:
 	 */
 	UPROPERTY()
 	TObjectPtr<UUDViewModelManager> ViewModelManager;
+	/**
+	 * Right after initializing all core components, and before creating any screen.
+	 * Enables to add custom logic, such as defining ViewModelManager model.
+	 */
+	virtual void OnComponentsInitialized();
 private:
 	/**
 	 * Determines if this was initialized and can be used.

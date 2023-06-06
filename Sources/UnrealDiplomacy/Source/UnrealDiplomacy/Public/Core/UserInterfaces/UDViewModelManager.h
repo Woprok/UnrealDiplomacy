@@ -1,5 +1,6 @@
 // Copyright Miroslav Valach
 // TODO Consider if we need to add update for all collection view models as well.
+// TODO Rework Action Administrator into the model manager.
 
 #pragma once
 
@@ -8,6 +9,7 @@
 
 // Forward Declarations
 
+class UUDActionAdministrator;
 class UUDViewModel;
 
 /**
@@ -35,6 +37,11 @@ class UNREALDIPLOMACY_API UUDViewModelManager : public UObject
 {
 	GENERATED_BODY()
 public:
+	/**
+	 * Defines model manager that will be assigned to all viewmodels.
+	 * If model is null then they will be left without manager.
+	 */
+	void SetModelManager(TObjectPtr<UUDActionAdministrator> model);
 	/**
 	 * Calls update on all global view models.
 	 */
@@ -72,4 +79,10 @@ protected:
 	 */
 	UPROPERTY()
 	TMap<FName, FUDViewModelCollection> ViewModelCollections;
+	/**
+	 * This model will be assigned to all view models, 
+	 * allowing them to communicate with the game logic / mechanics.
+	 */
+	UPROPERTY()
+	TObjectPtr<UUDActionAdministrator> Model = nullptr;
 };

@@ -277,7 +277,7 @@ void AUDSkirmishPlayerController::OnWorldSimulationUpdated(FUDActionData& action
 {
 	if (SynchronizationState == EUDSynchronizationState::Synchronized)
 	{
-		FUDOnWorldSimulationUpdatedEvent.Broadcast(action);
+		OnWorldSimulationUpdatedEvent.Broadcast(action);
 		OnWorldStateUpdated();
 	}
 }

@@ -13,6 +13,15 @@ TObjectPtr<AUDMenuHUD> AUDMenuHUD::Get(TObjectPtr<UWorld> world)
 	return CastChecked<AUDMenuHUD>(hud);
 }
 
+void AUDMenuHUD::BeginPlay()
+{
+	Super::BeginPlay();
+	Initialize();
+	SwitchScreen(MenuScreen);
+	ForceUpdate();
+	ShowDialoguePostInitialization();
+}
+
 void AUDMenuHUD::ShowDialoguePostInitialization()
 {
 	UUDExceptionManagerSubsystem::Get(GetWorld())->ShowStoredDialogue();

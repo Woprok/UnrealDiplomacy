@@ -41,7 +41,14 @@ void AUDHUD::Initialize()
 	ViewManager = NewObject<UUDUserWidgetManager>(this);
 	ViewModelManager = NewObject<UUDViewModelManager>(this);
 
+	OnComponentsInitialized();
+
 	PrepareAllScreens();
+}
+
+void AUDHUD::OnComponentsInitialized()
+{
+	UE_LOG(LogTemp, Log, TEXT("AUDHUD: On Components Initialize."));
 }
 
 TObjectPtr<UUDViewModel> AUDHUD::ShowWidget(const FName& widgetName)

@@ -23,6 +23,10 @@ public:
 	 */
 	static TObjectPtr<AUDSkirmishHUD> Get(TObjectPtr<UWorld> world);
 	/**
+	 * Called when the game starts or when spawned
+	 */
+	virtual void BeginPlay() override;
+	/**
 	 * Used by menu views to identify target screen.
 	 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ScreenNames")
@@ -55,4 +59,9 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "SelectionEvent")
 	void BP_OnFactionSelected(int32 factionId);
+protected:
+	/**
+	 * Defines custom model to view model manager.
+	 */
+	virtual void OnComponentsInitialized() override;
 };

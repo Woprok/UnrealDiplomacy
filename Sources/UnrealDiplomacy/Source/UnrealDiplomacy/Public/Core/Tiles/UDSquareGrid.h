@@ -7,6 +7,7 @@
 #include "UDSquareTile.h"
 #include "Core/Simulation/UDWorldState.h"
 #include "Core/Simulation/UDActionAdministrator.h"
+#include "Skirmish/UDSkirmishPlayerController.h"
 #include "UDSquareGrid.generated.h"
 
 /**
@@ -32,12 +33,22 @@ public:
 	void SetAuthority(UUDActionAdministrator* model)
 	{
 		MapModel = model;
+
+		TObjectPtr<AUDSkirmishPlayerController> pc = AUDSkirmishPlayerController::Get(GetWorld());
+		pc->OnSynchronizationFinishedEvent.AddUniqueDynamic(this, &AUDSquareGrid::OnSynchronized);
+		pc->OnWorldSimulationUpdatedEvent.AddUniqueDynamic(this, &AUDSquareGrid::OnUpdate);
 	}
 	/**
 	 * Public handle for notifying grid to update it's tiles based on changes in model.
 	 */
 	UFUNCTION(BlueprintCallable)
-	virtual void OnUpdate()
+	virtual void OnUpdate(const FUDActionData& action)
+	{
+		OnSynchronized();
+	}
+
+	UFUNCTION()
+	virtual void OnSynchronized()
 	{
 		if (!MapModel->IsMapStateReady())
 		{
@@ -57,6 +68,7 @@ public:
 			}
 		}
 	}
+
 	UFUNCTION(BlueprintCallable)
 	virtual void EmplaceTypeMapping(int32 key, int32 target)
 	{

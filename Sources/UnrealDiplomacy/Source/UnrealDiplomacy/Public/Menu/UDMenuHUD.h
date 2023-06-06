@@ -20,6 +20,10 @@ public:
 	 */
 	static TObjectPtr<AUDMenuHUD> Get(TObjectPtr<UWorld> world);
 	/**
+	 * Called when the game starts or when spawned
+	 */
+	virtual void BeginPlay() override;
+	/**
 	 * Attempts to show stored dialogue.
 	 */
 	UFUNCTION(BlueprintCallable)

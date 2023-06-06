@@ -2,6 +2,8 @@
 
 #include "Skirmish/UDSkirmishHUD.h"
 #include "Kismet/GameplayStatics.h"
+#include "Skirmish/UDSkirmishPlayerController.h"
+#include "Core/UserInterfaces/UDViewModelManager.h"
 
 TObjectPtr<AUDSkirmishHUD> AUDSkirmishHUD::Get(TObjectPtr<UWorld> world)
 {
@@ -10,6 +12,14 @@ TObjectPtr<AUDSkirmishHUD> AUDSkirmishHUD::Get(TObjectPtr<UWorld> world)
 	TObjectPtr<AHUD> hud = pc->GetHUD();
 	check(hud != nullptr);
 	return CastChecked<AUDSkirmishHUD>(hud);
+}
+
+void AUDSkirmishHUD::BeginPlay()
+{
+	Super::BeginPlay();
+	Initialize();
+	SwitchScreen(LobbyScreen);
+	ForceUpdate();
 }
 
 void AUDSkirmishHUD::RequestNotifyOnTileSelected(FIntPoint tile)
@@ -22,4 +32,11 @@ void AUDSkirmishHUD::RequestNotifyOnFactionSelected(int32 factionId)
 {
 	OnFactionSelectedEvent.Broadcast(factionId);
 	BP_OnFactionSelected(factionId);
+}
+
+void AUDSkirmishHUD::OnComponentsInitialized()
+{
+	UE_LOG(LogTemp, Log, TEXT("AUDHUD: On Components Initialize."));
+	TObjectPtr<AUDSkirmishPlayerController> pc = AUDSkirmishPlayerController::Get(GetWorld());
+	ViewModelManager->SetModelManager(pc->GetAdministrator());
 }

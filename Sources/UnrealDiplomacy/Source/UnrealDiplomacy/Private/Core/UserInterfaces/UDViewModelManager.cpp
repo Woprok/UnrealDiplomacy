@@ -2,7 +2,12 @@
 
 #include "Core/UserInterfaces/UDViewModelManager.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/Simulation/UDActionAdministrator.h"
 
+void UUDViewModelManager::SetModelManager(TObjectPtr<UUDActionAdministrator> model)
+{
+	Model = model;
+}
 
 void UUDViewModelManager::ForceUpdate()
 {
@@ -31,7 +36,17 @@ void UUDViewModelManager::Register(FName name, TSubclassOf<UUDViewModel> viewMod
 
 TObjectPtr<UUDViewModel> UUDViewModelManager::Create(TSubclassOf<UUDViewModel> viewModelType)
 {
-	return NewObject<UUDViewModel>(this, viewModelType);
+	TObjectPtr<UUDViewModel> newViewModel = NewObject<UUDViewModel>(this, viewModelType);
+	if (Model)
+	{
+		newViewModel->SetModel(Model);
+		UE_LOG(LogTemp, Log, TEXT("UDViewModelManager: ViewModel created with model reference."));
+	}
+	else 
+	{
+		UE_LOG(LogTemp, Log, TEXT("UDViewModelManager: ViewModel created without model reference."));
+	}
+	return newViewModel;
 }
 
 TArray<TObjectPtr<UUDViewModel>>& UUDViewModelManager::GetCollection(const FName& name)

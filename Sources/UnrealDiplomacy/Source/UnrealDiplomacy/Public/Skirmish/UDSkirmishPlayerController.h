@@ -149,6 +149,12 @@ private:
 #pragma endregion
 
 #pragma region Action Execution
+public:
+	/**
+	 * Accessor for blueprints and others to Administrator of this controller.
+	 */
+	UFUNCTION(BlueprintCallable)
+	UUDActionAdministrator* GetAdministrator();
 private:
 	void ChangeFaction();
 	void RunAction(FUDActionData& actionData);
@@ -167,11 +173,6 @@ private:
 	 * Necessary to prevent early call of uninitialized fields.
 	 */
 	TWeakObjectPtr<AUDWorldSimulation> GetWorldSimulation();
-	/**
-	 * Accessor for blueprints and others to Administrator of this controller.
-	 */
-	UFUNCTION(BlueprintCallable)
-	UUDActionAdministrator* GetAdministrator();
 	/**
 	 * Local version of the simulation. 
 	 */
@@ -213,7 +214,7 @@ public:
 	/**
 	 * Subscribeable event for any simulation state change.
 	 */
-	FUDOnWorldSimulationUpdated FUDOnWorldSimulationUpdatedEvent;
+	FUDOnWorldSimulationUpdated OnWorldSimulationUpdatedEvent;
 protected:
 	/**
 	 * Binding to delegate of WorldSimulation.
