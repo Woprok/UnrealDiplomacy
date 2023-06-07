@@ -31,7 +31,10 @@ void UUDLobbyViewModel::Initialize()
 
 void UUDLobbyViewModel::Update()
 {
-
+	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
+	FText newTitle = FText::Format(LOCTEXT("Lobby", "{0} Lobby"), FText::FromString(sessions->GetSessionNameString()));
+	SetLobbyTitleText(newTitle);
+	SetIsHostValue(sessions->IsLocalPlayerHost(sessions->GetSessionName()));
 }
 
 #undef LOCTEXT_NAMESPACE
@@ -137,4 +140,14 @@ void UUDLobbyViewModel::SetStartText(FText newStartText)
 FText UUDLobbyViewModel::GetStartText() const
 {
 	return StartText;
+}
+
+void UUDLobbyViewModel::SetIsHostValue(bool newIsHostValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(IsHostValue, newIsHostValue);
+}
+
+bool UUDLobbyViewModel::GetIsHostValue() const
+{
+	return IsHostValue;
 }

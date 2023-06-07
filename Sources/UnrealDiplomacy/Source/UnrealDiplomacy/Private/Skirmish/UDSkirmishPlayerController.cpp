@@ -201,6 +201,13 @@ void AUDSkirmishPlayerController::ChangeFaction()
 void AUDSkirmishPlayerController::InitializeSimulation()
 {
 	InternalWorldSimulation = GetWorld()->SpawnActor<AUDWorldSimulation>();
+
+	if (!InternalWorldSimulation.IsValid())
+	{
+		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Can't create actor, returning nullptr."), GetControllerUniqueId());
+		return;
+	}
+
 	InternalWorldSimulation->Initialize();
 	InternalWorldSimulation->OnBroadcastActionAppliedDelegate.AddUObject(this, &AUDSkirmishPlayerController::OnWorldSimulationUpdated);
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Initialized with temporary Id."), GetControllerUniqueId());
@@ -244,6 +251,12 @@ void AUDSkirmishPlayerController::FinishDataSynchronization(FUDActionArray& acti
 	if (SynchronizationState == EUDSynchronizationState::Ignored)
 	{
 		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController: Halting synchronization due to missing simulation."));
+		return;
+	}
+	if (GetWorldSimulation() == nullptr)
+	{
+		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Ignoring further synchronizations."), GetControllerUniqueId());
+		SynchronizationState = EUDSynchronizationState::Ignored;
 		return;
 	}
 	// Run all synchronizations

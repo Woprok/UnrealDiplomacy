@@ -33,6 +33,8 @@ public:
 	FText LeaveText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText StartText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool IsHostValue;
 protected:
 	virtual void Initialize() override;
 	UFUNCTION()
@@ -71,4 +73,6 @@ private:
 	FText GetLeaveText() const;
 	void SetStartText(FText newStartText);
 	FText GetStartText() const;
+	void SetIsHostValue(bool newIsHostValue);
+	bool GetIsHostValue() const;
 };

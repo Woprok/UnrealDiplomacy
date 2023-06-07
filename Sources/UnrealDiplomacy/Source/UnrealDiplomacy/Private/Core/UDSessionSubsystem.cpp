@@ -64,10 +64,17 @@ bool UUDSessionSubsystem::IsLocalPlayerHost(FName sessionName)
 		return false;
 	}
 
+	// Check Local Player and get his UniqueNetId.
+	FUniqueNetIdRepl localUniqueNetId;
+	if (!GetLocalUniqueNetId(localUniqueNetId))
+	{
+		return false;
+	}
+
 	FNamedOnlineSession* CurrentSession = sessionInterface->GetNamedSession(sessionName);
 	if (CurrentSession)
 	{
-		return CurrentSession->bHosting;
+		return CurrentSession->OwningUserId == localUniqueNetId;
 	}
 	// We couldn't check...
 	return false;
