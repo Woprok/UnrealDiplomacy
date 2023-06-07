@@ -36,3 +36,24 @@ FUDActionData UUDActionAdministrator::GetRejectAction(int32 actionId, FUDActionD
 {
 	return FUDActionData::AsSuccessorOf(sourceAction, actionId);
 }
+
+#pragma region Lobby
+
+TArray<FUDFactionMinimalInfo> UUDActionAdministrator::GetFactionList()
+{
+	TArray<FUDFactionMinimalInfo> factions = { };
+
+	for (const auto& faction : OverseeingState->Factions)
+	{
+		FUDFactionMinimalInfo newInfo = FUDFactionMinimalInfo(
+			faction.Value->PlayerUniqueId,
+			faction.Value->Name
+		);
+		factions.Add(newInfo);
+	}
+
+	return factions;
+};
+
+
+#pragma endregion

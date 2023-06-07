@@ -1,4 +1,5 @@
 // Copyright Miroslav Valach
+// TODO Transform ActionAdministrator into multiple models and approriate model manager class.
 
 #pragma once
 
@@ -210,34 +211,42 @@ public:
 	int32 WinnerId = 0;
 };
 
-// GetAvailableActions(NONE|TILE|PLAYER)
-// FUDAtionTemplate
-// - ActionId
-// - ActionParams [TAG INVOKER | TAG TARGET | TAG MODIFIER]
-// - RANGE
-// - INVALID VALUES
-// FUDAtionData(ActionId, Invoker, Target) -> SEND
+USTRUCT(BlueprintType)
+struct FUDFactionMinimalInfo
+{
+	GENERATED_BODY()
+public:
+	FUDFactionMinimalInfo() {}
+	FUDFactionMinimalInfo(int32 id, FString name) : Id(id), Name(name) {}
+	UPROPERTY(BlueprintReadOnly)
+	int32 Id = 0;
+	UPROPERTY(BlueprintReadOnly)
+	FString Name;
+};
 
-// Layer that cares about UI/AI to Data Conversion
-// Does not really care about Actions as a whole thingy
-// But still depends on their restrictions
-// In theory this serves as another layer of restrictions over actions
-// So it's overseeing actions. Action can allow to send gold and be in negative
-// But Administrator will say no to this if we want, so it makes much harsher dependencies
-// Actions might allow giving permission modifier to enemy
-// Action administrator might not allow it as it would not be cool
 #define LOCTEXT_NAMESPACE "ActionAdministrator"
 
-/**
- * Invoked everytime an action was decided by this controller.
- */
 DECLARE_DELEGATE_OneParam(UserActionRequestedDelegate, FUDActionData);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDOnDataChanged);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDOnDataReloaded);
 
 /**
- * Overseeing state with many functions for conversion to Info.
+ * Model that is capable of converting internal state 
+ * and represent it in more cohorent form.
+ * At the 
  * Allows Player to get easily readable information and confirmations.
+ *
+ * ActionAdministrator is Model in MVVM schema.
+ * It covers all translations between game logic & game state and
+ * player input for both human and AI that needs to use API.
+ *
+ * This can impose additional restrictions that are not prohibited by raw actions.
+ * Most returns from ActionAdministrator are wrapper types.
+ *
+ * e.g. ActionAdministrator might impose additional restrictions on trading,
+ * which normally the action does not cover.
+ * This is due to missing validators and instead of having multiple
+ * models we are using ActionAdministrator to resolve it.
  */
 UCLASS(Blueprintable)
 class UNREALDIPLOMACY_API UUDActionAdministrator : public UObject
@@ -248,7 +257,6 @@ private:
 public:
 	/**
 	 * Delegate that is binded by player controller.
-	 * TODO bind also AI controller and merge it with the delegate that is AI using a.t.m.?
 	 */
 	UserActionRequestedDelegate OnUserActionRequestedDelegate;
 	/**
@@ -276,9 +284,9 @@ public:
 		OnDataReloadedEvent.Broadcast();
 	}
 	/**
-	 * Request
-	 * TODO refactor all these delegates
+	 * Request action to be send over to server and executed.
 	 */
+	UFUNCTION()
 	void RequestAction(FUDActionData data)
 	{
 		OnUserActionRequestedDelegate.ExecuteIfBound(data);
@@ -297,6 +305,22 @@ public:
 		}
 		OverseeingState = overseeingState;
 	}
+#pragma region Lobby
+public:
+	/**
+	 * Provides list of all factions and their names.
+	 */
+	TArray<FUDFactionMinimalInfo> GetFactionList();
+
+
+
+#pragma endregion
+
+
+
+
+	
+
 	/**
 	 * Alternatively call to IsGameInProgress, that's useable for game that is not yet over.
 	 */

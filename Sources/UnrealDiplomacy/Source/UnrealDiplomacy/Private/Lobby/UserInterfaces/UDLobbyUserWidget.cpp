@@ -21,7 +21,9 @@ void UUDLobbyUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 void UUDLobbyUserWidget::BindDelegates()
 {
 	// Bind view to updates.
-	//ViewModel->OnSessionSearchSourceUpdated.AddUObject(this, &UUDJoinGameUserWidget::SetSourceCollection);
+	ViewModel->LobbyHostSourceChangedEvent.AddUObject(this, &UUDLobbyUserWidget::SetHostSourceInstance);
+	ViewModel->LobbyMemberSourceChangedEvent.AddUObject(this, &UUDLobbyUserWidget::SetMemberSourceInstance);
+	ViewModel->LobbyClientSourceUpdatedEvent.AddUObject(this, &UUDLobbyUserWidget::SetClientSourceCollection);
 	// Bind viewmodel to widgets.
 	BackButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDLobbyViewModel::Back);
 	LeaveButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDLobbyViewModel::Leave);
@@ -48,12 +50,12 @@ void UUDLobbyUserWidget::SetClientSourceCollection(const TArray<TObjectPtr<UUDCl
 	ClientItemListWidget->SetListItems(clientItemViewModels);
 }
 
-void UUDLobbyUserWidget::SetHostSource(const TArray<TObjectPtr<UUDLobbyHostViewModel>>& lobbyHostViewModel)
+void UUDLobbyUserWidget::SetHostSourceInstance(const TObjectPtr<UUDLobbyHostViewModel>& lobbyHostViewModel)
 {
-	//LobbyHostViewWidget->SetViewModel(lobbyHostViewModel);
+	LobbyHostViewWidget->SetViewModel(lobbyHostViewModel);
 }
 
-void UUDLobbyUserWidget::SetMemberSource(const TArray<TObjectPtr<UUDLobbyMemberViewModel>>& lobbyMemberViewModel)
+void UUDLobbyUserWidget::SetMemberSourceInstance(const TObjectPtr<UUDLobbyMemberViewModel>& lobbyMemberViewModel)
 {
-	//LobbyMemberViewWidget->SetViewModel(lobbyMemberViewModel);
+	LobbyMemberViewWidget->SetViewModel(lobbyMemberViewModel);
 }

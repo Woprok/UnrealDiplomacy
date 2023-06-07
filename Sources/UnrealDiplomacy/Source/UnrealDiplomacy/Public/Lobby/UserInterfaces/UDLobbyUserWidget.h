@@ -51,11 +51,11 @@ protected:
 	/**
 	 * Callback to set data from view model.
 	 */
-	void SetHostSource(const TArray<TObjectPtr<UUDLobbyHostViewModel>>& lobbyHostViewModel);
+	void SetHostSourceInstance(const TObjectPtr<UUDLobbyHostViewModel>& lobbyHostViewModel);
 	/**
 	 * Callback to set data from view model.
 	 */
-	void SetMemberSource(const TArray<TObjectPtr<UUDLobbyMemberViewModel>>& lobbyMemberViewModel);
+	void SetMemberSourceInstance(const TObjectPtr<UUDLobbyMemberViewModel>& lobbyMemberViewModel);
 protected:
 	// Bindings
 	UPROPERTY()

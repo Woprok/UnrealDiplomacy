@@ -3,6 +3,7 @@
 
 #include "Skirmish/UDSkirmishGameState.h"
 #include "Skirmish/UDSkirmishGameMode.h"
+#include "Skirmish/UDSkirmishPlayerController.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDCommandData.h"
 #include "Core/Simulation/UDActionHandlingInterface.h"

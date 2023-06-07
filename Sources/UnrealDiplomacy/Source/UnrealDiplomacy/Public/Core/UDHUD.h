@@ -90,6 +90,10 @@ public:
 	 * Use this for filling ListViews or similiar use-cases.
 	 */
 	TArray<TObjectPtr<UUDViewModel>>& GetViewModelCollection(const FName& name, TSubclassOf<UUDViewModel> viewModelType, int32 desiredTotalCount);
+	/**
+	 * Shortcut from retrieving single view model from the collection.
+	 */
+	TObjectPtr<UUDViewModel> GetViewModelCollection(const FName& name, TSubclassOf<UUDViewModel> viewModelType);
 protected:
 	/**
 	 * Adds selected screen to viewport.

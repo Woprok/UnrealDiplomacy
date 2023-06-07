@@ -35,8 +35,7 @@ class UNREALDIPLOMACY_API IUDActionHandlingInterface
 	GENERATED_BODY()
 public:
 	 /**
-	  * Binded to simulation, as this is a way for this controller to be informed about change.
-	  * TODO register action executed as event/delegate to normalize how this interacts with GM & GS.
+	  * Bindable function for notifying about simulation change.
 	  */
 	 virtual void OnActionExecuted(FUDActionData executedAction);
 	 /**

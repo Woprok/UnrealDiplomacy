@@ -1,17 +1,25 @@
 // Copyright Miroslav Valach
 
 #include "Lobby/UserInterfaces/UDLobbyViewModel.h"
+#include "Lobby/UserInterfaces/UDLobbyHostViewModel.h"
+#include "Lobby/UserInterfaces/UDLobbyMemberViewModel.h"
+#include "Lobby/UserInterfaces/UDClientItemViewModel.h"
 #include "Core/UDGameInstance.h"
 #include "Core/UDSessionSubsystem.h"
 #include "Kismet/GameplayStatics.h"
 #include "Core/Simulation/UDCommandData.h"
 #include "Skirmish/UDSkirmishPlayerController.h"
+#include "Skirmish/UDSkirmishHUD.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 
 #define LOCTEXT_NAMESPACE "Lobby"
 
 void UUDLobbyViewModel::Initialize()
 {
+	HostViewModelType = UUDLobbyHostViewModel::StaticClass();
+	MemberViewModelType = UUDLobbyMemberViewModel::StaticClass();
+	ClientViewModelType = UUDClientItemViewModel::StaticClass();
+
 	FText lobbyTitle = FText(LOCTEXT("Lobby", "Lobby"));
 	SetLobbyTitleText(lobbyTitle);
 	FText nameHeader = FText(LOCTEXT("Lobby", "Name"));
@@ -27,6 +35,22 @@ void UUDLobbyViewModel::Initialize()
 	sessions->OnStartSessionCompleteEvent.AddUniqueDynamic(this, &UUDLobbyViewModel::OnSessionStarted);
 
 	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDLobbyViewModel::Update);
+
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	// Retrieve view models for sub content controls
+	TObjectPtr<UUDViewModel> hostModel = hud->GetViewModelCollection(HostViewModelInstanceName, HostViewModelType);
+	HostViewModelInstance = Cast<UUDLobbyHostViewModel>(hostModel);
+	TObjectPtr<UUDViewModel> memberModel = hud->GetViewModelCollection(MemberViewModelInstanceName, MemberViewModelType);
+	MemberViewModelInstance = Cast<UUDLobbyMemberViewModel>(memberModel);
+	// Call updates so each Instance is ready to use.
+	HostViewModelInstance->FullUpdate();
+	MemberViewModelInstance->FullUpdate();
+	// Announce them to widget for additional binding.
+	LobbyHostSourceChangedEvent.Broadcast(HostViewModelInstance);
+	LobbyMemberSourceChangedEvent.Broadcast(MemberViewModelInstance);
+
+	// TODO THIS
+	//HostViewModelInstance = hud->GetViewModelCollection(ViewModelCollectionName, ClientViewModelType, 10);
 }
 
 void UUDLobbyViewModel::Update()
@@ -35,9 +59,33 @@ void UUDLobbyViewModel::Update()
 	FText newTitle = FText::Format(LOCTEXT("Lobby", "{0} Lobby"), FText::FromString(sessions->GetSessionNameString()));
 	SetLobbyTitleText(newTitle);
 	SetIsHostValue(sessions->IsLocalPlayerHost(sessions->GetSessionName()));
+
+	UpdateClientList();
 }
 
 #undef LOCTEXT_NAMESPACE
+
+void UUDLobbyViewModel::UpdateClientList()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDLobbyViewModel: UpdateClients."));
+
+	//TArray<FactionInfo> factions = Model->GetFactionList();
+	//
+	//TArray<TObjectPtr<UUDViewModel>>& viewModels = 
+	//	hud->GetViewModelCollection(ClientViewModelCollectionName, ClientViewModelType, factions.Num());
+	//ClientViewModelCollection.Empty();
+	//for (int32 i = 0; i < SessionResults.Num(); i++)
+	//{
+	//	TObjectPtr<UUDServerItemViewModel> newViewModel = Cast<UUDServerItemViewModel>(viewModels[i]);
+	//	newViewModel->SetContent(SessionResults[i]);
+	//	newViewModel->FullUpdate();
+	//	InUseViewModelCollection.Add(newViewModel);
+	//}
+	//
+	////SetSearchText(SessionCountToText(InUseViewModelCollection.Num()));
+	//
+	//LobbyClientSourceUpdatedEvent.Broadcast(InUseViewModelCollection);
+}
 
 void UUDLobbyViewModel::Back()
 {
@@ -65,7 +113,6 @@ void UUDLobbyViewModel::StartGame()
 	UE_LOG(LogTemp, Log, TEXT("UUDLobbyViewModel: Starting session name %s."), *sessions->GetSessionNameString());
 
 	sessions->StartSession(sessions->GetSessionName());
-	AUDSkirmishPlayerController::Get(GetWorld())->OnUserCommandRequested(FUDCommandData(EUDCommandType::StartGame));
 }
 
 void UUDLobbyViewModel::QuitGame()
@@ -90,6 +137,7 @@ void UUDLobbyViewModel::OnSessionStarted(bool success)
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDLobbyViewModel: OnSessionStarted."));
 	// Session was started, we can proceed to different UI and call GameMode to handle rest.
+	AUDSkirmishPlayerController::Get(GetWorld())->OnUserCommandRequested(FUDCommandData(EUDCommandType::StartGame));
 }
 
 void UUDLobbyViewModel::SetLobbyTitleText(FText newLobbyTitleText)

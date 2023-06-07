@@ -7,6 +7,16 @@
 #include "Core/UserInterfaces/UDViewModel.h"
 #include "UDLobbyViewModel.generated.h"
 
+// Forward Declarations
+
+class UUDLobbyHostViewModel;
+class UUDLobbyMemberViewModel;
+class UUDClientItemViewModel;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FUDLobbyHostSourceChanged, const TObjectPtr<UUDLobbyHostViewModel>& hostViewModel);
+DECLARE_MULTICAST_DELEGATE_OneParam(FUDLobbyMemberSourceChanged, const TObjectPtr<UUDLobbyMemberViewModel>& memberViewModel);
+DECLARE_MULTICAST_DELEGATE_OneParam(FUDLobbyClientSourceUpdated, const TArray<TObjectPtr<UUDClientItemViewModel>>& clientItemViewModels);
+
 /**
  * Lobby Widget
  */
@@ -35,6 +45,10 @@ public:
 	FText StartText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsHostValue;
+	// Events
+	FUDLobbyHostSourceChanged LobbyHostSourceChangedEvent;
+	FUDLobbyMemberSourceChanged LobbyMemberSourceChangedEvent;
+	FUDLobbyClientSourceUpdated LobbyClientSourceUpdatedEvent;
 protected:
 	virtual void Initialize() override;
 	UFUNCTION()
@@ -61,6 +75,10 @@ private:
 	 */
 	UFUNCTION()
 	void OnSessionStarted(bool success);
+	/**
+	 * Update clients on change.
+	 */
+	void UpdateClientList();
 private:
 	// MVVM Setters & Getters
 	void SetLobbyTitleText(FText newLobbyTitleText);
@@ -75,4 +93,15 @@ private:
 	FText GetStartText() const;
 	void SetIsHostValue(bool newIsHostValue);
 	bool GetIsHostValue() const;
+private:
+	// Fields
+	FName HostViewModelInstanceName = TEXT("LobbyHostInstance");
+	TSubclassOf<UUDViewModel> HostViewModelType;
+	TObjectPtr<UUDLobbyHostViewModel> HostViewModelInstance;
+	FName MemberViewModelInstanceName = TEXT("LobbyMemberInstance");
+	TSubclassOf<UUDViewModel> MemberViewModelType;
+	TObjectPtr<UUDLobbyMemberViewModel> MemberViewModelInstance;
+	FName ClientViewModelCollectionName = TEXT("LobbyClientItemCollection");
+	TSubclassOf<UUDViewModel> ClientViewModelType;
+	TArray<TObjectPtr<UUDClientItemViewModel>> ClientViewModelCollection;
 };

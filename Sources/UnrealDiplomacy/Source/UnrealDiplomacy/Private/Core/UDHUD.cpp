@@ -74,6 +74,11 @@ TArray<TObjectPtr<UUDViewModel>>& AUDHUD::GetViewModelCollection(const FName& na
 	return ViewModelManager->GetCollection(name);
 }
 
+TObjectPtr<UUDViewModel> AUDHUD::GetViewModelCollection(const FName& name, TSubclassOf<UUDViewModel> viewModelType)
+{
+	return GetViewModelCollection(name, viewModelType, 1)[0];
+}
+
 bool AUDHUD::ShowScreen(const FName& screenName)
 {
 	if (!Screens.Contains(screenName))
