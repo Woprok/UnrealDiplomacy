@@ -66,6 +66,11 @@ public:
 	 * This is used only on client.
 	 */
 	void CreatePrivatePlayerFaction(int32 factionId);
+	/**
+	 * Promote faction to all connected clients after creating it.
+	 * Use on server only.
+	 */
+	void AnnounceFaction(int32 factionId);
 protected:
 	/**
 	 * Synchronizes specified state by

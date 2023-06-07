@@ -11,6 +11,7 @@
 #include "Skirmish/UDSkirmishPlayerController.h"
 #include "Skirmish/UDSkirmishHUD.h"
 #include "Core/Simulation/UDActionAdministrator.h"
+#include "Core/Simulation/UDModelStructs.h"
 
 #define LOCTEXT_NAMESPACE "Lobby"
 
@@ -34,6 +35,7 @@ void UUDLobbyViewModel::Initialize()
 	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
 	sessions->OnStartSessionCompleteEvent.AddUniqueDynamic(this, &UUDLobbyViewModel::OnSessionStarted);
 
+	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDLobbyViewModel::Reload);
 	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDLobbyViewModel::Update);
 
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
@@ -42,15 +44,19 @@ void UUDLobbyViewModel::Initialize()
 	HostViewModelInstance = Cast<UUDLobbyHostViewModel>(hostModel);
 	TObjectPtr<UUDViewModel> memberModel = hud->GetViewModelCollection(MemberViewModelInstanceName, MemberViewModelType);
 	MemberViewModelInstance = Cast<UUDLobbyMemberViewModel>(memberModel);
-	// Call updates so each Instance is ready to use.
+	// Call initialize so each Instance is ready to use, once it receives data in runtime.
 	HostViewModelInstance->FullUpdate();
 	MemberViewModelInstance->FullUpdate();
 	// Announce them to widget for additional binding.
 	LobbyHostSourceChangedEvent.Broadcast(HostViewModelInstance);
 	LobbyMemberSourceChangedEvent.Broadcast(MemberViewModelInstance);
 
-	// TODO THIS
-	//HostViewModelInstance = hud->GetViewModelCollection(ViewModelCollectionName, ClientViewModelType, 10);
+	Update();
+}
+
+void UUDLobbyViewModel::Reload()
+{
+	Update();
 }
 
 void UUDLobbyViewModel::Update()
@@ -60,6 +66,9 @@ void UUDLobbyViewModel::Update()
 	SetLobbyTitleText(newTitle);
 	SetIsHostValue(sessions->IsLocalPlayerHost(sessions->GetSessionName()));
 
+	if (!Model->IsOverseeingStatePresent())
+		return;
+	// Following updates require model.
 	UpdateClientList();
 }
 
@@ -68,23 +77,24 @@ void UUDLobbyViewModel::Update()
 void UUDLobbyViewModel::UpdateClientList()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDLobbyViewModel: UpdateClients."));
-
-	//TArray<FactionInfo> factions = Model->GetFactionList();
-	//
-	//TArray<TObjectPtr<UUDViewModel>>& viewModels = 
-	//	hud->GetViewModelCollection(ClientViewModelCollectionName, ClientViewModelType, factions.Num());
-	//ClientViewModelCollection.Empty();
-	//for (int32 i = 0; i < SessionResults.Num(); i++)
-	//{
-	//	TObjectPtr<UUDServerItemViewModel> newViewModel = Cast<UUDServerItemViewModel>(viewModels[i]);
-	//	newViewModel->SetContent(SessionResults[i]);
-	//	newViewModel->FullUpdate();
-	//	InUseViewModelCollection.Add(newViewModel);
-	//}
-	//
-	////SetSearchText(SessionCountToText(InUseViewModelCollection.Num()));
-	//
-	//LobbyClientSourceUpdatedEvent.Broadcast(InUseViewModelCollection);
+	// Retrieve factions
+	TArray<FUDFactionMinimalInfo> factions = Model->GetFactionList();
+	// Retrieve enough models
+	TObjectPtr<AUDSkirmishPlayerController> pc = AUDSkirmishPlayerController::Get(GetWorld());
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(ClientViewModelCollectionName, ClientViewModelType, factions.Num());
+	// Get rid of all models
+	ClientViewModelCollection.Empty();
+	for (int32 i = 0; i < factions.Num(); i++)
+	{
+		TObjectPtr<UUDClientItemViewModel> newViewModel = Cast<UUDClientItemViewModel>(viewModels[i]);
+		bool isHost = factions[i].Id == pc->GetControlledFactionId();
+		newViewModel->SetContent(factions[i]);
+		newViewModel->FullUpdate();
+		ClientViewModelCollection.Add(newViewModel);
+	}
+	
+	LobbyClientSourceUpdatedEvent.Broadcast(ClientViewModelCollection);
 }
 
 void UUDLobbyViewModel::Back()

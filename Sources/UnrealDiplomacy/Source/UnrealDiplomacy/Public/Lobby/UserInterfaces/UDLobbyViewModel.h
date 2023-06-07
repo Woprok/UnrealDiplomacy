@@ -53,6 +53,8 @@ protected:
 	virtual void Initialize() override;
 	UFUNCTION()
 	virtual void Update() override;
+	UFUNCTION()
+	void Reload();
 private:
 	/**
 	 * Starts current session.

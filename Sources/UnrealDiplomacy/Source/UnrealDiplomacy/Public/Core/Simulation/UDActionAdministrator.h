@@ -10,10 +10,13 @@
 #include "Core/Simulation/UDActionData.h"
 
 // Forward Declarations
+
 class IUDActionInterface;
 class UUDWorldState;
 class UUDActionManager;
 class UUDActionDatabase;
+
+struct FUDFactionMinimalInfo;
 
 #include "Core/Simulation/Actions/UDDealActionContractCreate.h"
 
@@ -183,7 +186,6 @@ public:
 	FUDDiscussionAction ActionBody;
 };
 
-
 USTRUCT(BlueprintType)
 struct FUDThroneInfo
 {
@@ -197,7 +199,6 @@ public:
 	FText UsurperName = FText::GetEmpty();
 };
 
-
 USTRUCT(BlueprintType)
 struct FUDGameStateInfo
 {
@@ -209,19 +210,6 @@ public:
 	bool IsGameFinished = false;
 	UPROPERTY(BlueprintReadOnly)
 	int32 WinnerId = 0;
-};
-
-USTRUCT(BlueprintType)
-struct FUDFactionMinimalInfo
-{
-	GENERATED_BODY()
-public:
-	FUDFactionMinimalInfo() {}
-	FUDFactionMinimalInfo(int32 id, FString name) : Id(id), Name(name) {}
-	UPROPERTY(BlueprintReadOnly)
-	int32 Id = 0;
-	UPROPERTY(BlueprintReadOnly)
-	FString Name;
 };
 
 #define LOCTEXT_NAMESPACE "ActionAdministrator"
@@ -254,6 +242,7 @@ class UNREALDIPLOMACY_API UUDActionAdministrator : public UObject
 	GENERATED_BODY()
 private:
 	FUDNationInfo FUDNationInfo_INVALID = FUDNationInfo(-1, -1);
+#pragma region Core
 public:
 	/**
 	 * Delegate that is binded by player controller.
@@ -271,48 +260,68 @@ public:
 	 * Notifies all viewmodel subscribers about the subtle change.
 	 */
 	UFUNCTION()
-	void OnDataChanged(const FUDActionData& action)
-	{
-		OnDataChangedEvent.Broadcast();
-	}
+	void OnDataChanged(const FUDActionData& action);
 	/**
 	 * Notifies all viewmodel subscribers about the reload.
 	 */
 	UFUNCTION()
-	void OnDataReloaded()
-	{
-		OnDataReloadedEvent.Broadcast();
-	}
+	void OnDataReloaded();
 	/**
 	 * Request action to be send over to server and executed.
 	 */
 	UFUNCTION()
-	void RequestAction(FUDActionData data)
-	{
-		OnUserActionRequestedDelegate.ExecuteIfBound(data);
-	}
+	void RequestAction(FUDActionData data);
 	/**
 	 * Defines state that is being monitored and used for determining validity, actions, infos & etc.
 	 */
-	void SetOverseeingState(TObjectPtr<UUDWorldState> overseeingState)
-	{
-		if (IsOverseeingStatePresent())
-		{
-			UE_LOG(LogTemp, Log, 
-				TEXT("UUDActionAdministrator(%d): Multiple attempts to set overseeing state."), 
-				OverseeingState->FactionPerspective);
-			return;
-		}
-		OverseeingState = overseeingState;
-	}
+	void SetOverseeingState(TObjectPtr<UUDWorldState> overseeingState);
+	/**
+	 * Checks if the state functions are useable.
+	 */
+	bool IsOverseeingStatePresent();
+public:
+	/**
+	 * Returns new action that can be invoked.
+	 */
+	FUDActionData GetAction(int32 actionId);
+	/**
+	 * Returns new action that can be invoked.
+	 */
+	FUDActionData GetAction(int32 actionId, TArray<int32> optionalValues);
+	/**
+	 * Returns new action that can be invoked.
+	 */
+	FUDActionData GetAction(int32 actionId, TArray<int32> optionalValues, FString optionalString);
+	/**
+	 * Returns new action that can be invoked.
+	 */
+	FUDActionData GetAction(int32 actionId, FString optionalString);
+	/**
+	 * Returns new action that can be invoked.
+	 */
+	FUDActionData GetAcceptAction(int32 actionId, FUDActionData sourceAction);
+	/**
+	 * Returns new action that can be invoked.
+	 */
+	FUDActionData GetRejectAction(int32 actionId, FUDActionData sourceAction);
+protected:
+	UPROPERTY()
+	TObjectPtr<UUDWorldState> State;
+#pragma endregion
+
+public:
+	TObjectPtr<UUDMapState> GetMapState();
+
 #pragma region Lobby
 public:
 	/**
 	 * Provides list of all factions and their names.
 	 */
 	TArray<FUDFactionMinimalInfo> GetFactionList();
-
-
+	/**
+	 * Retrieves local faction name.
+	 */
+	FString GetLocalFactionName();
 
 #pragma endregion
 
@@ -328,7 +337,7 @@ public:
 	bool IsGameFinished()
 	{
 		if (IsOverseeingStatePresent() && 
-			OverseeingState->WorldSimulationState == EUDWorldSimulationState::Finished)
+			State->WorldSimulationState == EUDWorldSimulationState::Finished)
 		{
 			return true;
 		}
@@ -343,7 +352,7 @@ public:
 	bool IsGameInProgress()
 	{
 		if (IsOverseeingStatePresent() && 
-			OverseeingState->WorldSimulationState == EUDWorldSimulationState::Simulating)
+			State->WorldSimulationState == EUDWorldSimulationState::Simulating)
 		{
 			return true;
 		}
@@ -355,7 +364,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsMapStateReady()
 	{
-		return IsValid(OverseeingState->Map) && OverseeingState->Map->Tiles.Num() > 0;
+		return IsValid(State->Map) && State->Map->Tiles.Num() > 0;
 	}
 	/**
 	 * Validate if the owning player can end turn.
@@ -363,7 +372,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool CanEndTurn()
 	{
-		if (OverseeingState->TurnData.PlayingFaction == OverseeingState->FactionPerspective)
+		if (State->TurnData.PlayingFaction == State->FactionPerspective)
 		{
 			return true;
 		}
@@ -375,7 +384,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDTurnInfo GetCurrentTurnState()
 	{
-		return FUDTurnInfo(OverseeingState->TurnData.Turn, OverseeingState->TurnData.PlayingFaction);
+		return FUDTurnInfo(State->TurnData.Turn, State->TurnData.PlayingFaction);
 	}
 	/**
 	 * Checks if supplied Id belongs to valid nation.
@@ -383,7 +392,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsValidNation(int32 nationId)
 	{
-		return OverseeingState->Factions.Contains(nationId);
+		return State->Factions.Contains(nationId);
 	}
 	/**
 	 * Returns NationInfo.
@@ -392,7 +401,7 @@ public:
 	FUDNationInfo GetCurrentNationState(int32 nationId)
 	{
 		if (IsValidNation(nationId))
-			return FUDNationInfo(nationId, OverseeingState->Factions[nationId]->ResourceGold);
+			return FUDNationInfo(nationId, State->Factions[nationId]->ResourceGold);
 		return FUDNationInfo_INVALID;
 	}
 	/**
@@ -401,7 +410,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	int32 GetCurrentResourceGold()
 	{
-		return OverseeingState->Factions[OverseeingState->FactionPerspective]->ResourceGold;
+		return State->Factions[State->FactionPerspective]->ResourceGold;
 	}
 	/**
 	 * Returns list of players in PlayerInfo format.
@@ -411,7 +420,7 @@ public:
 	{
 		TArray<FUDPlayerInfo> infos;
 
-		for (auto state : OverseeingState->Factions)
+		for (auto state : State->Factions)
 		{
 			FUDPlayerInfo player = FUDPlayerInfo(state.Value->PlayerUniqueId);
 			player.Name = FText::Format(LOCTEXT("Player", "Player {0}"), state.Value->PlayerUniqueId);
@@ -426,7 +435,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDTileInfo GetCurrentTileState(FIntPoint position)
 	{
-		auto tile = OverseeingState->Map->GetTile(position);
+		auto tile = State->Map->GetTile(position);
 		return FUDTileInfo(tile->OwnerUniqueId, position, tile->Type);
 	}
 	/**
@@ -435,7 +444,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool CanTakeTile(FIntPoint position)
 	{
-		auto tile = OverseeingState->Map->GetTile(position);
+		auto tile = State->Map->GetTile(position);
 		return tile->OwnerUniqueId == UUDGlobalData::GaiaFactionId;
 	}
 	/**
@@ -444,14 +453,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool CanGiveGold(int32 targetId, int32 goldAmount)
 	{
-		return targetId != OverseeingState->FactionPerspective 
+		return targetId != State->FactionPerspective 
 			&& goldAmount > 0 
-			&& OverseeingState->Factions[OverseeingState->FactionPerspective]->ResourceGold - goldAmount >= 0;
+			&& State->Factions[State->FactionPerspective]->ResourceGold - goldAmount >= 0;
 	}
 	UFUNCTION(BlueprintCallable)
 	FIntPoint GetFirstNeutralTile()
 	{
-		for (auto tile : OverseeingState->Map->Tiles)
+		for (auto tile : State->Map->Tiles)
 		{
 			if (tile->OwnerUniqueId == UUDGlobalData::GaiaFactionId)
 			{
@@ -468,7 +477,7 @@ public:
 	TArray<FUDActionData> GetPendingRequests()
 	{
 		TArray<FUDActionData> copy;
-		for (auto& itm : OverseeingState->Factions[OverseeingState->FactionPerspective]->PendingRequests)
+		for (auto& itm : State->Factions[State->FactionPerspective]->PendingRequests)
 		{
 			copy.Add(itm.Value);
 		}
@@ -480,18 +489,18 @@ public:
 	UFUNCTION(BlueprintCallable)
 	int32 GetPendingRequestsCount()
 	{
-		return OverseeingState->Factions[OverseeingState->FactionPerspective]->PendingRequests.Num();
+		return State->Factions[State->FactionPerspective]->PendingRequests.Num();
 	}
 	UFUNCTION(BlueprintCallable)
 	bool IsParticipatingInDeal(int32 dealUniqueId)
 	{
-		if (OverseeingState->Deals.Num() == 0 || !OverseeingState->Deals.Contains(dealUniqueId))
+		if (State->Deals.Num() == 0 || !State->Deals.Contains(dealUniqueId))
 		{
 			return false;
 		}
-		TObjectPtr<UUDDealState> lastState = OverseeingState->Deals[dealUniqueId];
+		TObjectPtr<UUDDealState> lastState = State->Deals[dealUniqueId];
 		// verifies if this person is participating in last existing deal.
-		return lastState->Participants.Contains(OverseeingState->FactionPerspective);
+		return lastState->Participants.Contains(State->FactionPerspective);
 	}
 	/**
 	 * Returns list of active participants, blocked participants, available participants.
@@ -503,10 +512,10 @@ public:
 		TArray<FUDPlayerInfo> blocked;
 		TArray<FUDPlayerInfo> available;
 
-		if (OverseeingState->Deals.Num() == 0 || !OverseeingState->Deals.Contains(dealUniqueId))
+		if (State->Deals.Num() == 0 || !State->Deals.Contains(dealUniqueId))
 			return FUDDealParticipantsInfo(0, active, blocked, available);
 
-		TObjectPtr<UUDDealState> deal = OverseeingState->Deals[dealUniqueId];
+		TObjectPtr<UUDDealState> deal = State->Deals[dealUniqueId];
 		TArray<FUDPlayerInfo> players = GetPlayerList();
 
 		for (FUDPlayerInfo info : players)
@@ -532,9 +541,9 @@ public:
 		TArray<int32> keys;
 		keys.Empty(0);
 
-		if (OverseeingState->Deals.Num() != 0)
+		if (State->Deals.Num() != 0)
 		{
-			OverseeingState->Deals.GenerateKeyArray(keys);
+			State->Deals.GenerateKeyArray(keys);
 			keys.Sort();
 		}
 		return keys;
@@ -542,9 +551,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDDealInfo GetDealInfoAnyDEBUG()
 	{
-		if (OverseeingState->Deals.Num() != 0)
+		if (State->Deals.Num() != 0)
 		{
-			for (auto& deal : OverseeingState->Deals)
+			for (auto& deal : State->Deals)
 			{
 				return FUDDealInfo(deal.Key, deal.Value->DealSimulationState, deal.Value->DealSimulationResult);
 			}
@@ -555,7 +564,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsModerator(int32 dealUniqueId)
 	{
-		return OverseeingState->Deals[dealUniqueId]->OwnerUniqueId == OverseeingState->FactionPerspective;
+		return State->Deals[dealUniqueId]->OwnerUniqueId == State->FactionPerspective;
 
 	}
 	/**
@@ -564,93 +573,93 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDDealInfo GetDealInfo(int32 dealUniqueId)
 	{
-		if (OverseeingState->Deals.Num() == 0 || !OverseeingState->Deals.Contains(dealUniqueId))
+		if (State->Deals.Num() == 0 || !State->Deals.Contains(dealUniqueId))
 			return FUDDealInfo(0, EUDDealSimulationState::Undefined, EUDDealSimulationResult::Undefined);
 
-		TObjectPtr<UUDDealState> deal = OverseeingState->Deals[dealUniqueId];
+		TObjectPtr<UUDDealState> deal = State->Deals[dealUniqueId];
 		return FUDDealInfo(deal->UniqueDealId, deal->DealSimulationState, deal->DealSimulationResult);
 	}
 	UFUNCTION(BlueprintCallable)
 	bool IsParticipantInCurrentDeal(int32 dealUniqueId, int32 playerId)
 	{
-		if (OverseeingState->Deals.Num() == 0 || !OverseeingState->Deals.Contains(dealUniqueId))
+		if (State->Deals.Num() == 0 || !State->Deals.Contains(dealUniqueId))
 			return false;
-		if (OverseeingState->Deals[dealUniqueId]->Participants.Num() == 0)
+		if (State->Deals[dealUniqueId]->Participants.Num() == 0)
 			return false;
-		return OverseeingState->Deals[dealUniqueId]->Participants.Contains(playerId);
+		return State->Deals[dealUniqueId]->Participants.Contains(playerId);
 	}
 
 	UFUNCTION(BlueprintCallable)
 	bool IsReadyInCurrentDeal(int32 dealUniqueId, int32 playerId)
 	{
-		if (OverseeingState->Deals.Num() == 0 || !OverseeingState->Deals.Contains(dealUniqueId))
+		if (State->Deals.Num() == 0 || !State->Deals.Contains(dealUniqueId))
 			return false;
-		if (OverseeingState->Deals[dealUniqueId]->IsReadyPlayerList.Num() == 0)
+		if (State->Deals[dealUniqueId]->IsReadyPlayerList.Num() == 0)
 			return false;
-		return OverseeingState->Deals[dealUniqueId]->IsReadyPlayerList.Contains(playerId);
+		return State->Deals[dealUniqueId]->IsReadyPlayerList.Contains(playerId);
 	}
 
 	UFUNCTION(BlueprintCallable)
 	int32 GetReadyParticipantCount(int32 dealUniqueId)
 	{
-		if (OverseeingState->Deals.Num() == 0 || !OverseeingState->Deals.Contains(dealUniqueId))
+		if (State->Deals.Num() == 0 || !State->Deals.Contains(dealUniqueId))
 			return false;
-		if (OverseeingState->Deals[dealUniqueId]->IsReadyPlayerList.Num() == 0)
+		if (State->Deals[dealUniqueId]->IsReadyPlayerList.Num() == 0)
 			return false;
-		return OverseeingState->Deals[dealUniqueId]->IsReadyPlayerList.Num();
+		return State->Deals[dealUniqueId]->IsReadyPlayerList.Num();
 	}
 
 	UFUNCTION(BlueprintCallable)
 	bool IsPositiveVotingCurrentDeal(int32 dealUniqueId, int32 playerId)
 	{
-		if (OverseeingState->Deals.Num() == 0 || !OverseeingState->Deals.Contains(dealUniqueId))
+		if (State->Deals.Num() == 0 || !State->Deals.Contains(dealUniqueId))
 			return false;
-		if (OverseeingState->Deals[dealUniqueId]->PositiveVotePlayerList.Num() == 0)
+		if (State->Deals[dealUniqueId]->PositiveVotePlayerList.Num() == 0)
 			return false;
-		return OverseeingState->Deals[dealUniqueId]->PositiveVotePlayerList.Contains(playerId);
+		return State->Deals[dealUniqueId]->PositiveVotePlayerList.Contains(playerId);
 	}
 
 	UFUNCTION(BlueprintCallable)
 	int32 GetPositiveVoteCurrentDealCount(int32 dealUniqueId)
 	{
-		if (OverseeingState->Deals.Num() == 0 || !OverseeingState->Deals.Contains(dealUniqueId))
+		if (State->Deals.Num() == 0 || !State->Deals.Contains(dealUniqueId))
 			return false;
-		if (OverseeingState->Deals[dealUniqueId]->PositiveVotePlayerList.Num() == 0)
+		if (State->Deals[dealUniqueId]->PositiveVotePlayerList.Num() == 0)
 			return false;
-		return OverseeingState->Deals[dealUniqueId]->PositiveVotePlayerList.Num();
+		return State->Deals[dealUniqueId]->PositiveVotePlayerList.Num();
 	}
 
 	UFUNCTION(BlueprintCallable)
 	int32 GetParticipantCount(int32 dealUniqueId)
 	{
-		if (OverseeingState->Deals.Num() == 0 || !OverseeingState->Deals.Contains(dealUniqueId))
+		if (State->Deals.Num() == 0 || !State->Deals.Contains(dealUniqueId))
 			return false;
-		if (OverseeingState->Deals[dealUniqueId]->Participants.Num() == 0)
+		if (State->Deals[dealUniqueId]->Participants.Num() == 0)
 			return false;
-		return OverseeingState->Deals[dealUniqueId]->Participants.Num();
+		return State->Deals[dealUniqueId]->Participants.Num();
 	}
 
 	UFUNCTION(BlueprintCallable)
 	TArray<FString> GetDealMessages(int32 dealUniqueId)
 	{
-		if (OverseeingState->Deals.Num() == 0 || !OverseeingState->Deals.Contains(dealUniqueId))
+		if (State->Deals.Num() == 0 || !State->Deals.Contains(dealUniqueId))
 			return TArray<FString>();
-		return OverseeingState->Deals[dealUniqueId]->ChatHistory;
+		return State->Deals[dealUniqueId]->ChatHistory;
 	}
 
 	// structs do not support recursion so we need to make it little less recursive...
 	UFUNCTION(BlueprintCallable)
 	TArray<FUDDealPointChildInfo> GetDealPointChildTree(int32 dealUniqueId, int32 pointUniqueId)
 	{
-		if (OverseeingState->Deals.Num() == 0 ||
-			!OverseeingState->Deals.Contains(dealUniqueId) ||
-			OverseeingState->Deals[dealUniqueId]->Points.Num() == 0 ||
-			!OverseeingState->Deals[dealUniqueId]->Points.Contains(pointUniqueId))
+		if (State->Deals.Num() == 0 ||
+			!State->Deals.Contains(dealUniqueId) ||
+			State->Deals[dealUniqueId]->Points.Num() == 0 ||
+			!State->Deals[dealUniqueId]->Points.Contains(pointUniqueId))
 			return TArray<FUDDealPointChildInfo>();
 
 		TArray<FUDDealPointChildInfo> childs;
 
-		for (auto consequencePointId : OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->Consequencies)
+		for (auto consequencePointId : State->Deals[dealUniqueId]->Points[pointUniqueId]->Consequencies)
 		{
 			childs.Add(FUDDealPointChildInfo(dealUniqueId, consequencePointId));
 		}
@@ -661,31 +670,31 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDDealPointTreeInfo GetDealPointsTree(int32 dealUniqueId)
 	{
-		if (OverseeingState->Deals.Num() == 0 ||
-			!OverseeingState->Deals.Contains(dealUniqueId))
+		if (State->Deals.Num() == 0 ||
+			!State->Deals.Contains(dealUniqueId))
 			return FUDDealPointTreeInfo(0, 0, {});
 
 		TArray<FUDDealPointChildInfo> childs;
 
-		for (auto primaryPointId : OverseeingState->Deals[dealUniqueId]->PrimaryPoints)
+		for (auto primaryPointId : State->Deals[dealUniqueId]->PrimaryPoints)
 		{
 			childs.Add(FUDDealPointChildInfo(dealUniqueId, primaryPointId));
 		}
-		int32 totalCount = OverseeingState->Deals[dealUniqueId]->Points.Num();
+		int32 totalCount = State->Deals[dealUniqueId]->Points.Num();
 		return FUDDealPointTreeInfo(dealUniqueId, totalCount, childs);
 	}
 	UFUNCTION(BlueprintCallable)
 	FUDDealPointInfo GetDealPointInfo(int32 dealUniqueId, int32 pointUniqueId)
 	{
-		if (OverseeingState->Deals.Num() == 0 ||
-			!OverseeingState->Deals.Contains(dealUniqueId) ||
-			!OverseeingState->Deals[dealUniqueId]->Points.Contains(pointUniqueId))
+		if (State->Deals.Num() == 0 ||
+			!State->Deals.Contains(dealUniqueId) ||
+			!State->Deals[dealUniqueId]->Points.Contains(pointUniqueId))
 			return FUDDealPointInfo(0, 0, EUDPointType::Error, 0);
 		return FUDDealPointInfo(dealUniqueId, pointUniqueId, 
-			OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->Type,
-			OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->ActionId,
-			OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->ValueParameters,
-			OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->TextParameter);
+			State->Deals[dealUniqueId]->Points[pointUniqueId]->Type,
+			State->Deals[dealUniqueId]->Points[pointUniqueId]->ActionId,
+			State->Deals[dealUniqueId]->Points[pointUniqueId]->ValueParameters,
+			State->Deals[dealUniqueId]->Points[pointUniqueId]->TextParameter);
 	}
 
 	/**
@@ -696,9 +705,9 @@ public:
 	{
 		TArray<FUDPlayerInfo> infos;
 
-		for (auto playerId : OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->Invokers)
+		for (auto playerId : State->Deals[dealUniqueId]->Points[pointUniqueId]->Invokers)
 		{
-			auto state = OverseeingState->Factions[playerId];
+			auto state = State->Factions[playerId];
 
 			FUDPlayerInfo player = FUDPlayerInfo(state->PlayerUniqueId);
 			player.Name = FText::Format(LOCTEXT("Player", "Player {0}"), state->PlayerUniqueId);
@@ -715,9 +724,9 @@ public:
 	{
 		TArray<FUDPlayerInfo> infos;
 
-		for (auto playerId : OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->Targets)
+		for (auto playerId : State->Deals[dealUniqueId]->Points[pointUniqueId]->Targets)
 		{
-			auto state = OverseeingState->Factions[playerId];
+			auto state = State->Factions[playerId];
 
 			FUDPlayerInfo player = FUDPlayerInfo(state->PlayerUniqueId);
 			player.Name = FText::Format(LOCTEXT("Player", "Player {0}"), state->PlayerUniqueId);
@@ -733,7 +742,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	TArray<FUDActionData> GetDealPointsAsUnfoldedActions(int32 dealUniqueId)
 	{
-		return UUDDealActionContractCreate::FinalizeActions(OverseeingState, dealUniqueId);
+		return UUDDealActionContractCreate::FinalizeActions(State, dealUniqueId);
 	}
 
 	UFUNCTION(BlueprintCallable)
@@ -741,10 +750,10 @@ public:
 	{
 		TArray<FUDDealActionInfo> actions;
 		
-		for (size_t index = 0; index < OverseeingState->Deals[dealUniqueId]->DealActionList.Num(); index++)
+		for (size_t index = 0; index < State->Deals[dealUniqueId]->DealActionList.Num(); index++)
 		{
-			FUDDiscussionAction action = OverseeingState->Deals[dealUniqueId]->DealActionList[index];
-			if (action.Action.InvokerFactionId == OverseeingState->FactionPerspective) {
+			FUDDiscussionAction action = State->Deals[dealUniqueId]->DealActionList[index];
+			if (action.Action.InvokerFactionId == State->FactionPerspective) {
 				actions.Add(FUDDealActionInfo(dealUniqueId, index, action));
 			}
 		}
@@ -757,10 +766,10 @@ public:
 	{
 		TArray<FUDDealActionInfo> actions;
 
-		for (size_t index = 0; index < OverseeingState->Deals[dealUniqueId]->DealActionList.Num(); index++)
+		for (size_t index = 0; index < State->Deals[dealUniqueId]->DealActionList.Num(); index++)
 		{
-			FUDDiscussionAction action = OverseeingState->Deals[dealUniqueId]->DealActionList[index];
-			if (action.Action.InvokerFactionId != OverseeingState->FactionPerspective) {
+			FUDDiscussionAction action = State->Deals[dealUniqueId]->DealActionList[index];
+			if (action.Action.InvokerFactionId != State->FactionPerspective) {
 				actions.Add(FUDDealActionInfo(dealUniqueId, index, action));
 			}
 		}
@@ -771,12 +780,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsDealPointInvoker(int32 dealUniqueId, int32 pointUniqueId, int32 playerId)
 	{
-		return OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->Invokers.Contains(playerId);
+		return State->Deals[dealUniqueId]->Points[pointUniqueId]->Invokers.Contains(playerId);
 	}
 	UFUNCTION(BlueprintCallable)
 	bool IsDealPointTarget(int32 dealUniqueId, int32 pointUniqueId, int32 playerId)
 	{
-		return OverseeingState->Deals[dealUniqueId]->Points[pointUniqueId]->Targets.Contains(playerId);
+		return State->Deals[dealUniqueId]->Points[pointUniqueId]->Targets.Contains(playerId);
 	}
 
 	/**
@@ -785,7 +794,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDThroneInfo GetThroneInfo()
 	{
-		FUDThroneInfo info = FUDThroneInfo(OverseeingState->ImperialThrone.Ruler);
+		FUDThroneInfo info = FUDThroneInfo(State->ImperialThrone.Ruler);
 		
 		if (info.UsurperId == UUDGlobalData::GaiaFactionId)
 		{
@@ -803,8 +812,8 @@ public:
 	FUDGameStateInfo GetGameStateInfo()
 	{
 		return FUDGameStateInfo(
-			OverseeingState->WorldSimulationState == EUDWorldSimulationState::Finished,
-			OverseeingState->ImperialThrone.Ruler
+			State->WorldSimulationState == EUDWorldSimulationState::Finished,
+			State->ImperialThrone.Ruler
 		);
 	}
 
@@ -813,61 +822,23 @@ public:
 	bool IsLocalPlayerWinner()
 	{
 		return 
-			OverseeingState->WorldSimulationState == EUDWorldSimulationState::Finished &&
-			OverseeingState->ImperialThrone.Ruler == OverseeingState->FactionPerspective;
+			State->WorldSimulationState == EUDWorldSimulationState::Finished &&
+			State->ImperialThrone.Ruler == State->FactionPerspective;
 	}
 
 
 	UFUNCTION(BlueprintCallable)
 	bool CanUsurpThrone()
 	{
-		return OverseeingState->ImperialThrone.Ruler == UUDGlobalData::GaiaFactionId;
+		return State->ImperialThrone.Ruler == UUDGlobalData::GaiaFactionId;
 	}
 
 	UFUNCTION(BlueprintCallable)
 	bool CanAbdicateThrone()
 	{
-		return OverseeingState->ImperialThrone.Ruler == OverseeingState->FactionPerspective;
+		return State->ImperialThrone.Ruler == State->FactionPerspective;
 	}
 
-public:
-	TObjectPtr<UUDMapState> GetMapState();
-	/**
-	 * Returns new action that can be invoked.
-	 */
-	//UFUNCTION(BlueprintCallable)
-	FUDActionData GetAction(int32 actionId);
-	/**
-	 * Returns new action that can be invoked.
-	 */
-	//UFUNCTION(BlueprintCallable)
-	FUDActionData GetAction(int32 actionId, TArray<int32> optionalValues);
-	/**
-	 * Returns new action that can be invoked.
-	 */
-	//UFUNCTION(BlueprintCallable)
-	FUDActionData GetAction(int32 actionId, TArray<int32> optionalValues, FString optionaString);
-	/**
-	 * Returns new action that can be invoked.
-	 */
-	//UFUNCTION(BlueprintCallable)
-	FUDActionData GetAction(int32 actionId, FString optionaString);
-	/**
-	 * Returns new action that can be invoked.
-	 */
-	//UFUNCTION(BlueprintCallable)
-	FUDActionData GetAcceptAction(int32 actionId, FUDActionData sourceAction);
-	/**
-	 * Returns new action that can be invoked.
-	 */
-	 //UFUNCTION(BlueprintCallable)
-	FUDActionData GetRejectAction(int32 actionId, FUDActionData sourceAction);
-protected:
-	UFUNCTION()
-	bool IsOverseeingStatePresent() { return IsValid(OverseeingState); }
-	UPROPERTY()
-	TObjectPtr<UUDWorldState> OverseeingState;
-	//UPROPERTY()
-	//TObjectPtr<UUDActionManager> ActionManager;
+
 };
 #undef LOCTEXT_NAMESPACE

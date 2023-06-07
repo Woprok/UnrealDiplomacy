@@ -1,6 +1,8 @@
 // Copyright Miroslav Valach
 
 #include "Lobby/UserInterfaces/UDLobbyMemberViewModel.h"
+#include "Core/Simulation/UDActionAdministrator.h"
+#include "Core/Simulation/Actions/UDSettingActionFactionRename.h"
 
 #define LOCTEXT_NAMESPACE "LobbyMember"
 
@@ -18,14 +20,31 @@ void UUDLobbyMemberViewModel::Initialize()
 
 void UUDLobbyMemberViewModel::Update()
 {
-
+	if (!IsNameEditing)
+	{
+		FString name = Model->GetLocalFactionName();
+		SetFactionNameEditableText(FText::FromString(name));
+	}
 }
 
 #undef LOCTEXT_NAMESPACE
 
-void UUDLobbyMemberViewModel::ApplyNationNameChange()
+void UUDLobbyMemberViewModel::StartNameEditation(const FText& Text)
 {
+	IsNameEditing = true;
+}
 
+void UUDLobbyMemberViewModel::StopNameEditation(const FText& Text, ETextCommit::Type CommitMethod)
+{
+	IsNameEditing = false;
+	// Update only if name was changed.
+	FString oldName = Model->GetLocalFactionName();
+	// TODO find source of the bug that causes the binding for EditableText to not update automatically.
+	FString newName = Text.ToString();
+	if (oldName != newName)
+	{
+		Model->RequestAction(Model->GetAction(UUDSettingActionFactionRename::ActionTypeId, newName));
+	}
 }
 
 void UUDLobbyMemberViewModel::SetMemberSettingsTitleText(FText newMemberSettingsTitleText)
@@ -61,7 +80,6 @@ FText UUDLobbyMemberViewModel::GetStrategyText() const
 void UUDLobbyMemberViewModel::SetFactionNameEditableText(FText newFactionNameEditableText)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(FactionNameEditableText, newFactionNameEditableText);
-	ApplyNationNameChange();
 }
 
 FText UUDLobbyMemberViewModel::GetFactionNameEditableText() const

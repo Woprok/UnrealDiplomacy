@@ -92,12 +92,22 @@ void AUDSkirmishGameMode::PostLogin(APlayerController* NewPlayer)
 		unimplemented();
 		break;
 	}
+
+	FUDActionData playerSyncLog(UUDSystemActionLog::ActionTypeId, UUDGlobalData::GaiaFactionId);
+	GetWorldSimulation()->CheckAndExecuteAction(playerSyncLog);
 }
 
 void AUDSkirmishGameMode::Logout(AController* Exiting)
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Player left."));
 	TObjectPtr<AUDSkirmishPlayerController> player = Cast<AUDSkirmishPlayerController>(Exiting);
+
+	if (player->IsLocalPlayerController())
+	{
+		UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Local Player Left -> Host Left."));
+		MatchState = EUDMatchState::Closed;
+	}
+
 	OnPlayerLeaving(player);
 	DestroyPlayer(player->GetControllerUniqueId());
 	Super::Logout(Exiting);
@@ -300,6 +310,7 @@ void AUDSkirmishGameMode::RegisterPlayer(TObjectPtr<AUDSkirmishPlayerController>
 
 	int32 factionId = GetWorldSimulation()->CreatePlayerFaction();
 	controller->SetControlledFactionId(factionId);
+	GetWorldSimulation()->AnnounceFaction(factionId);
 }
 
 void AUDSkirmishGameMode::RegisterObserver(TObjectPtr<AUDSkirmishPlayerController> playerController)
@@ -312,6 +323,7 @@ void AUDSkirmishGameMode::RegisterObserver(TObjectPtr<AUDSkirmishPlayerControlle
 
 	int32 factionId = GetWorldSimulation()->CreateObserverFaction();
 	controller->SetControlledFactionId(factionId);
+	GetWorldSimulation()->AnnounceFaction(factionId);
 }
 
 void AUDSkirmishGameMode::RegisterAi()
@@ -325,6 +337,7 @@ void AUDSkirmishGameMode::RegisterAi()
 
 	int32 factionId = GetWorldSimulation()->CreatePlayerFaction();
 	controller->SetControlledFactionId(factionId);
+	GetWorldSimulation()->AnnounceFaction(factionId);
 
 	// Bind remaining AI functionality.
 	aiController->SetSimulatedStateAccess(GetWorldSimulation()->GetFactionState(controller->GetControlledFactionId()));

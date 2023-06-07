@@ -10,6 +10,12 @@ void UUDViewModel::SetModel(TObjectPtr<UUDActionAdministrator> model)
 	OnModelChanged();
 }
 
+void UUDViewModel::FullInitialize()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDViewModel: Full Initialize."));
+	Initialize();
+}
+
 void UUDViewModel::FullUpdate()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDViewModel: Full Update."));

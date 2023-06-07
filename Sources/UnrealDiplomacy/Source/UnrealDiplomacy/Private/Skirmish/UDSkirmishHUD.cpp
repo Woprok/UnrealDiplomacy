@@ -19,7 +19,7 @@ void AUDSkirmishHUD::BeginPlay()
 	Super::BeginPlay();
 	Initialize();
 	SwitchScreen(LobbyScreen);
-	ForceUpdate();
+	ForceInitialize();
 }
 
 void AUDSkirmishHUD::RequestNotifyOnTileSelected(FIntPoint tile)

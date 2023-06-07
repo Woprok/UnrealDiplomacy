@@ -111,6 +111,10 @@ void AUDWorldSimulation::CreateSynchronizedState(int32 factionId, EUDWorldPerspe
 {
 	CreateNewState(factionId, perspective);
 	SynchronizeNewFactionState(States[factionId]);
+}
+
+void AUDWorldSimulation::AnnounceFaction(int32 factionId)
+{
 	CreateFactionCreationEvent(factionId);
 }
 

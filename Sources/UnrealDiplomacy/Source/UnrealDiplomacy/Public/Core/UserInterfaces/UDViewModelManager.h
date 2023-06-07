@@ -43,7 +43,11 @@ public:
 	 */
 	void SetModelManager(TObjectPtr<UUDActionAdministrator> model);
 	/**
-	 * Calls update on all global view models.
+	 * Calls initialize on all view models.
+	 */
+	void ForceInitialize();
+	/**
+	 * Calls update on all view models.
 	 */
 	void ForceUpdate();
 	/**

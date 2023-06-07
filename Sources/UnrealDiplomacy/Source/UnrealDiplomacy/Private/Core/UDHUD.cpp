@@ -16,6 +16,11 @@ TObjectPtr<AUDHUD> AUDHUD::Get(TObjectPtr<UWorld> world)
 	return CastChecked<AUDHUD>(hud);
 }
 
+void AUDHUD::ForceInitialize()
+{
+	ViewModelManager->ForceInitialize();
+}
+
 void AUDHUD::ForceUpdate()
 {
 	ViewModelManager->ForceUpdate();

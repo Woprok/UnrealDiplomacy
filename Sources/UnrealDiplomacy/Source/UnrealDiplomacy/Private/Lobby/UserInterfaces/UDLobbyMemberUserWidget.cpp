@@ -16,6 +16,8 @@ void UUDLobbyMemberUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 void UUDLobbyMemberUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	FactionNameEditableTextWidget->OnTextChanged.AddUniqueDynamic(ViewModel.Get(), &UUDLobbyMemberViewModel::StartNameEditation);
+	FactionNameEditableTextWidget->OnTextCommitted.AddUniqueDynamic(ViewModel.Get(), &UUDLobbyMemberViewModel::StopNameEditation);
 }
 
 void UUDLobbyMemberUserWidget::BindWidgets()

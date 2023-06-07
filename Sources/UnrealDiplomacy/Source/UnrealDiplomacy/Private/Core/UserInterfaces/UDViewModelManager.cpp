@@ -9,6 +9,14 @@ void UUDViewModelManager::SetModelManager(TObjectPtr<UUDActionAdministrator> mod
 	Model = model;
 }
 
+void UUDViewModelManager::ForceInitialize()
+{
+	for (auto viewModel : ViewModels)
+	{
+		viewModel.Value->FullInitialize();
+	}
+}
+
 void UUDViewModelManager::ForceUpdate()
 {
 	for (auto viewModel : ViewModels)

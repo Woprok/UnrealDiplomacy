@@ -1,4 +1,5 @@
 // Copyright Miroslav Valach
+// TODO Rework full update and potentially remove it.
 
 #pragma once
 
@@ -24,7 +25,11 @@ public:
 	/**
 	 * Model is required for all view models that are using world state.
 	 */
-	void SetModel(TObjectPtr<UUDActionAdministrator> model);
+	void SetModel(TObjectPtr<UUDActionAdministrator> model);	
+	/**
+	 * Run initialize without update.
+	 */
+	void FullInitialize();
 	/**
 	 * Notifies subscribers about incoming update.
 	 * Executes update and notifies again about the end of the update.

@@ -62,9 +62,16 @@ public:
 	 * Invokes update on all view models.
 	 */
 	UFUNCTION(BlueprintCallable)
+	void ForceInitialize();
+	/**
+	 * Invokes update on all view models.
+	 * Useful for dynamic models that will self announce update.
+	 */
+	UFUNCTION(BlueprintCallable)
 	void ForceUpdate();
 	/**
 	 * Switches from current screen to desired screen.
+	 * Useful for reloading and static models.
 	 */
 	UFUNCTION(BlueprintCallable)
 	void SwitchScreen(const FName& screenName);
