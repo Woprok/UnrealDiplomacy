@@ -232,7 +232,7 @@ public:
  * Invoked everytime an action was decided by this controller.
  */
 DECLARE_DELEGATE_OneParam(UserActionRequestedDelegate, FUDActionData);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUDOnDataChanged, const FUDActionData&, action);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDOnDataChanged);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDOnDataReloaded);
 
 /**
@@ -265,7 +265,7 @@ public:
 	UFUNCTION()
 	void OnDataChanged(const FUDActionData& action)
 	{
-		OnDataChangedEvent.Broadcast(action);
+		OnDataChangedEvent.Broadcast();
 	}
 	/**
 	 * Notifies all viewmodel subscribers about the reload.

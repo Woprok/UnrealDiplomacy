@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Core/Simulation/UDCommandData.h"
 #include "Skirmish/UDSkirmishPlayerController.h"
+#include "Core/Simulation/UDActionAdministrator.h"
 
 #define LOCTEXT_NAMESPACE "Lobby"
 
@@ -24,6 +25,8 @@ void UUDLobbyViewModel::Initialize()
 
 	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
 	sessions->OnStartSessionCompleteEvent.AddUniqueDynamic(this, &UUDLobbyViewModel::OnSessionStarted);
+
+	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDLobbyViewModel::Update);
 }
 
 void UUDLobbyViewModel::Update()

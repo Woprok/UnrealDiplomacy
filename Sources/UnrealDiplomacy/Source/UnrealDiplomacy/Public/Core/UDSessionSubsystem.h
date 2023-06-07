@@ -116,14 +116,18 @@ public:
 	 */
 	void SetSessionName(const FString& sessionName);
 	/**
-	 * Retrieves session name or returns default.
+	 * Retrieves stored session name or returns default.
 	 * This is converted value from FString.
 	 */
 	FName GetSessionName();
 	/**
-	 * Retrieves session name or returns default.
+	 * Retrieves stored session name or returns default.
 	 */
 	FString GetSessionNameString();
+	/**
+	 * Checks if local player is host of the current session. 
+	 */
+	bool IsLocalPlayerHost(FName sessionName);
 	// Events for controlling session workflow
 	FUDOnCreateSessionComplete OnCreateSessionCompleteEvent;
 	FUDOnUpdateSessionComplete OnUpdateSessionCompleteEvent;

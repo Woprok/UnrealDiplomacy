@@ -35,6 +35,7 @@ public:
 	FText StartText;
 protected:
 	virtual void Initialize() override;
+	UFUNCTION()
 	virtual void Update() override;
 private:
 	/**

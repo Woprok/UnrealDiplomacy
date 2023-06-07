@@ -50,7 +50,7 @@ void UUDJoinGameViewModel::Initialize()
 
 void UUDJoinGameViewModel::Update()
 {
-
+	Refresh();
 }
 
 FUDDialogueData GetSessionJoinFailed(EOnJoinSessionCompleteResult::Type result)

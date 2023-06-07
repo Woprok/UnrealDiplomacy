@@ -54,6 +54,25 @@ FString UUDSessionSubsystem::GetSessionNameString()
 	return CurrentSessionName;
 }
 
+bool UUDSessionSubsystem::IsLocalPlayerHost(FName sessionName)
+{
+	UE_LOG(LogTemp, Log, TEXT("Sessions: Check Is Host for %s."), *sessionName.ToString());
+	// Check Session Interface.
+	IOnlineSessionPtr sessionInterface;
+	if (!IsSessionInterfaceValid(sessionInterface))
+	{
+		return false;
+	}
+
+	FNamedOnlineSession* CurrentSession = sessionInterface->GetNamedSession(sessionName);
+	if (CurrentSession)
+	{
+		return CurrentSession->bHosting;
+	}
+	// We couldn't check...
+	return false;
+}
+
 void UUDSessionSubsystem::CreateSettings(FString settingLevelName, int32 numPublicConnections)
 {
 	UE_LOG(LogTemp, Log, TEXT("Sessions: Settings new level %s."), *settingLevelName);
@@ -398,6 +417,10 @@ void UUDSessionSubsystem::OnJoinSessionCompleted(FName sessionName, EOnJoinSessi
 	if (IsSessionInterfaceValid(sessionInterface))
 	{
 		sessionInterface->ClearOnJoinSessionCompleteDelegate_Handle(JoinSessionHandle);
+	}
+	if (result == EOnJoinSessionCompleteResult::Type::Success)
+	{
+		SetSessionName(sessionName.ToString());
 	}
 	// Propagate.
 	OnJoinGameSessionCompleteEvent.Broadcast(sessionName, result);
