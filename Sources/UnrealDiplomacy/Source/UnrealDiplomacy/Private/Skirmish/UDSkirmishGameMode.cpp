@@ -159,10 +159,9 @@ void AUDSkirmishGameMode::OnStartGameCommand()
 	// - Create Map
 	// - Start Game
 	MatchState = EUDMatchState::Match;
-	// TODO READ LOBBY CONFIG
-	CreateAiPlayers(2);
+	CreateAiPlayers(GetWorldSimulation()->GetDesiredAiCount());
 
-	FUDActionData mapGen(UUDSystemActionWorldCreate::ActionTypeId, UUDGlobalData::GaiaFactionId, { 4, 5, 5 });
+	FUDActionData mapGen(UUDSystemActionWorldCreate::ActionTypeId, UUDGlobalData::GaiaFactionId);
 	GetWorldSimulation()->CheckAndExecuteAction(mapGen);
 
 	FUDActionData startGame(UUDSystemActionGameStart::ActionTypeId, UUDGlobalData::GaiaFactionId);

@@ -335,3 +335,8 @@ void AUDWorldSimulation::RevertAction()
 }
 
 #pragma endregion
+
+int32 AUDWorldSimulation::GetDesiredAiCount()
+{
+	return States[UUDGlobalData::GaiaFactionId]->Settings.AICount;
+}

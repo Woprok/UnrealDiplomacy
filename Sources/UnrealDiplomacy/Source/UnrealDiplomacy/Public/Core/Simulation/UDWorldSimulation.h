@@ -227,4 +227,11 @@ private:
 	UPROPERTY()
 	TArray<FUDActionData> UndoHistory;
 #pragma endregion
+
+public:
+	/**
+	 * Retrieves AI Count defined in state gaia state settings by host.
+	 */
+	UFUNCTION()
+	int32 GetDesiredAiCount();
 };
