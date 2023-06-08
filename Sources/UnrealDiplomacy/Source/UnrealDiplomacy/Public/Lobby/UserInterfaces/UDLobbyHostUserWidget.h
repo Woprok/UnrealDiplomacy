@@ -9,6 +9,7 @@
 // Forward Declarations
 
 class UTextBlock;
+class USpinBox;
 class UUDLobbyHostViewModel;
 
 /**
@@ -49,6 +50,18 @@ protected:
 	TWeakObjectPtr<UTextBlock> MapWidthTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> MapHeightTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> StratagemPointsTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<USpinBox> AICountValueWidget;
+	UPROPERTY()
+	TWeakObjectPtr<USpinBox> MapSeedValueWidget;
+	UPROPERTY()
+	TWeakObjectPtr<USpinBox> MapWidthValueWidget;
+	UPROPERTY()
+	TWeakObjectPtr<USpinBox> MapHeightValueWidget;
+	UPROPERTY()
+	TWeakObjectPtr<USpinBox> StratagemPointsValueWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDLobbyHostViewModel> ViewModel;

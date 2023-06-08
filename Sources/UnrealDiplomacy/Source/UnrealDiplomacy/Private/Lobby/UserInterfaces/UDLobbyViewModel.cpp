@@ -44,12 +44,12 @@ void UUDLobbyViewModel::Initialize()
 	HostViewModelInstance = Cast<UUDLobbyHostViewModel>(hostModel);
 	TObjectPtr<UUDViewModel> memberModel = hud->GetViewModelCollection(MemberViewModelInstanceName, MemberViewModelType);
 	MemberViewModelInstance = Cast<UUDLobbyMemberViewModel>(memberModel);
-	// Call initialize so each Instance is ready to use, once it receives data in runtime.
-	HostViewModelInstance->FullUpdate();
-	MemberViewModelInstance->FullUpdate();
 	// Announce them to widget for additional binding.
 	LobbyHostSourceChangedEvent.Broadcast(HostViewModelInstance);
 	LobbyMemberSourceChangedEvent.Broadcast(MemberViewModelInstance);
+	// Call initialize so each Instance is ready to use, once it receives data in runtime.
+	HostViewModelInstance->FullUpdate();
+	MemberViewModelInstance->FullUpdate();
 
 	Update();
 }
@@ -62,9 +62,10 @@ void UUDLobbyViewModel::Reload()
 void UUDLobbyViewModel::Update()
 {
 	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
+	SetIsHostValue(sessions->IsLocalPlayerHost(sessions->GetSessionName()));
+
 	FText newTitle = FText::Format(LOCTEXT("Lobby", "{0} Lobby"), FText::FromString(sessions->GetSessionNameString()));
 	SetLobbyTitleText(newTitle);
-	SetIsHostValue(sessions->IsLocalPlayerHost(sessions->GetSessionName()));
 
 	if (!Model->IsOverseeingStatePresent())
 		return;

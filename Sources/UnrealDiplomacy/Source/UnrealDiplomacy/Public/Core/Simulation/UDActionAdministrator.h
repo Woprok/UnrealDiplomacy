@@ -318,11 +318,18 @@ public:
 	 * Provides list of all factions and their names.
 	 */
 	TArray<FUDFactionMinimalInfo> GetFactionList();
-	/**
-	 * Retrieves local faction name.
-	 */
+	/** Retrieves local faction name. */
 	FString GetLocalFactionName();
-
+	/** Retrieves value from settings. */
+	int32 GetSettingsAICount();
+	/** Retrieves value from settings. */
+	int32 GetSettingsMapSeed();
+	/** Retrieves value from settings. */
+	int32 GetSettingsMapWidth();
+	/** Retrieves value from settings. */
+	int32 GetSettingsMapHeight();
+	/** Retrieves value from settings. */
+	int32 GetSettingsStratagemPoints();
 #pragma endregion
 
 

@@ -6,6 +6,10 @@
 #include "Core/UserInterfaces/UDViewModel.h"
 #include "UDLobbyHostViewModel.generated.h"
 
+// Forward Declarations
+
+enum ETextCommit::Type : int;
+
 /**
  * ViewModel for defining host settings.
  */
@@ -14,6 +18,19 @@ class UNREALDIPLOMACY_API UUDLobbyHostViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
+	// Changes Commited
+	UFUNCTION()
+	void StartValueEditation(float InValue);
+	UFUNCTION()
+	void StopAICountValueEditation(float InValue, ETextCommit::Type CommitMethod);
+	UFUNCTION()
+	void StopMapSeedValueEditation(float InValue, ETextCommit::Type CommitMethod);
+	UFUNCTION()
+	void StopMapWidthValueEditation(float InValue, ETextCommit::Type CommitMethod);
+	UFUNCTION()
+	void StopMapHeightValueEditation(float InValue, ETextCommit::Type CommitMethod);
+	UFUNCTION()
+	void StopStratagemPointsValueEditation(float InValue, ETextCommit::Type CommitMethod);
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText HostSettingsTitleText;
@@ -25,6 +42,8 @@ public:
 	FText MapWidthText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText MapHeightText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText StratagemPointsText;
 
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	float AICountValue;
@@ -34,8 +53,14 @@ public:
 	float MapWidthValue;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	float MapHeightValue;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	float StratagemPointsValue;
+
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool IsHostValue;
 protected:
 	virtual void Initialize() override;
+	UFUNCTION()
 	virtual void Update() override;
 private:
 	// MVVM Setters & Getters
@@ -49,6 +74,8 @@ private:
 	FText GetMapWidthText() const;
 	void SetMapHeightText(FText newMapHeightText);
 	FText GetMapHeightText() const;
+	void SetStratagemPointsText(FText newStratagemPointsText);
+	FText GetStratagemPointsText() const;
 
 	void SetAICountValue(float newAICountValue);
 	float GetAICountValue() const;
@@ -58,4 +85,12 @@ private:
 	float GetMapWidthValue() const;
 	void SetMapHeightValue(float newMapHeightValue);
 	float GetMapHeightValue() const;
+	void SetStratagemPointsValue(float newStratagemPointsValue);
+	float GetStratagemPointsValue() const;
+
+	void SetIsHostValue(bool newIsHostValue);
+	bool GetIsHostValue() const;
+private:
+	// Fields
+	bool IsValueEditing = false;
 };

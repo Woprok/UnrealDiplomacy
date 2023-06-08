@@ -95,4 +95,28 @@ FString UUDActionAdministrator::GetLocalFactionName()
 	return State->Factions[State->FactionPerspective]->Name;
 }
 
+int32 UUDActionAdministrator::GetSettingsAICount()
+{
+	return State->Settings.AICount;
+}
+
+int32 UUDActionAdministrator::GetSettingsMapSeed()
+{
+	return State->Settings.MapSeed;
+}
+
+int32 UUDActionAdministrator::GetSettingsMapWidth()
+{
+	return State->Settings.MapWidth;
+}
+
+int32 UUDActionAdministrator::GetSettingsMapHeight()
+{
+	return State->Settings.MapHeight;
+}
+
+int32 UUDActionAdministrator::GetSettingsStratagemPoints()
+{
+	return State->Settings.StratagemPoints;
+}
 #pragma endregion

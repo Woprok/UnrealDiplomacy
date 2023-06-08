@@ -18,7 +18,7 @@ class UNREALDIPLOMACY_API UUDLobbyMemberViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	// Changes Commited;
+	// Changes Commited
 	UFUNCTION()
 	void StartNameEditation(const FText& Text);
 	UFUNCTION()
@@ -34,6 +34,7 @@ public:
 	FText FactionNameEditableText;
 protected:
 	virtual void Initialize() override;
+	UFUNCTION()
 	virtual void Update() override;
 private:
 	// MVVM Setters & Getters

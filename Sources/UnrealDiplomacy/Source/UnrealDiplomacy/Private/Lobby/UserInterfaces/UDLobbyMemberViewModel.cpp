@@ -16,10 +16,15 @@ void UUDLobbyMemberViewModel::Initialize()
 	SetStrategyText(strategy);
 	FText nationNameEditable = FText(LOCTEXT("LobbyMember", "Generic Nation Name"));
 	SetFactionNameEditableText(nationNameEditable);
+
+	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDLobbyMemberViewModel::Update);
 }
 
 void UUDLobbyMemberViewModel::Update()
 {
+	if (!Model->IsOverseeingStatePresent())
+		return;
+	// Following updates require model.
 	if (!IsNameEditing)
 	{
 		FString name = Model->GetLocalFactionName();
