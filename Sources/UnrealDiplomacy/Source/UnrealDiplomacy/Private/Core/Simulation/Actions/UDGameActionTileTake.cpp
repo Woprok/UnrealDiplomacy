@@ -30,3 +30,23 @@ void UUDGameActionTileTake::Revert(const FUDActionData& action, TObjectPtr<UUDWo
 	FIntPoint tile(data.X, data.Y);
 	world->Map->GetTile(tile)->OwnerUniqueId = data.TargetId;
 }
+
+#define LOCTEXT_NAMESPACE "TileTake"
+FUDActionPresentation UUDGameActionTileTake::GetPresentation() const
+{
+	if (GetId() != UUDGameActionTileTake::ActionTypeId)
+		return Super::GetPresentation();
+	FUDActionPresentation presentation = FUDActionPresentation();
+	presentation.ActionId = GetId();
+	presentation.Name = FText(LOCTEXT("TileTake", "Take Tile")).ToString();
+	presentation.Tags.Append(
+		{
+			UD_ACTION_TAG_VALID,
+			UD_ACTION_TAG_STRATAGEM,
+			UD_ACTION_TAG_STRATAGEM_COST_1,
+		}
+	);
+
+	return presentation;
+}
+#undef LOCTEXT_NAMESPACE

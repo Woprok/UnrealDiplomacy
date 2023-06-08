@@ -80,16 +80,21 @@ FString IUDActionInterface::ToString() const
 	return formatted;
 }
 
+#define LOCTEXT_NAMESPACE "ActionInterface"
 FUDActionPresentation IUDActionInterface::GetPresentation() const
 {
 	FUDActionPresentation presentation = FUDActionPresentation();
 	presentation.ActionId = GetId();
-	presentation.Tags.Append({
-		FUDActionPresentation::INVALID,
-	});
+	presentation.Name = FText(LOCTEXT("ActionInterface", "Invalid Action")).ToString();
+	presentation.Tags.Append(
+		{
+			UD_ACTION_TAG_INVALID,
+		}
+	);
 
 	return presentation;
 }
+#undef LOCTEXT_NAMESPACE
 
 void IUDActionInterface::AddPendingTargetRequest(FUDActionData action, int32 targetId, TObjectPtr<UUDWorldState> world)
 {

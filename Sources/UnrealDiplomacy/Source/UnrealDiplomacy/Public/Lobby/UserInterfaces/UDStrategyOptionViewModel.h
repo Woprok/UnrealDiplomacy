@@ -4,7 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/Simulation/UDModelStructs.h"
 #include "UDStrategyOptionViewModel.generated.h"
+
+// Forward Declarations
+
+struct FUDStratagemPickableInfo;
 
 /**
  * ViewModel for single strategy option used in tile view.
@@ -17,15 +22,19 @@ public:
 	/**
 	 * Set content of the strategy option.
 	 */
-	void SetContent(UObject* content);
+	void SetContent(FUDStratagemPickableInfo content);
+public:	
+	// Button Functions
 	/**
-	 * Get the content as strategy option.
+	 * Attempts to join the new session, hides UI until the end of join operation.
 	 */
-	const UObject* GetContent() const;
-public:
+	UFUNCTION()
+	void Selected();
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText OptionToolTipText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool IsSelectedValue;
 protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
@@ -33,7 +42,9 @@ private:
 	// MVVM Setters & Getters
 	void SetOptionToolTipText(FText newOptionToolTipText);
 	FText GetOptionToolTipText() const;
+	void SetIsSelectedValue(bool newIsSelectedValue);
+	bool GetIsSelectedValue() const;
 private:
 	// Fields
-	UObject* Content;
+	FUDStratagemPickableInfo Content;
 };

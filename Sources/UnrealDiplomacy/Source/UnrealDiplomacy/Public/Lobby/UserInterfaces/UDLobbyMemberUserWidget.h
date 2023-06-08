@@ -12,6 +12,7 @@ class UTextBlock;
 class UEditableTextBox;
 class UTileView;
 class UUDLobbyMemberViewModel;
+class UUDStrategyOptionViewModel;
 
 /**
  * Ancestor for blueprint.
@@ -39,6 +40,10 @@ protected:
 	 * Automatically invoked by native on initialized.
 	 */
 	virtual void BindWidgets() override;
+	/**
+	 * Callback to set data from view model.
+	 */
+	void SetStrategySourceCollection(const TArray<TObjectPtr<UUDStrategyOptionViewModel>>& strategyViewModels);
 protected:
 	// Bindings
 	UPROPERTY()
@@ -47,6 +52,8 @@ protected:
 	TWeakObjectPtr<UTextBlock> FactionNameTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> StrategyTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> StrategyPointsTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UEditableTextBox> FactionNameEditableTextWidget;
 	UPROPERTY()

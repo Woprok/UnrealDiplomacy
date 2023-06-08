@@ -1,19 +1,26 @@
 // Copyright Miroslav Valach
 
 #include "Lobby/UserInterfaces/UDLobbyMemberViewModel.h"
+#include "Lobby/UserInterfaces/UDStrategyOptionViewModel.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Core/Simulation/Actions/UDSettingActionFactionRename.h"
+#include "Skirmish/UDSkirmishHUD.h"
+#include "Core/Simulation/UDModelStructs.h"
 
 #define LOCTEXT_NAMESPACE "LobbyMember"
 
 void UUDLobbyMemberViewModel::Initialize()
 {
-	FText memberSettingsTitle = FText(LOCTEXT("LobbyMember", "Game Settings"));
+	StratagemViewModelType = UUDStrategyOptionViewModel::StaticClass();
+
+	FText memberSettingsTitle = FText(LOCTEXT("LobbyMember", "Faction Settings"));
 	SetMemberSettingsTitleText(memberSettingsTitle);
 	FText factionName = FText(LOCTEXT("LobbyMember", "Faction Name"));
 	SetFactionNameText(factionName);
 	FText strategy = FText(LOCTEXT("LobbyMember", "Stratagems"));
 	SetStrategyText(strategy);
+	FText strategyPoints = FText(LOCTEXT("LobbyMember", "Stratagem Points left 0"));
+	SetStrategyPointsText(strategyPoints);
 	FText nationNameEditable = FText(LOCTEXT("LobbyMember", "Generic Nation Name"));
 	SetFactionNameEditableText(nationNameEditable);
 
@@ -30,6 +37,16 @@ void UUDLobbyMemberViewModel::Update()
 		FString name = Model->GetLocalFactionName();
 		SetFactionNameEditableText(FText::FromString(name));
 	}
+	UpdateStratagemsList();
+	UpdateStratagemPoints();
+}
+
+void UUDLobbyMemberViewModel::UpdateStratagemPoints()
+{
+	int32 stratagemsLeft = Model->GetLocalStratagemPointsLeft();
+
+	FText strategyPoints = FText::Format(LOCTEXT("LobbyMember", "Stratagem Points left {0}"), stratagemsLeft);
+	SetStrategyPointsText(strategyPoints);
 }
 
 #undef LOCTEXT_NAMESPACE
@@ -50,6 +67,27 @@ void UUDLobbyMemberViewModel::StopNameEditation(const FText& Text, ETextCommit::
 	{
 		Model->RequestAction(Model->GetAction(UUDSettingActionFactionRename::ActionTypeId, newName));
 	}
+}
+
+void UUDLobbyMemberViewModel::UpdateStratagemsList()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDLobbyMemberViewModel: UpdateStratagemsList."));
+	// Retrieve all options to rebuild the list
+	TArray<FUDStratagemPickableInfo> stratagems = Model->GetStratagemsList();
+	// Retrieve enough models
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(StratagemViewModelCollectionName, StratagemViewModelType, stratagems.Num());
+	// Get rid of all models
+	StratagemViewModelCollection.Empty();
+	for (int32 i = 0; i < stratagems.Num(); i++)
+	{
+		TObjectPtr<UUDStrategyOptionViewModel> newViewModel = Cast<UUDStrategyOptionViewModel>(viewModels[i]);
+		newViewModel->SetContent(stratagems[i]);
+		newViewModel->FullUpdate();
+		StratagemViewModelCollection.Add(newViewModel);
+	}
+
+	StratagemSourceUpdatedEvent.Broadcast(StratagemViewModelCollection);
 }
 
 void UUDLobbyMemberViewModel::SetMemberSettingsTitleText(FText newMemberSettingsTitleText)
@@ -80,6 +118,16 @@ void UUDLobbyMemberViewModel::SetStrategyText(FText newStrategyText)
 FText UUDLobbyMemberViewModel::GetStrategyText() const
 {
 	return StrategyText;
+}
+
+void UUDLobbyMemberViewModel::SetStrategyPointsText(FText newStrategyPointsText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(StrategyPointsText, newStrategyPointsText);
+}
+
+FText UUDLobbyMemberViewModel::GetStrategyPointsText() const
+{
+	return StrategyPointsText;
 }
 
 void UUDLobbyMemberViewModel::SetFactionNameEditableText(FText newFactionNameEditableText)

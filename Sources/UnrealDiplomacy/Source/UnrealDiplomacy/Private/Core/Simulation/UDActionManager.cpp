@@ -34,6 +34,7 @@ bool UUDActionManager::RegisterAction(TScriptInterface<IUDActionInterface> newAc
 
 	UE_LOG(LogTemp, Log, TEXT("UUDActionManager: Action(%d) successfully registered."), newAction->GetId());
 	Actions.Add(newAction->GetId(), newAction);
+	FilterStartpoint.Add(newAction->GetPresentation());
 	return true;
 }
 
@@ -90,3 +91,32 @@ void UUDActionManager::BindSharedToAction(TScriptInterface<IUDActionInterface> n
 	newAction->SetWorldGenerator(WorldGenerator);
 	newAction->SetModifierManager(ModifierManager);
 }
+
+#pragma region Action Filter API
+
+TArray<FUDActionPresentation> UUDActionManager::FilterStratagems()
+{
+	return FilterByTag(FilterStartpoint, UD_ACTION_TAG_STRATAGEM);
+}
+
+FUDActionPresentation UUDActionManager::GetSpecified(int32 actionId)
+{
+	return Actions[actionId]->GetPresentation();
+}
+
+TArray<FUDActionPresentation> UUDActionManager::FilterByTag(const TArray<FUDActionPresentation>& selection, int32 tag)
+{
+	TArray<FUDActionPresentation> filtered = { };
+	for (const auto& action : selection)
+	{
+		if (action.Tags.Contains(tag))
+		{
+			filtered.Add(action);
+		}
+	}
+
+	return filtered;
+}
+
+
+#pragma endregion

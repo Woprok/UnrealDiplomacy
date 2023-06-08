@@ -1,4 +1,5 @@
 // Copyright Miroslav Valach
+// TODO add availability check
 
 #include "Core/Simulation/Actions/UDSettingActionStratagemOptionDeselect.h"
 #include "Core/UDGlobalData.h"

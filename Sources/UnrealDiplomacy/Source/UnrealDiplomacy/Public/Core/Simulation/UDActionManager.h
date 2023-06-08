@@ -7,6 +7,7 @@
 
 // Forward Declarations
 
+struct FUDActionPresentation;
 class IUDActionInterface;
 class UUDWorldGenerator;
 class UUDModifierManager;
@@ -15,6 +16,8 @@ class UUDModifierManager;
  * Manages all actions that are allowed to execute.
  * Each action must be registered with this manager otherwise
  * it will not be executable.
+ * 
+ * Provides basic filters to retrieve information about actions.
  */
 UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDActionManager : public UObject
@@ -37,6 +40,27 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable)
 	void Initialize();
+#pragma region Action Filter API
+public:
+	/**
+	 * Retrieves all actions that are tagged as stratagems.
+	 */
+	TArray<FUDActionPresentation> FilterStratagems();
+	/**
+	 * Retrieves specifeid action presentation.
+	 */
+	FUDActionPresentation GetSpecified(int32 actionId);
+private:
+	/**
+	 * Retrieves all actions that are tagged by specified tag.
+	 */
+	TArray<FUDActionPresentation> FilterByTag(const TArray<FUDActionPresentation>& selection, int32 tag);
+	/**
+	 * Tags are not changing during the game and this serves as filter startpoint.
+	 */
+	UPROPERTY()
+	TArray<FUDActionPresentation> FilterStartpoint = { };
+#pragma endregion
 protected:
 	/**
 	 * Registers all core actions.

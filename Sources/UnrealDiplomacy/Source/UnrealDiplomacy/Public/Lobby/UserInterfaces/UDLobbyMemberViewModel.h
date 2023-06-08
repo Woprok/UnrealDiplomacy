@@ -9,6 +9,9 @@
 // Forward Declarations
 
 enum ETextCommit::Type : int;
+class UUDStrategyOptionViewModel;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FUDStratagemSourceUpdated, const TArray<TObjectPtr<UUDStrategyOptionViewModel>>& stratagemViewModels);
 
 /**
  * ViewModel for defining player settings.
@@ -31,11 +34,25 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText StrategyText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText StrategyPointsText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText FactionNameEditableText;
+	// Events
+	FUDStratagemSourceUpdated StratagemSourceUpdatedEvent;
 protected:
 	virtual void Initialize() override;
 	UFUNCTION()
 	virtual void Update() override;
+private:
+	/**
+	 * Generates list for pickable options.
+	 */
+	UFUNCTION()
+	void UpdateStratagemsList();
+	/**
+	 * Recalculates and updates displayed string based on local player faction stratagems.
+	 */
+	void UpdateStratagemPoints();
 private:
 	// MVVM Setters & Getters
 	void SetMemberSettingsTitleText(FText newMemberSettingsTitleText);
@@ -44,9 +61,14 @@ private:
 	FText GetFactionNameText() const;
 	void SetStrategyText(FText newStrategyText);
 	FText GetStrategyText() const;
+	void SetStrategyPointsText(FText newStrategyPointsText);
+	FText GetStrategyPointsText() const;
 	void SetFactionNameEditableText(FText newFactionNameEditableText);
 	FText GetFactionNameEditableText() const;
 private:
 	// Fields
 	bool IsNameEditing = false;
+	FName StratagemViewModelCollectionName = TEXT("StratagemItemCollection");
+	TSubclassOf<UUDViewModel> StratagemViewModelType;
+	TArray<TObjectPtr<UUDStrategyOptionViewModel>> StratagemViewModelCollection;
 };

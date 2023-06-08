@@ -13,7 +13,7 @@ class UUDWorldState;
 class UUDWorldGenerator;
 class UUDModifierManager;
 
-// TODO parameter order ?
+// TODO Define proper order for parameters in ValueParameters ?
 // SPECIALS:
 // Map Settings
 // TARGET/TILE/AMOUNT
@@ -36,29 +36,36 @@ class UUDModifierManager;
 // SETTINGS
 // Value
 
-// TODO move this
+// TODO Reevaluate if this can be done it in different way to reduce complexity.
+
+// Useable for internal purposes only.
+#define UD_ACTION_TAG_INVALID 0
+// Useable for external purposes as well.
+#define UD_ACTION_TAG_VALID 1
+// Can be selected as stratagem and costs stratagem points.
+#define UD_ACTION_TAG_STRATAGEM 2
+// Specific cost for a stratagem to be selected.
+#define UD_ACTION_TAG_STRATAGEM_COST_1 3
+#define UD_ACTION_TAG_STRATAGEM_COST_2 4
+#define UD_ACTION_TAG_STRATAGEM_COST_3 5
+#define UD_ACTION_TAG_STRATAGEM_COST_4 6
+#define UD_ACTION_TAG_STRATAGEM_COST_5 7
+
+/**
+ * Defines informations about the action and how it can be displayed in UI.
+ */
 USTRUCT()
 struct FUDActionPresentation
 {
 	GENERATED_BODY()
 public:
 	FUDActionPresentation() {}
-	// who is owner of this presentation effort
+	/** Unique Action Id. */
 	int32 ActionId;
-	// different 
+	/** List of all tags that are used to define behaviour in UI, etc... */
 	TSet<int32> Tags;
-	// What is UI name
-	FString Name;
-	// What is UI desc
-	FString Description;
-	// What is UI icon
-	FString Icon;
-	// What is UI deal preview
-	FString Preview;
-	// What is UI deal final
-	FString Final;
-	static const int32 INVALID = -1;
-	static const int32 VALID = 0;
+	/** Main name of this action. */
+	FString Name = TEXT("");
 };
 
 /** 

@@ -17,6 +17,7 @@ class UUDActionManager;
 class UUDActionDatabase;
 
 struct FUDFactionMinimalInfo;
+struct FUDStratagemPickableInfo;
 
 #include "Core/Simulation/Actions/UDDealActionContractCreate.h"
 
@@ -307,6 +308,16 @@ public:
 protected:
 	UPROPERTY()
 	TObjectPtr<UUDWorldState> State;
+	UPROPERTY()
+	TObjectPtr<UUDActionManager> ActionManager;
+	/**
+	 * Safe retrieve of an action manager.
+	 */
+	TObjectPtr<UUDActionManager> GetActionManager();
+	/**
+	 * Initialize new instance for future use with proper action list used in game.
+	 */
+	void InitializeActionManager();
 #pragma endregion
 
 public:
@@ -314,9 +325,7 @@ public:
 
 #pragma region Lobby
 public:
-	/**
-	 * Provides list of all factions and their names.
-	 */
+	/** Provides list of all factions and their names. */
 	TArray<FUDFactionMinimalInfo> GetFactionList();
 	/** Retrieves local faction name. */
 	FString GetLocalFactionName();
@@ -330,13 +339,22 @@ public:
 	int32 GetSettingsMapHeight();
 	/** Retrieves value from settings. */
 	int32 GetSettingsStratagemPoints();
+	/** Calculates remaning points left, based on current stratagems. */
+	int32 GetLocalStratagemPointsLeft();
+	/** Calculates remaning points left, based on current stratagems and returns if it can be bought. */
+	bool IsStratagemTakeable(FUDStratagemPickableInfo stratagem);
+	/** Provides comprehensive list of all available stratagems, taking them from internal action manager instance. */
+	TArray<FUDStratagemPickableInfo> GetStratagemsList();
+private:
+	/** Provides comprehensive list of all available stratagems, taking them from internal action manager instance. */
+	int32 GetStratagemCostFromTags(TSet<int32> tags);
 #pragma endregion
 
 
 
 
 	
-
+public:
 	/**
 	 * Alternatively call to IsGameInProgress, that's useable for game that is not yet over.
 	 */

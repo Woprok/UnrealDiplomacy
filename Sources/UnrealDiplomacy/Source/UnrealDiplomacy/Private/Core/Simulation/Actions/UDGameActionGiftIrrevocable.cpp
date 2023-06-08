@@ -30,3 +30,23 @@ void UUDGameActionGiftIrrevocable::Revert(const FUDActionData& action, TObjectPt
 	world->Factions[action.InvokerFactionId]->ResourceGold += data.Amount;
 	world->Factions[data.TargetId]->ResourceGold -= data.Amount;
 }
+
+#define LOCTEXT_NAMESPACE "GiftIrrevocable"
+FUDActionPresentation UUDGameActionGiftIrrevocable::GetPresentation() const
+{
+	if (GetId() != UUDGameActionGiftIrrevocable::ActionTypeId)
+		return Super::GetPresentation();
+	FUDActionPresentation presentation = FUDActionPresentation();
+	presentation.ActionId = GetId();
+	presentation.Name = FText(LOCTEXT("GiftIrrevocable", "Irrevocable Gift")).ToString();
+	presentation.Tags.Append(
+		{
+			UD_ACTION_TAG_VALID,
+			UD_ACTION_TAG_STRATAGEM,
+			UD_ACTION_TAG_STRATAGEM_COST_1,
+		}
+	);
+
+	return presentation;
+}
+#undef LOCTEXT_NAMESPACE

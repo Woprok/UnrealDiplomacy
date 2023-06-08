@@ -1,4 +1,5 @@
 // Copyright Miroslav Valach
+// TODO add availability check
 
 #pragma once
 

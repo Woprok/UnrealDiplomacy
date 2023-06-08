@@ -19,6 +19,7 @@ public:
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual int32 GetId() const override { return ActionTypeId; };
 	virtual int32 GetParameterCount() const override { return FUDGameDataTargetAmount::ParameterCount; };
+	virtual FUDActionPresentation GetPresentation() const override;
 public:
 	static const int32 ActionTypeId = 2004;
 };

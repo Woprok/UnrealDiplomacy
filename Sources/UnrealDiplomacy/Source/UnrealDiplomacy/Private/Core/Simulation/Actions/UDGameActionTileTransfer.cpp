@@ -29,3 +29,23 @@ void UUDGameActionTileTransfer::Revert(const FUDActionData& action, TObjectPtr<U
 	FUDGameDataTargetTile data(action.ValueParameters);
 	RemovePendingTargetRequest(action, data.TargetId, world);
 }
+
+#define LOCTEXT_NAMESPACE "TileTransfer"
+FUDActionPresentation UUDGameActionTileTransfer::GetPresentation() const
+{
+	if (GetId() != UUDGameActionTileTransfer::ActionTypeId)
+		return Super::GetPresentation();
+	FUDActionPresentation presentation = FUDActionPresentation();
+	presentation.ActionId = GetId();
+	presentation.Name = FText(LOCTEXT("TileTransfer", "Transfer Tile")).ToString();
+	presentation.Tags.Append(
+		{
+			UD_ACTION_TAG_VALID,
+			UD_ACTION_TAG_STRATAGEM,
+			UD_ACTION_TAG_STRATAGEM_COST_2,
+		}
+	);
+
+	return presentation;
+}
+#undef LOCTEXT_NAMESPACE

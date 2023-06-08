@@ -24,3 +24,23 @@ void UUDGameActionThroneUsurp::Revert(const FUDActionData& action, TObjectPtr<UU
 	// Rollback to the empty throne.
 	world->ImperialThrone.Ruler = UUDGlobalData::GaiaFactionId;
 }
+
+#define LOCTEXT_NAMESPACE "ThroneUsurp"
+FUDActionPresentation UUDGameActionThroneUsurp::GetPresentation() const
+{
+	if (GetId() != UUDGameActionThroneUsurp::ActionTypeId)
+		return Super::GetPresentation();
+	FUDActionPresentation presentation = FUDActionPresentation();
+	presentation.ActionId = GetId();
+	presentation.Name = FText(LOCTEXT("ThroneUsurp", "Throne Usurp")).ToString();
+	presentation.Tags.Append(
+		{
+			UD_ACTION_TAG_VALID,
+			UD_ACTION_TAG_STRATAGEM,
+			UD_ACTION_TAG_STRATAGEM_COST_2,
+		}
+	);
+
+	return presentation;
+}
+#undef LOCTEXT_NAMESPACE

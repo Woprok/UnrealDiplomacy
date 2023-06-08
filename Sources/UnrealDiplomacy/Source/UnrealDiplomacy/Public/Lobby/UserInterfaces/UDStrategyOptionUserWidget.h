@@ -9,6 +9,7 @@
 
 // Forward Declarations
 
+class UButton;
 class UImage;
 class UUDStrategyOptionViewModel;
 
@@ -46,6 +47,8 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
+	UPROPERTY()
+	TWeakObjectPtr<UButton> OptionButtonWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UImage> OptionImageWidget;
 	// ViewModel

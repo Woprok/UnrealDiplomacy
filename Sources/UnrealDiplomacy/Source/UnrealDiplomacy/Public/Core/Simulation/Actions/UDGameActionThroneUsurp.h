@@ -18,6 +18,7 @@ public:
 	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual int32 GetId() const override { return ActionTypeId; };
+	virtual FUDActionPresentation GetPresentation() const override;
 public:
 	static const int32 ActionTypeId = 2001;
 };

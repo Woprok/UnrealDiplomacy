@@ -2,6 +2,7 @@
 
 #include "Lobby/UserInterfaces/UDStrategyOptionUserWidget.h"
 #include "Lobby/UserInterfaces/UDStrategyOptionViewModel.h"
+#include "Components/Button.h"
 #include "Components/Image.h"
 
 void UUDStrategyOptionUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
@@ -22,9 +23,11 @@ void UUDStrategyOptionUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewMod
 void UUDStrategyOptionUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	OptionButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDStrategyOptionViewModel::Selected);
 }
 
 void UUDStrategyOptionUserWidget::BindWidgets()
 {
+	OptionButtonWidget = GetWidget<UButton>(TEXT("OptionButton"));
 	OptionImageWidget = GetWidget<UImage>(TEXT("OptionImage"));
 }

@@ -28,3 +28,23 @@ void UUDGameActionGift::Revert(const FUDActionData& action, TObjectPtr<UUDWorldS
 	FUDGameDataTargetAmount data(action.ValueParameters);
 	RemovePendingTargetRequest(action, data.TargetId, world);
 }
+
+#define LOCTEXT_NAMESPACE "Gift"
+FUDActionPresentation UUDGameActionGift::GetPresentation() const
+{
+	if (GetId() != UUDGameActionGift::ActionTypeId)
+		return Super::GetPresentation();
+	FUDActionPresentation presentation = FUDActionPresentation();
+	presentation.ActionId = GetId();
+	presentation.Name = FText(LOCTEXT("Gift", "Gift")).ToString();
+	presentation.Tags.Append(
+		{
+			UD_ACTION_TAG_VALID,
+			UD_ACTION_TAG_STRATAGEM,
+			UD_ACTION_TAG_STRATAGEM_COST_1,
+		}
+	);
+
+	return presentation;
+}
+#undef LOCTEXT_NAMESPACE
