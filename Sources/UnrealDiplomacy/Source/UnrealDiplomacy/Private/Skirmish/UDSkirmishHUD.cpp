@@ -4,6 +4,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Skirmish/UDSkirmishPlayerController.h"
 #include "Core/UserInterfaces/UDViewModelManager.h"
+#include "Core/Simulation/UDModelStructs.h"
+#include "Core/Simulation/UDActionAdministrator.h"
 
 TObjectPtr<AUDSkirmishHUD> AUDSkirmishHUD::Get(TObjectPtr<UWorld> world)
 {
@@ -18,6 +20,7 @@ void AUDSkirmishHUD::BeginPlay()
 {
 	Super::BeginPlay();
 	Initialize();
+	CurrentScreen = LobbyScreen;
 	SwitchScreen(LobbyScreen);
 	ForceInitialize();
 }
@@ -36,7 +39,39 @@ void AUDSkirmishHUD::RequestNotifyOnFactionSelected(int32 factionId)
 
 void AUDSkirmishHUD::OnComponentsInitialized()
 {
-	UE_LOG(LogTemp, Log, TEXT("AUDHUD: On Components Initialize."));
+	Super::OnComponentsInitialized();
+	if (IsComponentInitialized)
+		return;
+	IsComponentInitialized = true;
 	TObjectPtr<AUDSkirmishPlayerController> pc = AUDSkirmishPlayerController::Get(GetWorld());
-	ViewModelManager->SetModelManager(pc->GetAdministrator());
+	TObjectPtr<UUDActionAdministrator> model = pc->GetAdministrator();
+	model->OnDataReloadedEvent.AddUniqueDynamic(this, &AUDSkirmishHUD::OnGameDataChanged);
+	model->OnDataChangedEvent.AddUniqueDynamic(this, &AUDSkirmishHUD::OnGameDataChanged);
+	ViewModelManager->SetModelManager(model);
+}
+
+void AUDSkirmishHUD::OnGameDataChanged()
+{
+	TObjectPtr<AUDSkirmishPlayerController> pc = AUDSkirmishPlayerController::Get(GetWorld());
+	TObjectPtr<UUDActionAdministrator> model = pc->GetAdministrator();
+
+	FName nextScreen;
+	switch (model->GetMatchStateInfo())
+	{
+	case EUDGameStateInfo::Lobby:
+		nextScreen = LobbyScreen;
+		break;
+	case EUDGameStateInfo::Match:
+		nextScreen = GameScreen;
+		break;
+	case EUDGameStateInfo::Scoreboard:
+		nextScreen = ScoreboardScreen;
+		break;
+	}
+	// Swap only if screens can be changed.
+	if (nextScreen == CurrentScreen)
+		return;
+	// Finally do the swap.
+	CurrentScreen = nextScreen;
+	SwitchScreen(nextScreen);
 }

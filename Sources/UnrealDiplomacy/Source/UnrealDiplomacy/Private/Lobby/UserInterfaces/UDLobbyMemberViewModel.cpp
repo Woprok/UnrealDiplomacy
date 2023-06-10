@@ -21,10 +21,16 @@ void UUDLobbyMemberViewModel::Initialize()
 	SetStrategyText(strategy);
 	FText strategyPoints = FText(LOCTEXT("LobbyMember", "Stratagem Points left 0"));
 	SetStrategyPointsText(strategyPoints);
-	FText nationNameEditable = FText(LOCTEXT("LobbyMember", "Generic Nation Name"));
-	SetFactionNameEditableText(nationNameEditable);
+	//FText nationNameEditable = FText(LOCTEXT("LobbyMember", "Generic Nation Name"));
+	//SetFactionNameEditableText(nationNameEditable);
 
+	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDLobbyMemberViewModel::Reload);
 	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDLobbyMemberViewModel::Update);
+}
+
+void UUDLobbyMemberViewModel::Reload()
+{
+	Update();
 }
 
 void UUDLobbyMemberViewModel::Update()

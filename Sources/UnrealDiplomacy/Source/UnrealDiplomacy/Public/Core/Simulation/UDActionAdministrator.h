@@ -16,6 +16,8 @@ class UUDWorldState;
 class UUDActionManager;
 class UUDActionDatabase;
 
+enum class EUDGameStateInfo : uint8;
+struct FUDGameOverInfo;
 struct FUDFactionMinimalInfo;
 struct FUDStratagemPickableInfo;
 
@@ -200,19 +202,6 @@ public:
 	FText UsurperName = FText::GetEmpty();
 };
 
-USTRUCT(BlueprintType)
-struct FUDGameStateInfo
-{
-	GENERATED_BODY()
-public:
-	FUDGameStateInfo() {}
-	FUDGameStateInfo(bool isGameOver, int32 winnerId) : IsGameFinished(isGameOver), WinnerId(winnerId) {}
-	UPROPERTY(BlueprintReadOnly)
-	bool IsGameFinished = false;
-	UPROPERTY(BlueprintReadOnly)
-	int32 WinnerId = 0;
-};
-
 #define LOCTEXT_NAMESPACE "ActionAdministrator"
 
 DECLARE_DELEGATE_OneParam(UserActionRequestedDelegate, FUDActionData);
@@ -323,7 +312,7 @@ protected:
 public:
 	TObjectPtr<UUDMapState> GetMapState();
 
-#pragma region Lobby
+#pragma region Lobby & HUD
 public:
 	/** Provides list of all factions and their names. */
 	TArray<FUDFactionMinimalInfo> GetFactionList();
@@ -345,16 +334,39 @@ public:
 	bool IsStratagemTakeable(FUDStratagemPickableInfo stratagem);
 	/** Provides comprehensive list of all available stratagems, taking them from internal action manager instance. */
 	TArray<FUDStratagemPickableInfo> GetStratagemsList();
+	/** HUD methord for determining correct UI switching. */
+	EUDGameStateInfo GetMatchStateInfo();
 private:
 	/** Provides comprehensive list of all available stratagems, taking them from internal action manager instance. */
 	int32 GetStratagemCostFromTags(TSet<int32> tags);
 #pragma endregion
 
+#pragma region GameOver
+public:
+	/** Checks if game is finished. */
+	bool IsGameOver();
+	/** Returns full information about the game over state from this perspective. */
+	FUDGameOverInfo GetGameOverInfo();
+#pragma endregion
 
+
+public:
+	/** Checks if specified faction is owned by player. */
+	bool IsLocalFactionPlayer();
 
 
 	
 public:
+
+	//UFUNCTION(BlueprintCallable)
+	//	FUDGameStateInfo GetGameStateInfo()
+	//{
+	//	return FUDGameStateInfo(
+	//		State->WorldSimulationState == EUDWorldSimulationState::Finished,
+	//		State->ImperialThrone.Ruler
+	//	);
+	//}
+
 	/**
 	 * Alternatively call to IsGameInProgress, that's useable for game that is not yet over.
 	 */
@@ -832,16 +844,6 @@ public:
 		}
 		return info;
 	}
-
-	UFUNCTION(BlueprintCallable)
-	FUDGameStateInfo GetGameStateInfo()
-	{
-		return FUDGameStateInfo(
-			State->WorldSimulationState == EUDWorldSimulationState::Finished,
-			State->ImperialThrone.Ruler
-		);
-	}
-
 
 	UFUNCTION(BlueprintCallable)
 	bool IsLocalPlayerWinner()

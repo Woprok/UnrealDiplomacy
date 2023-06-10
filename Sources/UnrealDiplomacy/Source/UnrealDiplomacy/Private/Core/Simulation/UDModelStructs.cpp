@@ -22,3 +22,8 @@ FUDStratagemPickableInfo::FUDStratagemPickableInfo(int32 id, FString name, int32
 {
 
 }
+
+FUDGameOverInfo::FUDGameOverInfo()
+{
+
+}

@@ -26,7 +26,13 @@ void UUDLobbyHostViewModel::Initialize()
 	FText stratagemPoints = FText(LOCTEXT("LobbyHost", "Stratagem Points"));
 	SetStratagemPointsText(stratagemPoints);
 
+	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDLobbyHostViewModel::Reload);
 	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDLobbyHostViewModel::Update);
+}
+
+void UUDLobbyHostViewModel::Reload()
+{
+	Update();
 }
 
 void UUDLobbyHostViewModel::Update()

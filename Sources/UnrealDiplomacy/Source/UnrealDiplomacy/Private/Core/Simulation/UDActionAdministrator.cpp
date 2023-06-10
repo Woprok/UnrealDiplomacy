@@ -3,6 +3,7 @@
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Core/Simulation/UDModelStructs.h"
 #include "Core/Simulation/UDActionManager.h"
+#include "Core/Simulation/UDWorldState.h"
 
 #pragma region Core
 void UUDActionAdministrator::OnDataChanged(const FUDActionData& action)
@@ -184,4 +185,49 @@ TArray<FUDStratagemPickableInfo> UUDActionAdministrator::GetStratagemsList()
 	return stratagemList;
 }
 
+EUDGameStateInfo UUDActionAdministrator::GetMatchStateInfo()
+{
+	switch (State->WorldSimulationState)
+	{
+	case EUDWorldSimulationState::Preparing:
+		return EUDGameStateInfo::Lobby;
+	case EUDWorldSimulationState::Simulating:
+		return EUDGameStateInfo::Match;
+	case EUDWorldSimulationState::Finished:
+		return EUDGameStateInfo::Scoreboard;
+	default:
+		unimplemented();
+		break;
+	}
+	return EUDGameStateInfo::Lobby;
+}
+
 #pragma endregion
+
+#pragma region GameOver
+bool UUDActionAdministrator::IsGameOver()
+{
+	if (State->WorldSimulationState == EUDWorldSimulationState::Finished)
+		return true;
+	return false;
+}
+
+FUDGameOverInfo UUDActionAdministrator::GetGameOverInfo()
+{
+	FUDGameOverInfo gameOverInfo;
+
+	int32 winnerId = State->ImperialThrone.Ruler;
+	gameOverInfo.IsWinner = winnerId == State->FactionPerspective;
+	gameOverInfo.WinnerFactionId = winnerId;
+	gameOverInfo.WinnerFactionName = State->Factions[winnerId]->Name;
+
+	return gameOverInfo;
+}
+#pragma endregion
+
+bool UUDActionAdministrator::IsLocalFactionPlayer()
+{
+	bool notGaia = State->FactionPerspective != UUDGlobalData::GaiaFactionId;
+	bool notObserver = State->FactionPerspective != UUDGlobalData::ObserverFactionId;
+	return notGaia && notObserver;
+}

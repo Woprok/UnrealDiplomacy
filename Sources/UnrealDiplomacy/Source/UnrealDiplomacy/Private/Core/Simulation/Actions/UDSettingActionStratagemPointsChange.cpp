@@ -52,7 +52,7 @@ TArray<FUDActionData> UUDSettingActionStratagemPointsChange::GetFactionDeselectA
 	{
 		factionList.Add(FUDActionData(
 			UUDSettingActionStratagemOptionDeselect::ActionTypeId,
-			UUDGlobalData::GaiaFactionId,
+			faction->PlayerUniqueId,
 			{ stratagem } 
 		));
 	}

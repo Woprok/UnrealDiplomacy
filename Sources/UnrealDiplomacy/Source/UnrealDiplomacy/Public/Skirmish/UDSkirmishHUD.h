@@ -27,10 +27,20 @@ public:
 	 */
 	virtual void BeginPlay() override;
 	/**
-	 * Used by menu views to identify target screen.
+	 * Used by game views to identify target screen.
 	 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ScreenNames")
 	FName LobbyScreen = TEXT("LobbyScreen");
+	/**
+	 * Used by game views to identify target screen.
+	 */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ScreenNames")
+	FName GameScreen = TEXT("GameScreen");
+	/**
+	 * Used by game views to identify target screen.
+	 */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ScreenNames")
+	FName ScoreboardScreen = TEXT("ScoreboardScreen");
 public:
 	/**
 	 * Invoked by tiles, whenever user clicks on them.
@@ -64,4 +74,12 @@ protected:
 	 * Defines custom model to view model manager.
 	 */
 	virtual void OnComponentsInitialized() override;
+	/**
+	 * Handles context of switching between diffrent UI modes.
+	 */
+	UFUNCTION()
+	void OnGameDataChanged();
+private:
+	bool IsComponentInitialized = false;
+	FName CurrentScreen;
 };

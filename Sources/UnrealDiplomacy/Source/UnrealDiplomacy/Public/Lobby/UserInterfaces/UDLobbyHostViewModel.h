@@ -62,6 +62,8 @@ protected:
 	virtual void Initialize() override;
 	UFUNCTION()
 	virtual void Update() override;
+	UFUNCTION()
+	void Reload();
 private:
 	// MVVM Setters & Getters
 	void SetHostSettingsTitleText(FText newHostSettingsTitleText);

@@ -5,7 +5,7 @@
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDActionInterface.h"
 #include "Core/Simulation/UDWorldState.h"
-#include "Core/Simulation/Actions/UDSystemActionTurnEnd.h"
+#include "Core/Simulation/Actions/UDSystemActionGameEnd.h"
 #include "Core/Simulation/Actions/UDGameActionThroneReceive.h"
 
 bool UUDWorldArbiter::OnActionExecutionFinished(int32 actionType, TObjectPtr<UUDWorldState> gaiaWorldState)
@@ -80,5 +80,5 @@ FUDActionData UUDWorldArbiter::DetermineNewRuler()
 
 FUDActionData UUDWorldArbiter::CreateEndGame()
 {
-	return FUDActionData(UUDSystemActionTurnEnd::ActionTypeId, UUDGlobalData::GaiaFactionId);
+	return FUDActionData(UUDSystemActionGameEnd::ActionTypeId, UUDGlobalData::GaiaFactionId);
 }

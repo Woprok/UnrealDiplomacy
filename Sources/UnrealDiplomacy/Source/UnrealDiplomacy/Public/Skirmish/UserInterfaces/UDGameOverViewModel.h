@@ -3,65 +3,62 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Core/UserInterfaces/UDViewModelBase.h"
+#include "Core/UserInterfaces/UDViewModel.h"
 #include "UDGameOverViewModel.generated.h"
 
+// Forward Declarations
+
 /**
- * 
+ * Lobby Widget
  */
 UCLASS(Blueprintable, BlueprintType)
-class UNREALDIPLOMACY_API UUDGameOverViewModel : public UUDViewModelBase
+class UNREALDIPLOMACY_API UUDGameOverViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	* MVVM Field.
-	*/
+	// Button Functions
+	UFUNCTION()
+	void Return();
+	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	bool IsGameOver;
+	FText GameOverTitleText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	bool IsWinner;
-	/**
-	 * Fields
-	 */
-	FUDGameStateInfo CurrentInfo;
-public:
-	virtual void OnUpdate() override
-	{
-		if (ActionModel->IsGameFinished())
-		{
-			// This is visible during the game and shows current info
-			UpdateGameInfo(ActionModel->GetGameStateInfo());
-		}
-		else
-		{
-			// This should not be visible ?
-		}
-	}
+	FText WinnerFactionText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText ReturnToMenuText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool IsHostValue;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool IsPlayerValue;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool IsWinnerValue;
 protected:
-	void UpdateGameInfo(FUDGameStateInfo info)
-	{
-		CurrentInfo = info;
-		SetIsGameOver(info.IsGameFinished);
-		SetIsWinner(ActionModel->IsLocalPlayerWinner());
-	}
+	virtual void Initialize() override;
+	UFUNCTION()
+	virtual void Update() override;
+	UFUNCTION()
+	void Reload();
 private:
-	void SetIsGameOver(bool newIsGameOver)
-	{
-		// Set checks if value changed.
-		UE_MVVM_SET_PROPERTY_VALUE(IsGameOver, newIsGameOver);
-	}
-	bool GetIsGameOver() const
-	{
-		return IsGameOver;
-	}
-	void SetIsWinner(bool newIsWinner)
-	{
-		// Set checks if value changed.
-		UE_MVVM_SET_PROPERTY_VALUE(IsWinner, newIsWinner);
-	}
-	bool GetIsWinner() const
-	{
-		return IsWinner;
-	}
+	/**
+	 * Returns to menu by calling quit session.
+	 */
+	void ReturnToMenu();
+	/**
+	 * Determines correct visual presentation for game over screen.
+	 */
+	void ChangeGameOverPresentation();
+private:
+	// MVVM Setters & Getters
+	void SetGameOverTitleText(FText newGameOverTitleText);
+	FText GetGameOverTitleText() const;
+	void SetWinnerFactionText(FText newWinnerFactionText);
+	FText GetWinnerFactionText() const;
+	void SetReturnToMenuText(FText newReturnToMenuText);
+	FText GetReturnToMenuText() const;
+	void SetIsHostValue(bool newIsHostValue);
+	bool GetIsHostValue() const;
+	void SetIsWinnerValue(bool newIsWinnerValue);
+	bool GetIsWinnerValue() const;
+	void SetIsPlayerValue(bool newIsPlayerValue);
+	bool GetIsPlayerValue() const;
 };
