@@ -58,6 +58,7 @@ TObjectPtr<UUDFactionState> UUDFactionState::CreateState(int32 factionId)
 	newState->PendingRequests.Empty(0);
 	newState->StratagemOptions.Empty(0);
 	newState->Name = FString::Format(TEXT("Faction {0}"), { factionId });
+	newState->Controller = EUDFactionController::Error;
 	return newState;
 }
 

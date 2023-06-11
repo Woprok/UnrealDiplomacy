@@ -9,6 +9,7 @@
 #include "Core/Simulation/Actions/UDSystemActionFactionTakeover.h"
 #include "Core/UDControllerInterface.h"
 #include "Core/Simulation/UDWorldSimulation.h"
+#include "Core/Simulation/UDWorldState.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDCommandData.h"
 #include "Skirmish/UDSkirmishGameState.h"
@@ -275,6 +276,14 @@ TWeakObjectPtr<AUDSkirmishGaiaAIController> AUDSkirmishGameMode::CreateServerPla
 	return GetWorld()->SpawnActor<AUDSkirmishGaiaAIController>();
 }
 
+void AUDSkirmishGameMode::ApplyFactionTakeover(int32 factionId, EUDFactionController controller)
+{
+	FUDActionData takeover(UUDSystemActionFactionTakeover::ActionTypeId, factionId, 
+		{ UUDSystemActionFactionTakeover::FactionControllerToInteger(controller) }
+	);
+	GetWorldSimulation()->CheckAndExecuteAction(takeover);
+}
+
 void AUDSkirmishGameMode::RegisterSubstiteAi(int32 claimableFactionId)
 {
 	// Create new controller and save it.
@@ -298,6 +307,8 @@ void AUDSkirmishGameMode::RegisterSubstiteAi(int32 claimableFactionId)
 	aiController->SetSimulatedStateAccess(GetWorldSimulation()->GetFactionState(controller->GetControlledFactionId()));
 	TScriptInterface<IUDActionHandlingInterface> actionHandlingController = aiController.Get();
 	GetCastGameState()->RegisterActionMaker(actionHandlingController);
+	// Finally takeover
+	ApplyFactionTakeover(claimableFactionId, EUDFactionController::AI);
 }
 
 void AUDSkirmishGameMode::RegisterPlayer(TObjectPtr<AUDSkirmishPlayerController> playerController)
@@ -311,6 +322,8 @@ void AUDSkirmishGameMode::RegisterPlayer(TObjectPtr<AUDSkirmishPlayerController>
 	int32 factionId = GetWorldSimulation()->CreatePlayerFaction();
 	controller->SetControlledFactionId(factionId);
 	GetWorldSimulation()->AnnounceFaction(factionId);
+	// Finally takeover
+	ApplyFactionTakeover(factionId, EUDFactionController::Player);
 }
 
 void AUDSkirmishGameMode::RegisterObserver(TObjectPtr<AUDSkirmishPlayerController> playerController)
@@ -324,6 +337,8 @@ void AUDSkirmishGameMode::RegisterObserver(TObjectPtr<AUDSkirmishPlayerControlle
 	int32 factionId = GetWorldSimulation()->CreateObserverFaction();
 	controller->SetControlledFactionId(factionId);
 	GetWorldSimulation()->AnnounceFaction(factionId);
+	// Finally takeover
+	ApplyFactionTakeover(factionId, EUDFactionController::Observer);
 }
 
 void AUDSkirmishGameMode::RegisterAi()
@@ -343,6 +358,8 @@ void AUDSkirmishGameMode::RegisterAi()
 	aiController->SetSimulatedStateAccess(GetWorldSimulation()->GetFactionState(controller->GetControlledFactionId()));
 	TScriptInterface<IUDActionHandlingInterface> actionHandlingController = aiController.Get();
 	GetCastGameState()->RegisterActionMaker(actionHandlingController);
+	// Finally takeover
+	ApplyFactionTakeover(factionId, EUDFactionController::AI);
 }
 
 void AUDSkirmishGameMode::RegisterGaiaAi()
@@ -360,6 +377,8 @@ void AUDSkirmishGameMode::RegisterGaiaAi()
 	GaiaController->SetSimulatedStateAccess(GetWorldSimulation()->GetFactionState(GaiaController->GetControlledFactionId()));
 	TScriptInterface<IUDActionHandlingInterface> actionHandlingController = GaiaController.Get();
 	GetCastGameState()->RegisterActionMaker(actionHandlingController);
+	// Finally takeover
+	ApplyFactionTakeover(factionId, EUDFactionController::Gaia);
 }
 
 #pragma endregion

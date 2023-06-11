@@ -27,6 +27,7 @@ class AUDSkirmishAIController;
 class AUDSkirmishPlayerController;
 class AUDSkirmishGameState;
 class AUDWorldSimulation;
+enum class EUDFactionController : uint8;
 
 /**
  * Defines all available and supported commands for server.
@@ -191,6 +192,10 @@ protected:
 	 * Assigns to controller new Id that will server as communication identificator.
 	 */
 	void DefineUniqueControllerId(TScriptInterface<IUDControllerInterface>& controller);
+	/**
+	 * Applies to smulation what kind of controller is responsible for the specified faction.
+	 */
+	void ApplyFactionTakeover(int32 factionId, EUDFactionController controller);
 private:
 	/**
 	 * Instance of Gaia.
