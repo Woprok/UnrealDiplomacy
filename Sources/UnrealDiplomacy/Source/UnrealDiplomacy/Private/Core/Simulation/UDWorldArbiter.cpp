@@ -5,6 +5,7 @@
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDActionInterface.h"
 #include "Core/Simulation/UDWorldState.h"
+#include "Core/Simulation/Actions/UDSystemActionTurnEnd.h"
 #include "Core/Simulation/Actions/UDSystemActionGameEnd.h"
 #include "Core/Simulation/Actions/UDGameActionThroneReceive.h"
 

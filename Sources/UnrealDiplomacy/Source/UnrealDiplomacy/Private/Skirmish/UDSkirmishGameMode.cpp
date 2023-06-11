@@ -6,6 +6,7 @@
 #include "Core/Simulation/Actions/UDSystemActionGameStart.h"
 #include "Core/Simulation/Actions/UDSystemActionLog.h"
 #include "Core/Simulation/Actions/UDSystemActionPlayerRemove.h"
+#include "Core/Simulation/Actions/UDSystemActionFactionTakeover.h"
 #include "Core/UDControllerInterface.h"
 #include "Core/Simulation/UDWorldSimulation.h"
 #include "Core/Simulation/UDActionData.h"

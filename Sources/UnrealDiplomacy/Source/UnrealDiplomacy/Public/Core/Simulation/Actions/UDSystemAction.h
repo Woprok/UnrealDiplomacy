@@ -28,24 +28,18 @@ public:
  * Transforms action parameters to properly named fields.
  */
 USTRUCT(BlueprintType)
-struct FUDSystemDataMapSettings
+struct FUDSystemDataValue
 {
 	GENERATED_BODY()
 public:
-	FUDSystemDataMapSettings() {}
-	FUDSystemDataMapSettings(TArray<int32> valueParameters)
+	FUDSystemDataValue() {}
+	FUDSystemDataValue(TArray<int32> valueParameters)
 	{
-		Seed = valueParameters[0];
-		SizeX = valueParameters[1];
-		SizeY = valueParameters[2];
+		Value = valueParameters[0];
 	}
 	UPROPERTY(BlueprintReadOnly)
-	int32 Seed = 0;
-	UPROPERTY(BlueprintReadOnly)
-	int32 SizeX = 0;
-	UPROPERTY(BlueprintReadOnly)
-	int32 SizeY = 0;
-	static const int32 ParameterCount = 3;
+	int32 Value = 0;
+	static const int32 ParameterCount = 1;
 };
 
 /**

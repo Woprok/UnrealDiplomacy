@@ -110,6 +110,34 @@ public:
 };
 
 /**
+ * Represents current controller of the faction.
+ */
+UENUM(BlueprintType)
+enum class EUDFactionController : uint8
+{
+	/**
+	 * Undefined controller.
+	 */
+	Error = 0,
+	/**
+	 * Server is in charge of this faction as it's current server player.
+	 */
+	Gaia = 0,
+	/**
+	 * Server is in charge of this faction due to being owned by Observer.
+	 */
+	Observer = 0,
+	/**
+	 * Human is in charge of this faction.
+	 */
+	Player = 0,
+	/**
+	 * AI is in charge of this faction.
+	 */
+	AI = 0,
+};
+
+/**
  * Faction is primary control unit of each player or AI.
  * World is considered faction as well: Gaia Faction.
  * TODO Factions can be combined to Nation.
@@ -153,8 +181,17 @@ public:
 	 */
 	UPROPERTY()
 	TSet<int32> StratagemOptions = { };
+	/**
+	 * Current faction name that can be displayed.
+	 */
 	UPROPERTY()
 	FString Name;
+	/**
+	 * Defines what kind of controller is responsible for this faction.
+	 * This is purely informative and has no gameplay consequencies.
+	 */
+	UPROPERTY()
+	EUDFactionController Controller;
 };
 
 /**
