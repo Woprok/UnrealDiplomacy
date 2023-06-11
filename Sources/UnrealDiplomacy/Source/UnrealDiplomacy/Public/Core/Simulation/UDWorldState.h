@@ -122,19 +122,19 @@ enum class EUDFactionController : uint8
 	/**
 	 * Server is in charge of this faction as it's current server player.
 	 */
-	Gaia = 0,
+	Gaia = 1,
 	/**
 	 * Server is in charge of this faction due to being owned by Observer.
 	 */
-	Observer = 0,
+	Observer = 2,
 	/**
 	 * Human is in charge of this faction.
 	 */
-	Player = 0,
+	Player = 3,
 	/**
 	 * AI is in charge of this faction.
 	 */
-	AI = 0,
+	AI = 4,
 };
 
 /**

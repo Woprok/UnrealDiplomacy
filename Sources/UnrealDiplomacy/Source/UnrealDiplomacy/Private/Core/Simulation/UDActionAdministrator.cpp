@@ -85,13 +85,7 @@ FUDActionData UUDActionAdministrator::GetRejectAction(int32 actionId, FUDActionD
 
 #pragma endregion
 
-TObjectPtr<UUDMapState> UUDActionAdministrator::GetMapState()
-{
-	return State->Map;
-}
-
 #pragma region Lobby
-
 TArray<FUDFactionMinimalInfo> UUDActionAdministrator::GetFactionList()
 {
 	TArray<FUDFactionMinimalInfo> factions = { };
@@ -201,7 +195,6 @@ EUDGameStateInfo UUDActionAdministrator::GetMatchStateInfo()
 	}
 	return EUDGameStateInfo::Lobby;
 }
-
 #pragma endregion
 
 #pragma region GameOver
@@ -225,9 +218,43 @@ FUDGameOverInfo UUDActionAdministrator::GetGameOverInfo()
 }
 #pragma endregion
 
+#pragma region Faction Interaction
+TArray<FUDFactionInfo> UUDActionAdministrator::GetFactionInteractionList()
+{
+	TArray<FUDFactionInfo> factions = { };
+
+	for (const auto& faction : State->Factions)
+	{
+		if (IsFactionPlayerControlled(faction.Value->PlayerUniqueId))
+		{
+			FUDFactionInfo newInfo = FUDFactionInfo(
+				faction.Value->PlayerUniqueId,
+				faction.Value->Name,
+				faction.Value->Controller == EUDFactionController::Player
+			);
+			factions.Add(newInfo);
+		}
+	}
+
+	return factions;
+};
+#pragma endregion
+
+TObjectPtr<UUDMapState> UUDActionAdministrator::GetMapState()
+{
+	return State->Map;
+}
+
 bool UUDActionAdministrator::IsLocalFactionPlayer()
 {
 	bool notGaia = State->FactionPerspective != UUDGlobalData::GaiaFactionId;
 	bool notObserver = State->FactionPerspective != UUDGlobalData::ObserverFactionId;
+	return notGaia && notObserver;
+}
+
+bool UUDActionAdministrator::IsFactionPlayerControlled(int32 factionId)
+{
+	bool notGaia = factionId != UUDGlobalData::GaiaFactionId;
+	bool notObserver = factionId != UUDGlobalData::ObserverFactionId;
 	return notGaia && notObserver;
 }

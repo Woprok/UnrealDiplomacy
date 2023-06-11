@@ -372,6 +372,7 @@ void AUDSkirmishGameMode::RegisterGaiaAi()
 
 	int32 factionId = GetWorldSimulation()->CreateGaiaFaction();
 	controller->SetControlledFactionId(factionId);
+	GetWorldSimulation()->AnnounceFaction(factionId);
 
 	// Bind remaining AI functionality.
 	GaiaController->SetSimulatedStateAccess(GetWorldSimulation()->GetFactionState(GaiaController->GetControlledFactionId()));

@@ -7,9 +7,9 @@
 #include "UDFactionInteractionUserWidget.generated.h"
 
 /**
- * 
+ * Ancestor for blueprint.
  */
-UCLASS()
+UCLASS(Abstract)
 class UNREALDIPLOMACY_API UUDFactionInteractionUserWidget : public UUDUserWidget
 {
 	GENERATED_BODY()

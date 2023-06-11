@@ -20,6 +20,7 @@ enum class EUDGameStateInfo : uint8;
 struct FUDGameOverInfo;
 struct FUDFactionMinimalInfo;
 struct FUDStratagemPickableInfo;
+struct FUDFactionInfo;
 
 #include "Core/Simulation/Actions/UDDealActionContractCreate.h"
 
@@ -308,10 +309,7 @@ protected:
 	 */
 	void InitializeActionManager();
 #pragma endregion
-
-public:
-	TObjectPtr<UUDMapState> GetMapState();
-
+	
 #pragma region Lobby & HUD
 public:
 	/** Provides list of all factions and their names. */
@@ -350,9 +348,20 @@ public:
 #pragma endregion
 
 
+#pragma region Faction Interaction
+public:	
+	/** Provides list of factions and their names if they can be interacted with. */
+	TArray<FUDFactionInfo> GetFactionInteractionList();
+#pragma endregion
+
+
 public:
-	/** Checks if specified faction is owned by player. */
+	TObjectPtr<UUDMapState> GetMapState();
+public:
+	/** Checks if specified faction is owned by local player. */
 	bool IsLocalFactionPlayer();
+	/** Checks if specified faction is owned & controlled by player or AI. */
+	bool IsFactionPlayerControlled(int32 factionId);
 
 
 	

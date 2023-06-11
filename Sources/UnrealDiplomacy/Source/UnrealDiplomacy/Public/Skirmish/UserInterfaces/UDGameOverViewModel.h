@@ -9,7 +9,7 @@
 // Forward Declarations
 
 /**
- * Lobby Widget
+ * Contains everything necessary to display the winner, loser, gameover presentations.
  */
 UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDGameOverViewModel : public UUDViewModel

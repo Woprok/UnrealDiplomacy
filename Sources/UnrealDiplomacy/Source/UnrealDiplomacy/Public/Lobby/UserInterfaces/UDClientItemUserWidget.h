@@ -15,7 +15,6 @@ class UUDClientItemViewModel;
 /**
  * Ancestor for blueprint.
  * Supports IUserObjectListEntry for list view initializations.
- * If used in list view it should manually call
  */
 UCLASS(Abstract)
 class UNREALDIPLOMACY_API UUDClientItemUserWidget : public UUDUserWidget, public IUserObjectListEntry

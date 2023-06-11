@@ -72,3 +72,22 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	FString WinnerFactionName = TEXT("");
 };
+
+USTRUCT(BlueprintType)
+struct FUDFactionInfo
+{
+	GENERATED_BODY()
+public:
+	FUDFactionInfo();
+	FUDFactionInfo(int32 id, FString name, bool isPlayerControlled);
+	UPROPERTY(BlueprintReadOnly)
+	int32 Id = 0;
+	UPROPERTY(BlueprintReadOnly)
+	FString Name = TEXT("");
+	/**
+	 * True indicates that it's owned by player, false by AI.
+	 * Observer and Server should not be returned in this structure.
+	 */
+	UPROPERTY(BlueprintReadOnly)
+	bool IsPlayerControlled = false;
+};

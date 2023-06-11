@@ -1,5 +1,7 @@
 // Copyright Miroslav Valach
-
+// TODO fix missing check for observer and gaia, when someone attempts to add another one into the state
+// expected behaviour is to never call initialization for observer and gaia twice.
+// at the moment announce is executed twice. This was introduced when creation and sync were separated.
 
 #include "Core/Simulation/UDWorldSimulation.h"
 #include "Core/UDGlobalData.h"

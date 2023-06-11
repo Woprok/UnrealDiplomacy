@@ -85,6 +85,7 @@
 #include "Core/Simulation/Actions/UDSystemActionTurnEnd.h"
 #include "Core/Simulation/Actions/UDSystemActionTurnForceEnd.h"
 #include "Core/Simulation/Actions/UDSystemActionWorldCreate.h"
+#include "Core/Simulation/Actions/UDSystemActionFactionTakeover.h"
 
 TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetDefaultActions(UObject* parent)
 {
@@ -104,7 +105,8 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetSystemActions
 		//NewObject<UUDSystemActionPlayerRemove>(parent),
 		NewObject<UUDSystemActionTurnEnd>(parent),
 		NewObject<UUDSystemActionTurnForceEnd>(parent),
-		NewObject<UUDSystemActionWorldCreate>(parent)
+		NewObject<UUDSystemActionWorldCreate>(parent),
+		NewObject<UUDSystemActionFactionTakeover>(parent)
 	};
 }
 

@@ -77,7 +77,7 @@ void UUDLobbyViewModel::Update()
 
 void UUDLobbyViewModel::UpdateClientList()
 {
-	UE_LOG(LogTemp, Log, TEXT("UUDLobbyViewModel: UpdateClients."));
+	UE_LOG(LogTemp, Log, TEXT("UUDLobbyViewModel: UpdateClientList."));
 	// Retrieve factions
 	TArray<FUDFactionMinimalInfo> factions = Model->GetFactionList();
 	// Retrieve enough models
@@ -89,7 +89,6 @@ void UUDLobbyViewModel::UpdateClientList()
 	for (int32 i = 0; i < factions.Num(); i++)
 	{
 		TObjectPtr<UUDClientItemViewModel> newViewModel = Cast<UUDClientItemViewModel>(viewModels[i]);
-		bool isHost = factions[i].Id == pc->GetControlledFactionId();
 		newViewModel->SetContent(factions[i]);
 		newViewModel->FullUpdate();
 		ClientViewModelCollection.Add(newViewModel);

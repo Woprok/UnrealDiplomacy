@@ -27,3 +27,14 @@ FUDGameOverInfo::FUDGameOverInfo()
 {
 
 }
+
+FUDFactionInfo::FUDFactionInfo()
+{
+
+}
+
+FUDFactionInfo::FUDFactionInfo(int32 id, FString name, bool isPlayerControlled)
+	: Id(id), Name(name), IsPlayerControlled(isPlayerControlled)
+{
+
+}
