@@ -7,7 +7,7 @@
 
 bool UUDSystemActionTurnEnd::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	bool isPlaying = action.InvokerFactionId == world->TurnData.PlayingFaction;
+	bool isPlaying = action.InvokerFactionId == world->TurnData.RegentFaction;
 	return IUDActionInterface::CanExecute(action, world) && isPlaying;
 }
 
@@ -31,19 +31,19 @@ void UUDSystemActionTurnEnd::TurnAdvance(TObjectPtr<UUDWorldState> world)
 	int32 nextPlayerId = 0;
 	for (auto& playerUniqueId : world->TurnData.FactionTurnOrder)
 	{
-		if (playerUniqueId > world->TurnData.PlayingFaction)
+		if (playerUniqueId > world->TurnData.RegentFaction)
 		{
 			nextPlayerId = playerUniqueId;
 			break;
 		}
 	}
 	// Update turn player and counter.
-	world->TurnData.PlayingFaction = nextPlayerId;
+	world->TurnData.RegentFaction = nextPlayerId;
 	world->TurnData.Turn += 1;
 }
 
 void UUDSystemActionTurnEnd::RevertTurnAdvance(TObjectPtr<UUDWorldState> world, int32 previousPlayerId)
 {
-	world->TurnData.PlayingFaction = previousPlayerId;
+	world->TurnData.RegentFaction = previousPlayerId;
 	world->TurnData.Turn -= 1;
 }

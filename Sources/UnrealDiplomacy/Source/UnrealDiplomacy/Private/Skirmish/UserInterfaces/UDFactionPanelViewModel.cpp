@@ -14,7 +14,7 @@ void UUDFactionPanelViewModel::Initialize()
 
 	FText nameHeader = FText(LOCTEXT("FactionPanel", "Faction"));
 	SetNameHeaderText(nameHeader);
-	FText controllerHeader = FText(LOCTEXT("FactionPanel", "[PC/AI]"));
+	FText controllerHeader = FText(LOCTEXT("FactionPanel", "[PC|AI]"));
 	SetControllerHeaderText(controllerHeader);
 
 	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDFactionPanelViewModel::Reload);
@@ -33,6 +33,8 @@ void UUDFactionPanelViewModel::Reload()
 void UUDFactionPanelViewModel::Update()
 {
 	if (!Model->IsOverseeingStatePresent())
+		return;
+	if (!Model->IsGamePlayed())
 		return;
 	// Following updates require model.
 	UpdateFactionList();

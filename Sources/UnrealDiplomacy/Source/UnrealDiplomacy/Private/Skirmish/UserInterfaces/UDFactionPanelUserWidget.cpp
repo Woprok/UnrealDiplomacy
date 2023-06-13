@@ -27,7 +27,7 @@ void UUDFactionPanelUserWidget::BindWidgets()
 	FactionItemListWidget = GetWidget<UListView>(TEXT("FactionItemList"));
 }
 
-void UUDFactionPanelUserWidget::SetFactionSourceCollection(const TArray<TObjectPtr<UUDFactionItemViewModel>>& factionItemViewModel)
+void UUDFactionPanelUserWidget::SetFactionSourceCollection(const TArray<TObjectPtr<UUDFactionItemViewModel>>& factionItemViewModels)
 {
-	FactionItemListWidget->SetListItems(factionItemViewModel);
+	FactionItemListWidget->SetListItems(factionItemViewModels);
 }

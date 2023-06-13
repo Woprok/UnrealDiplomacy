@@ -3,14 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Core/Simulation/Actions/UDSystemActionTurnEnd.h"
-#include "UDSystemActionTurnForceEnd.generated.h"
+#include "Core/Simulation/Actions/UDSystemAction.h"
+#include "UDSystemActionIntermezzoStart.generated.h"
 
 /**
- * Server ends the turn of player that is targeted by this.
+ * Starts new intermezzo period.
+ * This can be done only by server / gaia.
+ * Generally invoked as consequence of select regent.
  */
-UCLASS(Blueprintable, BlueprintType)
-class UNREALDIPLOMACY_API UUDSystemActionTurnForceEnd : public UUDSystemActionTurnEnd
+UCLASS()
+class UNREALDIPLOMACY_API UUDSystemActionIntermezzoStart : public UUDSystemAction
 {
 	GENERATED_BODY()
 public:
@@ -18,7 +20,6 @@ public:
 	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual int32 GetId() const override { return ActionTypeId; };
-	virtual int32 GetParameterCount() const override { return FUDSystemDataTarget::ParameterCount; };
 public:
-	static const int32 ActionTypeId = 8;
+	static const int32 ActionTypeId = 12;
 };

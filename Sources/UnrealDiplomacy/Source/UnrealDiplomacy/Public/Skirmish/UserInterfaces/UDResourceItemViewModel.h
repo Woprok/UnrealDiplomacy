@@ -5,38 +5,32 @@
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
 #include "Core/Simulation/UDModelStructs.h"
-#include "UDFactionItemViewModel.generated.h"
+#include "UDResourceItemViewModel.generated.h"
 
 // Forward Declarations
 
-struct FUDFactionInfo;
+struct FUDResourceInfo;
 
 /**
- * Single faction in a list.
+ * Single resource in a list.
  */
 UCLASS(Blueprintable, BlueprintType)
-class UNREALDIPLOMACY_API UUDFactionItemViewModel : public UUDViewModel
+class UNREALDIPLOMACY_API UUDResourceItemViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
 	/**
 	 * Set content of the strategy option.
 	 */
-	void SetContent(FUDFactionInfo content);
+	void SetContent(FUDResourceInfo content);
 public:
-	// Button Functions
-	/**
-	 * Notifies the UI about nation being selected.
-	 */
-	UFUNCTION()
-	void Interact();
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText NameText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FText ControllerText;
+	int32 AmountValue;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	bool IsHumanValue;
+	int32 IdValue;
 protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
@@ -44,11 +38,11 @@ private:
 	// MVVM Setters & Getters
 	void SetNameText(FText newNameText);
 	FText GetNameText() const;
-	void SetControllerText(FText newControllerText);
-	FText GetControllerText() const;
-	void SetIsHumanValue(bool newIsHumanValue);
-	bool GetIsHumanValue() const;
+	void SetAmountValue(int32 newAmountValue);
+	int32 GetAmountValue() const;
+	void SetIdValue(int32 newIdValue);
+	int32 GetIdValue() const;
 private:
 	// Fields
-	FUDFactionInfo Content;
+	FUDResourceInfo Content;
 };

@@ -8,6 +8,8 @@
 
 /**
  * Ends the turn of player that is invoking this.
+ * Represents classic turn mechanic.
+ * This is no longer in use due to intermezzo mechanic.
  */
 UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDSystemActionTurnEnd : public UUDSystemAction

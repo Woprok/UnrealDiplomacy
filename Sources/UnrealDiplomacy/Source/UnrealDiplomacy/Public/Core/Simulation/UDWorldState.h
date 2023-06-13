@@ -171,10 +171,35 @@ public:
 	UPROPERTY()
 	int32 PlayerUniqueId;
 	/**
-	 *
+	 * Core resource representing standing within the empire.
+	 * TODO Generalize into the resource manager.
+	 */
+	UPROPERTY()
+	int32 ResourceReputation = 0;
+	/**
+	 * Primary resource for trading.
+	 * TODO Generalize into the resource manager.
 	 */
 	UPROPERTY()
 	int32 ResourceGold = 0;
+	/**
+	 * Secondary resource for economy.
+	 * TODO Generalize into the resource manager.
+	 */
+	UPROPERTY()
+	int32 ResourceFood = 0;
+	/**
+	 * Secondary resource for economy.
+	 * TODO Generalize into the resource manager.
+	 */
+	UPROPERTY()
+	int32 ResourceMaterials = 0;
+	/**
+	 * Tertiary resource for undefined behaviour.
+	 * TODO Generalize into the resource manager.
+	 */
+	UPROPERTY()
+	int32 ResourceLuxuries = 0;
 	/**
 	 * List of all available stratagem options to use.
 	 * On other words what kind of expensive actions can be used.
@@ -511,6 +536,10 @@ public:
 
 /**
  * Stores all information related to turns.
+ * Turns are basically phases/acts. 
+ * In each turn all players can act.
+ * One player is selected regent, giving his faction more power during the turn.
+ * Once all players choosed to finish turn, new regent is selected and next act will began.
  */
 USTRUCT(BlueprintType)
 struct UNREALDIPLOMACY_API FUDTurnState
@@ -528,13 +557,24 @@ public:
 	 * Default value is 0.
 	 */
 	UPROPERTY()
-	int32 PlayingFaction = 0;
+	int32 RegentFaction = 0;
 	/**
 	 * Current turn, has no purpose other than flavor info.
 	 * Default value is 0.
 	 */
 	UPROPERTY()
 	int32 Turn = 0;
+	/**
+	 * Factions that finished current turn.
+	 */
+	UPROPERTY()
+	TSet<int32> TurnFinishedFactions = { };
+	/**
+	 * By default game is inbetween turns, so this is true.
+	 * If this is false players are allowed to act.
+	 */
+	UPROPERTY()
+	bool IsIntermezzo = true;
 };
 
 /**

@@ -92,11 +92,14 @@ TArray<FUDFactionMinimalInfo> UUDActionAdministrator::GetFactionList()
 
 	for (const auto& faction : State->Factions)
 	{
-		FUDFactionMinimalInfo newInfo = FUDFactionMinimalInfo(
-			faction.Value->PlayerUniqueId,
-			faction.Value->Name
-		);
-		factions.Add(newInfo);
+		if (IsFactionPlayerControlled(faction.Value->PlayerUniqueId))
+		{
+			FUDFactionMinimalInfo newInfo = FUDFactionMinimalInfo(
+				faction.Value->PlayerUniqueId,
+				faction.Value->Name
+			);
+			factions.Add(newInfo);
+		}
 	}
 
 	return factions;
@@ -258,3 +261,42 @@ bool UUDActionAdministrator::IsFactionPlayerControlled(int32 factionId)
 	bool notObserver = factionId != UUDGlobalData::ObserverFactionId;
 	return notGaia && notObserver;
 }
+
+#pragma region Resources
+TArray<FUDResourceInfo> UUDActionAdministrator::GetResourceList()
+{
+	TArray<FUDResourceInfo> resources = { };
+
+	resources.Add(FUDResourceInfo::GetReputation(0));
+	resources.Add(FUDResourceInfo::GetGold(0));
+	resources.Add(FUDResourceInfo::GetFood(0));
+	resources.Add(FUDResourceInfo::GetMaterials(0));
+	resources.Add(FUDResourceInfo::GetLuxuries(0));
+
+	return resources;
+}
+
+TArray<FUDResourceInfo> UUDActionAdministrator::GetLocalFactionResourceList()
+{
+	TArray<FUDResourceInfo> resources = { };
+
+	TObjectPtr<UUDFactionState> faction = State->Factions[State->FactionPerspective];
+
+	resources.Add(FUDResourceInfo::GetReputation(faction->ResourceReputation));
+	resources.Add(FUDResourceInfo::GetGold(faction->ResourceGold));
+	resources.Add(FUDResourceInfo::GetFood(faction->ResourceFood));
+	resources.Add(FUDResourceInfo::GetMaterials(faction->ResourceMaterials));
+	resources.Add(FUDResourceInfo::GetLuxuries(faction->ResourceLuxuries));
+
+	return resources;
+}
+#pragma endregion
+
+#pragma region Gameplay
+bool UUDActionAdministrator::IsGamePlayed()
+{
+	if (State->WorldSimulationState == EUDWorldSimulationState::Simulating)
+		return true;
+	return false;
+}
+#pragma endregion

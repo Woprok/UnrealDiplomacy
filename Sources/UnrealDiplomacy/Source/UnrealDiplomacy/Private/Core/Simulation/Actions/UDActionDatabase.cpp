@@ -83,9 +83,12 @@
 #include "Core/Simulation/Actions/UDSystemActionPlayerAdd.h"
 #include "Core/Simulation/Actions/UDSystemActionPlayerRemove.h"
 #include "Core/Simulation/Actions/UDSystemActionTurnEnd.h"
-#include "Core/Simulation/Actions/UDSystemActionTurnForceEnd.h"
+#include "Core/Simulation/Actions/UDSystemActionRegentChange.h"
 #include "Core/Simulation/Actions/UDSystemActionWorldCreate.h"
 #include "Core/Simulation/Actions/UDSystemActionFactionTakeover.h"
+#include "Core/Simulation/Actions/UDSystemActionTurnFinish.h"
+#include "Core/Simulation/Actions/UDSystemActionIntermezzoStart.h"
+#include "Core/Simulation/Actions/UDSystemActionIntermezzoEnd.h"
 
 TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetDefaultActions(UObject* parent)
 {
@@ -104,9 +107,12 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetSystemActions
 		NewObject<UUDSystemActionPlayerAdd>(parent),
 		//NewObject<UUDSystemActionPlayerRemove>(parent),
 		NewObject<UUDSystemActionTurnEnd>(parent),
-		NewObject<UUDSystemActionTurnForceEnd>(parent),
+		NewObject<UUDSystemActionRegentChange>(parent),
 		NewObject<UUDSystemActionWorldCreate>(parent),
-		NewObject<UUDSystemActionFactionTakeover>(parent)
+		NewObject<UUDSystemActionFactionTakeover>(parent),
+		NewObject<UUDSystemActionTurnFinish>(parent),
+		NewObject<UUDSystemActionIntermezzoStart>(parent),
+		NewObject<UUDSystemActionIntermezzoEnd>(parent)
 	};
 }
 

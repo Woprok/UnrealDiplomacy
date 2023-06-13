@@ -4,20 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDUserWidget.h"
-#include "UDFactionPanelUserWidget.generated.h"
+#include "UDResourcePanelUserWidget.generated.h"
 
 // Forward Declarations
 
-class UTextBlock;
 class UListView;
-class UUDFactionPanelViewModel;
-class UUDFactionItemViewModel;
+class UUDResourcePanelViewModel;
+class UUDResourceItemViewModel;
 
 /**
  * Ancestor for blueprint.
  */
 UCLASS(Abstract)
-class UNREALDIPLOMACY_API UUDFactionPanelUserWidget : public UUDUserWidget
+class UNREALDIPLOMACY_API UUDResourcePanelUserWidget : public UUDUserWidget
 {
 	GENERATED_BODY()
 public:
@@ -25,7 +24,7 @@ public:
 	 * Enables blueprint to bind view model.
 	 */
 	UFUNCTION(BlueprintImplementableEvent)
-	void SetBlueprintViewModel(UUDFactionPanelViewModel* model);
+	void SetBlueprintViewModel(UUDResourcePanelViewModel* model);
 protected:
 	/**
 	 * Enables to define view model used by this widet for delegates.
@@ -41,17 +40,13 @@ protected:
 	virtual void BindWidgets() override;
 	/**
 	 * Callback to set data from view model.
- 	 */
-	void SetFactionSourceCollection(const TArray<TObjectPtr<UUDFactionItemViewModel>>& factionItemViewModels);
+	 */
+	void SetFactionSourceCollection(const TArray<TObjectPtr<UUDResourceItemViewModel>>& resourceItemViewModels);
 protected:
 	// Bindings
 	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> NameHeaderTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> ControllerHeaderTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UListView> FactionItemListWidget;
+	TWeakObjectPtr<UListView> ResourceItemListWidget;
 	// ViewModel
 	UPROPERTY()
-	TWeakObjectPtr<UUDFactionPanelViewModel> ViewModel;
+	TWeakObjectPtr<UUDResourcePanelViewModel> ViewModel;
 };

@@ -21,6 +21,7 @@ struct FUDGameOverInfo;
 struct FUDFactionMinimalInfo;
 struct FUDStratagemPickableInfo;
 struct FUDFactionInfo;
+struct FUDResourceInfo;
 
 #include "Core/Simulation/Actions/UDDealActionContractCreate.h"
 
@@ -354,6 +355,20 @@ public:
 	TArray<FUDFactionInfo> GetFactionInteractionList();
 #pragma endregion
 
+#pragma region Resources
+public:
+	/** Retrieves all resources supported by the game. */
+	TArray<FUDResourceInfo> GetResourceList();
+	/** Retrieves all resources and their current amount for local player. */
+	TArray<FUDResourceInfo> GetLocalFactionResourceList();
+#pragma endregion
+
+#pragma region Gameplay
+public:
+	/** Checks if game is currently played. */
+	bool IsGamePlayed();
+#pragma endregion
+
 
 public:
 	TObjectPtr<UUDMapState> GetMapState();
@@ -418,7 +433,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool CanEndTurn()
 	{
-		if (State->TurnData.PlayingFaction == State->FactionPerspective)
+		if (State->TurnData.RegentFaction == State->FactionPerspective)
 		{
 			return true;
 		}
@@ -430,7 +445,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FUDTurnInfo GetCurrentTurnState()
 	{
-		return FUDTurnInfo(State->TurnData.Turn, State->TurnData.PlayingFaction);
+		return FUDTurnInfo(State->TurnData.Turn, State->TurnData.RegentFaction);
 	}
 	/**
 	 * Checks if supplied Id belongs to valid nation.
