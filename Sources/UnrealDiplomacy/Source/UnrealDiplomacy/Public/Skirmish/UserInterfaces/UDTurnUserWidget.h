@@ -8,9 +8,9 @@
 
 // Forward Declarations
 
-class UUDTurnViewModel;
 class UButton;
 class UTextBlock;
+class UUDTurnViewModel;
 
 /**
  * Ancestor for blueprint.
@@ -41,11 +41,15 @@ protected:
 protected:
 	// Bindings
 	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> RegentTitleTextWidget;
+	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> RegentTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> RemainingTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> FinishTurnTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> TurnTextWidget;
 
 	UPROPERTY()
 	TWeakObjectPtr<UButton> FinishTurnButtonWidget;

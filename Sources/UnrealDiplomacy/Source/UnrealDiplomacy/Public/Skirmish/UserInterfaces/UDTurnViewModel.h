@@ -11,6 +11,7 @@
 /**
  * Contains all data related presenting informations and actions related to turns.
  */
+UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDTurnViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
@@ -20,17 +21,23 @@ public:
 	void FinishTurn();
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FText GameOverTitleText;
+	FText RegentTitleText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FText WinnerFactionText;
+	FText RegentText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FText ReturnToMenuText;
+	FText RegentToolTipText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	bool IsHostValue;
+	FText RemainingText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	bool IsPlayerValue;
+	FText FinishTurnText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	bool IsWinnerValue;
+	FText FinishTurnToolTipText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText TurnText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool IsRegent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool IsFinished;
 protected:
 	virtual void Initialize() override;
 	UFUNCTION()
@@ -39,13 +46,27 @@ protected:
 	void Reload();
 private:
 	/**
-	 * Returns to menu by calling quit session.
+	 * Updates all parts of turn presentation to latest change.
 	 */
-	void ReturnToMenu();
-	/**
-	 * Determines correct visual presentation for game over screen.
-	 */
-	void ChangeGameOverPresentation();
+	void UpdateTurnPresentation();
 private:
 	// MVVM Setters & Getters
+	void SetRegentTitleText(FText newRegentTitleText);
+	FText GetRegentTitleText() const;
+	void SetRegentText(FText newRegentText);
+	FText GetRegentText() const;
+	void SetRegentToolTipText(FText newRegentToolTipText);
+	FText GetRegentToolTipText() const;
+	void SetRemainingText(FText newRemainingText);
+	FText GetRemainingText() const;
+	void SetFinishTurnText(FText newFinishTurnText);
+	FText GetFinishTurnText() const;
+	void SetFinishTurnToolTipText(FText newFinishTurnToolTipText);
+	FText GetFinishTurnToolTipText() const;
+	void SetTurnText(FText newTurnText);
+	FText GetTurnText() const;
+	void SetIsRegent(bool newIsRegent);
+	bool GetIsRegent() const;
+	void SetIsFinished(bool newIsFinished);
+	bool GetIsFinished() const;
 };

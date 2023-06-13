@@ -8,7 +8,7 @@
 #include "Core/Simulation/Actions/UDGameActionGiftAccept.h"
 #include "Core/Simulation/Actions/UDGameActionTileTake.h"
 #include "Core/Simulation/Actions/UDGameActionThroneUsurp.h"
-#include "Core/Simulation/Actions/UDSystemActionTurnEnd.h"
+#include "Core/Simulation/Actions/UDSystemActionTurnFinish.h"
 
 void AUDSkirmishAIController::ProcessOutTurnPlay()
 {
@@ -50,8 +50,8 @@ void AUDSkirmishAIController::ProcessInTurnPlay()
 		OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetAction(UUDGameActionThroneUsurp::ActionTypeId));
 	}
 
-	// Finish this by executing end turn action, thus giving up control.
-	OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetAction(UUDSystemActionTurnEnd::ActionTypeId));
+	// Finish this by executing finish turn action, thus giving up primary control.
+	OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetAction(UUDSystemActionTurnFinish::ActionTypeId));
 }
 
 void AUDSkirmishAIController::ResolveRequests()

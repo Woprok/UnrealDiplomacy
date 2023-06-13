@@ -6,6 +6,10 @@
 #include "Core/Simulation/UDActionInterface.h"
 #include "Core/Simulation/UDWorldState.h"
 #include "Core/Simulation/Actions/UDSystemActionTurnEnd.h"
+#include "Core/Simulation/Actions/UDSystemActionTurnFinish.h"
+#include "Core/Simulation/Actions/UDSystemActionIntermezzoStart.h"
+#include "Core/Simulation/Actions/UDSystemActionIntermezzoEnd.h"
+#include "Core/Simulation/Actions/UDSystemActionRegentChange.h"
 #include "Core/Simulation/Actions/UDSystemActionGameEnd.h"
 #include "Core/Simulation/Actions/UDGameActionThroneReceive.h"
 
@@ -20,6 +24,7 @@ bool UUDWorldArbiter::OnActionExecutionFinished(int32 actionType, TObjectPtr<UUD
 	switch (actionType)
 	{
 	case UUDSystemActionTurnEnd::ActionTypeId:
+	case UUDSystemActionIntermezzoStart::ActionTypeId:
 		EvaluateTurnGameOverState(gaiaWorldState);
 	default:
 		// We don't care about the remaining actions.
@@ -50,7 +55,7 @@ TArray<FUDActionData> UUDWorldArbiter::EndGame()
 void UUDWorldArbiter::EvaluateTurnGameOverState(TObjectPtr<UUDWorldState> gaiaWorldState)
 {
 	// Winner was found
-	if (gaiaWorldState->TurnData.Turn < CurrentRuleSet.MaxTurnCount)
+	if (gaiaWorldState->TurnData.Turn <= CurrentRuleSet.MaxTurnCount)
 	{
 		return;
 	}

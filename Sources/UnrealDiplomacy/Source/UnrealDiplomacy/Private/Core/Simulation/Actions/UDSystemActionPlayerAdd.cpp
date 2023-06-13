@@ -8,15 +8,25 @@
 void UUDSystemActionPlayerAdd::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Execute(action, world);
-	// Player is added to the state.
-	world->TurnData.FactionTurnOrder.Add(action.InvokerFactionId);
+	// Faction that can play is added to turn order.
+	if (UUDGlobalData::GaiaFactionId != action.InvokerFactionId &&
+		UUDGlobalData::ObserverFactionId != action.InvokerFactionId)
+	{
+		world->TurnData.FactionTurnOrder.Add(action.InvokerFactionId);
+	}
+	// Faction is added to the state.
 	world->Factions.Add(action.InvokerFactionId, UUDFactionState::CreateState(action.InvokerFactionId));
 }
 
 void UUDSystemActionPlayerAdd::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Revert(action, world);
-	// Player is removed from the state.
-	world->TurnData.FactionTurnOrder.Remove(action.InvokerFactionId);
+	// Faction that can play is removed from turn order.
+	if (UUDGlobalData::GaiaFactionId != action.InvokerFactionId &&
+		UUDGlobalData::ObserverFactionId != action.InvokerFactionId)
+	{
+		world->TurnData.FactionTurnOrder.Remove(action.InvokerFactionId);
+	}
+	// Faction is removed from the state.
 	world->Factions.Remove(action.InvokerFactionId);
 }

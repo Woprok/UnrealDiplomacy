@@ -29,7 +29,7 @@ void UUDSystemActionRegentChange::Revert(const FUDActionData& action, TObjectPtr
 void UUDSystemActionRegentChange::NextRegent(TObjectPtr<UUDWorldState> world)
 {
 	// Find regent player successor.
-	int32 nextPlayerId = 0;
+	int32 nextPlayerId = world->TurnData.FactionTurnOrder[0];
 	for (auto& playerUniqueId : world->TurnData.FactionTurnOrder)
 	{
 		if (playerUniqueId > world->TurnData.RegentFaction)

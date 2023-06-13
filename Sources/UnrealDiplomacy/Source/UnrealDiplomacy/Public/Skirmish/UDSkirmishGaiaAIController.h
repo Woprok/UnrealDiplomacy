@@ -22,7 +22,7 @@ class UNREALDIPLOMACY_API AUDSkirmishGaiaAIController : public AUDAIController
 public:
 protected:
 	// Action Execution
-	virtual void ProcessInTurnPlay() override;
+	virtual void ProcessIntermezzoPlay() override;
 private:
 	// AI Memory fields.
 };

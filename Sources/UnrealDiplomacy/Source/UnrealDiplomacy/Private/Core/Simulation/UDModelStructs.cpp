@@ -39,6 +39,11 @@ FUDFactionInfo::FUDFactionInfo(int32 id, FString name, bool isPlayerControlled)
 
 }
 
+FUDRegencyTurnInfo::FUDRegencyTurnInfo() 
+{
+
+}
+
 #pragma region Resources
 #define LOCTEXT_NAMESPACE "Resource"
 FUDResourceInfo::FUDResourceInfo()

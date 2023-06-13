@@ -22,6 +22,7 @@ struct FUDFactionMinimalInfo;
 struct FUDStratagemPickableInfo;
 struct FUDFactionInfo;
 struct FUDResourceInfo;
+struct FUDRegencyTurnInfo;
 
 #include "Core/Simulation/Actions/UDDealActionContractCreate.h"
 
@@ -369,6 +370,15 @@ public:
 	bool IsGamePlayed();
 #pragma endregion
 
+#pragma region Turn
+public:
+	/** Retrieves all informations related to regent and turn. */
+	FUDRegencyTurnInfo GetRegencyTurnInfo();
+	/** Return current IsIntermezzo value. Intermezzo describes time, when regency is changed. */
+	bool IsIntermezzo();
+	/** Return if this faction can finish turn or already finished it. */
+	bool CanFinishTurn();
+#pragma endregion
 
 public:
 	TObjectPtr<UUDMapState> GetMapState();

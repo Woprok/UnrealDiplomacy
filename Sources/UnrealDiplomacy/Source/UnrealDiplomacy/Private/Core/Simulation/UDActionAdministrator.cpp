@@ -243,25 +243,6 @@ TArray<FUDFactionInfo> UUDActionAdministrator::GetFactionInteractionList()
 };
 #pragma endregion
 
-TObjectPtr<UUDMapState> UUDActionAdministrator::GetMapState()
-{
-	return State->Map;
-}
-
-bool UUDActionAdministrator::IsLocalFactionPlayer()
-{
-	bool notGaia = State->FactionPerspective != UUDGlobalData::GaiaFactionId;
-	bool notObserver = State->FactionPerspective != UUDGlobalData::ObserverFactionId;
-	return notGaia && notObserver;
-}
-
-bool UUDActionAdministrator::IsFactionPlayerControlled(int32 factionId)
-{
-	bool notGaia = factionId != UUDGlobalData::GaiaFactionId;
-	bool notObserver = factionId != UUDGlobalData::ObserverFactionId;
-	return notGaia && notObserver;
-}
-
 #pragma region Resources
 TArray<FUDResourceInfo> UUDActionAdministrator::GetResourceList()
 {
@@ -300,3 +281,49 @@ bool UUDActionAdministrator::IsGamePlayed()
 	return false;
 }
 #pragma endregion
+
+#pragma region Turn
+FUDRegencyTurnInfo UUDActionAdministrator::GetRegencyTurnInfo()
+{
+	FUDRegencyTurnInfo newInfo;
+
+	int32 regencyFaction = State->TurnData.RegentFaction;
+	newInfo.IsRegent = regencyFaction == State->FactionPerspective;
+	newInfo.RegentFactionName = State->Factions[regencyFaction]->Name;
+	newInfo.Turn = State->TurnData.Turn;
+	newInfo.CurrentFinished = State->TurnData.TurnFinishedFactions.Num();
+	newInfo.MaximumFinished = State->TurnData.FactionTurnOrder.Num();
+	newInfo.IsFinished = State->TurnData.TurnFinishedFactions.Contains(State->FactionPerspective);
+	return newInfo;
+}
+
+bool UUDActionAdministrator::IsIntermezzo()
+{
+	return State->TurnData.IsIntermezzo;
+}
+
+bool UUDActionAdministrator::CanFinishTurn()
+{
+	return State->TurnData.TurnFinishedFactions.Contains(State->FactionPerspective);
+}
+#pragma endregion
+
+
+TObjectPtr<UUDMapState> UUDActionAdministrator::GetMapState()
+{
+	return State->Map;
+}
+
+bool UUDActionAdministrator::IsLocalFactionPlayer()
+{
+	bool notGaia = State->FactionPerspective != UUDGlobalData::GaiaFactionId;
+	bool notObserver = State->FactionPerspective != UUDGlobalData::ObserverFactionId;
+	return notGaia && notObserver;
+}
+
+bool UUDActionAdministrator::IsFactionPlayerControlled(int32 factionId)
+{
+	bool notGaia = factionId != UUDGlobalData::GaiaFactionId;
+	bool notObserver = factionId != UUDGlobalData::ObserverFactionId;
+	return notGaia && notObserver;
+}

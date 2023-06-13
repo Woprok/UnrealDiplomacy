@@ -92,7 +92,25 @@ public:
 	bool IsPlayerControlled = false;
 };
 
-
+USTRUCT(BlueprintType)
+struct FUDRegencyTurnInfo
+{
+	GENERATED_BODY()
+public:
+	FUDRegencyTurnInfo();
+	UPROPERTY(BlueprintReadOnly)
+	bool IsRegent = false;
+	UPROPERTY(BlueprintReadOnly)
+	FString RegentFactionName = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	int32 Turn = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 CurrentFinished = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 MaximumFinished = 0;
+	UPROPERTY(BlueprintReadOnly)
+	bool IsFinished = true;
+};
 
 #pragma region Resources
 #define UD_RESOURCE_REPUTATION_ID 0

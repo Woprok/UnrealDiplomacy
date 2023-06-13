@@ -5,12 +5,12 @@
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Core/Simulation/Actions/UDGaiaActionResourcesAllAdd.h"
-#include "Core/Simulation/Actions/UDSystemActionTurnEnd.h"
+#include "Core/Simulation/Actions/UDSystemActionRegentChange.h"
 
-void AUDSkirmishGaiaAIController::ProcessInTurnPlay()
+void AUDSkirmishGaiaAIController::ProcessIntermezzoPlay()
 {
 	OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetAction(UUDGaiaActionResourcesAllAdd::ActionTypeId));
 
-	// Finish this by executing end turn action, thus giving up control.
-	OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetAction(UUDSystemActionTurnEnd::ActionTypeId));
+	// Finish this by executing regent change and ending the intermezzo.
+	OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetAction(UUDSystemActionRegentChange::ActionTypeId));
 }

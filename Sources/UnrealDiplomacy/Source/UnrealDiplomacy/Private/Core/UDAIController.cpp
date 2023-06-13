@@ -29,20 +29,48 @@ int32 AUDAIController::GetControlledFactionId()
 
 void AUDAIController::OnActionExecuted(FUDActionData executedAction)
 {
-	// AI is not allowed to act before the game is in progress.
-	// AI is not allowed to act after the game is finished.
-	if (!GetAdministrator()->IsGameInProgress())
+	if (!GetAdministrator()->IsOverseeingStatePresent())
 	{
-		ProcessNonPlayableAction(executedAction);
 		return;
 	}
-	// AI is allowed to access actions outside of the turn.
-	ProcessPlayableAction(executedAction);
-	
-	// AI acts primarily during its respective turn.
-	if (GetAdministrator()->CanEndTurn())
+
+	// AI is never allowed to act after the game is finished.
+	if (GetAdministrator()->IsGameOver())
 	{
-		// AI can start making new decisions only once on its respective turn.
+		return;
+	}
+
+	// AI is allowed to access actions outside of the turn during the game and pregame.
+	ProcessPlayableAction(executedAction);
+
+	// AI is supposed to act primarily during the game.
+	// This allows AI to act before the game is in progress.
+	// For example creating custom stratagem strategy.
+	if (!GetAdministrator()->IsGamePlayed())
+	{
+		if (!PreGamePlay)
+		{
+			PreGameExecution();
+		}
+		return;
+	}
+
+
+	// AI is always halted if game is in intermezzo.
+	// This allows AI to do something during intermezzo, but it should never try to invoke new actions.
+	if (GetAdministrator()->IsIntermezzo())
+	{
+		if (!IntermezzoPlay)
+		{
+			IntermezzoExecution();
+		}
+		return;
+	}
+	
+	// AI acts primarily at the start of the turn.
+	if (GetAdministrator()->CanFinishTurn())
+	{
+		// AI can start making new decisions only once per turn.
 		// Prevents repeated nesting as it forces AI code to break.
 		if (!InTurnPlay)
 		{
@@ -50,10 +78,10 @@ void AUDAIController::OnActionExecuted(FUDActionData executedAction)
 		}
 		return;
 	}
-	// AI is allowed to act outside of its turn, but it should be used with caution.
+	// AI is allowed to act after finishing the turn, but it should be used with caution.
 	else
 	{
-		// AI can make new decisions in response to other players play outside of its respective turn.
+		// AI can make new decisions in response to other players play after it finished turn.
 		// Prevents repeated nesting as it forces AI code to break.
 		if (!OutTurnPlay)
 		{
@@ -93,7 +121,7 @@ void AUDAIController::ProcessPlayableAction(const FUDActionData& executedAction)
 	return;
 }
 
-void AUDAIController::ProcessNonPlayableAction(const FUDActionData& executedAction)
+void AUDAIController::ProcessPreGamePlay()
 {
 	return;
 }
@@ -108,6 +136,18 @@ void AUDAIController::ProcessOutTurnPlay()
 	return;
 }
 
+void AUDAIController::ProcessIntermezzoPlay()
+{
+	return;
+}
+
+void AUDAIController::PreGameExecution()
+{
+	PreGamePlay = true;
+	ProcessPreGamePlay();
+	PreGamePlay = false;
+}
+
 void AUDAIController::InTurnExecution()
 {
 	InTurnPlay = true;
@@ -120,4 +160,11 @@ void AUDAIController::OutTurnExecution()
 	OutTurnPlay = true;
 	ProcessOutTurnPlay();
 	OutTurnPlay = false;
+}
+
+void AUDAIController::IntermezzoExecution()
+{
+	IntermezzoPlay = true;
+	ProcessIntermezzoPlay();
+	IntermezzoPlay = false;
 }

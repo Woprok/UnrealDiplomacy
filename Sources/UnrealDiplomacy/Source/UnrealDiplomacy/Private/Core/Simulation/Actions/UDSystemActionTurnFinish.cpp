@@ -29,8 +29,10 @@ void UUDSystemActionTurnFinish::Revert(const FUDActionData& action, TObjectPtr<U
 TArray<FUDActionData> UUDSystemActionTurnFinish::GetContinuations(const FUDActionData& parentAction, TObjectPtr<UUDWorldState> world) const
 {
 	// Create and return single intermezzo action in name of gaia faction.
-	TArray<FUDActionData> intermezzo = {
-		FUDActionData(UUDSystemActionIntermezzoStart::ActionTypeId, UUDGlobalData::GaiaFactionId)
-	};
+	TArray<FUDActionData> intermezzo = { };
+	if (world->TurnData.FactionTurnOrder.Num() == world->TurnData.TurnFinishedFactions.Num()) 
+	{
+		intermezzo.Add(FUDActionData(UUDSystemActionIntermezzoStart::ActionTypeId, UUDGlobalData::GaiaFactionId));
+	}
 	return intermezzo;
 }

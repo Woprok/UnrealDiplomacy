@@ -1,4 +1,5 @@
 // Copyright Miroslav Valach
+// TODO this should probably not assume that everyone finished turn. Change it to backup...
 
 #include "Core/Simulation/Actions/UDSystemActionIntermezzoEnd.h"
 #include "Core/UDGlobalData.h"
@@ -17,6 +18,8 @@ void UUDSystemActionIntermezzoEnd::Execute(const FUDActionData& action, TObjectP
 	IUDActionInterface::Execute(action, world);
 	// Deactivate intermezzo.
 	world->TurnData.IsIntermezzo = false;
+	// Clear finish list
+	world->TurnData.TurnFinishedFactions.Empty();
 }
 
 void UUDSystemActionIntermezzoEnd::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -24,4 +27,9 @@ void UUDSystemActionIntermezzoEnd::Revert(const FUDActionData& action, TObjectPt
 	IUDActionInterface::Revert(action, world);
 	// Revert intermezzo to active.
 	world->TurnData.IsIntermezzo = true;
+	// Fill list with all playing players:
+	for (int32 faction : world->TurnData.FactionTurnOrder)
+	{
+		world->TurnData.TurnFinishedFactions.Add(faction);
+	}
 }
