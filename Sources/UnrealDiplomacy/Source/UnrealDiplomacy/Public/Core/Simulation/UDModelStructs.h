@@ -112,6 +112,56 @@ public:
 	bool IsFinished = true;
 };
 
+/**
+ * Describes state of the throne in relation to faction.
+ */
+UENUM(BlueprintType)
+enum class EUDThroneState : uint8
+{
+	/**
+	 * Value was not changed yet and should be ignored.
+	 */
+	Undefined,
+	/**
+	* Throne is still vacant, or is vacant again.
+	*/
+	Empty,
+	/**
+	 * Occupied by someone else. So we do not view it positively.
+	 */
+	Usurper,
+	/**
+	 * Is currently sitting on the throne.
+	 */
+	Claimer,
+};
+
+USTRUCT(BlueprintType)
+struct FUDThroneInfo
+{
+	GENERATED_BODY()
+public:
+	FUDThroneInfo();
+	UPROPERTY(BlueprintReadOnly)
+	EUDThroneState State = EUDThroneState::Undefined;
+	UPROPERTY(BlueprintReadOnly)
+	FString FactionName = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	bool CanInteract = false;
+};
+
+USTRUCT(BlueprintType)
+struct FUDAvailableDiplomacyInfo
+{
+	GENERATED_BODY()
+public:
+	FUDAvailableDiplomacyInfo();
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealCount = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 MessageCount = 0;
+};
+
 #pragma region Resources
 #define UD_RESOURCE_REPUTATION_ID 0
 #define UD_RESOURCE_GOLD_ID 1

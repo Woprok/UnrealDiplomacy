@@ -23,6 +23,8 @@ struct FUDStratagemPickableInfo;
 struct FUDFactionInfo;
 struct FUDResourceInfo;
 struct FUDRegencyTurnInfo;
+struct FUDThroneInfo;
+struct FUDAvailableDiplomacyInfo;
 
 #include "Core/Simulation/Actions/UDDealActionContractCreate.h"
 
@@ -190,19 +192,6 @@ public:
 	int32 ActionIndex;
 	UPROPERTY(BlueprintReadOnly)
 	FUDDiscussionAction ActionBody;
-};
-
-USTRUCT(BlueprintType)
-struct FUDThroneInfo
-{
-	GENERATED_BODY()
-public:
-	FUDThroneInfo() {}
-	FUDThroneInfo(int32 id) : UsurperId(id) { }
-	UPROPERTY(BlueprintReadOnly)
-	int32 UsurperId = 0;
-	UPROPERTY(BlueprintReadOnly)
-	FText UsurperName = FText::GetEmpty();
 };
 
 #define LOCTEXT_NAMESPACE "ActionAdministrator"
@@ -380,6 +369,17 @@ public:
 	bool CanFinishTurn();
 #pragma endregion
 
+#pragma region Diplomacy & Throne
+public:
+	/** Retrieves all informations related to throne. */
+	FUDThroneInfo GetThroneInfo();
+	/** Retrieves core informations related to diplomacy. */
+	FUDAvailableDiplomacyInfo GetDiplomacyInfo();
+	/** Retrieves deal count for unfinished & participating for local player. */
+	int32 GetActiveDealParticipationCount();
+	/** Retrieves message count for participating. */
+	int32 GetUnresolvedMessagesCount();
+#pragma endregion
 public:
 	TObjectPtr<UUDMapState> GetMapState();
 public:
@@ -859,26 +859,6 @@ public:
 		return State->Deals[dealUniqueId]->Points[pointUniqueId]->Targets.Contains(playerId);
 	}
 
-	/**
-	 * Returns ThroneInfo that holds id and name of current player on throne..
-	 */
-	UFUNCTION(BlueprintCallable)
-	FUDThroneInfo GetThroneInfo()
-	{
-		FUDThroneInfo info = FUDThroneInfo(State->ImperialThrone.Ruler);
-		
-		if (info.UsurperId == UUDGlobalData::GaiaFactionId)
-		{
-			info.UsurperName = FText::Format(LOCTEXT("Player", "Throne is empty. ({0})"), info.UsurperId);
-		}
-		else
-		{
-			// TODO transform this to full player name...
-			info.UsurperName = FText::Format(LOCTEXT("Player", "Player {0}"), info.UsurperId);
-		}
-		return info;
-	}
-
 	UFUNCTION(BlueprintCallable)
 	bool IsLocalPlayerWinner()
 	{
@@ -887,19 +867,11 @@ public:
 			State->ImperialThrone.Ruler == State->FactionPerspective;
 	}
 
-
 	UFUNCTION(BlueprintCallable)
-	bool CanUsurpThrone()
+		bool CanUsurpThrone()
 	{
 		return State->ImperialThrone.Ruler == UUDGlobalData::GaiaFactionId;
 	}
-
-	UFUNCTION(BlueprintCallable)
-	bool CanAbdicateThrone()
-	{
-		return State->ImperialThrone.Ruler == State->FactionPerspective;
-	}
-
 
 };
 #undef LOCTEXT_NAMESPACE

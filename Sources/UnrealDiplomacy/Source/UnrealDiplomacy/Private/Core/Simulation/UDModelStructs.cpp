@@ -44,6 +44,16 @@ FUDRegencyTurnInfo::FUDRegencyTurnInfo()
 
 }
 
+FUDThroneInfo::FUDThroneInfo()
+{
+
+}
+
+FUDAvailableDiplomacyInfo::FUDAvailableDiplomacyInfo()
+{
+
+}
+
 #pragma region Resources
 #define LOCTEXT_NAMESPACE "Resource"
 FUDResourceInfo::FUDResourceInfo()

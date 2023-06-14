@@ -12,7 +12,11 @@ void UUDGaiaActionResourcesAllAdd::Execute(const FUDActionData& action, TObjectP
 	FUDGaiaDataAmount data(action.ValueParameters);
 	for (auto& state : world->Factions)
 	{
+		state.Value->ResourceReputation += data.Amount / 5;
 		state.Value->ResourceGold += data.Amount;
+		state.Value->ResourceFood += data.Amount * 5;
+		state.Value->ResourceMaterials += data.Amount * 2.5;
+		state.Value->ResourceLuxuries += data.Amount / 10;
 	}
 }
 
@@ -23,6 +27,10 @@ void UUDGaiaActionResourcesAllAdd::Revert(const FUDActionData& action, TObjectPt
 	FUDGaiaDataAmount data(action.ValueParameters);
 	for (auto& state : world->Factions)
 	{
+		state.Value->ResourceReputation -= data.Amount / 5;
 		state.Value->ResourceGold -= data.Amount;
+		state.Value->ResourceFood -= data.Amount * 5;
+		state.Value->ResourceMaterials -= data.Amount * 2.5;
+		state.Value->ResourceLuxuries -= data.Amount / 10;
 	}
 }

@@ -3,7 +3,6 @@
 #include "Skirmish/UserInterfaces/UDTurnViewModel.h"
 #include "Core/Simulation/UDModelStructs.h"
 #include "Core/Simulation/UDActionAdministrator.h"
-#include "Skirmish/UDSkirmishHUD.h"
 #include "Core/Simulation/Actions/UDSystemActionTurnFinish.h"
 
 #define LOCTEXT_NAMESPACE "Turn"

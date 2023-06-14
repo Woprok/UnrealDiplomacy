@@ -1,4 +1,6 @@
 // Copyright Miroslav Valach
+// TODO decide what to do with disconnected player during the lobby.
+// For mid game disconnected he is replaced by AI.
 
 #include "Core/Simulation/Actions/UDSystemActionPlayerRemove.h"
 #include "Core/UDGlobalData.h"

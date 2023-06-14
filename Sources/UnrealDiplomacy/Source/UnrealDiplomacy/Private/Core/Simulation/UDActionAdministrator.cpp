@@ -308,6 +308,60 @@ bool UUDActionAdministrator::CanFinishTurn()
 }
 #pragma endregion
 
+#pragma region Diplomacy & Throne
+FUDThroneInfo UUDActionAdministrator::GetThroneInfo()
+{
+	FUDThroneInfo info;
+	
+	info.State = EUDThroneState::Empty;
+	info.CanInteract = true;
+	// Name is not changed for empty, it should never be needed.
+
+	if (State->ImperialThrone.Ruler == State->FactionPerspective)
+	{
+		info.State = EUDThroneState::Claimer;
+		info.CanInteract = true;
+		info.FactionName = State->Factions[State->ImperialThrone.Ruler]->Name;
+	}
+	else if (IsFactionPlayerControlled(State->ImperialThrone.Ruler))
+	{
+		info.State = EUDThroneState::Usurper;
+		info.CanInteract = false;
+		info.FactionName = State->Factions[State->ImperialThrone.Ruler]->Name;
+	}
+
+	return info;
+}
+
+FUDAvailableDiplomacyInfo UUDActionAdministrator::GetDiplomacyInfo()
+{
+	FUDAvailableDiplomacyInfo info;
+
+	info.DealCount = GetActiveDealParticipationCount();
+	info.MessageCount = GetUnresolvedMessagesCount();
+
+	return info;
+}
+
+int32 UUDActionAdministrator::GetActiveDealParticipationCount()
+{
+	int32 participating = 0;
+	for (const auto& deal : State->Deals)
+	{
+		if (deal.Value->Participants.Contains(State->FactionPerspective))
+		{
+			participating++;
+		}
+	}
+	return participating;
+}
+
+int32 UUDActionAdministrator::GetUnresolvedMessagesCount()
+{
+	return State->Factions[State->FactionPerspective]->PendingRequests.Num();
+}
+
+#pragma endregion
 
 TObjectPtr<UUDMapState> UUDActionAdministrator::GetMapState()
 {

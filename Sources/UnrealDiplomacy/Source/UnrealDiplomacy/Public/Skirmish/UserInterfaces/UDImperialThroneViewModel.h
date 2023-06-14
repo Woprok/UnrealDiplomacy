@@ -3,125 +3,74 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Core/UserInterfaces/UDViewModelBase.h"
-#include "Core/Simulation/Actions/UDGameActionThroneUsurp.h"
-#include "Core/Simulation/Actions/UDGameActionThroneAbdicate.h"
+#include "Core/UserInterfaces/UDViewModel.h"
 #include "UDImperialThroneViewModel.generated.h"
 
+// Forward Declarations
+enum class EUDThroneState : uint8;
+
 /**
- * 
+ * Contains all data related presenting informations and actions related to starting diplomacy (deal, throne, messages).
  */
 UCLASS(Blueprintable, BlueprintType)
-class UNREALDIPLOMACY_API UUDImperialThroneViewModel : public UUDViewModelBase
+class UNREALDIPLOMACY_API UUDImperialThroneViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
+
 public:
-	/**
-	* MVVM Field.
-	*/
+	// Button Functions
+	UFUNCTION()
+	void ThroneAction();
+	UFUNCTION()
+	void OpenDeals();
+	UFUNCTION()
+	void OpenMessages();
+	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FString CurrentUsurperName;
+	FText DealCountText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	bool CanTakeThrone;
+	FText MessageCountText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	bool CanAbdicateThrone;
+	FText ThroneText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	bool CantUseThrone;
-	/**
-	 * Fields
-	 */
-	FUDThroneInfo CurrentUsurper;
-public:
-	virtual void OnUpdate() override
-	{
-		if (ActionModel->IsGameInProgress())
-		{
-			// This is visible during the game and shows current info
-			UpdateThrone(ActionModel->GetThroneInfo());
-		}
-		else
-		{
-			// This should not be visible ?
-		}
-	}
-	/**
-	 * Take empty throne.
-	 */
-	UFUNCTION(BlueprintCallable)
-	void TakeThrone()
-	{
-		ActionModel->RequestAction(ActionModel->GetAction(UUDGameActionThroneUsurp::ActionTypeId));
-	}
-	/**
-	 * Giveup throne for nothing in return.
-	 */
-	UFUNCTION(BlueprintCallable)
-	void AbdicateThrone()
-	{
-		ActionModel->RequestAction(ActionModel->GetAction(UUDGameActionThroneAbdicate::ActionTypeId));
-	}
+	FText ThroneToolTipText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText DealToolTipText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool CanInteractValue;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	EUDThroneState ThroneStateValue;
 protected:
-	void UpdateThrone(FUDThroneInfo info)
-	{
-		CurrentUsurper = info;
-		SetCurrentUsurperName(info.UsurperName.ToString());
-		if (ActionModel->CanUsurpThrone()) // noone is on throne
-		{
-			SetCanTakeThrone(true);
-			SetCanAbdicateThrone(false);
-			SetCantUseThrone(false);
-		}
-		else if (ActionModel->CanAbdicateThrone()) // you are on throne
-		{
-			SetCanTakeThrone(false);
-			SetCanAbdicateThrone(true);
-			SetCantUseThrone(false);
-		}
-		else // someone else is on throne
-		{
-			SetCanTakeThrone(false);
-			SetCanAbdicateThrone(false);
-			SetCantUseThrone(true);
-		}
-	}
+	virtual void Initialize() override;
+	UFUNCTION()
+	virtual void Update() override;
+	UFUNCTION()
+	void Reload();
 private:
+	UFUNCTION()
+	void ClaimThrone();
+	UFUNCTION()
+	void AbdicateThrone();
+	UFUNCTION()
+	void ContestThrone();
 	/**
-	 * MVVM Binding.
+	 * Updates all parts of throne presentation to latest change.
 	 */
-	void SetCurrentUsurperName(FString newCurrentUsurperName)
-	{
-		// Set checks if value changed.
-		UE_MVVM_SET_PROPERTY_VALUE(CurrentUsurperName, newCurrentUsurperName);
-	}
-	FString GetCurrentUsurperName() const
-	{
-		return CurrentUsurperName;
-	}
-	void SetCanTakeThrone(bool newCanTakeThrone)
-	{
-		// Set checks if value changed.
-		UE_MVVM_SET_PROPERTY_VALUE(CanTakeThrone, newCanTakeThrone);
-	}
-	bool GetCanTakeThrone() const
-	{
-		return CanTakeThrone;
-	}
-	void SetCanAbdicateThrone(bool newCanAbdicateThrone)
-	{
-		// Set checks if value changed.
-		UE_MVVM_SET_PROPERTY_VALUE(CanAbdicateThrone, newCanAbdicateThrone);
-	}
-	bool GetCanAbdicateThrone() const
-	{
-		return CanAbdicateThrone;
-	}
-	void SetCantUseThrone(bool newCantUseThrone)
-	{
-		// Set checks if value changed.
-		UE_MVVM_SET_PROPERTY_VALUE(CantUseThrone, newCantUseThrone);
-	}
-	bool GetCantUseThrone() const
-	{
-		return CantUseThrone;
-	}
+	void UpdateThronePresentation();
+private:
+	// MVVM Setters & Getters
+	void SetDealCountText(FText newDealCountText);
+	FText GetDealCountText() const;
+	void SetMessageCountText(FText newMessageCountText);
+	FText GetMessageCountText() const;
+	void SetThroneText(FText newThroneText);
+	FText GetThroneText() const;
+	void SetThroneToolTipText(FText newThroneToolTipText);
+	FText GetThroneToolTipText() const;
+	void SetDealToolTipText(FText newDealToolTipText);
+	FText GetDealToolTipText() const;
+	void SetCanInteractValue(bool newCanInteractValue);
+	bool GetCanInteractValue() const;
+	void SetThroneStateValue(EUDThroneState newThroneStateValue);
+	EUDThroneState GetThroneStateValue() const;
 };
