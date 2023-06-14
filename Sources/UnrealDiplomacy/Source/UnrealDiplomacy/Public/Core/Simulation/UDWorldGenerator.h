@@ -59,12 +59,20 @@ private:
 	 * Retrieves generator for current seed, if seed changed or was not set creates new.
 	 */
 	const FRandomStream& GetRandom();
+	/** 
+	 * Helper function to calculate xy index based on x and y coordinates.
+	 */
+	int32 CalculateIndex(int32 x, int32 y);
+	/**
+	 * Helper function to calculate xy maximum based on x and y sizes.
+	 */
+	int32 CalculateMaximumSize();
 	UPROPERTY()
 	FRandomStream Random;
 	UPROPERTY()
-	int32 LastSeed = 0;
+	int32 Seed = 0;
 	UPROPERTY()
-	int32 LastSizeOfX = 0;
+	int32 SizeOfX = 0;
 	UPROPERTY()
-	int32 LastSizeOfY = 0;
+	int32 SizeOfY = 0;
 };

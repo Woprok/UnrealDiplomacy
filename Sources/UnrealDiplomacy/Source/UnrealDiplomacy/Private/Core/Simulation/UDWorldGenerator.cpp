@@ -19,9 +19,9 @@ void UUDWorldGenerator::CreateAndDuplicate(TObjectPtr<UUDMapState> targetMapStat
 
 bool UUDWorldGenerator::IsNewMapRequested(TObjectPtr<UUDMapState> mapState)
 {
-	return mapState->MapSeed != LastSeed ||
-		mapState->MapSizeOfX != LastSizeOfX ||
-		mapState->MapSizeOfY != LastSizeOfY;
+	return mapState->MapSeed != Seed ||
+		mapState->MapSizeOfX != SizeOfX ||
+		mapState->MapSizeOfY != SizeOfY;
 }
 
 void UUDWorldGenerator::CreateMap(TObjectPtr<UUDMapState> emptyMapState)
@@ -31,19 +31,29 @@ void UUDWorldGenerator::CreateMap(TObjectPtr<UUDMapState> emptyMapState)
 	GenerateProperties(emptyMapState->MapSeed);
 }
 
+int32 UUDWorldGenerator::CalculateIndex(int32 x, int32 y)
+{
+	return SizeOfY * x + y;
+}
+
+int32 UUDWorldGenerator::CalculateMaximumSize()
+{
+	return SizeOfY * SizeOfX;
+}
+
 void UUDWorldGenerator::GenerateProperties(int32 mapSeed)
 {
 	// Remember core value.
-	LastSeed = mapSeed;
+	Seed = mapSeed;
 
 	const FRandomStream& current = GetRandom();
 	// Generate specific tiles for each available empty tile.
-	for (int32 x = 0; x < LastSizeOfX; x++)
+	for (int32 x = 0; x < SizeOfX; x++)
 	{
-		for (int32 y = 0; y < LastSizeOfY; y++)
+		for (int32 y = 0; y < SizeOfY; y++)
 		{
 			auto next = current.RandRange(1, 100);
-			int32 xy = LastSizeOfX * x + y;
+			int32 xy = CalculateIndex(x, y);
 			if (next >= 1 && next <= 50)
 			{
 				Map[xy]->Type = 69;
@@ -61,9 +71,9 @@ void UUDWorldGenerator::GenerateProperties(int32 mapSeed)
 void UUDWorldGenerator::DuplicateToState(TObjectPtr<UUDMapState> fillableMapState)
 {
 	// Recursive duplicate on tiles, that duplicates individual tiles from current Map.
-	fillableMapState->Tiles.SetNumZeroed(fillableMapState->MapSizeOfX * fillableMapState->MapSizeOfY);
+	fillableMapState->Tiles.SetNumZeroed(CalculateMaximumSize());
 
-	for (int32 xy = 0; xy < fillableMapState->MapSizeOfX * fillableMapState->MapSizeOfY; xy++)
+	for (int32 xy = 0; xy < CalculateMaximumSize(); xy++)
 	{
 		fillableMapState->Tiles[xy] = UUDTileState::Duplicate(Map[xy]);
 	}
@@ -72,17 +82,17 @@ void UUDWorldGenerator::DuplicateToState(TObjectPtr<UUDMapState> fillableMapStat
 void UUDWorldGenerator::GenerateArray(int32 xSize, int32 ySize)
 {
 	// Remember core values.
-	LastSizeOfX = xSize;
-	LastSizeOfY = ySize;
+	SizeOfX = xSize;
+	SizeOfY = ySize;
 
 	// Generate empty array for future use.
-	Map.SetNumZeroed(LastSizeOfX * LastSizeOfY);
+	Map.SetNumZeroed(CalculateMaximumSize());
 
-	for (int32 x = 0; x < LastSizeOfX; x++)
+	for (int32 x = 0; x < SizeOfX; x++)
 	{
-		for (int32 y = 0; y < LastSizeOfY; y++)
+		for (int32 y = 0; y < SizeOfY; y++)
 		{
-			int32 xy = LastSizeOfX * x + y;
+			int32 xy = CalculateIndex(x, y);
 			Map[xy] = UUDTileState::CreateState(x, y);
 		}
 	}
@@ -90,9 +100,9 @@ void UUDWorldGenerator::GenerateArray(int32 xSize, int32 ySize)
 
 const FRandomStream& UUDWorldGenerator::GetRandom()
 {
-	if (Random.GetInitialSeed() != LastSeed)
+	if (Random.GetInitialSeed() != Seed)
 	{
-		Random = FRandomStream(LastSeed);
+		Random = FRandomStream(Seed);
 	}
 	return Random;
 }
