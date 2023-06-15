@@ -46,6 +46,21 @@ public:
 	 */
 	UPROPERTY(VisibleAnywhere, Category = "ScreenNames")
 	FName FactionManagementWidget = TEXT("FactionManagement");
+	/**
+	 * Used by game views to identify target widget.
+	 */
+	UPROPERTY(VisibleAnywhere, Category = "ScreenNames")
+	FName TileManagementWidget = TEXT("TileManagement");
+	/**
+	 * Used by game views to identify target widget.
+	 */
+	UPROPERTY(VisibleAnywhere, Category = "ScreenNames")
+	FName MessageManagementWidget = TEXT("MessageManagement");
+	/**
+	 * Used by game views to identify target widget.
+	 */
+	UPROPERTY(VisibleAnywhere, Category = "ScreenNames")
+	FName DealManagementWidget = TEXT("DealManagement");
 public:
 	/**
 	 * Invoked by tiles, whenever user clicks on them.

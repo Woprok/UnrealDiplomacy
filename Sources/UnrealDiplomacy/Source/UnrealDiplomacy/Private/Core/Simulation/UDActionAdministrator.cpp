@@ -394,10 +394,45 @@ int32 UUDActionAdministrator::GetUnresolvedMessagesCount()
 
 #pragma endregion
 
+#pragma region Tile & Map Interaction
+
 TObjectPtr<UUDMapState> UUDActionAdministrator::GetMapState()
 {
 	return State->Map;
 }
+
+TArray<FUDTileInteractionInfo> UUDActionAdministrator::GetTileInteractionList()
+{
+	TArray<FUDTileInteractionInfo> interactions = { };
+
+	for (const auto& interaction : GetActionManager()->FilterTileInteractions())
+	{
+		bool isAvailable = IsAvailableStratagem(interaction.Tags, interaction.ActionId);
+		// continue if it's not available with next.
+		if (!isAvailable)
+			continue;
+
+		FUDTileInteractionInfo newInfo;
+		newInfo.Name = interaction.Name;
+		newInfo.ActionTypeId = interaction.ActionId;
+		interactions.Add(newInfo);
+	}
+
+	return interactions;
+}
+
+FUDTileInfo UUDActionAdministrator::GetTileInfo(FIntPoint position)
+{
+	const auto& tile = State->Map->GetTile(position);
+	FUDTileInfo tileInfo;
+	tileInfo.Position = tile->Position;
+	tileInfo.Name = TEXT("NAME IS NOT IMPLEMENTED");
+	tileInfo.FactionId	= tile->OwnerUniqueId;
+	tileInfo.FactionName = State->Factions[tile->OwnerUniqueId]->Name;
+	return tileInfo;
+}
+
+#pragma endregion
 
 bool UUDActionAdministrator::IsLocalFactionPlayer()
 {

@@ -82,7 +82,7 @@ public:
 	 */
 	TObjectPtr<UUDTileState> GetTile(FIntPoint tile)
 	{
-		return Tiles[MapSizeOfX * tile.X + tile.Y];
+		return Tiles[MapSizeOfY * tile.X + tile.Y];
 	}
 public:
 	/**

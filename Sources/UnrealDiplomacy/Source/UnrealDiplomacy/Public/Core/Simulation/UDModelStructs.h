@@ -210,3 +210,31 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	int32 ActionTypeId = 0;
 };
+
+USTRUCT(BlueprintType)
+struct FUDTileInteractionInfo
+{
+	GENERATED_BODY()
+public:
+	FUDTileInteractionInfo();
+	UPROPERTY(BlueprintReadOnly)
+	FString Name = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	int32 ActionTypeId = 0;
+};
+
+USTRUCT(BlueprintType)
+struct FUDTileInfo
+{
+	GENERATED_BODY()
+public:
+	FUDTileInfo();
+	UPROPERTY(BlueprintReadOnly)
+	FIntPoint Position = 0;
+	UPROPERTY(BlueprintReadOnly)
+	FString Name = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	int32 FactionId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	FString FactionName = TEXT("");
+};

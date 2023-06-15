@@ -3,7 +3,72 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Core/UserInterfaces/UDViewModelBase.h"
+#include "Core/UserInterfaces/UDViewModel.h"
+#include "UDMessageManagementViewModel.generated.h"
+
+/**
+ * Browsing of all interactable action.
+ */
+UCLASS(Blueprintable, BlueprintType)
+class UNREALDIPLOMACY_API UUDMessageManagementViewModel : public UUDViewModel
+{
+	GENERATED_BODY()
+public:
+	// Button Functions
+	UFUNCTION()
+	void Close();
+	UFUNCTION()
+	void First();
+	UFUNCTION()
+	void Previous();
+	UFUNCTION()
+	void Next();
+	UFUNCTION()
+	void Last();
+	// MVVM Fields
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText MessageManagementTitleText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText CloseText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText FirstText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText PreviousText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText NextText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText LastText;
+protected:
+	virtual void Initialize() override;
+	UFUNCTION()
+	virtual void Update() override;
+	UFUNCTION()
+	void Reload();
+private:
+	/**
+	 * Updates message item to latest.
+	 */
+	void UpdateMessageItem();
+private:
+	// MVVM Setters & Getters
+	void SetMessageManagementTitleText(FText newMessageManagementTitleText);
+	FText GetMessageManagementTitleText() const;
+	void SetCloseText(FText newCloseText);
+	FText GetCloseText() const;
+	void SetFirstText(FText newFirstText);
+	FText GetFirstText() const;
+	void SetPreviousText(FText newPreviousText);
+	FText GetPreviousText() const;
+	void SetNextText(FText newNextText);
+	FText GetNextText() const;
+	void SetLastText(FText newLastText);
+	FText GetLastText() const;
+private:
+	// Fields
+
+};
+
+/*/
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/Actions/UDGameActionGift.h"
 #include "Core/Simulation/Actions/UDDealActionParticipantInvite.h"
@@ -14,112 +79,18 @@
 #include "Core/Simulation/Actions/UDGameActionGiftReject.h"
 #include "Core/Simulation/Actions/UDDealActionParticipantInviteReject.h"
 #include "Core/Simulation/Actions/UDGameActionTileTransferReject.h"
-#include "UDInteractionOverviewViewModel.generated.h"
-
-
-#define LOCTEXT_NAMESPACE "ActionUI"
-/**
- * Browsing of all currently available interactions...
- */
-UCLASS(Blueprintable, BlueprintType)
-class UNREALDIPLOMACY_API UUDInteractionOverviewViewModel : public UUDViewModelBase
-{
-	GENERATED_BODY()
-public:
-	/**
-	 * MVVM Field.
-	 */
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	int32 PendingCount = -1;
-	/**
-	 * MVVM Field.
-	 */
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FString CurrentItemName;
-	/**
-	 * MVVM Field.
-	 */
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FString CurrentItemDescription;
-	/**
-	 * MVVM Field.
-	 */
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FUDActionData CurrentItem;
-	/**
-	 * MVVM Field.
-	 */
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	int32 CurrentItemShown;
-private:
 	TArray<FUDActionData> LastRequestArray;
-public:
 	virtual void OnUpdate() override
 	{
-		if (ActionModel->IsGameInProgress())
-		{
 			// This is visible during the game and shows current info
 			UpdateInteractions(ActionModel->GetPendingRequests());
-		}
-		else
-		{
-			// This should not be visible ?
-		}
 	}
-	/**
-	 * Called by button.
-	 */
-	UFUNCTION(BlueprintCallable)
-	void ItemPrevious()
-	{
-		int32 prev = FMath::Max(0, CurrentItemShown - 1);
-		if (prev == CurrentItemShown)
-		{
-			prev = LastRequestArray.Num() - 1;
-		}
-		UpdateView(LastRequestArray.Num(), LastRequestArray[prev], prev);
-	}
-	/**
-	 * Called by button.
-	 */
-	UFUNCTION(BlueprintCallable)
-	void ItemReject()
-	{
-		if (CurrentItem.ActionTypeId == UUDGameActionGift::ActionTypeId)
-			ActionModel->RequestAction(ActionModel->GetRejectAction(UUDGameActionGiftReject::ActionTypeId, CurrentItem));
-		else if (CurrentItem.ActionTypeId == UUDDealActionParticipantInvite::ActionTypeId)
-			ActionModel->RequestAction(ActionModel->GetRejectAction(UUDDealActionParticipantInviteReject::ActionTypeId, CurrentItem));
-		else if (CurrentItem.ActionTypeId == UUDGameActionTileTransfer::ActionTypeId)
-			ActionModel->RequestAction(ActionModel->GetRejectAction(UUDGameActionTileTransferReject::ActionTypeId, CurrentItem));
-	}
-	/**
-	 * Called by button.
-	 */
-	UFUNCTION(BlueprintCallable)
-	void ItemAccept()
-	{
-		if (CurrentItem.ActionTypeId == UUDGameActionGift::ActionTypeId)			
-			ActionModel->RequestAction(ActionModel->GetRejectAction(UUDGameActionGiftAccept::ActionTypeId, CurrentItem));
-		else if (CurrentItem.ActionTypeId == UUDDealActionParticipantInvite::ActionTypeId)			
-			ActionModel->RequestAction(ActionModel->GetRejectAction(UUDDealActionParticipantInviteAccept::ActionTypeId, CurrentItem));
-		else if (CurrentItem.ActionTypeId == UUDGameActionTileTransfer::ActionTypeId)			
-			ActionModel->RequestAction(ActionModel->GetRejectAction(UUDGameActionTileTransferAccept::ActionTypeId, CurrentItem));
 
-
-	}
-	/**
-	 * Called by button.
-	 */
-	UFUNCTION(BlueprintCallable)
-	void ItemNext()
-	{
-		int32 next = FMath::Min(LastRequestArray.Num() - 1, CurrentItemShown + 1);
-		if (next == CurrentItemShown)
-		{
-			next = 0;
-		}
-		UpdateView(LastRequestArray.Num(), LastRequestArray[next], next);
-	}
 protected:
 	//requests.Num()
 	//requests[0]
@@ -140,7 +111,6 @@ protected:
 		).ToString();
 		SetCurrentItemDescription(rs2);
 	}
-
 	void UpdateInteractions(TArray<FUDActionData> requests)
 	{
 		// First initialization or no item
@@ -189,80 +159,25 @@ protected:
 		LastRequestArray = requests;
 	}
 private:
-	/**
-	 * MVVM Binding.
-	 */
-	void SetPendingCount(int32 newPendingCount)
-	{
-		// Set checks if value changed.
-		UE_MVVM_SET_PROPERTY_VALUE(PendingCount, newPendingCount);
-	}
-	/**
-	 * MVVM Binding.
-	 */
-	void SetCurrentItemName(FString newCurrentItemName)
-	{
-		// Set checks if value changed.
-		UE_MVVM_SET_PROPERTY_VALUE(CurrentItemName, newCurrentItemName);
-	}
-	/**
-	 * MVVM Binding.
-	 */
-	void SetCurrentItemDescription(FString newCurrentItemDescription)
-	{
-		// Set checks if value changed.
-		UE_MVVM_SET_PROPERTY_VALUE(CurrentItemDescription, newCurrentItemDescription);
-	}
-	/**
-	 * MVVM Binding.
-	 */
-	void SetCurrentItem(FUDActionData newCurrentItem)
-	{
-		// Set checks if value changed.
-		UE_MVVM_SET_PROPERTY_VALUE(CurrentItem, newCurrentItem);
-	}
-	/**
-	 * MVVM Binding.
-	 */
-	void SetCurrentItemShown(int32 newCurrentItemShown)
-	{
-		// Set checks if value changed.
-		UE_MVVM_SET_PROPERTY_VALUE(CurrentItemShown, newCurrentItemShown);
-	}
-	/**
-	 * MVVM Binding.
-	 */
-	int32 GetPendingCount() const
-	{
-		return PendingCount;
-	}
-	/**
-	 * MVVM Binding.
-	 */
-	FString GetCurrentItemName() const
-	{
-		return CurrentItemName;
-	}
-	/**
-	 * MVVM Binding.
-	 */
-	FString GetCurrentItemDescription() const
-	{
-		return CurrentItemDescription;
-	}
-	/**
-	 * MVVM Binding.
-	 */
-	FUDActionData GetCurrentItem() const
-	{
-		return CurrentItem;
-	}
-	/**
-	 * MVVM Binding.
-	 */
-	int32 GetCurrentItemShown() const
-	{
-		return CurrentItemShown;
-	}
-};
-#undef LOCTEXT_NAMESPACE
+UFUNCTION(BlueprintCallable)
+void ItemReject()
+{
+	if (CurrentItem.ActionTypeId == UUDGameActionGift::ActionTypeId)
+		ActionModel->RequestAction(ActionModel->GetRejectAction(UUDGameActionGiftReject::ActionTypeId, CurrentItem));
+	else if (CurrentItem.ActionTypeId == UUDDealActionParticipantInvite::ActionTypeId)
+		ActionModel->RequestAction(ActionModel->GetRejectAction(UUDDealActionParticipantInviteReject::ActionTypeId, CurrentItem));
+	else if (CurrentItem.ActionTypeId == UUDGameActionTileTransfer::ActionTypeId)
+		ActionModel->RequestAction(ActionModel->GetRejectAction(UUDGameActionTileTransferReject::ActionTypeId, CurrentItem));
+}
+UFUNCTION(BlueprintCallable)
+void ItemAccept()
+{
+	if (CurrentItem.ActionTypeId == UUDGameActionGift::ActionTypeId)
+		ActionModel->RequestAction(ActionModel->GetRejectAction(UUDGameActionGiftAccept::ActionTypeId, CurrentItem));
+	else if (CurrentItem.ActionTypeId == UUDDealActionParticipantInvite::ActionTypeId)
+		ActionModel->RequestAction(ActionModel->GetRejectAction(UUDDealActionParticipantInviteAccept::ActionTypeId, CurrentItem));
+	else if (CurrentItem.ActionTypeId == UUDGameActionTileTransfer::ActionTypeId)
+		ActionModel->RequestAction(ActionModel->GetRejectAction(UUDGameActionTileTransferAccept::ActionTypeId, CurrentItem));
+}
+
+/*/

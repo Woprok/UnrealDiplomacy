@@ -52,6 +52,11 @@ public:
 	 */
 	TArray<FUDActionPresentation> FilterFactionInteractions();
 	/**
+	 * Retrieves all actions that are tagged as tile interactions.
+	 * Tile interaction is any action that targets tile directly.
+	 */
+	TArray<FUDActionPresentation> FilterTileInteractions();
+	/**
 	 * Retrieves specifeid action presentation.
 	 */
 	FUDActionPresentation GetSpecified(int32 actionId);

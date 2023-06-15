@@ -104,6 +104,11 @@ TArray<FUDActionPresentation> UUDActionManager::FilterFactionInteractions()
 	return FilterByTag(FilterStartpoint, UD_ACTION_TAG_FACTION_INTERACTION);
 }
 
+TArray<FUDActionPresentation> UUDActionManager::FilterTileInteractions()
+{
+	return FilterByTag(FilterStartpoint, UD_ACTION_TAG_TILE_INTERACTION);
+}
+
 FUDActionPresentation UUDActionManager::GetSpecified(int32 actionId)
 {
 	return Actions[actionId]->GetPresentation();
@@ -122,6 +127,5 @@ TArray<FUDActionPresentation> UUDActionManager::FilterByTag(const TArray<FUDActi
 
 	return filtered;
 }
-
 
 #pragma endregion

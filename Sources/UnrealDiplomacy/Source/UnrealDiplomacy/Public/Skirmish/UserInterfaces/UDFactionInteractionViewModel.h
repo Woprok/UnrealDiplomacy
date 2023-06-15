@@ -20,7 +20,7 @@ class UNREALDIPLOMACY_API UUDFactionInteractionViewModel : public UUDViewModel
 	GENERATED_BODY()
 public:
 	/**
-	 * Set content of the strategy option.
+	 * Set content of the interaction option.
 	 */
 	 void SetContent(FUDFactionInteractionInfo content);
 public:

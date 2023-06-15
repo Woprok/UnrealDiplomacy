@@ -118,3 +118,13 @@ FUDFactionInteractionInfo::FUDFactionInteractionInfo()
 {
 
 }
+
+FUDTileInteractionInfo::FUDTileInteractionInfo()
+{
+
+}
+
+FUDTileInfo::FUDTileInfo()
+{
+
+}

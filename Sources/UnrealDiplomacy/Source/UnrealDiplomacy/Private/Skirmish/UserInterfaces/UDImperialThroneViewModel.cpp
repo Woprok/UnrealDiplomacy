@@ -1,6 +1,7 @@
 // Copyright Miroslav Valach
 
 #include "Skirmish/UserInterfaces/UDImperialThroneViewModel.h"
+#include "Skirmish/UDSkirmishHUD.h"
 #include "Core/Simulation/UDModelStructs.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Core/Simulation/Actions/UDGameActionThroneUsurp.h"
@@ -141,11 +142,15 @@ void UUDImperialThroneViewModel::ContestThrone()
 void UUDImperialThroneViewModel::OpenDeals()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDImperialThroneViewModel: OpenDeals."));
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	hud->ShowWidget(hud->DealManagementWidget);
 }
 
 void UUDImperialThroneViewModel::OpenMessages()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDImperialThroneViewModel: OpenMessages."));
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	hud->ShowWidget(hud->MessageManagementWidget);
 }
 
 void UUDImperialThroneViewModel::SetDealCountText(FText newDealCountText)

@@ -26,6 +26,8 @@ struct FUDRegencyTurnInfo;
 struct FUDThroneInfo;
 struct FUDAvailableDiplomacyInfo;
 struct FUDFactionInteractionInfo;
+struct FUDTileInteractionInfo;
+struct FUDTileInfo;
 
 #include "Core/Simulation/Actions/UDDealActionContractCreate.h"
 
@@ -56,21 +58,6 @@ public:
 	int32 Id = 0;
 	UPROPERTY(BlueprintReadOnly)
 	int32 Gold = 0;
-};
-
-USTRUCT(BlueprintType)
-struct FUDTileInfo
-{
-	GENERATED_BODY()
-public:
-	FUDTileInfo() {}
-	FUDTileInfo(int32 owner, FIntPoint position, int32 type) : Owner(owner), Position(position), Type(type) {}
-	UPROPERTY(BlueprintReadOnly)
-	int32 Owner = 0;
-	UPROPERTY(BlueprintReadOnly)
-	FIntPoint Position = FIntPoint(-1,-1);
-	UPROPERTY(BlueprintReadOnly)
-	int32 Type = 0;
 };
 
 USTRUCT(BlueprintType)
@@ -331,7 +318,7 @@ public:
 	TArray<FUDFactionInfo> GetFactionInfoList();
 	/** Provides faction name. */
 	FUDFactionMinimalInfo GetFactionInfo(int32 factionId);
-	/** Provides list of interactions. */
+	/** Provides list of faction interactions. */
 	TArray<FUDFactionInteractionInfo> GetFactionInteractionList();
 #pragma endregion
 
@@ -370,8 +357,19 @@ public:
 	/** Retrieves message count for participating. */
 	int32 GetUnresolvedMessagesCount();
 #pragma endregion
+
+#pragma region Tile & Map Interaction
 public:
+	/** Retrieves map. */
 	TObjectPtr<UUDMapState> GetMapState();
+	/** Provides list of tiles and their names if they can be interacted with. */
+	//TArray<FUDTileInfo> GetTileInfoList();
+	/** Provides tile core informations. */
+	FUDTileInfo GetTileInfo(FIntPoint position);
+	/** Provides list of tile interactions. */
+	TArray<FUDTileInteractionInfo> GetTileInteractionList();
+#pragma endregion
+
 public:
 	/** Checks if specified faction is owned by local player. */
 	bool IsLocalFactionPlayer();
@@ -385,6 +383,18 @@ public:
 	 */
 	bool IsAvailableStratagem(TSet<int32> tags, int32 actionId);
 	
+
+
+
+
+
+
+
+
+
+
+
+
 public:
 
 	//UFUNCTION(BlueprintCallable)
@@ -475,15 +485,6 @@ public:
 		}
 
 		return infos;
-	}
-	/**
-	 * Returns TileInfo.
-	 */
-	UFUNCTION(BlueprintCallable)
-	FUDTileInfo GetCurrentTileState(FIntPoint position)
-	{
-		auto tile = State->Map->GetTile(position);
-		return FUDTileInfo(tile->OwnerUniqueId, position, tile->Type);
 	}
 	/**
 	 * Returns true if it's owned by world.
