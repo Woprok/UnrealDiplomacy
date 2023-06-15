@@ -45,7 +45,7 @@ void UUDFactionPanelViewModel::UpdateFactionList()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDFactionPanelViewModel: UpdateFactionList."));
 	// Retrieve factions
-	TArray<FUDFactionInfo> factions = Model->GetFactionInteractionList();
+	TArray<FUDFactionInfo> factions = Model->GetFactionInfoList();
 	// Retrieve enough models
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
 	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(FactionViewModelCollectionName, FactionViewModelType, factions.Num());

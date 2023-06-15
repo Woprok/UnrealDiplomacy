@@ -29,7 +29,8 @@ bool UUDUserWidgetManager::ShowWidget(const FName& name)
 		return false;
 	}
 	TObjectPtr<UUDUserWidget> widget = Views[name];
-	widget->AddToViewport();
+	if (!widget->IsInViewport())
+		widget->AddToViewport();
 	UE_LOG(LogTemp, Log, TEXT("UUDUserWidgetManager: View(%s) is now part of viewport."), *name.ToString());
 	return true;
 }

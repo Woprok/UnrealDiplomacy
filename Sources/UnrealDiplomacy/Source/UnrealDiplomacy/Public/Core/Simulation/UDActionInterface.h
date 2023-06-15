@@ -50,6 +50,8 @@ class UUDModifierManager;
 #define UD_ACTION_TAG_STRATAGEM_COST_3 5
 #define UD_ACTION_TAG_STRATAGEM_COST_4 6
 #define UD_ACTION_TAG_STRATAGEM_COST_5 7
+// Faction can use it as interaction with other faction.
+#define UD_ACTION_TAG_FACTION_INTERACTION 8
 
 /**
  * Defines informations about the action and how it can be displayed in UI.

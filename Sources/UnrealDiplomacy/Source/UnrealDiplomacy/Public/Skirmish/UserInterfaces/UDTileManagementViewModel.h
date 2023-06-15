@@ -6,7 +6,7 @@
 #include "Core/UserInterfaces/UDViewModelBase.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Core/Simulation/Actions/UDGameActionTileTake.h"
-#include "UDTileOverviewViewModel.generated.h"
+#include "UDTileManagementViewModel.generated.h"
 
 /**
  * Tile Overview/Management widget

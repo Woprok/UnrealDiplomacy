@@ -113,3 +113,8 @@ FUDResourceInfo FUDResourceInfo::GetLuxuries(int32 amount)
 
 #undef LOCTEXT_NAMESPACE
 #pragma endregion
+
+FUDFactionInteractionInfo::FUDFactionInteractionInfo()
+{
+
+}

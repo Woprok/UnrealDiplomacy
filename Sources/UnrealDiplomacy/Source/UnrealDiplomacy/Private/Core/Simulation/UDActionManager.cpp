@@ -99,6 +99,11 @@ TArray<FUDActionPresentation> UUDActionManager::FilterStratagems()
 	return FilterByTag(FilterStartpoint, UD_ACTION_TAG_STRATAGEM);
 }
 
+TArray<FUDActionPresentation> UUDActionManager::FilterFactionInteractions()
+{
+	return FilterByTag(FilterStartpoint, UD_ACTION_TAG_FACTION_INTERACTION);
+}
+
 FUDActionPresentation UUDActionManager::GetSpecified(int32 actionId)
 {
 	return Actions[actionId]->GetPresentation();

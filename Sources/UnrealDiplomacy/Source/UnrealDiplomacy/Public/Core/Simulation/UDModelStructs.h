@@ -198,3 +198,15 @@ public:
 	static FUDResourceInfo GetLuxuries(int32 amount);
 };
 #pragma endregion
+
+USTRUCT(BlueprintType)
+struct FUDFactionInteractionInfo
+{
+	GENERATED_BODY()
+public:
+	FUDFactionInteractionInfo();
+	UPROPERTY(BlueprintReadOnly)
+	FString Name = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	int32 ActionTypeId = 0;
+};

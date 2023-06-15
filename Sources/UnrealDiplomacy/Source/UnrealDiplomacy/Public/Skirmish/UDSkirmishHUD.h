@@ -41,6 +41,11 @@ public:
 	 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ScreenNames")
 	FName ScoreboardScreen = TEXT("ScoreboardScreen");
+	/**
+	 * Used by game views to identify target widget.
+	 */
+	UPROPERTY(VisibleAnywhere, Category = "ScreenNames")
+	FName FactionManagementWidget = TEXT("FactionManagement");
 public:
 	/**
 	 * Invoked by tiles, whenever user clicks on them.

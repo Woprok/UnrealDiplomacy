@@ -44,6 +44,7 @@ FUDActionPresentation UUDGameActionGiftIrrevocable::GetPresentation() const
 			UD_ACTION_TAG_VALID,
 			UD_ACTION_TAG_STRATAGEM,
 			UD_ACTION_TAG_STRATAGEM_COST_1,
+			UD_ACTION_TAG_FACTION_INTERACTION,
 		}
 	);
 

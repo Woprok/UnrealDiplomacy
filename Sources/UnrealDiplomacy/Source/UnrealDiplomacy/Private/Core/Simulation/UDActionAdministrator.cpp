@@ -222,7 +222,7 @@ FUDGameOverInfo UUDActionAdministrator::GetGameOverInfo()
 #pragma endregion
 
 #pragma region Faction Interaction
-TArray<FUDFactionInfo> UUDActionAdministrator::GetFactionInteractionList()
+TArray<FUDFactionInfo> UUDActionAdministrator::GetFactionInfoList()
 {
 	TArray<FUDFactionInfo> factions = { };
 
@@ -241,6 +241,37 @@ TArray<FUDFactionInfo> UUDActionAdministrator::GetFactionInteractionList()
 
 	return factions;
 };
+
+FUDFactionMinimalInfo UUDActionAdministrator::GetFactionInfo(int32 factionId)
+{
+	const auto& faction = State->Factions[factionId];
+	FUDFactionMinimalInfo factionInfo = FUDFactionMinimalInfo(
+		faction->PlayerUniqueId,
+		faction->Name
+	);
+	return factionInfo;
+}
+
+TArray<FUDFactionInteractionInfo> UUDActionAdministrator::GetFactionInteractionList()
+{
+	TArray<FUDFactionInteractionInfo> interactions = { };
+
+	for (const auto& interaction : GetActionManager()->FilterFactionInteractions())
+	{
+		bool isAvailable = IsAvailableStratagem(interaction.Tags, interaction.ActionId);
+		// continue if it's not available with next.
+		if (!isAvailable)
+			continue;
+
+		FUDFactionInteractionInfo newInfo;
+		newInfo.Name = interaction.Name;
+		newInfo.ActionTypeId = interaction.ActionId;
+		interactions.Add(newInfo);
+	}
+
+	return interactions;
+}
+
 #pragma endregion
 
 #pragma region Resources
@@ -380,4 +411,12 @@ bool UUDActionAdministrator::IsFactionPlayerControlled(int32 factionId)
 	bool notGaia = factionId != UUDGlobalData::GaiaFactionId;
 	bool notObserver = factionId != UUDGlobalData::ObserverFactionId;
 	return notGaia && notObserver;
+}
+
+bool UUDActionAdministrator::IsAvailableStratagem(TSet<int32> tags, int32 actionId)
+{
+	if (tags.Contains(UD_ACTION_TAG_STRATAGEM))
+		return State->Factions[State->FactionPerspective]->StratagemOptions.Contains(actionId);
+	// Default is true as anything that was not defined as stratagem is always available to player.
+	return true;
 }

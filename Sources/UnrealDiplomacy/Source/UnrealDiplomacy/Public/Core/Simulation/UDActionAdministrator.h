@@ -25,26 +25,12 @@ struct FUDResourceInfo;
 struct FUDRegencyTurnInfo;
 struct FUDThroneInfo;
 struct FUDAvailableDiplomacyInfo;
+struct FUDFactionInteractionInfo;
 
 #include "Core/Simulation/Actions/UDDealActionContractCreate.h"
 
 #include "UDActionAdministrator.generated.h"
 
-
-
-
-USTRUCT(BlueprintType)
-struct FUDTurnInfo
-{
-	GENERATED_BODY()
-public:
-	FUDTurnInfo() {}
-	FUDTurnInfo(int32 turn, int32 player) : Turn(turn), Player(player) { }
-	UPROPERTY(BlueprintReadOnly)
-	int32 Turn = 0;
-	UPROPERTY(BlueprintReadOnly)
-	int32 Player = 0;
-};
 
 USTRUCT(BlueprintType)
 struct FUDPlayerInfo
@@ -342,7 +328,11 @@ public:
 #pragma region Faction Interaction
 public:	
 	/** Provides list of factions and their names if they can be interacted with. */
-	TArray<FUDFactionInfo> GetFactionInteractionList();
+	TArray<FUDFactionInfo> GetFactionInfoList();
+	/** Provides faction name. */
+	FUDFactionMinimalInfo GetFactionInfo(int32 factionId);
+	/** Provides list of interactions. */
+	TArray<FUDFactionInteractionInfo> GetFactionInteractionList();
 #pragma endregion
 
 #pragma region Resources
@@ -387,8 +377,13 @@ public:
 	bool IsLocalFactionPlayer();
 	/** Checks if specified faction is owned & controlled by player or AI. */
 	bool IsFactionPlayerControlled(int32 factionId);
-
-
+	/** 
+	 * Checks if specified presentation is stratagem.
+	 * If no returns true by default as non-stratagems are always available.
+	 * If yes then it checks if it's available to local player and returns based on result. 
+	 * TLDR: returns true if player can use specified action.
+	 */
+	bool IsAvailableStratagem(TSet<int32> tags, int32 actionId);
 	
 public:
 
@@ -437,26 +432,7 @@ public:
 	{
 		return IsValid(State->Map) && State->Map->Tiles.Num() > 0;
 	}
-	/**
-	 * Validate if the owning player can end turn.
-	 */
-	UFUNCTION(BlueprintCallable)
-	bool CanEndTurn()
-	{
-		if (State->TurnData.RegentFaction == State->FactionPerspective)
-		{
-			return true;
-		}
-		return false;
-	}
-	/**
-	 * Returns TurnInfo.
-	 */
-	UFUNCTION(BlueprintCallable)
-	FUDTurnInfo GetCurrentTurnState()
-	{
-		return FUDTurnInfo(State->TurnData.Turn, State->TurnData.RegentFaction);
-	}
+
 	/**
 	 * Checks if supplied Id belongs to valid nation.
 	 */
