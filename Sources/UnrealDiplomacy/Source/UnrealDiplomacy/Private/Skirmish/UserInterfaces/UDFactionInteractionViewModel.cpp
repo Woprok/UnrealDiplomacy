@@ -41,8 +41,9 @@ void UUDFactionInteractionViewModel::Update()
 
 #undef LOCTEXT_NAMESPACE
 
-void UUDFactionInteractionViewModel::SetContent(FUDFactionInteractionInfo content)
+void UUDFactionInteractionViewModel::SetContent(int32 selectedFaction, FUDFactionInteractionInfo content)
 {
+	SelectedFaction = selectedFaction;
 	Content = content;
 }
 
@@ -50,12 +51,28 @@ void UUDFactionInteractionViewModel::Interact()
 {
 	// TODO execution of the action with all current parameters.
 	UE_LOG(LogTemp, Log, TEXT("UUDFactionInteractionViewModel: Interact."));
-	Model->RequestAction(Model->GetAction(Content.ActionTypeId));
+	// Start with the guaranteed parameter.
+	TArray<int32> valueParameters = { };
+	valueParameters.Add(SelectedFaction);
+	valueParameters.Append(ParameterEditorInstance->GetValueParameters());
+	TArray<FString> textParameters = { };
+	textParameters.Append(ParameterEditorInstance->GetTextParameters());
+
+	if (valueParameters.Num() > 0 && textParameters.Num() == 0)
+	{
+		Model->RequestAction(Model->GetAction(Content.ActionTypeId, valueParameters));
+	}
+	else if (valueParameters.Num() > 0 && textParameters.Num() > 0)
+	{
+		// TODO stop ignoring array or get rid of array ?
+		Model->RequestAction(Model->GetAction(Content.ActionTypeId, valueParameters, textParameters[0]));
+	}
 }
 
 void UUDFactionInteractionViewModel::UpdateEditor()
 {
-
+	UE_LOG(LogTemp, Log, TEXT("UUDFactionInteractionViewModel: UpdateEditor."));
+	ParameterEditorInstance->SetContent(Content.Parameters);
 }
 
 void UUDFactionInteractionViewModel::DefineInstances()

@@ -22,3 +22,9 @@ void UUDTileParameterViewModel::SetContent(FUDTileParameter content)
 {
 	Content = content;
 }
+
+TArray<int32> UUDTileParameterViewModel::GetAsValueRange()
+{
+	// TODO
+	return { -1, -1 };
+}

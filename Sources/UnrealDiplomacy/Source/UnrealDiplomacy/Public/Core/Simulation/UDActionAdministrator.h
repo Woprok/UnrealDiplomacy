@@ -28,6 +28,7 @@ struct FUDAvailableDiplomacyInfo;
 struct FUDFactionInteractionInfo;
 struct FUDTileInteractionInfo;
 struct FUDTileInfo;
+struct FUDParameterListInfo;
 
 #include "Core/Simulation/Actions/UDDealActionContractCreate.h"
 
@@ -370,6 +371,17 @@ public:
 	TArray<FUDTileInteractionInfo> GetTileInteractionList();
 #pragma endregion
 
+#pragma region Parameters
+public:
+	/**
+	 * Takes all parameters from the tags.
+	 * Allows to exclude single tag.
+	 * Used for removing implicit tags that is not desired to be edited.
+	 */
+	FUDParameterListInfo GetActionParameters(TSet<int32> tags, int32 excludeTag);
+#pragma endregion
+
+
 public:
 	/** Checks if specified faction is owned by local player. */
 	bool IsLocalFactionPlayer();
@@ -382,8 +394,6 @@ public:
 	 * TLDR: returns true if player can use specified action.
 	 */
 	bool IsAvailableStratagem(TSet<int32> tags, int32 actionId);
-	
-
 
 
 

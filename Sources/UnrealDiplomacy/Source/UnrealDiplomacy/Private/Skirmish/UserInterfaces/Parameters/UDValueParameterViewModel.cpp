@@ -22,3 +22,9 @@ void UUDValueParameterViewModel::SetContent(FUDValueParameter content)
 {
 	Content = content;
 }
+
+int32 UUDValueParameterViewModel::GetAsValue()
+{
+	// TODO
+	return -1;
+}

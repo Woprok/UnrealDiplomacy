@@ -84,7 +84,7 @@ void UUDFactionManagementViewModel::UpdateFactionInteractionList()
 	for (int32 i = 0; i < interactions.Num(); i++)
 	{
 		TObjectPtr<UUDFactionInteractionViewModel> newViewModel = Cast<UUDFactionInteractionViewModel>(viewModels[i]);
-		newViewModel->SetContent(interactions[i]);
+		newViewModel->SetContent(SelectedFactionId, interactions[i]);
 		newViewModel->FullUpdate();
 		FactionInteractionViewModelCollection.Add(newViewModel);
 	}

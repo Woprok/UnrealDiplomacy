@@ -25,7 +25,7 @@ public:
 	/**
 	 * Set content of the interaction option.
 	 */
-	 void SetContent(FUDFactionInteractionInfo content);
+	 void SetContent(int32 selectedFaction, FUDFactionInteractionInfo content);
 public:
 	// Button Functions
 	/**
@@ -52,6 +52,7 @@ private:
 	FText GetInteractText() const;
 private:
 	// Fields
+	int32 SelectedFaction;
 	FUDFactionInteractionInfo Content;
 	// Current Instance in use...
 	FName ParameterEditorInstanceName = TEXT("ParameterEditorInstance");

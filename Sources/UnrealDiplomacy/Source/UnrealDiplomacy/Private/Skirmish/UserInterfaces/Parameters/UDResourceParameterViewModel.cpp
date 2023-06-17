@@ -22,3 +22,9 @@ void UUDResourceParameterViewModel::SetContent(FUDResourceParameter content)
 {
 	Content = content;
 }
+
+int32 UUDResourceParameterViewModel::GetAsValue()
+{
+	// TODO
+	return -1;
+}

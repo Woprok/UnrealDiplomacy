@@ -22,3 +22,9 @@ void UUDFactionParameterViewModel::SetContent(FUDFactionParameter content)
 {
 	Content = content;
 }
+
+int32 UUDFactionParameterViewModel::GetAsValue()
+{
+	// TODO
+	return -1;
+}

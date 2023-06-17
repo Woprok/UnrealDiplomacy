@@ -22,3 +22,9 @@ void UUDTextParameterViewModel::SetContent(FUDTextParameter content)
 {
 	Content = content;
 }
+
+FString UUDTextParameterViewModel::GetAsText()
+{
+	// TODO
+	return TEXT("");
+}

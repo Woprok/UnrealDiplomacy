@@ -23,6 +23,8 @@ public:
 	 * Set content of the parameter option.
 	 */
 	void SetContent(FUDTextParameter content);
+	/** Getter for edited value. */
+	FString GetAsText();
 public:
 	// Button Functions
 	// MVVM Fields

@@ -23,6 +23,8 @@ public:
 	 * Set content of the parameter option.
 	 */
 	void SetContent(FUDActionParameter content);
+	/** Getter for edited value. */
+	int32 GetAsValue();
 public:
 	// Button Functions
 	// MVVM Fields

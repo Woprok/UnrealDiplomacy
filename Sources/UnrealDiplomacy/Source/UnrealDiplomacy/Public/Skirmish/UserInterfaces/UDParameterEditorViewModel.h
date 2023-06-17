@@ -43,6 +43,14 @@ public:
 	 * Set content of the parameter editor.
 	 */
 	void SetContent(FUDParameterListInfo content);
+	/**
+	 * Retrieves all value parameters from the editor items.
+	 */
+	TArray<int32> GetValueParameters();
+	/**
+	 * Retrieves all value parameters from the editor items.
+	 */
+	TArray<FString> GetTextParameters();
 public:
 	// Button Functions
 	// MVVM Fields

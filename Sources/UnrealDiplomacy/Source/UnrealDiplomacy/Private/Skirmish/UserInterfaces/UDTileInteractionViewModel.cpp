@@ -54,14 +54,25 @@ void UUDTileInteractionViewModel::Interact()
 	TArray<int32> valueParameters = { };
 	valueParameters.Add(SelectedTile.X);
 	valueParameters.Add(SelectedTile.Y);
-	// TODO execution of the action with all current parameters.
+	valueParameters.Append(ParameterEditorInstance->GetValueParameters());
+	TArray<FString> textParameters = { };
+	textParameters.Append(ParameterEditorInstance->GetTextParameters());
 
-	Model->RequestAction(Model->GetAction(Content.ActionTypeId, valueParameters));
+	if (valueParameters.Num() > 0 && textParameters.Num() == 0)
+	{
+		Model->RequestAction(Model->GetAction(Content.ActionTypeId, valueParameters));
+	}
+	else if (valueParameters.Num() > 0 && textParameters.Num() > 0)
+	{
+		// TODO stop ignoring array or get rid of array ?
+		Model->RequestAction(Model->GetAction(Content.ActionTypeId, valueParameters, textParameters[0]));
+	}
 }
 
 void UUDTileInteractionViewModel::UpdateEditor()
 {
-
+	UE_LOG(LogTemp, Log, TEXT("UUDTileInteractionViewModel: UpdateEditor."));
+	ParameterEditorInstance->SetContent(Content.Parameters);
 }
 
 void UUDTileInteractionViewModel::DefineInstances()

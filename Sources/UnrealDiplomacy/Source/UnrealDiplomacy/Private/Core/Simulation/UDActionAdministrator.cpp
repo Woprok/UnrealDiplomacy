@@ -266,6 +266,7 @@ TArray<FUDFactionInteractionInfo> UUDActionAdministrator::GetFactionInteractionL
 		FUDFactionInteractionInfo newInfo;
 		newInfo.Name = interaction.Name;
 		newInfo.ActionTypeId = interaction.ActionId;
+		newInfo.Parameters = GetActionParameters(interaction.Tags, UD_ACTION_TAG_PARAMETER_FACTION);
 		interactions.Add(newInfo);
 	}
 
@@ -415,6 +416,7 @@ TArray<FUDTileInteractionInfo> UUDActionAdministrator::GetTileInteractionList()
 		FUDTileInteractionInfo newInfo;
 		newInfo.Name = interaction.Name;
 		newInfo.ActionTypeId = interaction.ActionId;
+		newInfo.Parameters = GetActionParameters(interaction.Tags, UD_ACTION_TAG_PARAMETER_TILE);
 		interactions.Add(newInfo);
 	}
 
@@ -432,6 +434,230 @@ FUDTileInfo UUDActionAdministrator::GetTileInfo(FIntPoint position)
 	return tileInfo;
 }
 
+#pragma endregion
+
+#pragma region Parameters
+#define LOCTEXT_NAMESPACE "Parameters"
+
+bool HasTileParameter(TSet<int32> tags, int32 excludeTag)
+{
+	TSet<int32> searchTags = {
+		UD_ACTION_TAG_PARAMETER_TILE
+	};
+
+	if (searchTags.Contains(excludeTag))
+		return false;
+
+	if (searchTags.Intersect(tags).Num() == 0)
+		return false;
+
+	return true;
+}
+
+bool HasFactionParameter(TSet<int32> tags, int32 excludeTag)
+{
+	TSet<int32> searchTags = {
+		UD_ACTION_TAG_PARAMETER_FACTION
+	};
+
+	if (searchTags.Contains(excludeTag))
+		return false;
+
+	if (searchTags.Intersect(tags).Num() == 0)
+		return false;
+
+	return true;
+}
+
+bool HasActionParameter(TSet<int32> tags, int32 excludeTag)
+{
+	TSet<int32> searchTags = {
+		UD_ACTION_TAG_PARAMETER_ACTION
+	};
+
+	if (searchTags.Contains(excludeTag))
+		return false;
+
+	if (searchTags.Intersect(tags).Num() == 0)
+		return false;
+
+	return true;
+}
+
+bool HasResourceParameter(TSet<int32> tags, int32 excludeTag)
+{
+	TSet<int32> searchTags = {
+		UD_ACTION_TAG_PARAMETER_RESOURCE
+	};
+
+	if (searchTags.Contains(excludeTag))
+		return false;
+
+	if (searchTags.Intersect(tags).Num() == 0)
+		return false;
+
+	return true;
+}
+
+bool HasValueParameter(TSet<int32> tags, int32 excludeTag)
+{
+	TSet<int32> searchTags = {
+		UD_ACTION_TAG_PARAMETER_VALUE
+	};
+
+	if (searchTags.Contains(excludeTag))
+		return false;
+
+	if (searchTags.Intersect(tags).Num() == 0)
+		return false;
+
+	return true;
+}
+
+bool HasTextParameter(TSet<int32> tags, int32 excludeTag)
+{
+	TSet<int32> searchTags = {
+		UD_ACTION_TAG_PARAMETER_TEXT
+	};
+
+	if (searchTags.Contains(excludeTag))
+		return false;
+
+	if (searchTags.Intersect(tags).Num() == 0)
+		return false;
+
+	return true;
+}
+
+ParameterData GetTileParameter(TSet<int32> tags)
+{
+	ParameterData data;
+	FUDTileParameter tile;
+
+	tile.Name = FText(LOCTEXT("Parameters", "Tile")).ToString();
+	tile.ToolTip = FText(LOCTEXT("Parameters", "Tile is required to be used with this action.")).ToString();
+
+	data.Set<FUDTileParameter>(tile);
+	return data;
+}
+
+ParameterData GetFactionParameter(TSet<int32> tags)
+{
+	ParameterData data;
+	FUDFactionParameter tile;
+
+	tile.Name = FText(LOCTEXT("Parameters", "Faction")).ToString();
+	tile.ToolTip = FText(LOCTEXT("Parameters", "Faction is required to be selected with this action.")).ToString();
+
+	data.Set<FUDFactionParameter>(tile);
+	return data;
+}
+
+ParameterData GetActionParameter(TSet<int32> tags)
+{
+	ParameterData data;
+	FUDActionParameter tile;
+
+	tile.Name = FText(LOCTEXT("Parameters", "Action")).ToString();
+	tile.ToolTip = FText(LOCTEXT("Parameters", "Action is required to be selected for this action.")).ToString();
+
+	data.Set<FUDActionParameter>(tile);
+	return data;
+}
+
+ParameterData GetResourceParameter(TSet<int32> tags)
+{
+	ParameterData data;
+	FUDResourceParameter tile;
+
+	tile.Name = FText(LOCTEXT("Parameters", "Resource")).ToString();
+	tile.ToolTip = FText(LOCTEXT("Parameters", "Resource is required to be chosen with this action.")).ToString();
+
+	data.Set<FUDResourceParameter>(tile);
+	return data;
+}
+
+ParameterData GetValueParameter(TSet<int32> tags)
+{
+	ParameterData data;
+	FUDValueParameter tile;
+
+	if (tags.Contains(UD_ACTION_TAG_PARAMETER_VALUE_AMOUNT))
+	{
+		tile.Name = FText(LOCTEXT("Parameters", "Amount")).ToString();
+		tile.ToolTip = FText(LOCTEXT("Parameters", "Amount is required to be chosen for this action.")).ToString();
+	}
+	else
+	{
+		tile.Name = FText(LOCTEXT("Parameters", "Value")).ToString();
+		tile.ToolTip = FText(LOCTEXT("Parameters", "Value is required to be defined with this action.")).ToString();
+	}
+
+	tile.MinValue = 1;
+	tile.MaxValue = 100;
+	if (tags.Contains(UD_ACTION_TAG_PARAMETER_VALUE_SMALL_MAX))
+	{
+		tile.MaxValue = 50;
+	}
+
+	data.Set<FUDValueParameter>(tile);
+	return data;
+}
+
+ParameterData GetTextParameter(TSet<int32> tags)
+{
+	ParameterData data;
+	FUDTextParameter tile;
+
+	tile.Name = FText(LOCTEXT("Parameters", "Text")).ToString();
+	tile.ToolTip = FText(LOCTEXT("Parameters", "Text is required to be provided with this action.")).ToString();
+
+	data.Set<FUDTextParameter>(tile);
+	return data;
+}
+
+FUDParameterListInfo UUDActionAdministrator::GetActionParameters(TSet<int32> tags, int32 excludeTag)
+{
+	FUDParameterListInfo parameters;
+	parameters.OrderedType.Empty(0);
+	parameters.OrderedData.Empty(0);
+	// Good old if hell.
+	// TODO create smarter system for parameters.
+	if (HasFactionParameter(tags, excludeTag))
+	{
+		parameters.OrderedType.Add(EUDParameterType::Faction);
+		parameters.OrderedData.Add(GetFactionParameter(tags));
+	}
+	if (HasTileParameter(tags, excludeTag))
+	{
+		parameters.OrderedType.Add(EUDParameterType::Tile);
+		parameters.OrderedData.Add(GetTileParameter(tags));
+	}
+	if (HasActionParameter(tags, excludeTag))
+	{
+		parameters.OrderedType.Add(EUDParameterType::Action);
+		parameters.OrderedData.Add(GetActionParameter(tags));
+	}
+	if (HasResourceParameter(tags, excludeTag))
+	{
+		parameters.OrderedType.Add(EUDParameterType::Resource);
+		parameters.OrderedData.Add(GetResourceParameter(tags));
+	}
+	if (HasValueParameter(tags, excludeTag))
+	{
+		parameters.OrderedType.Add(EUDParameterType::Value);
+		parameters.OrderedData.Add(GetValueParameter(tags));
+	}
+	if (HasTextParameter(tags, excludeTag))
+	{
+		parameters.OrderedType.Add(EUDParameterType::Text);
+		parameters.OrderedData.Add(GetTextParameter(tags));
+	}
+
+	return parameters;
+}
+
+#undef LOCTEXT_NAMESPACE
 #pragma endregion
 
 bool UUDActionAdministrator::IsLocalFactionPlayer()

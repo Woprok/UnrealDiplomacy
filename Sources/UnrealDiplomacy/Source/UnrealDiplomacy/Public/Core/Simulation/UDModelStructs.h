@@ -200,30 +200,6 @@ public:
 #pragma endregion
 
 USTRUCT(BlueprintType)
-struct FUDFactionInteractionInfo
-{
-	GENERATED_BODY()
-public:
-	FUDFactionInteractionInfo();
-	UPROPERTY(BlueprintReadOnly)
-	FString Name = TEXT("");
-	UPROPERTY(BlueprintReadOnly)
-	int32 ActionTypeId = 0;
-};
-
-USTRUCT(BlueprintType)
-struct FUDTileInteractionInfo
-{
-	GENERATED_BODY()
-public:
-	FUDTileInteractionInfo();
-	UPROPERTY(BlueprintReadOnly)
-	FString Name = TEXT("");
-	UPROPERTY(BlueprintReadOnly)
-	int32 ActionTypeId = 0;
-};
-
-USTRUCT(BlueprintType)
 struct FUDTileInfo
 {
 	GENERATED_BODY()
@@ -246,18 +222,18 @@ public:
 UENUM(BlueprintType)
 enum class EUDParameterType : uint8
 {
-	/** Editable value with min, max constrain. */
-	Value,
-	/** Editable text with length contrain. */
-	Text,
-	/** List with tiles to select from. */
-	Tile,
 	/** List with factions to select from. */
 	Faction,
+	/** List with tiles to select from. */
+	Tile,
 	/** List with actions to select from. */
 	Action,
 	/** List with resources to select from. */
 	Resource,
+	/** Editable value with min, max constrain. */
+	Value,
+	/** Editable text with length contrain. */
+	Text,
 };
 
 USTRUCT(BlueprintType)
@@ -296,6 +272,10 @@ struct FUDTileParameter
 	GENERATED_BODY()
 public:
 	FUDTileParameter();
+	UPROPERTY(BlueprintReadOnly)
+	FString Name = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	FString ToolTip = TEXT("");
 };
 
 USTRUCT(BlueprintType)
@@ -304,6 +284,10 @@ struct FUDFactionParameter
 	GENERATED_BODY()
 public:
 	FUDFactionParameter();
+	UPROPERTY(BlueprintReadOnly)
+	FString Name = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	FString ToolTip = TEXT("");
 };
 
 USTRUCT(BlueprintType)
@@ -312,6 +296,10 @@ struct FUDActionParameter
 	GENERATED_BODY()
 public:
 	FUDActionParameter();
+	UPROPERTY(BlueprintReadOnly)
+	FString Name = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	FString ToolTip = TEXT("");
 };
 
 USTRUCT(BlueprintType)
@@ -320,6 +308,10 @@ struct FUDResourceParameter
 	GENERATED_BODY()
 public:
 	FUDResourceParameter();
+	UPROPERTY(BlueprintReadOnly)
+	FString Name = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	FString ToolTip = TEXT("");
 };
 
 /** Question is whatever it's chicken or an egg. */
@@ -337,5 +329,33 @@ public:
 	TArray<EUDParameterType> OrderedType;
 	/** Answer is it's not a property valid type. */
 	TArray<ParameterData> OrderedData;
+};
+
+USTRUCT(BlueprintType)
+struct FUDFactionInteractionInfo
+{
+	GENERATED_BODY()
+public:
+	FUDFactionInteractionInfo();
+	UPROPERTY(BlueprintReadOnly)
+	FString Name = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	int32 ActionTypeId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	FUDParameterListInfo Parameters;
+};
+
+USTRUCT(BlueprintType)
+struct FUDTileInteractionInfo
+{
+	GENERATED_BODY()
+public:
+	FUDTileInteractionInfo();
+	UPROPERTY(BlueprintReadOnly)
+	FString Name = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	int32 ActionTypeId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	FUDParameterListInfo Parameters;
 };
 #pragma endregion

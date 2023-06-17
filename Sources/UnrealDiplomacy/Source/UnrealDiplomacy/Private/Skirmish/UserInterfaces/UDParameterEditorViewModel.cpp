@@ -39,16 +39,9 @@ void UUDParameterEditorViewModel::SetContent(FUDParameterListInfo content)
 	Content = content;
 }
 
-void UUDParameterEditorViewModel::UpdateParameterLists()
+TArray<int32> UUDParameterEditorViewModel::GetValueParameters()
 {
-	UE_LOG(LogTemp, Log, TEXT("UUDParameterEditorViewModel: UpdateParameterLists."));
-
-	TArray<FUDFactionParameter> FactionParameters = { };
-	TArray<FUDTileParameter> TileParameters = { };
-	TArray<FUDActionParameter> ActionParameters = { };
-	TArray<FUDResourceParameter> ResourceParameters = { };
-	TArray<FUDTextParameter> TextParameters = { };
-	TArray<FUDValueParameter> ValueParameters = { };
+	TArray<int32> parameters = { };
 
 	for (int32 i = 0; i < Content.OrderedData.Num(); i++)
 	{
@@ -57,35 +50,125 @@ void UUDParameterEditorViewModel::UpdateParameterLists()
 		switch (Content.OrderedType[i])
 		{
 		case EUDParameterType::Value:
-			ValueParameters.Add(Content.OrderedData[i].Get<FUDValueParameter>());
-			break;
-		case EUDParameterType::Text:
-			TextParameters.Add(Content.OrderedData[i].Get<FUDTextParameter>());
+			for (const auto& param : ValueParameterCollection)
+			{
+				parameters.Add(param->GetAsValue());
+			}
 			break;
 		case EUDParameterType::Tile:
-			TileParameters.Add(Content.OrderedData[i].Get<FUDTileParameter>());
+			for (const auto& param : TileParameterCollection)
+			{
+				parameters.Append(param->GetAsValueRange());
+			}
 			break;
 		case EUDParameterType::Faction:
-			FactionParameters.Add(Content.OrderedData[i].Get<FUDFactionParameter>());
+			for (const auto& param : FactionParameterCollection)
+			{
+				parameters.Add(param->GetAsValue());
+			}
 			break;
 		case EUDParameterType::Action:
-			ActionParameters.Add(Content.OrderedData[i].Get<FUDActionParameter>());
+			for (const auto& param : ActionParameterCollection)
+			{
+				parameters.Add(param->GetAsValue());
+			}
 			break;
 		case EUDParameterType::Resource:
-			ResourceParameters.Add(Content.OrderedData[i].Get<FUDResourceParameter>());
+			for (const auto& param : ResourceParameterCollection)
+			{
+				parameters.Add(param->GetAsValue());
+			}
+			break;
+		case EUDParameterType::Text:
+			// Skip
 			break;
 		default:
-			UE_LOG(LogTemp, Log, TEXT("UUDParameterEditorViewModel: New parameters must be supported by UI."));
+			UE_LOG(LogTemp, Warning, TEXT("UUDParameterEditorViewModel: Parameter is not supported by value editor."));
 			break;
 		}
 	}
 
-	UpdateFactionParameters(FactionParameters);
-	UpdateTextParameters(TextParameters);
-	UpdateValueParameters(ValueParameters);
-	UpdateTileParameters(TileParameters);
-	UpdateActionParameters(ActionParameters);
-	UpdateResourceParameters(ResourceParameters);
+	return parameters;
+}
+
+TArray<FString> UUDParameterEditorViewModel::GetTextParameters()
+{
+	TArray<FString> parameters = { };
+	for (int32 i = 0; i < Content.OrderedData.Num(); i++)
+	{
+		// This is using type, but it should probably use direct check.
+		// TODO Decide if it's worth keeping enum or it should be removed.
+		switch (Content.OrderedType[i])
+		{
+		case EUDParameterType::Text:
+			for (const auto& param : TextParameterCollection)
+			{
+				parameters.Add(param->GetAsText());
+			}
+			break;
+		case EUDParameterType::Value:
+		case EUDParameterType::Tile:
+		case EUDParameterType::Faction:
+		case EUDParameterType::Action:
+		case EUDParameterType::Resource:
+			// Skip
+			break;
+		default:
+			UE_LOG(LogTemp, Warning, TEXT("UUDParameterEditorViewModel: Parameter is not supported by text editor."));
+			break;
+		}
+	}
+
+	return parameters;
+}
+
+void UUDParameterEditorViewModel::UpdateParameterLists()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDParameterEditorViewModel: UpdateParameterLists."));
+
+	TArray<FUDFactionParameter> factionParameters = { };
+	TArray<FUDTileParameter> tileParameters = { };
+	TArray<FUDActionParameter> actionParameters = { };
+	TArray<FUDResourceParameter> resourceParameters = { };
+	TArray<FUDTextParameter> textParameters = { };
+	TArray<FUDValueParameter> valueParameters = { };
+
+	for (int32 i = 0; i < Content.OrderedData.Num(); i++)
+	{
+		// This is using type, but it should probably use direct check.
+		// TODO Decide if it's worth keeping enum or it should be removed.
+		switch (Content.OrderedType[i])
+		{
+		case EUDParameterType::Value:
+			valueParameters.Add(Content.OrderedData[i].Get<FUDValueParameter>());
+			break;
+		case EUDParameterType::Text:
+			textParameters.Add(Content.OrderedData[i].Get<FUDTextParameter>());
+			break;
+		case EUDParameterType::Tile:
+			tileParameters.Add(Content.OrderedData[i].Get<FUDTileParameter>());
+			break;
+		case EUDParameterType::Faction:
+			factionParameters.Add(Content.OrderedData[i].Get<FUDFactionParameter>());
+			break;
+		case EUDParameterType::Action:
+			actionParameters.Add(Content.OrderedData[i].Get<FUDActionParameter>());
+			break;
+		case EUDParameterType::Resource:
+			resourceParameters.Add(Content.OrderedData[i].Get<FUDResourceParameter>());
+			break;
+		default:
+			UE_LOG(LogTemp, Warning, TEXT("UUDParameterEditorViewModel: New parameters must be supported by UI."));
+			break;
+		}
+	}
+
+	UpdateFactionParameters(factionParameters);
+	UpdateTextParameters(textParameters);
+	UpdateValueParameters(valueParameters);
+	UpdateTileParameters(tileParameters);
+	UpdateActionParameters(actionParameters);
+	UpdateResourceParameters(resourceParameters);
 }
 
 void UUDParameterEditorViewModel::DefineCollections()

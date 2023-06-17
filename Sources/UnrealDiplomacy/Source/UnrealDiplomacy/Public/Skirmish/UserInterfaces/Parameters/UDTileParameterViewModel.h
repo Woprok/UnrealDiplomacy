@@ -23,6 +23,8 @@ public:
 	 * Set content of the parameter option.
 	 */
 	void SetContent(FUDTileParameter content);
+	/** Getter for edited value. */
+	TArray<int32> GetAsValueRange();
 public:
 	// Button Functions
 	// MVVM Fields
