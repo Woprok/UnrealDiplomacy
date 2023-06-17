@@ -1,24 +1,42 @@
 // Copyright Miroslav Valach
 
 #include "Skirmish/UserInterfaces/UDTileInteractionViewModel.h"
+#include "Skirmish/UserInterfaces/UDParameterEditorViewModel.h"
 #include "Core/Simulation/UDModelStructs.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Skirmish/UDSkirmishHUD.h"
 
 #define LOCTEXT_NAMESPACE "TileInteraction"
 
+int32 UUDTileInteractionViewModel::UniqueNameDefinition = 0;
+
 void UUDTileInteractionViewModel::Initialize()
 {
-	FText name = FText(LOCTEXT("TileInteraction", "Interaction Name"));
-	SetNameText(name);
+	if (!IsUniqueNameDefined) 
+	{
+		DefineInstances();
+		IsUniqueNameDefined = true;
+	}
 	FText interact = FText(LOCTEXT("TileInteraction", "Interact"));
 	SetInteractText(interact);
+
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	// Retrieve view models for sub content controls
+	TObjectPtr<UUDViewModel> editorModel = hud->GetViewModelCollection(ParameterEditorInstanceName, ParameterEditorType);
+	ParameterEditorInstance = Cast<UUDParameterEditorViewModel>(editorModel);
+	// Announce them to widget for additional binding.
+	ParameterEditorChangedEvent.Broadcast(ParameterEditorInstance);
+	// Call initialize so each Instance is ready to use, once it receives data in runtime.
+	ParameterEditorInstance->FullUpdate();
 }
 
 void UUDTileInteractionViewModel::Update()
 {
-	FText name = FText::FromString(Content.Name);
-	SetNameText(name);
+	if (!Model->IsOverseeingStatePresent())
+		return;
+	FText interact = FText::FromString(Content.Name);
+	SetInteractText(interact);
+	UpdateEditor();
 }
 
 #undef LOCTEXT_NAMESPACE
@@ -41,14 +59,17 @@ void UUDTileInteractionViewModel::Interact()
 	Model->RequestAction(Model->GetAction(Content.ActionTypeId, valueParameters));
 }
 
-void UUDTileInteractionViewModel::SetNameText(FText newNameText)
+void UUDTileInteractionViewModel::UpdateEditor()
 {
-	UE_MVVM_SET_PROPERTY_VALUE(NameText, newNameText);
+
 }
 
-FText UUDTileInteractionViewModel::GetNameText() const
+void UUDTileInteractionViewModel::DefineInstances()
 {
-	return NameText;
+	ParameterEditorType = UUDParameterEditorViewModel::StaticClass();
+	int32 uniqueId = UUDTileInteractionViewModel::UniqueNameDefinition++;
+	ParameterEditorInstanceName = FName(ParameterEditorInstanceName.ToString() + FString::FromInt(uniqueId));
+	UE_LOG(LogTemp, Log, TEXT("UUDTileInteractionViewModel: Defined editor [%d]."), uniqueId);
 }
 
 void UUDTileInteractionViewModel::SetInteractText(FText newInteractText)

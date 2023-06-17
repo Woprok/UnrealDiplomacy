@@ -1,24 +1,42 @@
 // Copyright Miroslav Valach
 
 #include "Skirmish/UserInterfaces/UDFactionInteractionViewModel.h"
+#include "Skirmish/UserInterfaces/UDParameterEditorViewModel.h"
 #include "Core/Simulation/UDModelStructs.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Skirmish/UDSkirmishHUD.h"
 
 #define LOCTEXT_NAMESPACE "FactionInteraction"
 
+int32 UUDFactionInteractionViewModel::UniqueNameDefinition = 0;
+
 void UUDFactionInteractionViewModel::Initialize()
 {
-	FText name = FText(LOCTEXT("FactionInteraction", "Interaction Name"));
-	SetNameText(name);
+	if (!IsUniqueNameDefined) 
+	{
+		DefineInstances();
+		IsUniqueNameDefined = true;
+	}
 	FText interact = FText(LOCTEXT("FactionInteraction", "Interact"));
 	SetInteractText(interact);
+
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	// Retrieve view models for sub content controls
+	TObjectPtr<UUDViewModel> editorModel = hud->GetViewModelCollection(ParameterEditorInstanceName, ParameterEditorType);
+	ParameterEditorInstance = Cast<UUDParameterEditorViewModel>(editorModel);
+	// Announce them to widget for additional binding.
+	ParameterEditorChangedEvent.Broadcast(ParameterEditorInstance);
+	// Call initialize so each Instance is ready to use, once it receives data in runtime.
+	ParameterEditorInstance->FullUpdate();
 }
 
 void UUDFactionInteractionViewModel::Update()
 {
-	FText name = FText::FromString(Content.Name);
-	SetNameText(name);
+	if (!Model->IsOverseeingStatePresent())
+		return;
+	FText interact = FText::FromString(Content.Name);
+	SetInteractText(interact);
+	UpdateEditor();
 }
 
 #undef LOCTEXT_NAMESPACE
@@ -35,15 +53,19 @@ void UUDFactionInteractionViewModel::Interact()
 	Model->RequestAction(Model->GetAction(Content.ActionTypeId));
 }
 
-void UUDFactionInteractionViewModel::SetNameText(FText newNameText)
+void UUDFactionInteractionViewModel::UpdateEditor()
 {
-	UE_MVVM_SET_PROPERTY_VALUE(NameText, newNameText);
+
 }
 
-FText UUDFactionInteractionViewModel::GetNameText() const
+void UUDFactionInteractionViewModel::DefineInstances()
 {
-	return NameText;
+	ParameterEditorType = UUDParameterEditorViewModel::StaticClass();
+	int32 uniqueId = UUDFactionInteractionViewModel::UniqueNameDefinition++;
+	ParameterEditorInstanceName = FName(ParameterEditorInstanceName.ToString() + FString::FromInt(uniqueId));
+	UE_LOG(LogTemp, Log, TEXT("UUDTileInteractionViewModel: Defined editor [%d]."), uniqueId);
 }
+
 void UUDFactionInteractionViewModel::SetInteractText(FText newInteractText)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(InteractText, newInteractText);

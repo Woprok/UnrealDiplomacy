@@ -17,7 +17,8 @@ int32 UUDParameterEditorViewModel::UniqueNameDefinition = 0;
 
 void UUDParameterEditorViewModel::Initialize()
 {
-	if (!IsUniqueNameDefined) {
+	if (!IsUniqueNameDefined) 
+	{
 		DefineCollections();
 		IsUniqueNameDefined = true;
 	}
@@ -25,7 +26,10 @@ void UUDParameterEditorViewModel::Initialize()
 
 void UUDParameterEditorViewModel::Update()
 {
-
+	if (!Model->IsOverseeingStatePresent())
+		return;
+	// Following updates require model.
+	UpdateParameterLists();
 }
 
 #undef LOCTEXT_NAMESPACE
@@ -39,11 +43,49 @@ void UUDParameterEditorViewModel::UpdateParameterLists()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDParameterEditorViewModel: UpdateParameterLists."));
 
-	//for (const auto& param : Content.)
-	//{
-	//
-	//}
+	TArray<FUDFactionParameter> FactionParameters = { };
+	TArray<FUDTileParameter> TileParameters = { };
+	TArray<FUDActionParameter> ActionParameters = { };
+	TArray<FUDResourceParameter> ResourceParameters = { };
+	TArray<FUDTextParameter> TextParameters = { };
+	TArray<FUDValueParameter> ValueParameters = { };
 
+	for (int32 i = 0; i < Content.OrderedData.Num(); i++)
+	{
+		// This is using type, but it should probably use direct check.
+		// TODO Decide if it's worth keeping enum or it should be removed.
+		switch (Content.OrderedType[i])
+		{
+		case EUDParameterType::Value:
+			ValueParameters.Add(Content.OrderedData[i].Get<FUDValueParameter>());
+			break;
+		case EUDParameterType::Text:
+			TextParameters.Add(Content.OrderedData[i].Get<FUDTextParameter>());
+			break;
+		case EUDParameterType::Tile:
+			TileParameters.Add(Content.OrderedData[i].Get<FUDTileParameter>());
+			break;
+		case EUDParameterType::Faction:
+			FactionParameters.Add(Content.OrderedData[i].Get<FUDFactionParameter>());
+			break;
+		case EUDParameterType::Action:
+			ActionParameters.Add(Content.OrderedData[i].Get<FUDActionParameter>());
+			break;
+		case EUDParameterType::Resource:
+			ResourceParameters.Add(Content.OrderedData[i].Get<FUDResourceParameter>());
+			break;
+		default:
+			UE_LOG(LogTemp, Log, TEXT("UUDParameterEditorViewModel: New parameters must be supported by UI."));
+			break;
+		}
+	}
+
+	UpdateFactionParameters(FactionParameters);
+	UpdateTextParameters(TextParameters);
+	UpdateValueParameters(ValueParameters);
+	UpdateTileParameters(TileParameters);
+	UpdateActionParameters(ActionParameters);
+	UpdateResourceParameters(ResourceParameters);
 }
 
 void UUDParameterEditorViewModel::DefineCollections()

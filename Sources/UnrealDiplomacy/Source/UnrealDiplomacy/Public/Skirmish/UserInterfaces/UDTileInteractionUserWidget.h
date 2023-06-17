@@ -11,6 +11,8 @@
 
 class UTextBlock;
 class UButton;
+class UUDParameterEditorUserWidget;
+class UUDParameterEditorViewModel;
 class UUDTileInteractionViewModel;
 
 /**
@@ -44,14 +46,18 @@ protected:
 	 * Automatically invoked by native on initialized.
 	 */
 	virtual void BindWidgets() override;
+	/**
+	 * Callback to set data from view model.
+	 */
+	void SetParameterEditorSourceInstance(const TObjectPtr<UUDParameterEditorViewModel>& parameterEditorViewModel);
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> NameTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> InteractTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> InteractButtonWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UUDParameterEditorUserWidget> ParameterEditorViewWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDTileInteractionViewModel> ViewModel;
