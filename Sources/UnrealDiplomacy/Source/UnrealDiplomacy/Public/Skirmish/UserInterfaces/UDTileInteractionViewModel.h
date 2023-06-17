@@ -22,7 +22,7 @@ public:
 	/**
 	 * Set content of the interaction option.
 	 */
-	void SetContent(FUDTileInteractionInfo content);
+	void SetContent(FIntPoint selectedTile, FUDTileInteractionInfo content);
 public:
 	// Button Functions
 	/**
@@ -46,5 +46,6 @@ private:
 	FText GetInteractText() const;
 private:
 	// Fields
+	FIntPoint SelectedTile;
 	FUDTileInteractionInfo Content;
 };

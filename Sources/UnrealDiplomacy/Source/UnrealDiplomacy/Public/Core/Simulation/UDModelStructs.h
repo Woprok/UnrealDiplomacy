@@ -238,3 +238,104 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	FString FactionName = TEXT("");
 };
+
+#pragma region Parameters
+/**
+ * Describes state of the throne in relation to faction.
+ */
+UENUM(BlueprintType)
+enum class EUDParameterType : uint8
+{
+	/** Editable value with min, max constrain. */
+	Value,
+	/** Editable text with length contrain. */
+	Text,
+	/** List with tiles to select from. */
+	Tile,
+	/** List with factions to select from. */
+	Faction,
+	/** List with actions to select from. */
+	Action,
+	/** List with resources to select from. */
+	Resource,
+};
+
+USTRUCT(BlueprintType)
+struct FUDValueParameter
+{
+	GENERATED_BODY()
+public:
+	FUDValueParameter();
+	UPROPERTY(BlueprintReadOnly)
+	FString Name = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	FString ToolTip = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	int32 MinValue = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 MaxValue = 0;
+};
+
+USTRUCT(BlueprintType)
+struct FUDTextParameter
+{
+	GENERATED_BODY()
+public:
+	FUDTextParameter();
+	UPROPERTY(BlueprintReadOnly)
+	FString Name = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	FString ToolTip = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	int32 MaxLength = 0;
+};
+
+USTRUCT(BlueprintType)
+struct FUDTileParameter
+{
+	GENERATED_BODY()
+public:
+	FUDTileParameter();
+};
+
+USTRUCT(BlueprintType)
+struct FUDFactionParameter
+{
+	GENERATED_BODY()
+public:
+	FUDFactionParameter();
+};
+
+USTRUCT(BlueprintType)
+struct FUDActionParameter
+{
+	GENERATED_BODY()
+public:
+	FUDActionParameter();
+};
+
+USTRUCT(BlueprintType)
+struct FUDResourceParameter
+{
+	GENERATED_BODY()
+public:
+	FUDResourceParameter();
+};
+
+/** Question is whatever it's chicken or an egg. */
+typedef TVariant<FUDValueParameter, FUDTextParameter, FUDTileParameter,
+	FUDFactionParameter, FUDActionParameter, FUDResourceParameter> ParameterData;
+
+USTRUCT(BlueprintType)
+struct FUDParameterListInfo
+{
+	GENERATED_BODY()
+public:
+	FUDParameterListInfo();
+	/** Both share same order. */
+	UPROPERTY(BlueprintReadOnly)
+	TArray<EUDParameterType> OrderedType;
+	/** Answer is it's not a property valid type. */
+	TArray<ParameterData> OrderedData;
+};
+#pragma endregion

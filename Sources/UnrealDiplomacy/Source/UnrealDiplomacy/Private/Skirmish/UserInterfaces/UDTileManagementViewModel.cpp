@@ -84,7 +84,7 @@ void UUDTileManagementViewModel::UpdateTileInteractionList()
 	for (int32 i = 0; i < interactions.Num(); i++)
 	{
 		TObjectPtr<UUDTileInteractionViewModel> newViewModel = Cast<UUDTileInteractionViewModel>(viewModels[i]);
-		newViewModel->SetContent(interactions[i]);
+		newViewModel->SetContent(SelectedTile, interactions[i]);
 		newViewModel->FullUpdate();
 		TileInteractionViewModelCollection.Add(newViewModel);
 	}

@@ -73,6 +73,27 @@ public:
  * Transforms action parameters to properly named fields.
  */
 USTRUCT(BlueprintType)
+struct FUDGameDataTile
+{
+	GENERATED_BODY()
+public:
+	FUDGameDataTile() {}
+	FUDGameDataTile(TArray<int32> valueParameters)
+	{
+		X = valueParameters[0];
+		Y = valueParameters[1];
+	}
+	UPROPERTY(BlueprintReadOnly)
+	int32 X = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 Y = 0;
+	static const int32 ParameterCount = 2;
+};
+
+/**
+ * Transforms action parameters to properly named fields.
+ */
+USTRUCT(BlueprintType)
 struct FUDGameDataTileAmount
 {
 	GENERATED_BODY()

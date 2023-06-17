@@ -69,12 +69,4 @@ private:
 	TArray<TObjectPtr<UUDTileInteractionViewModel>> TileInteractionViewModelCollection;
 
 	FIntPoint SelectedTile;
-/*/
-	int32 Owner = -1;
-	bool CanTakeTile = false; // owned by world
-	FIntPoint Position = FIntPoint(-1, -1);
-	int32 Type = 0;
-	// This is visible during the game and shows current info
-	UpdateTile(ActionModel->GetCurrentTileState(Position), ActionModel->CanTakeTile(Position));
-	ActionModel->RequestAction(ActionModel->GetAction(UUDGameActionTileTake::ActionTypeId, { Owner, Position.X, Position.Y }));*/
 };

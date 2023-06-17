@@ -23,16 +23,22 @@ void UUDTileInteractionViewModel::Update()
 
 #undef LOCTEXT_NAMESPACE
 
-void UUDTileInteractionViewModel::SetContent(FUDTileInteractionInfo content)
+void UUDTileInteractionViewModel::SetContent(FIntPoint selectedTile, FUDTileInteractionInfo content)
 {
+	SelectedTile = selectedTile;
 	Content = content;
 }
 
 void UUDTileInteractionViewModel::Interact()
 {
-	// TODO execution of the action with all current parameters.
 	UE_LOG(LogTemp, Log, TEXT("UUDTileInteractionViewModel: Interact."));
-	Model->RequestAction(Model->GetAction(Content.ActionTypeId));
+	// Start with the guaranteed parameter.
+	TArray<int32> valueParameters = { };
+	valueParameters.Add(SelectedTile.X);
+	valueParameters.Add(SelectedTile.Y);
+	// TODO execution of the action with all current parameters.
+
+	Model->RequestAction(Model->GetAction(Content.ActionTypeId, valueParameters));
 }
 
 void UUDTileInteractionViewModel::SetNameText(FText newNameText)
@@ -44,6 +50,7 @@ FText UUDTileInteractionViewModel::GetNameText() const
 {
 	return NameText;
 }
+
 void UUDTileInteractionViewModel::SetInteractText(FText newInteractText)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(InteractText, newInteractText);

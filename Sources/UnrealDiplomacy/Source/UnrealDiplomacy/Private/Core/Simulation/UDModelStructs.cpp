@@ -128,3 +128,40 @@ FUDTileInfo::FUDTileInfo()
 {
 
 }
+
+#pragma region Parameter
+FUDValueParameter::FUDValueParameter()
+{
+
+}
+
+FUDTextParameter::FUDTextParameter()
+{
+
+}
+
+FUDTileParameter::FUDTileParameter()
+{
+
+}
+
+FUDFactionParameter::FUDFactionParameter()
+{
+
+}
+
+FUDActionParameter::FUDActionParameter()
+{
+
+}
+
+FUDParameterListInfo::FUDParameterListInfo()
+{
+
+}
+
+FUDResourceParameter::FUDResourceParameter()
+{
+
+}
+#pragma endregion
