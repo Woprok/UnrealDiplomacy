@@ -67,5 +67,4 @@ private:
 	FUDResourceParameter Content;
 	int32 SelectedResource;
 	int32 SelectedResourceIndex;
-	TArray<FUDResourceMinimalInfo> Options;
 };

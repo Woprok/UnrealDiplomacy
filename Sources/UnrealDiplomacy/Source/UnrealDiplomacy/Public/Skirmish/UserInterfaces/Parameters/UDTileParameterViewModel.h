@@ -67,5 +67,4 @@ private:
 	FUDTileParameter Content;
 	FIntPoint SelectedTile;
 	int32 SelectedTileIndex;
-	TArray<FUDTileMinimalInfo> Options;
 };

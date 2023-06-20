@@ -67,5 +67,4 @@ private:
 	FUDActionParameter Content;
 	int32 SelectedAction;
 	int32 SelectedActionIndex;
-	TArray<FUDActionMinimalInfo> Options;
 };

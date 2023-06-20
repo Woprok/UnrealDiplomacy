@@ -448,3 +448,44 @@ public:
 	FUDParameterListInfo Parameters;
 };
 #pragma endregion
+
+USTRUCT(BlueprintType)
+struct FUDMessageInfo
+{
+	GENERATED_BODY()
+public:
+	FUDMessageInfo();
+	UPROPERTY(BlueprintReadOnly)
+	FString Name = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	FString Content = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	int32 RequestId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 ActionId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 AcceptId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 RejectId = 0;
+public:
+	/** Equality over UniqueId field. */
+	inline bool operator!=(const FUDMessageInfo& rhs) const
+	{
+		return !(*this == rhs);
+	}
+	/** Equality over UniqueId field. */
+	inline bool operator==(const FUDMessageInfo& rhs) const
+	{
+		return RequestId == rhs.RequestId;
+	}
+};
+
+USTRUCT(BlueprintType)
+struct FUDMessageInteractionInfo
+{
+	GENERATED_BODY()
+public:
+	FUDMessageInteractionInfo();
+	UPROPERTY(BlueprintReadOnly)
+	TArray<FUDMessageInfo> Messages = { };
+};

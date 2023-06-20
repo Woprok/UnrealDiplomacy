@@ -31,7 +31,6 @@ void UUDActionParameterViewModel::Initialize()
 
 void UUDActionParameterViewModel::Update()
 {
-	Options = Content.Options;
 	SetActionTitleText(FText::FromString(Content.Name));
 	SetToolTipText(FText::FromString(Content.ToolTip));
 
@@ -45,17 +44,17 @@ FUDActionMinimalInfo UUDActionParameterViewModel::GetSelectedOrDefault(int32 des
 	FUDActionMinimalInfo selected = GetInvalidAction();
 	SelectedActionIndex = UUDGlobalData::InvalidParameterArrayIndex;
 	// Find
-	const auto& found = Options.FindByPredicate(
+	const auto& found = Content.Options.FindByPredicate(
 		[&desiredSelectedItem](const FUDActionMinimalInfo& item) { return item.Id == desiredSelectedItem; }
 	);
 	if (found)
 	{
 		selected = *found;
-		SelectedActionIndex = Options.Find(selected);
+		SelectedActionIndex = Content.Options.Find(selected);
 	}
-	else if (Options.Num() > 0)
+	else if (Content.Options.Num() > 0)
 	{
-		selected = Options[0];
+		selected = Content.Options[0];
 		SelectedActionIndex = 0;
 	}
 
@@ -70,7 +69,7 @@ void UUDActionParameterViewModel::PreviousAction()
 	if (SelectedActionIndex - distance >= 0)
 	{
 		SelectedActionIndex -= distance;
-		FUDActionMinimalInfo selected = Options[SelectedActionIndex];
+		FUDActionMinimalInfo selected = Content.Options[SelectedActionIndex];
 		SelectedAction = selected.Id;
 		SetNameText(FText::FromString(selected.Name));
 	}
@@ -79,10 +78,10 @@ void UUDActionParameterViewModel::PreviousAction()
 void UUDActionParameterViewModel::NextAction()
 {
 	int32 distance = AUDSkirmishPlayerController::Get(GetWorld())->GetButtonKeyDistance();
-	if (SelectedActionIndex + distance < Options.Num())
+	if (SelectedActionIndex + distance < Content.Options.Num())
 	{
 		SelectedActionIndex += distance;
-		FUDActionMinimalInfo selected = Options[SelectedActionIndex];
+		FUDActionMinimalInfo selected = Content.Options[SelectedActionIndex];
 		SelectedAction = selected.Id;
 		SetNameText(FText::FromString(selected.Name));
 	}

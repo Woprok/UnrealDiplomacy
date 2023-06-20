@@ -50,6 +50,8 @@ public:
 	static const int32 InvalidTilePositionY = -1;
 	/** This Index is always considered invalid for all parameter index operations. */
 	static const int32 InvalidParameterArrayIndex = -1;
+	/** This Index is always considered invalid for all index operations. */
+	static const int32 InvalidArrayIndex = -1;
 	/** This Id is always considered invalid for all resource operations. */
 	static const int32 InvalidResourceId = -1;
 public:

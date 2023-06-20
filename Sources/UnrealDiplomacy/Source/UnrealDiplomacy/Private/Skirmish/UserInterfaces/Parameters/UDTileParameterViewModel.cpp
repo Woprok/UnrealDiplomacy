@@ -31,7 +31,6 @@ void UUDTileParameterViewModel::Initialize()
 
 void UUDTileParameterViewModel::Update()
 {
-	Options = Content.Options;
 	SetTileTitleText(FText::FromString(Content.Name));
 	SetToolTipText(FText::FromString(Content.ToolTip));
 
@@ -45,17 +44,17 @@ FUDTileMinimalInfo UUDTileParameterViewModel::GetSelectedOrDefault(FIntPoint des
 	FUDTileMinimalInfo selected = GetInvalidTile();
 	SelectedTileIndex = UUDGlobalData::InvalidParameterArrayIndex;
 	// Find
-	const auto& found = Options.FindByPredicate(
+	const auto& found = Content.Options.FindByPredicate(
 		[&desiredSelectedItem](const FUDTileMinimalInfo& item) { return item.Position == desiredSelectedItem; }
 	);
 	if (found)
 	{
 		selected = *found;
-		SelectedTileIndex = Options.Find(selected);
+		SelectedTileIndex = Content.Options.Find(selected);
 	}
-	else if (Options.Num() > 0)
+	else if (Content.Options.Num() > 0)
 	{
-		selected = Options[0];
+		selected = Content.Options[0];
 		SelectedTileIndex = 0;
 	}
 
@@ -70,7 +69,7 @@ void UUDTileParameterViewModel::PreviousTile()
 	if (SelectedTileIndex - distance >= 0)
 	{
 		SelectedTileIndex -= distance;
-		FUDTileMinimalInfo selected = Options[SelectedTileIndex];
+		FUDTileMinimalInfo selected = Content.Options[SelectedTileIndex];
 		SelectedTile = selected.Position;
 		SetNameText(FText::FromString(selected.Name));
 	}
@@ -79,10 +78,10 @@ void UUDTileParameterViewModel::PreviousTile()
 void UUDTileParameterViewModel::NextTile()
 {
 	int32 distance = AUDSkirmishPlayerController::Get(GetWorld())->GetButtonKeyDistance();
-	if (SelectedTileIndex + distance < Options.Num())
+	if (SelectedTileIndex + distance < Content.Options.Num())
 	{
 		SelectedTileIndex += distance;
-		FUDTileMinimalInfo selected = Options[SelectedTileIndex];
+		FUDTileMinimalInfo selected = Content.Options[SelectedTileIndex];
 		SelectedTile = selected.Position;
 		SetNameText(FText::FromString(selected.Name));
 	}

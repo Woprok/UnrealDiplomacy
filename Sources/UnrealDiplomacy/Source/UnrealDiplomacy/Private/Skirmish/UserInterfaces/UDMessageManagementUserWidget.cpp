@@ -2,10 +2,10 @@
 
 #include "Skirmish/UserInterfaces/UDMessageManagementUserWidget.h"
 #include "Skirmish/UserInterfaces/UDMessageManagementViewModel.h"
+#include "Skirmish/UserInterfaces/UDMessageItemUserWidget.h"
 #include "Skirmish/UserInterfaces/UDMessageItemViewModel.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
-#include "Components/ListView.h"
 
 void UUDMessageManagementUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
@@ -17,6 +17,7 @@ void UUDMessageManagementUserWidget::BindViewModel(TObjectPtr<UUDViewModel> view
 void UUDMessageManagementUserWidget::BindDelegates()
 {
 	// Bind view to updates.
+	ViewModel->MessageItemChangedEvent.AddUObject(this, &UUDMessageManagementUserWidget::SetMessageItemSourceInstance);
 	// Bind viewmodel to widgets.
 	CloseButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMessageManagementViewModel::Close);
 	FirstButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMessageManagementViewModel::First);
@@ -28,6 +29,7 @@ void UUDMessageManagementUserWidget::BindDelegates()
 void UUDMessageManagementUserWidget::BindWidgets()
 {
 	MessageManagementTitleTextWidget = GetWidget<UTextBlock>(TEXT("MessageManagementTitleText"));
+	MessageCountTextWidget = GetWidget<UTextBlock>(TEXT("MessageCountText"));
 	CloseTextWidget = GetWidget<UTextBlock>(TEXT("CloseText"));
 	FirstTextWidget = GetWidget<UTextBlock>(TEXT("FirstText"));
 	PreviousTextWidget = GetWidget<UTextBlock>(TEXT("PreviousText"));
@@ -38,4 +40,10 @@ void UUDMessageManagementUserWidget::BindWidgets()
 	PreviousButtonWidget = GetWidget<UButton>(TEXT("PreviousButton"));
 	NextButtonWidget = GetWidget<UButton>(TEXT("NextButton"));
 	LastButtonWidget = GetWidget<UButton>(TEXT("LastButton"));
+	MessageItemViewWidget = GetWidget<UUDMessageItemUserWidget>(TEXT("MessageItemView"));
+}
+
+void UUDMessageManagementUserWidget::SetMessageItemSourceInstance(const TObjectPtr<UUDMessageItemViewModel>& messageItemViewModel)
+{
+	MessageItemViewWidget->SetViewModel(messageItemViewModel);
 }

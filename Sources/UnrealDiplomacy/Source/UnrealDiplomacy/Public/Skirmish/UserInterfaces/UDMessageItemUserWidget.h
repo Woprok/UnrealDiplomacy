@@ -40,6 +40,19 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> MessageTitleTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> MessageTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> AcceptTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> RejectTextWidget;
+
+	UPROPERTY()
+	TWeakObjectPtr<UButton> AcceptButtonWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UButton> RejectButtonWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDMessageItemViewModel> ViewModel;

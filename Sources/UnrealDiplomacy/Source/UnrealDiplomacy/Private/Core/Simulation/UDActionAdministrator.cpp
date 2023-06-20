@@ -679,6 +679,36 @@ FUDParameterListInfo UUDActionAdministrator::GetActionParameters(TSet<int32> tag
 #undef LOCTEXT_NAMESPACE
 #pragma endregion
 
+#pragma region Messages & Request Interaction
+
+FUDMessageInfo UUDActionAdministrator::CreateMessageFromRequest(int32 requestId, FUDActionData action)
+{
+	FUDMessageInfo message = FUDMessageInfo();
+	
+	message.RequestId = requestId;
+
+	return message;
+}
+
+FUDActionData UUDActionAdministrator::GetPendingRequest(int32 pendingRequestId)
+{
+	return State->Factions[State->FactionPerspective]->PendingRequests[pendingRequestId];
+}
+
+FUDMessageInteractionInfo UUDActionAdministrator::GetAllLocalRequests()
+{
+	FUDMessageInteractionInfo info = FUDMessageInteractionInfo();
+	info.Messages = { };
+
+	for (const auto& request : State->Factions[State->FactionPerspective]->PendingRequests)
+	{
+		info.Messages.Add(CreateMessageFromRequest(request.Key, request.Value));
+	}
+
+	return info;
+}
+#pragma endregion
+
 bool UUDActionAdministrator::IsLocalFactionPlayer()
 {
 	bool notGaia = State->FactionPerspective != UUDGlobalData::GaiaFactionId;

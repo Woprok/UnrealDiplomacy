@@ -13,6 +13,7 @@ class UButton;
 class UListView;
 class UUDMessageManagementViewModel;
 class UUDMessageItemViewModel;
+class UUDMessageItemUserWidget;
 
 /**
  * Ancestor for blueprint.
@@ -40,10 +41,16 @@ protected:
 	 * Automatically invoked by native on initialized.
 	 */
 	virtual void BindWidgets() override;
+	/**
+	 * Callback to set data from view model.
+	 */
+	void SetMessageItemSourceInstance(const TObjectPtr<UUDMessageItemViewModel>& messageItemViewModel);
 protected:
 	// Bindings
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> MessageManagementTitleTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> MessageCountTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> CloseTextWidget;
 	UPROPERTY()
@@ -65,6 +72,9 @@ protected:
 	TWeakObjectPtr<UButton> NextButtonWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> LastButtonWidget;
+
+	UPROPERTY()
+	TWeakObjectPtr<UUDMessageItemUserWidget> MessageItemViewWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDMessageManagementViewModel> ViewModel;

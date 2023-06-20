@@ -32,6 +32,9 @@ struct FUDTileMinimalInfo;
 struct FUDTileInteractionInfo;
 struct FUDResourceInfo;
 
+struct FUDMessageInfo;
+struct FUDMessageInteractionInfo;
+
 struct FUDFactionParameter;
 struct FUDTileParameter;
 struct FUDActionParameter;
@@ -407,6 +410,16 @@ private:
 	ParameterData GetTextParameter(TSet<int32> tags);
 #pragma endregion
 
+#pragma region Messages & Request Interaction
+public:
+	/** Retrieves specified request data. */
+	FUDActionData GetPendingRequest(int32 pendingRequestId);
+	/** Retrieves all request data in presentable format. */
+	FUDMessageInteractionInfo GetAllLocalRequests();
+private:
+	/** Transforms request data into a presentable format. */
+	FUDMessageInfo CreateMessageFromRequest(int32 requestId, FUDActionData action);
+#pragma endregion
 
 public:
 	/** Checks if specified faction is owned by local player. */
@@ -432,6 +445,27 @@ public:
 
 
 public:
+	/**
+	 * Return list of all currently pending requests that require confirmation...
+	 */
+	UFUNCTION(BlueprintCallable)
+		TArray<FUDActionData> GetPendingRequests()
+	{
+		TArray<FUDActionData> copy;
+		for (auto& itm : State->Factions[State->FactionPerspective]->PendingRequests)
+		{
+			copy.Add(itm.Value);
+		}
+		return copy;
+	}
+	/**
+	 * Return list of all currently pending requests that require confirmation...
+	 */
+	UFUNCTION(BlueprintCallable)
+		int32 GetPendingRequestsCount()
+	{
+		return State->Factions[State->FactionPerspective]->PendingRequests.Num();
+	}
 
 	//UFUNCTION(BlueprintCallable)
 	//	FUDGameStateInfo GetGameStateInfo()
@@ -554,27 +588,6 @@ public:
 		return FIntPoint(-1, -1);
 	}
 
-	/**
-	 * Return list of all currently pending requests that require confirmation...
-	 */
-	UFUNCTION(BlueprintCallable)
-	TArray<FUDActionData> GetPendingRequests()
-	{
-		TArray<FUDActionData> copy;
-		for (auto& itm : State->Factions[State->FactionPerspective]->PendingRequests)
-		{
-			copy.Add(itm.Value);
-		}
-		return copy;
-	}
-	/**
-	 * Return list of all currently pending requests that require confirmation...
-	 */
-	UFUNCTION(BlueprintCallable)
-	int32 GetPendingRequestsCount()
-	{
-		return State->Factions[State->FactionPerspective]->PendingRequests.Num();
-	}
 	UFUNCTION(BlueprintCallable)
 	bool IsParticipatingInDeal(int32 dealUniqueId)
 	{

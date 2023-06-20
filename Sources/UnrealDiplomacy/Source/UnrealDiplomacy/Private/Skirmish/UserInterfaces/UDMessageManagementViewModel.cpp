@@ -3,17 +3,32 @@
 #include "Skirmish/UserInterfaces/UDMessageManagementViewModel.h"
 #include "Skirmish/UserInterfaces/UDMessageItemViewModel.h"
 #include "Skirmish/UDSkirmishHUD.h"
+#include "Skirmish/UDSkirmishPlayerController.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Core/Simulation/UDModelStructs.h"
 
 #define LOCTEXT_NAMESPACE "MessageManagement"
 
+FUDMessageInfo GetInvalidMessage()
+{
+	FUDMessageInfo info;
+	info.RequestId = UUDGlobalData::InvalidActionId;
+	info.ActionId = UUDGlobalData::InvalidActionId;
+	info.AcceptId = UUDGlobalData::InvalidActionId;
+	info.RejectId = UUDGlobalData::InvalidActionId;
+	info.Name = FText(LOCTEXT("MessageItem", "No Pending Requests")).ToString();
+	info.Content = FText(LOCTEXT("MessageItem", "")).ToString();
+	return info;
+}
+
 void UUDMessageManagementViewModel::Initialize()
 {
-	//MessageItemViewModelType = UUDMessageItemViewModel::StaticClass();
+	MessageItemType = UUDMessageItemViewModel::StaticClass();
 
 	FText messageTitle = FText(LOCTEXT("MessageManagement", "Message Management"));
 	SetMessageManagementTitleText(messageTitle);
+	FText messageCount = FText::Format(LOCTEXT("MessageManagement", "{0}/{1}"), 0, 0);
+	SetMessageCountText(messageCount);
 
 	FText close = FText(LOCTEXT("MessageManagement", "X"));
 	SetCloseText(close);
@@ -26,12 +41,17 @@ void UUDMessageManagementViewModel::Initialize()
 	FText last = FText(LOCTEXT("MessageManagement", ">>|"));
 	SetLastText(last);
 
-
-	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	//hud->OnMessageSelectedEvent.AddUniqueDynamic(this, &UUDMessageManagementViewModel::OnMessageSelected);
-
 	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDMessageManagementViewModel::Reload);
 	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDMessageManagementViewModel::Update);
+
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	// Retrieve view model for sub content control
+	TObjectPtr<UUDViewModel> messageItemModel = hud->GetViewModelCollection(MessageItemInstanceName, MessageItemType);
+	MessageItemInstance = Cast<UUDMessageItemViewModel>(messageItemModel);
+	// Announce them to widget for additional binding.
+	MessageItemChangedEvent.Broadcast(MessageItemInstance);
+	// Call initialize so instance is ready to use, once it receives data in runtime.
+	MessageItemInstance->FullUpdate();
 
 	Update();
 }
@@ -48,10 +68,14 @@ void UUDMessageManagementViewModel::Update()
 	if (!Model->IsGamePlayed())
 		return;
 	// Following updates require model.
-	//FUDMessageMinimalInfo faction = Model->GetMessageInfo(SelectedMessageId);
-	//SetMessageNameText(FText::FromString(faction.Name));
+	UpdateMessageItems();
+}
 
-	UpdateMessageItem();
+void UUDMessageManagementViewModel::UpdateSelectedMessageItem()
+{
+	FText messageCount = FText::Format(LOCTEXT("MessageManagement", "{0}/{1}"), SelectedIndex + 1, Content.Messages.Num());
+	SetMessageCountText(messageCount);
+	MessageItemInstance->SetContent(SelectedMessageItem);
 }
 
 #undef LOCTEXT_NAMESPACE
@@ -63,68 +87,78 @@ void UUDMessageManagementViewModel::Close()
 	hud->HideWidget(hud->MessageManagementWidget);
 }
 
-//void UUDMessageManagementViewModel::OnMessageSelected(int32 selectedMessageId)
-//{
-//	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-//	hud->ShowWidget(hud->MessageManagementWidget);
-//
-//	if (SelectedMessageId != selectedMessageId)
-//	{
-//		SelectedMessageId = selectedMessageId;
-//		Update();
-//	}
-//}
-
-void UUDMessageManagementViewModel::UpdateMessageItem()
+void UUDMessageManagementViewModel::UpdateMessageItems()
 {
-	//UE_LOG(LogTemp, Log, TEXT("UUDMessagePanelViewModel: UpdateMessageList."));
-	//// Retrieve factions
-	//TArray<FUDMessageInteractionInfo> interactions = Model->GetMessageInteractionList();
-	//// Retrieve enough models
-	//TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	//TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(MessageInteractionViewModelCollectionName, MessageInteractionViewModelType, interactions.Num());
-	//// Get rid of all models
-	//MessageInteractionViewModelCollection.Empty();
-	//for (int32 i = 0; i < interactions.Num(); i++)
-	//{
-	//	TObjectPtr<UUDMessageInteractionViewModel> newViewModel = Cast<UUDMessageInteractionViewModel>(viewModels[i]);
-	//	newViewModel->SetContent(interactions[i]);
-	//	newViewModel->FullUpdate();
-	//	MessageInteractionViewModelCollection.Add(newViewModel);
-	//}
-	//
-	//MessageInteractionSourceUpdatedEvent.Broadcast(MessageInteractionViewModelCollection);
+	UE_LOG(LogTemp, Log, TEXT("UUDMessageManagementViewModel: UpdateMessageItem."));
+	Content = Model->GetAllLocalRequests();
+	SelectedMessageItem = GetSelectedOrDefault(SelectedMessageItem.RequestId);
+	UpdateSelectedMessageItem();
 }
 
 #pragma region Navigation
+
+FUDMessageInfo UUDMessageManagementViewModel::GetSelectedOrDefault(int32 desiredSelectedItem)
+{
+	FUDMessageInfo selected = GetInvalidMessage();
+	SelectedIndex = UUDGlobalData::InvalidArrayIndex;
+	// Find
+	const auto& found = Content.Messages.FindByPredicate(
+		[&desiredSelectedItem](const FUDMessageInfo& item) { return item.RequestId == desiredSelectedItem; }
+	);
+	if (found)
+	{
+		selected = *found;
+		SelectedIndex = Content.Messages.Find(selected);
+	}
+	else if (Content.Messages.Num() > 0)
+	{
+		selected = Content.Messages[0];
+		SelectedIndex = 0;
+	}
+
+	return selected;
+}
+
 void UUDMessageManagementViewModel::First()
 {
-
+	if (Content.Messages.Num() > 0)
+	{
+		SelectedIndex = 0;
+		SelectedMessageItem = Content.Messages[SelectedIndex];
+		UpdateSelectedMessageItem();
+	}
 }
 
 void UUDMessageManagementViewModel::Previous()
 {
-	//int32 prev = FMath::Max(0, CurrentItemShown - 1);
-	//if (prev == CurrentItemShown)
-	//{
-	//	prev = LastRequestArray.Num() - 1;
-	//}
-	//UpdateView(LastRequestArray.Num(), LastRequestArray[prev], prev);
+	int32 distance = AUDSkirmishPlayerController::Get(GetWorld())->GetButtonKeyDistance();
+	if (SelectedIndex - distance >= 0)
+	{
+		SelectedIndex -= distance;
+		SelectedMessageItem = Content.Messages[SelectedIndex];
+		UpdateSelectedMessageItem();
+	}
 }
 
 void UUDMessageManagementViewModel::Next()
 {
-	//int32 next = FMath::Min(LastRequestArray.Num() - 1, CurrentItemShown + 1);
-	//if (next == CurrentItemShown)
-	//{
-	//	next = 0;
-	//}
-	//UpdateView(LastRequestArray.Num(), LastRequestArray[next], next);
+	int32 distance = AUDSkirmishPlayerController::Get(GetWorld())->GetButtonKeyDistance();
+	if (SelectedIndex + distance < Content.Messages.Num())
+	{
+		SelectedIndex += distance;
+		SelectedMessageItem = Content.Messages[SelectedIndex];
+		UpdateSelectedMessageItem();
+	}
 }
 
 void UUDMessageManagementViewModel::Last()
 {
-
+	if (Content.Messages.Num() > 0)
+	{
+		SelectedIndex = Content.Messages.Num() - 1;
+		SelectedMessageItem = Content.Messages[SelectedIndex];
+		UpdateSelectedMessageItem();
+	}
 }
 #pragma endregion
 
@@ -136,6 +170,16 @@ void UUDMessageManagementViewModel::SetMessageManagementTitleText(FText newMessa
 FText UUDMessageManagementViewModel::GetMessageManagementTitleText() const
 {
 	return MessageManagementTitleText;
+}
+
+void UUDMessageManagementViewModel::SetMessageCountText(FText newMessageCountText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(MessageCountText, newMessageCountText);
+}
+
+FText UUDMessageManagementViewModel::GetMessageCountText() const
+{
+	return MessageCountText;
 }
 
 void UUDMessageManagementViewModel::SetCloseText(FText newCloseText)

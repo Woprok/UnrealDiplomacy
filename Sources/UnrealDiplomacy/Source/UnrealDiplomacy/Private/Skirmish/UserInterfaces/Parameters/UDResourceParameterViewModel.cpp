@@ -31,7 +31,6 @@ void UUDResourceParameterViewModel::Initialize()
 
 void UUDResourceParameterViewModel::Update()
 {
-	Options = Content.Options;
 	SetResourceTitleText(FText::FromString(Content.Name));
 	SetToolTipText(FText::FromString(Content.ToolTip));
 
@@ -45,17 +44,17 @@ FUDResourceMinimalInfo UUDResourceParameterViewModel::GetSelectedOrDefault(int32
 	FUDResourceMinimalInfo selected = GetInvalidResource();
 	SelectedResourceIndex = UUDGlobalData::InvalidParameterArrayIndex;
 	// Find
-	const auto& found = Options.FindByPredicate(
+	const auto& found = Content.Options.FindByPredicate(
 		[&desiredSelectedItem](const FUDResourceMinimalInfo& item) { return item.Id == desiredSelectedItem; }
 	);
 	if (found)
 	{
 		selected = *found;
-		SelectedResourceIndex = Options.Find(selected);
+		SelectedResourceIndex = Content.Options.Find(selected);
 	}
-	else if (Options.Num() > 0)
+	else if (Content.Options.Num() > 0)
 	{
-		selected = Options[0];
+		selected = Content.Options[0];
 		SelectedResourceIndex = 0;
 	}
 
@@ -70,7 +69,7 @@ void UUDResourceParameterViewModel::PreviousResource()
 	if (SelectedResourceIndex - distance >= 0)
 	{
 		SelectedResourceIndex -= distance;
-		FUDResourceMinimalInfo selected = Options[SelectedResourceIndex];
+		FUDResourceMinimalInfo selected = Content.Options[SelectedResourceIndex];
 		SelectedResource = selected.Id;
 		SetNameText(FText::FromString(selected.Name));
 	}
@@ -79,10 +78,10 @@ void UUDResourceParameterViewModel::PreviousResource()
 void UUDResourceParameterViewModel::NextResource()
 {
 	int32 distance = AUDSkirmishPlayerController::Get(GetWorld())->GetButtonKeyDistance();
-	if (SelectedResourceIndex + distance < Options.Num())
+	if (SelectedResourceIndex + distance < Content.Options.Num())
 	{
 		SelectedResourceIndex += distance;
-		FUDResourceMinimalInfo selected = Options[SelectedResourceIndex];
+		FUDResourceMinimalInfo selected = Content.Options[SelectedResourceIndex];
 		SelectedResource = selected.Id;
 		SetNameText(FText::FromString(selected.Name));
 	}

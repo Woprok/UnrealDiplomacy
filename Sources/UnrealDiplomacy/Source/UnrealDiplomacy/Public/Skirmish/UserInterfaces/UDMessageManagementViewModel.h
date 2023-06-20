@@ -4,7 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/Simulation/UDModelStructs.h"
 #include "UDMessageManagementViewModel.generated.h"
+
+// Forward Declarations
+
+struct FUDMessageInfo;
+struct FUDMessageInteractionInfo;
+class UUDMessageItemViewModel;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FUDMessageItemChanged, const TObjectPtr<UUDMessageItemViewModel>& messageItemViewModel);
 
 /**
  * Browsing of all interactable action.
@@ -29,6 +38,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText MessageManagementTitleText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText MessageCountText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText CloseText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText FirstText;
@@ -38,6 +49,8 @@ public:
 	FText NextText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText LastText;
+	// Events
+	FUDMessageItemChanged MessageItemChangedEvent;
 protected:
 	virtual void Initialize() override;
 	UFUNCTION()
@@ -48,11 +61,22 @@ private:
 	/**
 	 * Updates message item to latest.
 	 */
-	void UpdateMessageItem();
+	void UpdateMessageItems();
+	/**
+	 * Updates message item to latest.
+	 */
+	void UpdateSelectedMessageItem();
+	/**
+	 * Tries to retrieve desired selected item, on fail returns first element.
+	 * If messages list is empty returns invalid item.
+	 */
+	FUDMessageInfo GetSelectedOrDefault(int32 desiredSelectedItem);
 private:
 	// MVVM Setters & Getters
 	void SetMessageManagementTitleText(FText newMessageManagementTitleText);
 	FText GetMessageManagementTitleText() const;
+	void SetMessageCountText(FText newMessageCountText);
+	FText GetMessageCountText() const;
 	void SetCloseText(FText newCloseText);
 	FText GetCloseText() const;
 	void SetFirstText(FText newFirstText);
@@ -65,7 +89,13 @@ private:
 	FText GetLastText() const;
 private:
 	// Fields
-
+	int32 SelectedIndex;
+	FUDMessageInfo SelectedMessageItem;
+	FUDMessageInteractionInfo Content;
+	// Current Instance in use...
+	FName MessageItemInstanceName = TEXT("MessageItemInstance");
+	TSubclassOf<UUDViewModel> MessageItemType;
+	TObjectPtr<UUDMessageItemViewModel> MessageItemInstance;
 };
 
 /*/

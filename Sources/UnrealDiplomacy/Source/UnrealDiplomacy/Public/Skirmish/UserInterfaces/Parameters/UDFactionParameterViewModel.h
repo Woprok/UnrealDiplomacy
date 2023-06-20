@@ -67,5 +67,4 @@ private:
 	FUDFactionParameter Content;
 	int32 SelectedFaction;
 	int32 SelectedFactionIndex;
-	TArray<FUDFactionMinimalInfo> Options;
 };

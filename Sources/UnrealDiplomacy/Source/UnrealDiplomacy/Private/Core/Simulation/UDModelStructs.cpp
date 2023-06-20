@@ -179,3 +179,13 @@ FUDResourceParameter::FUDResourceParameter()
 
 }
 #pragma endregion
+
+FUDMessageInfo::FUDMessageInfo()
+{
+
+}
+
+FUDMessageInteractionInfo::FUDMessageInteractionInfo()
+{
+
+}
