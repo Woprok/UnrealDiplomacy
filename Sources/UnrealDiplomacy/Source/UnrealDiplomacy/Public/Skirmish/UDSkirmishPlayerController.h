@@ -244,4 +244,16 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SkirmishController|Config")
 	TSubclassOf<AUDSquareGrid> GridBlueprintClass;
 #pragma endregion
+
+#pragma region PlayerInput
+public:
+	/**
+	 * Determines how much should we move on previous and next.
+	 * Ctrl 10
+	 * Shift 50
+	 * Shift Ctrl 100
+	 * Otherwise 1
+	 */
+	int32 GetButtonKeyDistance();
+#pragma endregion
 };

@@ -4,19 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDUserWidget.h"
-#include "Blueprint/IUserObjectListEntry.h"
 #include "UDActionParameterUserWidget.generated.h"
 
 // Forward Declarations
 
+class UTextBlock;
+class UButton;
 class UUDActionParameterViewModel;
 
 /**
  * Ancestor for blueprint.
- * Supports IUserObjectListEntry for list view initializations.
  */
 UCLASS(Abstract)
-class UNREALDIPLOMACY_API UUDActionParameterUserWidget : public UUDUserWidget, public IUserObjectListEntry
+class UNREALDIPLOMACY_API UUDActionParameterUserWidget : public UUDUserWidget
 {
 	GENERATED_BODY()
 public:
@@ -26,10 +26,6 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetBlueprintViewModel(UUDActionParameterViewModel* model);
 protected:
-	/**
-	 * Allows List View to define context.
-	 */
-	virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
 	/**
 	 * Enables to define view model used by this widet for delegates.
 	 */
@@ -44,6 +40,18 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> ActionTitleTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> NameTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> PreviousTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> NextTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UButton> PreviousButtonWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UButton> NextButtonWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDActionParameterViewModel> ViewModel;

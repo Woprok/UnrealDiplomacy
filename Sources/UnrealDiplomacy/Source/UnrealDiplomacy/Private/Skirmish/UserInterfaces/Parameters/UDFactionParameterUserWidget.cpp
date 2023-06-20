@@ -2,14 +2,8 @@
 
 #include "Skirmish/UserInterfaces/Parameters/UDFactionParameterUserWidget.h"
 #include "Skirmish/UserInterfaces/Parameters/UDFactionParameterViewModel.h"
-
-void UUDFactionParameterUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
-{
-	// Change it to original type.
-	UUDFactionParameterViewModel* itemViewModel = Cast<UUDFactionParameterViewModel>(ListItemObject);
-	// Invoke bindings related to view model being set.
-	SetViewModel(itemViewModel);
-}
+#include "Components/TextBlock.h"
+#include "Components/Button.h"
 
 void UUDFactionParameterUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
@@ -21,8 +15,16 @@ void UUDFactionParameterUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewM
 void UUDFactionParameterUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	PreviousButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDFactionParameterViewModel::PreviousFaction);
+	NextButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDFactionParameterViewModel::NextFaction);
 }
 
 void UUDFactionParameterUserWidget::BindWidgets()
 {
+	FactionTitleTextWidget = GetWidget<UTextBlock>(TEXT("FactionTitleText"));
+	PreviousTextWidget = GetWidget<UTextBlock>(TEXT("PreviousText"));
+	NextTextWidget = GetWidget<UTextBlock>(TEXT("NextText"));
+	NameTextWidget = GetWidget<UTextBlock>(TEXT("NameText"));
+	PreviousButtonWidget = GetWidget<UButton>(TEXT("PreviousButton"));
+	NextButtonWidget = GetWidget<UButton>(TEXT("NextButton"));
 }

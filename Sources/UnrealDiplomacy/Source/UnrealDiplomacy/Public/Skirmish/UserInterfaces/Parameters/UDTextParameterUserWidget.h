@@ -4,19 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDUserWidget.h"
-#include "Blueprint/IUserObjectListEntry.h"
 #include "UDTextParameterUserWidget.generated.h"
 
 // Forward Declarations
 
+class UTextBlock;
+class UEditableTextBox;
 class UUDTextParameterViewModel;
 
 /**
  * Ancestor for blueprint.
- * Supports IUserObjectListEntry for list view initializations.
  */
 UCLASS(Abstract)
-class UNREALDIPLOMACY_API UUDTextParameterUserWidget : public UUDUserWidget, public IUserObjectListEntry
+class UNREALDIPLOMACY_API UUDTextParameterUserWidget : public UUDUserWidget
 {
 	GENERATED_BODY()
 public:
@@ -26,10 +26,6 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetBlueprintViewModel(UUDTextParameterViewModel* model);
 protected:
-	/**
-	 * Allows List View to define context.
-	 */
-	virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
 	/**
 	 * Enables to define view model used by this widet for delegates.
 	 */
@@ -44,6 +40,12 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> TextTitleTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UEditableTextBox> TextEditableTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UEditableTextBox> EditableTextBoxWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDTextParameterViewModel> ViewModel;

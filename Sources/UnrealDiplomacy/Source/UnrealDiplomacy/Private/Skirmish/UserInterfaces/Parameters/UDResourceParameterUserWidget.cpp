@@ -2,14 +2,8 @@
 
 #include "Skirmish/UserInterfaces/Parameters/UDResourceParameterUserWidget.h"
 #include "Skirmish/UserInterfaces/Parameters/UDResourceParameterViewModel.h"
-
-void UUDResourceParameterUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
-{
-	// Change it to original type.
-	UUDResourceParameterViewModel* itemViewModel = Cast<UUDResourceParameterViewModel>(ListItemObject);
-	// Invoke bindings related to view model being set.
-	SetViewModel(itemViewModel);
-}
+#include "Components/TextBlock.h"
+#include "Components/Button.h"
 
 void UUDResourceParameterUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
@@ -21,8 +15,16 @@ void UUDResourceParameterUserWidget::BindViewModel(TObjectPtr<UUDViewModel> view
 void UUDResourceParameterUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	PreviousButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDResourceParameterViewModel::PreviousResource);
+	NextButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDResourceParameterViewModel::NextResource);
 }
 
 void UUDResourceParameterUserWidget::BindWidgets()
 {
+	ResourceTitleTextWidget = GetWidget<UTextBlock>(TEXT("ResourceTitleText"));
+	PreviousTextWidget = GetWidget<UTextBlock>(TEXT("PreviousText"));
+	NextTextWidget = GetWidget<UTextBlock>(TEXT("NextText"));
+	NameTextWidget = GetWidget<UTextBlock>(TEXT("NameText"));
+	PreviousButtonWidget = GetWidget<UButton>(TEXT("PreviousButton"));
+	NextButtonWidget = GetWidget<UButton>(TEXT("NextButton"));
 }

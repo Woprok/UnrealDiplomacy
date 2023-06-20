@@ -2,14 +2,8 @@
 
 #include "Skirmish/UserInterfaces/Parameters/UDTextParameterUserWidget.h"
 #include "Skirmish/UserInterfaces/Parameters/UDTextParameterViewModel.h"
-
-void UUDTextParameterUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
-{
-	// Change it to original type.
-	UUDTextParameterViewModel* itemViewModel = Cast<UUDTextParameterViewModel>(ListItemObject);
-	// Invoke bindings related to view model being set.
-	SetViewModel(itemViewModel);
-}
+#include "Components/TextBlock.h"
+#include "Components/EditableTextBox.h"
 
 void UUDTextParameterUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
@@ -21,8 +15,12 @@ void UUDTextParameterUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewMode
 void UUDTextParameterUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	TextEditableTextWidget->OnTextChanged.AddUniqueDynamic(ViewModel.Get(), &UUDTextParameterViewModel::StartTextEditation);
+	TextEditableTextWidget->OnTextCommitted.AddUniqueDynamic(ViewModel.Get(), &UUDTextParameterViewModel::StopTextEditation);
 }
 
 void UUDTextParameterUserWidget::BindWidgets()
 {
+	TextTitleTextWidget = GetWidget<UTextBlock>(TEXT("TextTitleText"));
+	TextEditableTextWidget = GetWidget<UEditableTextBox>(TEXT("TextEditableText"));
 }

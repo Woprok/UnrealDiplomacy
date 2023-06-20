@@ -4,19 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDUserWidget.h"
-#include "Blueprint/IUserObjectListEntry.h"
 #include "UDValueParameterUserWidget.generated.h"
 
 // Forward Declarations
 
+class UTextBlock;
+class USpinBox;
 class UUDValueParameterViewModel;
 
 /**
  * Ancestor for blueprint.
- * Supports IUserObjectListEntry for list view initializations.
  */
 UCLASS(Abstract)
-class UNREALDIPLOMACY_API UUDValueParameterUserWidget : public UUDUserWidget, public IUserObjectListEntry
+class UNREALDIPLOMACY_API UUDValueParameterUserWidget : public UUDUserWidget
 {
 	GENERATED_BODY()
 public:
@@ -26,10 +26,6 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetBlueprintViewModel(UUDValueParameterViewModel* model);
 protected:
-	/**
-	 * Allows List View to define context.
-	 */
-	virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
 	/**
 	 * Enables to define view model used by this widet for delegates.
 	 */
@@ -44,6 +40,10 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> ValueTitleTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<USpinBox> ValueBoxWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDValueParameterViewModel> ViewModel;

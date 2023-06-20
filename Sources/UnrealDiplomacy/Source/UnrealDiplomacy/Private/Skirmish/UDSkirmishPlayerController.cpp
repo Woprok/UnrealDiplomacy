@@ -327,3 +327,22 @@ void AUDSkirmishPlayerController::InitializeGrid()
 }
 
 #pragma endregion
+
+#pragma region PlayerInput
+int32 AUDSkirmishPlayerController::GetButtonKeyDistance()
+{
+	if (IsInputKeyDown(EKeys::LeftControl) && IsInputKeyDown(EKeys::LeftShift))
+	{
+		return 100;
+	}
+	else if (IsInputKeyDown(EKeys::LeftControl))
+	{
+		return 10;
+	}
+	else if (IsInputKeyDown(EKeys::LeftShift))
+	{
+		return 50;
+	}
+	return 1;
+}
+#pragma endregion

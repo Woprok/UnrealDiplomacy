@@ -2,14 +2,8 @@
 
 #include "Skirmish/UserInterfaces/Parameters/UDTileParameterUserWidget.h"
 #include "Skirmish/UserInterfaces/Parameters/UDTileParameterViewModel.h"
-
-void UUDTileParameterUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
-{
-	// Change it to original type.
-	UUDTileParameterViewModel* itemViewModel = Cast<UUDTileParameterViewModel>(ListItemObject);
-	// Invoke bindings related to view model being set.
-	SetViewModel(itemViewModel);
-}
+#include "Components/TextBlock.h"
+#include "Components/Button.h"
 
 void UUDTileParameterUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
@@ -21,8 +15,16 @@ void UUDTileParameterUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewMode
 void UUDTileParameterUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	PreviousButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDTileParameterViewModel::PreviousTile);
+	NextButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDTileParameterViewModel::NextTile);
 }
 
 void UUDTileParameterUserWidget::BindWidgets()
 {
+	TileTitleTextWidget = GetWidget<UTextBlock>(TEXT("TileTitleText"));
+	PreviousTextWidget = GetWidget<UTextBlock>(TEXT("PreviousText"));
+	NextTextWidget = GetWidget<UTextBlock>(TEXT("NextText"));
+	NameTextWidget = GetWidget<UTextBlock>(TEXT("NameText"));
+	PreviousButtonWidget = GetWidget<UButton>(TEXT("PreviousButton"));
+	NextButtonWidget = GetWidget<UButton>(TEXT("NextButton"));
 }

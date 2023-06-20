@@ -74,14 +74,14 @@ public:
 	/**
 	 * Equality over UniqueId field.
 	 */
-	inline bool operator!=(const FUDActionData & rhs)
+	inline bool operator!=(const FUDActionData & rhs) const
 	{
 		return !(*this == rhs);
 	}
 	/**
 	 * Equality over UniqueId field.
 	 */
-	inline bool operator==(const FUDActionData & rhs)
+	inline bool operator==(const FUDActionData & rhs) const
 	{
 		return UniqueId == rhs.UniqueId;
 	}

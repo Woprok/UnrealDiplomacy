@@ -55,17 +55,15 @@ void UUDTileInteractionViewModel::Interact()
 	valueParameters.Add(SelectedTile.X);
 	valueParameters.Add(SelectedTile.Y);
 	valueParameters.Append(ParameterEditorInstance->GetValueParameters());
-	TArray<FString> textParameters = { };
-	textParameters.Append(ParameterEditorInstance->GetTextParameters());
+	FString textParameter = ParameterEditorInstance->GetTextParameter();
 
-	if (valueParameters.Num() > 0 && textParameters.Num() == 0)
+	if (valueParameters.Num() > 0 && textParameter.Len() == 0)
 	{
 		Model->RequestAction(Model->GetAction(Content.ActionTypeId, valueParameters));
 	}
-	else if (valueParameters.Num() > 0 && textParameters.Num() > 0)
+	else if (valueParameters.Num() > 0 && textParameter.Len() > 0)
 	{
-		// TODO stop ignoring array or get rid of array ?
-		Model->RequestAction(Model->GetAction(Content.ActionTypeId, valueParameters, textParameters[0]));
+		Model->RequestAction(Model->GetAction(Content.ActionTypeId, valueParameters, textParameter));
 	}
 }
 

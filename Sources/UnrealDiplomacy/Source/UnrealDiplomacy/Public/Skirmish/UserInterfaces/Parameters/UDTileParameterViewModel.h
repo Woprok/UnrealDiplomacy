@@ -9,6 +9,7 @@
 
 // Forward Declarations
 
+struct FUDTileMinimalInfo;
 struct FUDTileParameter;
 
 /**
@@ -19,21 +20,52 @@ class UNREALDIPLOMACY_API UUDTileParameterViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Set content of the parameter option.
-	 */
+	/** Set content of the parameter option. */
 	void SetContent(FUDTileParameter content);
 	/** Getter for edited value. */
 	TArray<int32> GetAsValueRange();
 public:
 	// Button Functions
+	UFUNCTION()
+	void PreviousTile();
+	UFUNCTION()
+	void NextTile();
 	// MVVM Fields
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText TileTitleText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText NameText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText ToolTipText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText PreviousText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText NextText;
 protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
 private:
+	/** 
+	 * Tries to retrieve desired selected item, on fail returns first element.
+	 * If options list is empty returns invalid item.
+	 */
+	FUDTileMinimalInfo GetSelectedOrDefault(FIntPoint desiredSelectedItem);
+private:
 	// MVVM Setters & Getters
+	void SetTileTitleText(FText newTileTitleText);
+	FText GetTileTitleText() const;
+	void SetNameText(FText newNameText);
+	FText GetNameText() const;
+	void SetToolTipText(FText newToolTipText);
+	FText GetToolTipText() const;
+	void SetPreviousText(FText newPreviousText);
+	FText GetPreviousText() const;
+	void SetNextText(FText newNextText);
+	FText GetNextText() const;
 private:
 	// Fields
 	FUDTileParameter Content;
+	FIntPoint SelectedTile;
+	int32 SelectedTileIndex;
+	TArray<FUDTileMinimalInfo> Options;
 };

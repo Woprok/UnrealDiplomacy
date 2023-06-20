@@ -2,21 +2,18 @@
 
 #include "Skirmish/UserInterfaces/UDParameterEditorUserWidget.h"
 #include "Skirmish/UserInterfaces/UDParameterEditorViewModel.h"
-#include "Components/TileView.h"
 #include "Skirmish/UserInterfaces/Parameters/UDFactionParameterViewModel.h"
-#include "Skirmish/UserInterfaces/Parameters/UDActionParameterViewModel.h"
 #include "Skirmish/UserInterfaces/Parameters/UDTileParameterViewModel.h"
+#include "Skirmish/UserInterfaces/Parameters/UDActionParameterViewModel.h"
 #include "Skirmish/UserInterfaces/Parameters/UDResourceParameterViewModel.h"
 #include "Skirmish/UserInterfaces/Parameters/UDValueParameterViewModel.h"
 #include "Skirmish/UserInterfaces/Parameters/UDTextParameterViewModel.h"
-
-void UUDParameterEditorUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
-{
-	// Change it to original type.
-	UUDParameterEditorViewModel* itemViewModel = Cast<UUDParameterEditorViewModel>(ListItemObject);
-	// Invoke bindings related to view model being set.
-	SetViewModel(itemViewModel);
-}
+#include "Skirmish/UserInterfaces/Parameters/UDFactionParameterUserWidget.h"
+#include "Skirmish/UserInterfaces/Parameters/UDTileParameterUserWidget.h"
+#include "Skirmish/UserInterfaces/Parameters/UDActionParameterUserWidget.h"
+#include "Skirmish/UserInterfaces/Parameters/UDResourceParameterUserWidget.h"
+#include "Skirmish/UserInterfaces/Parameters/UDValueParameterUserWidget.h"
+#include "Skirmish/UserInterfaces/Parameters/UDTextParameterUserWidget.h"
 
 void UUDParameterEditorUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
@@ -28,51 +25,51 @@ void UUDParameterEditorUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewMo
 void UUDParameterEditorUserWidget::BindDelegates()
 {
 	// Bind view to updates.
-	ViewModel->FactionParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetFactionParameterCollection);
-	ViewModel->ActionParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetActionParameterCollection);
-	ViewModel->TileParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetTileParameterCollection);
-	ViewModel->ValueParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetValueParameterCollection);
-	ViewModel->TextParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetTextParameterCollection);
-	ViewModel->ResourceParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetResourceParameterCollection);
+	ViewModel->FactionParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetFactionParameterInstance);
+	ViewModel->ActionParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetActionParameterInstance);
+	ViewModel->TileParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetTileParameterInstance);
+	ViewModel->ValueParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetValueParameterInstance);
+	ViewModel->TextParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetTextParameterInstance);
+	ViewModel->ResourceParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetResourceParameterInstance);
 	// Bind viewmodel to widgets.
 }
 
 void UUDParameterEditorUserWidget::BindWidgets()
 {
-	FactionParameterListWidget = GetWidget<UTileView>(TEXT("FactionParameterList"));
-	TileParameterListWidget = GetWidget<UTileView>(TEXT("TileParameterList"));
-	TextParameterListWidget = GetWidget<UTileView>(TEXT("TextParameterList"));
-	ResourceParameterListWidget = GetWidget<UTileView>(TEXT("ResourceParameterList"));
-	ValueParameterListWidget = GetWidget<UTileView>(TEXT("ValueParameterList"));
-	ActionParameterListWidget = GetWidget<UTileView>(TEXT("ActionParameterList"));
+	FactionParameterWidget = GetWidget<UUDFactionParameterUserWidget>(TEXT("FactionParameter"));
+	TileParameterWidget = GetWidget<UUDTileParameterUserWidget>(TEXT("TileParameter"));
+	ActionParameterWidget = GetWidget<UUDActionParameterUserWidget>(TEXT("ActionParameter"));
+	ResourceParameterWidget = GetWidget<UUDResourceParameterUserWidget>(TEXT("ResourceParameter"));
+	ValueParameterWidget = GetWidget<UUDValueParameterUserWidget>(TEXT("ValueParameter"));
+	TextParameterWidget = GetWidget<UUDTextParameterUserWidget>(TEXT("TextParameter"));
 }
 
-void UUDParameterEditorUserWidget::SetFactionParameterCollection(const TArray<TObjectPtr<UUDFactionParameterViewModel>>& parameterViewModels)
+void UUDParameterEditorUserWidget::SetFactionParameterInstance(const TObjectPtr<UUDFactionParameterViewModel>& parameterViewModel)
 {
-	FactionParameterListWidget->SetListItems(parameterViewModels);
+	FactionParameterWidget->SetViewModel(parameterViewModel);
 }
 
-void UUDParameterEditorUserWidget::SetActionParameterCollection(const TArray<TObjectPtr<UUDActionParameterViewModel>>& parameterViewModels)
+void UUDParameterEditorUserWidget::SetTileParameterInstance(const TObjectPtr<UUDTileParameterViewModel>& parameterViewModel)
 {
-	ActionParameterListWidget->SetListItems(parameterViewModels);
+	TileParameterWidget->SetViewModel(parameterViewModel);
 }
 
-void UUDParameterEditorUserWidget::SetTileParameterCollection(const TArray<TObjectPtr<UUDTileParameterViewModel>>& parameterViewModels)
+void UUDParameterEditorUserWidget::SetActionParameterInstance(const TObjectPtr<UUDActionParameterViewModel>& parameterViewModel)
 {
-	TileParameterListWidget->SetListItems(parameterViewModels);
+	ActionParameterWidget->SetViewModel(parameterViewModel);
 }
 
-void UUDParameterEditorUserWidget::SetValueParameterCollection(const TArray<TObjectPtr<UUDValueParameterViewModel>>& parameterViewModels)
+void UUDParameterEditorUserWidget::SetResourceParameterInstance(const TObjectPtr<UUDResourceParameterViewModel>& parameterViewModel)
 {
-	ValueParameterListWidget->SetListItems(parameterViewModels);
+	ResourceParameterWidget->SetViewModel(parameterViewModel);
 }
 
-void UUDParameterEditorUserWidget::SetTextParameterCollection(const TArray<TObjectPtr<UUDTextParameterViewModel>>& parameterViewModels)
+void UUDParameterEditorUserWidget::SetValueParameterInstance(const TObjectPtr<UUDValueParameterViewModel>& parameterViewModel)
 {
-	TextParameterListWidget->SetListItems(parameterViewModels);
+	ValueParameterWidget->SetViewModel(parameterViewModel);
 }
 
-void UUDParameterEditorUserWidget::SetResourceParameterCollection(const TArray<TObjectPtr<UUDResourceParameterViewModel>>& parameterViewModels)
+void UUDParameterEditorUserWidget::SetTextParameterInstance(const TObjectPtr<UUDTextParameterViewModel>& parameterViewModel)
 {
-	ResourceParameterListWidget->SetListItems(parameterViewModels);
+	TextParameterWidget->SetViewModel(parameterViewModel);
 }

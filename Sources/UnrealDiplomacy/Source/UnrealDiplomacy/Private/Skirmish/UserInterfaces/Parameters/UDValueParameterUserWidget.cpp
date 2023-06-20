@@ -2,14 +2,8 @@
 
 #include "Skirmish/UserInterfaces/Parameters/UDValueParameterUserWidget.h"
 #include "Skirmish/UserInterfaces/Parameters/UDValueParameterViewModel.h"
-
-void UUDValueParameterUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
-{
-	// Change it to original type.
-	UUDValueParameterViewModel* itemViewModel = Cast<UUDValueParameterViewModel>(ListItemObject);
-	// Invoke bindings related to view model being set.
-	SetViewModel(itemViewModel);
-}
+#include "Components/TextBlock.h"
+#include "Components/SpinBox.h"
 
 void UUDValueParameterUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
@@ -21,8 +15,12 @@ void UUDValueParameterUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewMod
 void UUDValueParameterUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	ValueBoxWidget->OnValueChanged.AddUniqueDynamic(ViewModel.Get(), &UUDValueParameterViewModel::StartValueEditation);
+	ValueBoxWidget->OnValueCommitted.AddUniqueDynamic(ViewModel.Get(), &UUDValueParameterViewModel::StopValueEditation);
 }
 
 void UUDValueParameterUserWidget::BindWidgets()
 {
+	ValueTitleTextWidget = GetWidget<UTextBlock>(TEXT("ValueTitleText"));
+	ValueBoxWidget = GetWidget<USpinBox>(TEXT("ValueBox"));
 }

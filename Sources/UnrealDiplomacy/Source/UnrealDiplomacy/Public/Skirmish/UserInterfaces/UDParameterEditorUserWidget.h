@@ -4,26 +4,30 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDUserWidget.h"
-#include "Blueprint/IUserObjectListEntry.h"
 #include "UDParameterEditorUserWidget.generated.h"
 
 // Forward Declarations
 
-class UTileView;
 class UUDParameterEditorViewModel;
-class UUDTextParameterViewModel;
+class UUDFactionParameterUserWidget;
+class UUDTileParameterUserWidget;
+class UUDActionParameterUserWidget;
+class UUDValueParameterUserWidget;
+class UUDResourceParameterUserWidget;
+class UUDTextParameterUserWidget;
+class UUDParameterEditorViewModel;
 class UUDFactionParameterViewModel;
-class UUDActionParameterViewModel;
 class UUDTileParameterViewModel;
+class UUDActionParameterViewModel;
 class UUDValueParameterViewModel;
 class UUDResourceParameterViewModel;
+class UUDTextParameterViewModel;
 
 /**
  * Ancestor for blueprint.
- * Supports IUserObjectListEntry for list view initializations.
  */
 UCLASS(Abstract)
-class UNREALDIPLOMACY_API UUDParameterEditorUserWidget : public UUDUserWidget, public IUserObjectListEntry
+class UNREALDIPLOMACY_API UUDParameterEditorUserWidget : public UUDUserWidget
 {
 	GENERATED_BODY()
 public:
@@ -33,10 +37,6 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetBlueprintViewModel(UUDParameterEditorViewModel* model);
 protected:
-	/**
-	 * Allows List View to define context.
-	 */
-	virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
 	/**
 	 * Enables to define view model used by this widet for delegates.
 	 */
@@ -50,31 +50,31 @@ protected:
 	 */
 	virtual void BindWidgets() override;
 	/** Callback to set data from view model. */
-	void SetFactionParameterCollection(const TArray<TObjectPtr<UUDFactionParameterViewModel>>& parameterViewModels);
+	void SetFactionParameterInstance(const TObjectPtr<UUDFactionParameterViewModel>& parameterViewModel);
 	/** Callback to set data from view model. */
-	void SetActionParameterCollection(const TArray<TObjectPtr<UUDActionParameterViewModel>>& parameterViewModels);
+	void SetTileParameterInstance(const TObjectPtr<UUDTileParameterViewModel>& parameterViewModel);
 	/** Callback to set data from view model. */
-	void SetTileParameterCollection(const TArray<TObjectPtr<UUDTileParameterViewModel>>& parameterViewModels);
+	void SetActionParameterInstance(const TObjectPtr<UUDActionParameterViewModel>& parameterViewModel);
 	/** Callback to set data from view model. */
-	void SetValueParameterCollection(const TArray<TObjectPtr<UUDValueParameterViewModel>>& parameterViewModels);
+	void SetResourceParameterInstance(const TObjectPtr<UUDResourceParameterViewModel>& parameterViewModel);
 	/** Callback to set data from view model. */
-	void SetTextParameterCollection(const TArray<TObjectPtr<UUDTextParameterViewModel>>& parameterViewModels);
+	void SetValueParameterInstance(const TObjectPtr<UUDValueParameterViewModel>& parameterViewModel);
 	/** Callback to set data from view model. */
-	void SetResourceParameterCollection(const TArray<TObjectPtr<UUDResourceParameterViewModel>>& parameterViewModels);
+	void SetTextParameterInstance(const TObjectPtr<UUDTextParameterViewModel>& parameterViewModel);
 protected:
 	// Bindings
 	UPROPERTY()
-	TWeakObjectPtr<UTileView> FactionParameterListWidget;
+	TWeakObjectPtr<UUDFactionParameterUserWidget> FactionParameterWidget;
 	UPROPERTY()
-	TWeakObjectPtr<UTileView> TileParameterListWidget;
+	TWeakObjectPtr<UUDTileParameterUserWidget> TileParameterWidget;
 	UPROPERTY()
-	TWeakObjectPtr<UTileView> TextParameterListWidget;
+	TWeakObjectPtr<UUDActionParameterUserWidget> ActionParameterWidget;
 	UPROPERTY()
-	TWeakObjectPtr<UTileView> ResourceParameterListWidget;
+	TWeakObjectPtr<UUDResourceParameterUserWidget> ResourceParameterWidget;
 	UPROPERTY()
-	TWeakObjectPtr<UTileView> ValueParameterListWidget;
+	TWeakObjectPtr<UUDValueParameterUserWidget> ValueParameterWidget;
 	UPROPERTY()
-	TWeakObjectPtr<UTileView> ActionParameterListWidget;
+	TWeakObjectPtr<UUDTextParameterUserWidget> TextParameterWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDParameterEditorViewModel> ViewModel;

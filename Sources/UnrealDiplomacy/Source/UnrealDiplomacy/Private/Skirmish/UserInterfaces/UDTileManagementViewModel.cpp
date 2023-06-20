@@ -64,7 +64,7 @@ void UUDTileManagementViewModel::OnTileSelected(FIntPoint selectedTile)
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
 	hud->ShowWidget(hud->TileManagementWidget);
 
-	if (SelectedTile != selectedTile)
+	//if (SelectedTile != selectedTile)
 	{
 		SelectedTile = selectedTile;
 		Update();

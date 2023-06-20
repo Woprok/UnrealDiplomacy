@@ -44,6 +44,14 @@ public:
 	static const int32 ObserverFactionId = 1;
 	/** This Id is always reserved for Observer State. */
 	static const int32 ObserverStateId = 1;
+
+	/** This Id is always considered invalid for all tile operations. */
+	static const int32 InvalidTilePositionX = -1;
+	static const int32 InvalidTilePositionY = -1;
+	/** This Index is always considered invalid for all parameter index operations. */
+	static const int32 InvalidParameterArrayIndex = -1;
+	/** This Id is always considered invalid for all resource operations. */
+	static const int32 InvalidResourceId = -1;
 public:
 	// Default values that are expected to exists or be used.
 

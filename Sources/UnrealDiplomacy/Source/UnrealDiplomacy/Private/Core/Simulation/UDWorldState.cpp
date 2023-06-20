@@ -11,6 +11,7 @@ TObjectPtr<UUDTileState> UUDTileState::CreateState(int32 x, int32 y)
 	newState->Position = FIntPoint(x, y);
 	newState->OwnerUniqueId = UUDGlobalData::GaiaFactionId;
 	newState->Type = 0;
+	newState->Name = FString::Format(TEXT("Province x{0}y{1}"), { x, y } );
 	return newState;
 }
 
@@ -20,6 +21,7 @@ TObjectPtr<UUDTileState> UUDTileState::Duplicate(TObjectPtr<UUDTileState> existi
 	newState->Position = FIntPoint(existingState->Position.X, existingState->Position.Y);
 	newState->OwnerUniqueId = existingState->OwnerUniqueId;
 	newState->Type = existingState->Type;
+	newState->Name = FString(existingState->Name);
 	return MoveTempIfPossible(newState);
 }
 

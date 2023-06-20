@@ -55,7 +55,7 @@ private:
 	FIntPoint SelectedTile;
 	FUDTileInteractionInfo Content;
 	// Current Instance in use...
-	FName ParameterEditorInstanceName = TEXT("ParameterEditorInstance");
+	FName ParameterEditorInstanceName = TEXT("TileParameterEditorInstance");
 	TSubclassOf<UUDViewModel> ParameterEditorType;
 	TObjectPtr<UUDParameterEditorViewModel> ParameterEditorInstance;
 private:

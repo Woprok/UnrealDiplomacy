@@ -12,6 +12,11 @@ FUDFactionMinimalInfo::FUDFactionMinimalInfo(int32 id, FString name) : Id(id), N
 
 }
 
+FUDActionMinimalInfo::FUDActionMinimalInfo()
+{
+
+}
+
 FUDStratagemPickableInfo::FUDStratagemPickableInfo()
 {
 
@@ -111,6 +116,10 @@ FUDResourceInfo FUDResourceInfo::GetLuxuries(int32 amount)
 	return resource;
 }
 
+FUDResourceMinimalInfo::FUDResourceMinimalInfo()
+{
+
+}
 #undef LOCTEXT_NAMESPACE
 #pragma endregion
 
@@ -125,6 +134,11 @@ FUDTileInteractionInfo::FUDTileInteractionInfo()
 }
 
 FUDTileInfo::FUDTileInfo()
+{
+
+}
+
+FUDTileMinimalInfo::FUDTileMinimalInfo()
 {
 
 }

@@ -40,6 +40,42 @@ public:
 	int32 Id = 0;
 	UPROPERTY(BlueprintReadOnly)
 	FString Name;
+public:
+	/** Equality over UniqueId field. */
+	inline bool operator!=(const FUDFactionMinimalInfo& rhs) const
+	{
+		return !(*this == rhs);
+	}
+	/** Equality over UniqueId field. */
+	inline bool operator==(const FUDFactionMinimalInfo& rhs) const
+	{
+		return Id == rhs.Id;
+	}
+};
+
+
+USTRUCT(BlueprintType)
+struct FUDActionMinimalInfo
+{
+	GENERATED_BODY()
+public:
+	FUDActionMinimalInfo();
+	FUDActionMinimalInfo(int32 id, FString name);
+	UPROPERTY(BlueprintReadOnly)
+	int32 Id = 0;
+	UPROPERTY(BlueprintReadOnly)
+	FString Name;
+public:
+	/** Equality over UniqueId field. */
+	inline bool operator!=(const FUDActionMinimalInfo& rhs) const
+	{
+		return !(*this == rhs);
+	}
+	/** Equality over UniqueId field. */
+	inline bool operator==(const FUDActionMinimalInfo& rhs) const
+	{
+		return Id == rhs.Id;
+	}
 };
 
 USTRUCT(BlueprintType)
@@ -197,7 +233,54 @@ public:
 	/** Luxuries emplaced in wrapper */
 	static FUDResourceInfo GetLuxuries(int32 amount);
 };
+USTRUCT(BlueprintType)
+
+struct FUDResourceMinimalInfo
+{
+	GENERATED_BODY()
+public:
+	FUDResourceMinimalInfo();
+	UPROPERTY(BlueprintReadOnly)
+	int32 Id = 0;
+	UPROPERTY(BlueprintReadOnly)
+	FString Name = TEXT(""); 
+public:
+	/** Equality over UniqueId field. */
+	inline bool operator!=(const FUDResourceMinimalInfo& rhs) const
+	{
+		return !(*this == rhs);
+	}
+	/** Equality over UniqueId field. */
+	inline bool operator==(const FUDResourceMinimalInfo& rhs) const
+	{
+		return Id == rhs.Id;
+	}
+};
+
 #pragma endregion
+
+USTRUCT(BlueprintType)
+struct FUDTileMinimalInfo
+{
+	GENERATED_BODY()
+public:
+	FUDTileMinimalInfo();
+	UPROPERTY(BlueprintReadOnly)
+	FIntPoint Position = 0;
+	UPROPERTY(BlueprintReadOnly)
+	FString Name = TEXT("");
+public:
+	/** Equality over UniqueId field. */
+	inline bool operator!=(const FUDTileMinimalInfo& rhs) const
+	{
+		return !(*this == rhs);
+	}
+	/** Equality over UniqueId field. */
+	inline bool operator==(const FUDTileMinimalInfo& rhs) const
+	{
+		return Position == rhs.Position;
+	}
+};
 
 USTRUCT(BlueprintType)
 struct FUDTileInfo
@@ -262,8 +345,6 @@ public:
 	FString Name = TEXT("");
 	UPROPERTY(BlueprintReadOnly)
 	FString ToolTip = TEXT("");
-	UPROPERTY(BlueprintReadOnly)
-	int32 MaxLength = 0;
 };
 
 USTRUCT(BlueprintType)
@@ -276,6 +357,8 @@ public:
 	FString Name = TEXT("");
 	UPROPERTY(BlueprintReadOnly)
 	FString ToolTip = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	TArray<FUDTileMinimalInfo> Options = { };
 };
 
 USTRUCT(BlueprintType)
@@ -288,6 +371,8 @@ public:
 	FString Name = TEXT("");
 	UPROPERTY(BlueprintReadOnly)
 	FString ToolTip = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	TArray<FUDFactionMinimalInfo> Options = { };
 };
 
 USTRUCT(BlueprintType)
@@ -300,6 +385,8 @@ public:
 	FString Name = TEXT("");
 	UPROPERTY(BlueprintReadOnly)
 	FString ToolTip = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	TArray<FUDActionMinimalInfo> Options = { };
 };
 
 USTRUCT(BlueprintType)
@@ -312,11 +399,13 @@ public:
 	FString Name = TEXT("");
 	UPROPERTY(BlueprintReadOnly)
 	FString ToolTip = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	TArray<FUDResourceMinimalInfo> Options = { };
 };
 
 /** Question is whatever it's chicken or an egg. */
-typedef TVariant<FUDValueParameter, FUDTextParameter, FUDTileParameter,
-	FUDFactionParameter, FUDActionParameter, FUDResourceParameter> ParameterData;
+typedef TVariant<FUDFactionParameter, FUDTileParameter, FUDActionParameter,
+	FUDResourceParameter, FUDValueParameter, FUDTextParameter> ParameterData;
 
 USTRUCT(BlueprintType)
 struct FUDParameterListInfo

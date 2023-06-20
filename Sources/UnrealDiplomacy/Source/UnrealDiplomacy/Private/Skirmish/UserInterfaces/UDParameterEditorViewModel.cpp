@@ -19,17 +19,21 @@ void UUDParameterEditorViewModel::Initialize()
 {
 	if (!IsUniqueNameDefined) 
 	{
-		DefineCollections();
+		DefineInstances();
 		IsUniqueNameDefined = true;
 	}
+
+	Update();
 }
 
 void UUDParameterEditorViewModel::Update()
 {
+	HideParameters();
+
 	if (!Model->IsOverseeingStatePresent())
 		return;
 	// Following updates require model.
-	UpdateParameterLists();
+	UpdateParameterInstances();
 }
 
 #undef LOCTEXT_NAMESPACE
@@ -37,6 +41,16 @@ void UUDParameterEditorViewModel::Update()
 void UUDParameterEditorViewModel::SetContent(FUDParameterListInfo content)
 {
 	Content = content;
+}
+
+void UUDParameterEditorViewModel::HideParameters()
+{
+	SetHasFactionParameterValue(false);
+	SetHasTileParameterValue(false);
+	SetHasActionParameterValue(false);
+	SetHasResourceParameterValue(false);
+	SetHasValueParameterValue(false);
+	SetHasTextParameterValue(false);
 }
 
 TArray<int32> UUDParameterEditorViewModel::GetValueParameters()
@@ -49,35 +63,20 @@ TArray<int32> UUDParameterEditorViewModel::GetValueParameters()
 		// TODO Decide if it's worth keeping enum or it should be removed.
 		switch (Content.OrderedType[i])
 		{
-		case EUDParameterType::Value:
-			for (const auto& param : ValueParameterCollection)
-			{
-				parameters.Add(param->GetAsValue());
-			}
+		case EUDParameterType::Faction:
+			parameters.Add(FactionParameterInstance->GetAsValue());
 			break;
 		case EUDParameterType::Tile:
-			for (const auto& param : TileParameterCollection)
-			{
-				parameters.Append(param->GetAsValueRange());
-			}
-			break;
-		case EUDParameterType::Faction:
-			for (const auto& param : FactionParameterCollection)
-			{
-				parameters.Add(param->GetAsValue());
-			}
+			parameters.Append(TileParameterInstance->GetAsValueRange());
 			break;
 		case EUDParameterType::Action:
-			for (const auto& param : ActionParameterCollection)
-			{
-				parameters.Add(param->GetAsValue());
-			}
+			parameters.Add(ActionParameterInstance->GetAsValue());
 			break;
 		case EUDParameterType::Resource:
-			for (const auto& param : ResourceParameterCollection)
-			{
-				parameters.Add(param->GetAsValue());
-			}
+			parameters.Add(ResourceParameterInstance->GetAsValue());
+			break;
+		case EUDParameterType::Value:
+			parameters.Add(ValueParameterInstance->GetAsValue());
 			break;
 		case EUDParameterType::Text:
 			// Skip
@@ -91,9 +90,8 @@ TArray<int32> UUDParameterEditorViewModel::GetValueParameters()
 	return parameters;
 }
 
-TArray<FString> UUDParameterEditorViewModel::GetTextParameters()
+FString UUDParameterEditorViewModel::GetTextParameter()
 {
-	TArray<FString> parameters = { };
 	for (int32 i = 0; i < Content.OrderedData.Num(); i++)
 	{
 		// This is using type, but it should probably use direct check.
@@ -101,10 +99,7 @@ TArray<FString> UUDParameterEditorViewModel::GetTextParameters()
 		switch (Content.OrderedType[i])
 		{
 		case EUDParameterType::Text:
-			for (const auto& param : TextParameterCollection)
-			{
-				parameters.Add(param->GetAsText());
-			}
+			return TextParameterInstance->GetAsText();
 			break;
 		case EUDParameterType::Value:
 		case EUDParameterType::Tile:
@@ -119,19 +114,12 @@ TArray<FString> UUDParameterEditorViewModel::GetTextParameters()
 		}
 	}
 
-	return parameters;
+	return TEXT("");
 }
 
-void UUDParameterEditorViewModel::UpdateParameterLists()
+void UUDParameterEditorViewModel::UpdateParameterInstances()
 {
-	UE_LOG(LogTemp, Log, TEXT("UUDParameterEditorViewModel: UpdateParameterLists."));
-
-	TArray<FUDFactionParameter> factionParameters = { };
-	TArray<FUDTileParameter> tileParameters = { };
-	TArray<FUDActionParameter> actionParameters = { };
-	TArray<FUDResourceParameter> resourceParameters = { };
-	TArray<FUDTextParameter> textParameters = { };
-	TArray<FUDValueParameter> valueParameters = { };
+	UE_LOG(LogTemp, Log, TEXT("UUDParameterEditorViewModel: UpdateParameterInstances."));
 
 	for (int32 i = 0; i < Content.OrderedData.Num(); i++)
 	{
@@ -139,160 +127,225 @@ void UUDParameterEditorViewModel::UpdateParameterLists()
 		// TODO Decide if it's worth keeping enum or it should be removed.
 		switch (Content.OrderedType[i])
 		{
-		case EUDParameterType::Value:
-			valueParameters.Add(Content.OrderedData[i].Get<FUDValueParameter>());
-			break;
-		case EUDParameterType::Text:
-			textParameters.Add(Content.OrderedData[i].Get<FUDTextParameter>());
+		case EUDParameterType::Faction:
+			UpdateFactionParameter(Content.OrderedData[i].Get<FUDFactionParameter>());
 			break;
 		case EUDParameterType::Tile:
-			tileParameters.Add(Content.OrderedData[i].Get<FUDTileParameter>());
-			break;
-		case EUDParameterType::Faction:
-			factionParameters.Add(Content.OrderedData[i].Get<FUDFactionParameter>());
+			UpdateTileParameter(Content.OrderedData[i].Get<FUDTileParameter>());
 			break;
 		case EUDParameterType::Action:
-			actionParameters.Add(Content.OrderedData[i].Get<FUDActionParameter>());
+			UpdateActionParameter(Content.OrderedData[i].Get<FUDActionParameter>());
 			break;
 		case EUDParameterType::Resource:
-			resourceParameters.Add(Content.OrderedData[i].Get<FUDResourceParameter>());
+			UpdateResourceParameter(Content.OrderedData[i].Get<FUDResourceParameter>());
+			break;
+		case EUDParameterType::Value:
+			UpdateValueParameter(Content.OrderedData[i].Get<FUDValueParameter>());
+			break;
+		case EUDParameterType::Text:
+			UpdateTextParameter(Content.OrderedData[i].Get<FUDTextParameter>());
 			break;
 		default:
 			UE_LOG(LogTemp, Warning, TEXT("UUDParameterEditorViewModel: New parameters must be supported by UI."));
 			break;
 		}
 	}
-
-	UpdateFactionParameters(factionParameters);
-	UpdateTextParameters(textParameters);
-	UpdateValueParameters(valueParameters);
-	UpdateTileParameters(tileParameters);
-	UpdateActionParameters(actionParameters);
-	UpdateResourceParameters(resourceParameters);
 }
 
-void UUDParameterEditorViewModel::DefineCollections()
+void UUDParameterEditorViewModel::DefineInstances()
+{
+	int32 uniqueId = UUDParameterEditorViewModel::UniqueNameDefinition++;
+	DefineFactionParameter(uniqueId);
+	DefineTileParameter(uniqueId);
+	DefineActionParameter(uniqueId);
+	DefineResourceParameter(uniqueId);
+	DefineValueParameter(uniqueId);
+	DefineTextParameter(uniqueId);
+	UE_LOG(LogTemp, Log, TEXT("UUDParameterEditorViewModel: Defined isntances with subname [%d]."), uniqueId);
+}
+
+void UUDParameterEditorViewModel::DefineFactionParameter(int32 id)
 {
 	FactionParameterType = UUDFactionParameterViewModel::StaticClass();
+	FactionParameterInstanceName = FName(FactionParameterInstanceName.ToString() + FString::FromInt(id));
+
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(FactionParameterInstanceName, FactionParameterType);
+	FactionParameterInstance = Cast<UUDFactionParameterViewModel>(viewModel);
+	FactionParameterUpdatedEvent.Broadcast(FactionParameterInstance);
+
+	FactionParameterInstance->FullUpdate();
+}
+
+void UUDParameterEditorViewModel::DefineTileParameter(int32 id)
+{
 	TileParameterType = UUDTileParameterViewModel::StaticClass();
+	TileParameterInstanceName = FName(TileParameterInstanceName.ToString() + FString::FromInt(id));
+
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(TileParameterInstanceName, TileParameterType);
+	TileParameterInstance = Cast<UUDTileParameterViewModel>(viewModel);
+	TileParameterUpdatedEvent.Broadcast(TileParameterInstance);
+
+	TileParameterInstance->FullUpdate();
+}
+
+void UUDParameterEditorViewModel::DefineActionParameter(int32 id)
+{
 	ActionParameterType = UUDActionParameterViewModel::StaticClass();
+	ActionParameterInstanceName = FName(ActionParameterInstanceName.ToString() + FString::FromInt(id));
+
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(ActionParameterInstanceName, ActionParameterType);
+	ActionParameterInstance = Cast<UUDActionParameterViewModel>(viewModel);
+	ActionParameterUpdatedEvent.Broadcast(ActionParameterInstance);
+
+	ActionParameterInstance->FullUpdate();
+}
+
+void UUDParameterEditorViewModel::DefineResourceParameter(int32 id)
+{
 	ResourceParameterType = UUDResourceParameterViewModel::StaticClass();
+	ResourceParameterInstanceName = FName(ResourceParameterInstanceName.ToString() + FString::FromInt(id));
+
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(ResourceParameterInstanceName, ResourceParameterType);
+	ResourceParameterInstance = Cast<UUDResourceParameterViewModel>(viewModel);
+	ResourceParameterUpdatedEvent.Broadcast(ResourceParameterInstance);
+
+	ResourceParameterInstance->FullUpdate();
+}
+
+void UUDParameterEditorViewModel::DefineValueParameter(int32 id)
+{
 	ValueParameterType = UUDValueParameterViewModel::StaticClass();
+	ValueParameterInstanceName = FName(ValueParameterInstanceName.ToString() + FString::FromInt(id));
+
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(ValueParameterInstanceName, ValueParameterType);
+	ValueParameterInstance = Cast<UUDValueParameterViewModel>(viewModel);
+	ValueParameterUpdatedEvent.Broadcast(ValueParameterInstance);
+
+	ValueParameterInstance->FullUpdate();
+}
+
+void UUDParameterEditorViewModel::DefineTextParameter(int32 id)
+{
 	TextParameterType = UUDTextParameterViewModel::StaticClass();
-	int32 uniqueId = UUDParameterEditorViewModel::UniqueNameDefinition++;
-	FactionParameterCollectionName = FName(FactionParameterCollectionName.ToString() + FString::FromInt(uniqueId));
-	TileParameterCollectionName = FName(TileParameterCollectionName.ToString() + FString::FromInt(uniqueId));
-	ActionParameterCollectionName = FName(ActionParameterCollectionName.ToString() + FString::FromInt(uniqueId));
-	ResourceParameterCollectionName = FName(ResourceParameterCollectionName.ToString() + FString::FromInt(uniqueId));
-	TextParameterCollectionName = FName(TextParameterCollectionName.ToString() + FString::FromInt(uniqueId));
-	ValueParameterCollectionName = FName(ValueParameterCollectionName.ToString() + FString::FromInt(uniqueId));
-	UE_LOG(LogTemp, Log, TEXT("UUDParameterEditorViewModel: Defined lists with subname [%d]."), uniqueId);
+	TextParameterInstanceName = FName(TextParameterInstanceName.ToString() + FString::FromInt(id));
+
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(TextParameterInstanceName, TextParameterType);
+	TextParameterInstance = Cast<UUDTextParameterViewModel>(viewModel);
+	TextParameterUpdatedEvent.Broadcast(TextParameterInstance);
+
+	TextParameterInstance->FullUpdate();
 }
 
-void UUDParameterEditorViewModel::UpdateFactionParameters(const TArray<FUDFactionParameter>& parameters)
+void UUDParameterEditorViewModel::UpdateFactionParameter(const FUDFactionParameter& parameter)
 {
-	// Retrieve enough models
-	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(FactionParameterCollectionName, FactionParameterType, parameters.Num());
-	// Get rid of all models
-	FactionParameterCollection.Empty();
-	for (int32 i = 0; i < parameters.Num(); i++)
-	{
-		TObjectPtr<UUDFactionParameterViewModel> newViewModel = Cast<UUDFactionParameterViewModel>(viewModels[i]);
-		newViewModel->SetContent(parameters[i]);
-		newViewModel->FullUpdate();
-		FactionParameterCollection.Add(newViewModel);
-	}
-
-	FactionParameterUpdatedEvent.Broadcast(FactionParameterCollection);
+	FactionParameterInstance->SetContent(parameter);
+	SetHasFactionParameterValue(true);
+	FactionParameterUpdatedEvent.Broadcast(FactionParameterInstance);
+	FactionParameterInstance->FullUpdate();
 }
 
-void UUDParameterEditorViewModel::UpdateResourceParameters(const TArray<FUDResourceParameter>& parameters)
+void UUDParameterEditorViewModel::UpdateTileParameter(const FUDTileParameter& parameter)
 {
-	// Retrieve enough models
-	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(ResourceParameterCollectionName, ResourceParameterType, parameters.Num());
-	// Get rid of all models
-	ResourceParameterCollection.Empty();
-	for (int32 i = 0; i < parameters.Num(); i++)
-	{
-		TObjectPtr<UUDResourceParameterViewModel> newViewModel = Cast<UUDResourceParameterViewModel>(viewModels[i]);
-		newViewModel->SetContent(parameters[i]);
-		newViewModel->FullUpdate();
-		ResourceParameterCollection.Add(newViewModel);
-	}
-
-	ResourceParameterUpdatedEvent.Broadcast(ResourceParameterCollection);
+	TileParameterInstance->SetContent(parameter);
+	SetHasTileParameterValue(true);
+	TileParameterUpdatedEvent.Broadcast(TileParameterInstance);
+	TileParameterInstance->FullUpdate();
 }
 
-void UUDParameterEditorViewModel::UpdateTextParameters(const TArray<FUDTextParameter>& parameters)
+void UUDParameterEditorViewModel::UpdateActionParameter(const FUDActionParameter& parameter)
 {
-	// Retrieve enough models
-	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(TextParameterCollectionName, TextParameterType, parameters.Num());
-	// Get rid of all models
-	TextParameterCollection.Empty();
-	for (int32 i = 0; i < parameters.Num(); i++)
-	{
-		TObjectPtr<UUDTextParameterViewModel> newViewModel = Cast<UUDTextParameterViewModel>(viewModels[i]);
-		newViewModel->SetContent(parameters[i]);
-		newViewModel->FullUpdate();
-		TextParameterCollection.Add(newViewModel);
-	}
-
-	TextParameterUpdatedEvent.Broadcast(TextParameterCollection);
+	ActionParameterInstance->SetContent(parameter);
+	SetHasActionParameterValue(true);
+	ActionParameterUpdatedEvent.Broadcast(ActionParameterInstance);
+	ActionParameterInstance->FullUpdate();
 }
 
-void UUDParameterEditorViewModel::UpdateValueParameters(const TArray<FUDValueParameter>& parameters)
+void UUDParameterEditorViewModel::UpdateResourceParameter(const FUDResourceParameter& parameter)
 {
-	// Retrieve enough models
-	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(ValueParameterCollectionName, ValueParameterType, parameters.Num());
-	// Get rid of all models
-	ValueParameterCollection.Empty();
-	for (int32 i = 0; i < parameters.Num(); i++)
-	{
-		TObjectPtr<UUDValueParameterViewModel> newViewModel = Cast<UUDValueParameterViewModel>(viewModels[i]);
-		newViewModel->SetContent(parameters[i]);
-		newViewModel->FullUpdate();
-		ValueParameterCollection.Add(newViewModel);
-	}
-
-	ValueParameterUpdatedEvent.Broadcast(ValueParameterCollection);
+	ResourceParameterInstance->SetContent(parameter);
+	SetHasResourceParameterValue(true);
+	ResourceParameterUpdatedEvent.Broadcast(ResourceParameterInstance);
+	ResourceParameterInstance->FullUpdate();
 }
 
-void UUDParameterEditorViewModel::UpdateActionParameters(const TArray<FUDActionParameter>& parameters)
+void UUDParameterEditorViewModel::UpdateValueParameter(const FUDValueParameter& parameter)
 {
-	// Retrieve enough models
-	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(ActionParameterCollectionName, ActionParameterType, parameters.Num());
-	// Get rid of all models
-	ActionParameterCollection.Empty();
-	for (int32 i = 0; i < parameters.Num(); i++)
-	{
-		TObjectPtr<UUDActionParameterViewModel> newViewModel = Cast<UUDActionParameterViewModel>(viewModels[i]);
-		newViewModel->SetContent(parameters[i]);
-		newViewModel->FullUpdate();
-		ActionParameterCollection.Add(newViewModel);
-	}
-
-	ActionParameterUpdatedEvent.Broadcast(ActionParameterCollection);
+	ValueParameterInstance->SetContent(parameter);
+	SetHasValueParameterValue(true);
+	ValueParameterUpdatedEvent.Broadcast(ValueParameterInstance);
+	ValueParameterInstance->FullUpdate();
 }
 
-void UUDParameterEditorViewModel::UpdateTileParameters(const TArray<FUDTileParameter>& parameters)
+void UUDParameterEditorViewModel::UpdateTextParameter(const FUDTextParameter& parameter)
 {
-	// Retrieve enough models
-	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(TileParameterCollectionName, TileParameterType, parameters.Num());
-	// Get rid of all models
-	TileParameterCollection.Empty();
-	for (int32 i = 0; i < parameters.Num(); i++)
-	{
-		TObjectPtr<UUDTileParameterViewModel> newViewModel = Cast<UUDTileParameterViewModel>(viewModels[i]);
-		newViewModel->SetContent(parameters[i]);
-		newViewModel->FullUpdate();
-		TileParameterCollection.Add(newViewModel);
-	}
+	TextParameterInstance->SetContent(parameter);
+	SetHasTextParameterValue(true);
+	TextParameterUpdatedEvent.Broadcast(TextParameterInstance);
+	TextParameterInstance->FullUpdate();
+}
 
-	TileParameterUpdatedEvent.Broadcast(TileParameterCollection);
+void UUDParameterEditorViewModel::SetHasFactionParameterValue(bool newHasFactionParameterValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(HasFactionParameterValue, newHasFactionParameterValue);
+}
+
+bool UUDParameterEditorViewModel::GetHasFactionParameterValue() const
+{
+	return HasFactionParameterValue;
+}
+
+void UUDParameterEditorViewModel::SetHasTileParameterValue(bool newHasTileParameterValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(HasTileParameterValue, newHasTileParameterValue);
+}
+
+bool UUDParameterEditorViewModel::GetHasTileParameterValue() const
+{
+	return HasTileParameterValue;
+}
+
+void UUDParameterEditorViewModel::SetHasActionParameterValue(bool newHasActionParameterValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(HasActionParameterValue, newHasActionParameterValue);
+}
+
+bool UUDParameterEditorViewModel::GetHasActionParameterValue() const
+{
+	return HasActionParameterValue;
+}
+
+void UUDParameterEditorViewModel::SetHasResourceParameterValue(bool newHasResourceParameterValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(HasResourceParameterValue, newHasResourceParameterValue);
+}
+
+bool UUDParameterEditorViewModel::GetHasResourceParameterValue() const
+{
+	return HasResourceParameterValue;
+}
+
+void UUDParameterEditorViewModel::SetHasValueParameterValue(bool newHasValueParameterValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(HasValueParameterValue, newHasValueParameterValue);
+}
+
+bool UUDParameterEditorViewModel::GetHasValueParameterValue() const
+{
+	return HasValueParameterValue;
+}
+
+void UUDParameterEditorViewModel::SetHasTextParameterValue(bool newHasTextParameterValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(HasTextParameterValue, newHasTextParameterValue);
+}
+
+bool UUDParameterEditorViewModel::GetHasTextParameterValue() const
+{
+	return HasTextParameterValue;
 }

@@ -18,17 +18,28 @@ class UUDActionDatabase;
 
 enum class EUDGameStateInfo : uint8;
 struct FUDGameOverInfo;
-struct FUDFactionMinimalInfo;
 struct FUDStratagemPickableInfo;
-struct FUDFactionInfo;
-struct FUDResourceInfo;
 struct FUDRegencyTurnInfo;
 struct FUDThroneInfo;
 struct FUDAvailableDiplomacyInfo;
-struct FUDFactionInteractionInfo;
-struct FUDTileInteractionInfo;
-struct FUDTileInfo;
+
 struct FUDParameterListInfo;
+struct FUDFactionInfo;
+struct FUDFactionMinimalInfo;
+struct FUDFactionInteractionInfo;
+struct FUDTileInfo;
+struct FUDTileMinimalInfo;
+struct FUDTileInteractionInfo;
+struct FUDResourceInfo;
+
+struct FUDFactionParameter;
+struct FUDTileParameter;
+struct FUDActionParameter;
+struct FUDResourceParameter;
+struct FUDValueParameter;
+struct FUDTextParameter;
+typedef TVariant<FUDFactionParameter, FUDTileParameter, FUDActionParameter, 
+	FUDResourceParameter, FUDValueParameter, FUDTextParameter> ParameterData;
 
 #include "Core/Simulation/Actions/UDDealActionContractCreate.h"
 
@@ -369,6 +380,8 @@ public:
 	FUDTileInfo GetTileInfo(FIntPoint position);
 	/** Provides list of tile interactions. */
 	TArray<FUDTileInteractionInfo> GetTileInteractionList();
+	/** Provides list of all tiles. */
+	TArray<FUDTileMinimalInfo> GetTileOptions();
 #pragma endregion
 
 #pragma region Parameters
@@ -379,6 +392,19 @@ public:
 	 * Used for removing implicit tags that is not desired to be edited.
 	 */
 	FUDParameterListInfo GetActionParameters(TSet<int32> tags, int32 excludeTag);
+private:
+	bool HasFactionParameter(TSet<int32> tags, int32 excludeTag);
+	bool HasTileParameter(TSet<int32> tags, int32 excludeTag);
+	bool HasActionParameter(TSet<int32> tags, int32 excludeTag);
+	bool HasResourceParameter(TSet<int32> tags, int32 excludeTag);
+	bool HasValueParameter(TSet<int32> tags, int32 excludeTag);
+	bool HasTextParameter(TSet<int32> tags, int32 excludeTag);
+	ParameterData GetFactionParameter(TSet<int32> tags);
+	ParameterData GetTileParameter(TSet<int32> tags);
+	ParameterData GetActionParameter(TSet<int32> tags);
+	ParameterData GetResourceParameter(TSet<int32> tags);
+	ParameterData GetValueParameter(TSet<int32> tags);
+	ParameterData GetTextParameter(TSet<int32> tags);
 #pragma endregion
 
 

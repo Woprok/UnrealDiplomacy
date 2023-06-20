@@ -64,7 +64,7 @@ void UUDFactionManagementViewModel::OnFactionSelected(int32 selectedFactionId)
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
 	hud->ShowWidget(hud->FactionManagementWidget);
 
-	if (SelectedFactionId != selectedFactionId)
+	//if (SelectedFactionId != selectedFactionId)
 	{
 		SelectedFactionId = selectedFactionId;
 		Update();

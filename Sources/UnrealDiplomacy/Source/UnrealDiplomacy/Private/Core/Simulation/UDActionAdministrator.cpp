@@ -428,10 +428,27 @@ FUDTileInfo UUDActionAdministrator::GetTileInfo(FIntPoint position)
 	const auto& tile = State->Map->GetTile(position);
 	FUDTileInfo tileInfo;
 	tileInfo.Position = tile->Position;
-	tileInfo.Name = TEXT("NAME IS NOT IMPLEMENTED");
+	tileInfo.Name = tile->Name;
 	tileInfo.FactionId	= tile->OwnerUniqueId;
 	tileInfo.FactionName = State->Factions[tile->OwnerUniqueId]->Name;
 	return tileInfo;
+}
+
+TArray<FUDTileMinimalInfo> UUDActionAdministrator::GetTileOptions()
+{
+	TArray<FUDTileMinimalInfo> tiles = { };
+
+	for (const auto& tile : State->Map->Tiles)
+	{
+		FUDTileMinimalInfo info = FUDTileMinimalInfo();
+		
+		info.Position = tile->Position;
+		info.Name = tile->Name;
+
+		tiles.Add(info);
+	}
+
+	return tiles;
 }
 
 #pragma endregion
@@ -439,7 +456,7 @@ FUDTileInfo UUDActionAdministrator::GetTileInfo(FIntPoint position)
 #pragma region Parameters
 #define LOCTEXT_NAMESPACE "Parameters"
 
-bool HasTileParameter(TSet<int32> tags, int32 excludeTag)
+bool UUDActionAdministrator::HasTileParameter(TSet<int32> tags, int32 excludeTag)
 {
 	TSet<int32> searchTags = {
 		UD_ACTION_TAG_PARAMETER_TILE
@@ -454,7 +471,7 @@ bool HasTileParameter(TSet<int32> tags, int32 excludeTag)
 	return true;
 }
 
-bool HasFactionParameter(TSet<int32> tags, int32 excludeTag)
+bool UUDActionAdministrator::HasFactionParameter(TSet<int32> tags, int32 excludeTag)
 {
 	TSet<int32> searchTags = {
 		UD_ACTION_TAG_PARAMETER_FACTION
@@ -469,7 +486,7 @@ bool HasFactionParameter(TSet<int32> tags, int32 excludeTag)
 	return true;
 }
 
-bool HasActionParameter(TSet<int32> tags, int32 excludeTag)
+bool UUDActionAdministrator::HasActionParameter(TSet<int32> tags, int32 excludeTag)
 {
 	TSet<int32> searchTags = {
 		UD_ACTION_TAG_PARAMETER_ACTION
@@ -484,7 +501,7 @@ bool HasActionParameter(TSet<int32> tags, int32 excludeTag)
 	return true;
 }
 
-bool HasResourceParameter(TSet<int32> tags, int32 excludeTag)
+bool UUDActionAdministrator::HasResourceParameter(TSet<int32> tags, int32 excludeTag)
 {
 	TSet<int32> searchTags = {
 		UD_ACTION_TAG_PARAMETER_RESOURCE
@@ -499,7 +516,7 @@ bool HasResourceParameter(TSet<int32> tags, int32 excludeTag)
 	return true;
 }
 
-bool HasValueParameter(TSet<int32> tags, int32 excludeTag)
+bool UUDActionAdministrator::HasValueParameter(TSet<int32> tags, int32 excludeTag)
 {
 	TSet<int32> searchTags = {
 		UD_ACTION_TAG_PARAMETER_VALUE
@@ -514,7 +531,7 @@ bool HasValueParameter(TSet<int32> tags, int32 excludeTag)
 	return true;
 }
 
-bool HasTextParameter(TSet<int32> tags, int32 excludeTag)
+bool UUDActionAdministrator::HasTextParameter(TSet<int32> tags, int32 excludeTag)
 {
 	TSet<int32> searchTags = {
 		UD_ACTION_TAG_PARAMETER_TEXT
@@ -529,7 +546,7 @@ bool HasTextParameter(TSet<int32> tags, int32 excludeTag)
 	return true;
 }
 
-ParameterData GetTileParameter(TSet<int32> tags)
+ParameterData UUDActionAdministrator::GetTileParameter(TSet<int32> tags)
 {
 	ParameterData data;
 	FUDTileParameter tile;
@@ -537,11 +554,13 @@ ParameterData GetTileParameter(TSet<int32> tags)
 	tile.Name = FText(LOCTEXT("Parameters", "Tile")).ToString();
 	tile.ToolTip = FText(LOCTEXT("Parameters", "Tile is required to be used with this action.")).ToString();
 
+	tile.Options = GetTileOptions();
+
 	data.Set<FUDTileParameter>(tile);
 	return data;
 }
 
-ParameterData GetFactionParameter(TSet<int32> tags)
+ParameterData UUDActionAdministrator::GetFactionParameter(TSet<int32> tags)
 {
 	ParameterData data;
 	FUDFactionParameter tile;
@@ -553,7 +572,7 @@ ParameterData GetFactionParameter(TSet<int32> tags)
 	return data;
 }
 
-ParameterData GetActionParameter(TSet<int32> tags)
+ParameterData UUDActionAdministrator::GetActionParameter(TSet<int32> tags)
 {
 	ParameterData data;
 	FUDActionParameter tile;
@@ -565,7 +584,7 @@ ParameterData GetActionParameter(TSet<int32> tags)
 	return data;
 }
 
-ParameterData GetResourceParameter(TSet<int32> tags)
+ParameterData UUDActionAdministrator::GetResourceParameter(TSet<int32> tags)
 {
 	ParameterData data;
 	FUDResourceParameter tile;
@@ -577,7 +596,7 @@ ParameterData GetResourceParameter(TSet<int32> tags)
 	return data;
 }
 
-ParameterData GetValueParameter(TSet<int32> tags)
+ParameterData UUDActionAdministrator::GetValueParameter(TSet<int32> tags)
 {
 	ParameterData data;
 	FUDValueParameter tile;
@@ -604,7 +623,7 @@ ParameterData GetValueParameter(TSet<int32> tags)
 	return data;
 }
 
-ParameterData GetTextParameter(TSet<int32> tags)
+ParameterData UUDActionAdministrator::GetTextParameter(TSet<int32> tags)
 {
 	ParameterData data;
 	FUDTextParameter tile;

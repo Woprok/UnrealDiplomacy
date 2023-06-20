@@ -24,12 +24,12 @@ class UUDTileParameterViewModel;
 class UUDValueParameterViewModel;
 class UUDResourceParameterViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FactionParameterUpdated, const TArray<TObjectPtr<UUDFactionParameterViewModel>>& parameterViewModels);
-DECLARE_MULTICAST_DELEGATE_OneParam(ActionParameterUpdated, const TArray<TObjectPtr<UUDActionParameterViewModel>>& parameterViewModels);
-DECLARE_MULTICAST_DELEGATE_OneParam(TileParameterUpdated, const TArray<TObjectPtr<UUDTileParameterViewModel>>& parameterViewModels);
-DECLARE_MULTICAST_DELEGATE_OneParam(ValueParameterUpdated, const TArray<TObjectPtr<UUDValueParameterViewModel>>& parameterViewModels);
-DECLARE_MULTICAST_DELEGATE_OneParam(TextParameterUpdated, const TArray<TObjectPtr<UUDTextParameterViewModel>>& parameterViewModels);
-DECLARE_MULTICAST_DELEGATE_OneParam(ResourceParameterUpdated, const TArray<TObjectPtr<UUDResourceParameterViewModel>>& parameterViewModels);
+DECLARE_MULTICAST_DELEGATE_OneParam(FactionParameterUpdated, const TObjectPtr<UUDFactionParameterViewModel>& parameterViewModel);
+DECLARE_MULTICAST_DELEGATE_OneParam(ActionParameterUpdated, const TObjectPtr<UUDActionParameterViewModel>& parameterViewModel);
+DECLARE_MULTICAST_DELEGATE_OneParam(TileParameterUpdated, const TObjectPtr<UUDTileParameterViewModel>& parameterViewModel);
+DECLARE_MULTICAST_DELEGATE_OneParam(ValueParameterUpdated, const TObjectPtr<UUDValueParameterViewModel>& parameterViewModel);
+DECLARE_MULTICAST_DELEGATE_OneParam(TextParameterUpdated, const TObjectPtr<UUDTextParameterViewModel>& parameterViewModel);
+DECLARE_MULTICAST_DELEGATE_OneParam(ResourceParameterUpdated, const TObjectPtr<UUDResourceParameterViewModel>& parameterViewModel);
 
 /**
  * Editor for parameters that belong to single action.
@@ -48,12 +48,24 @@ public:
 	 */
 	TArray<int32> GetValueParameters();
 	/**
-	 * Retrieves all value parameters from the editor items.
+	 * Retrieves text parameter from the editor items.
 	 */
-	TArray<FString> GetTextParameters();
+	FString GetTextParameter();
 public:
 	// Button Functions
 	// MVVM Fields
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool HasFactionParameterValue;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool HasTileParameterValue;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool HasActionParameterValue;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool HasResourceParameterValue;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool HasValueParameterValue;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool HasTextParameterValue;
 	// Events
 	FactionParameterUpdated FactionParameterUpdatedEvent;
 	ActionParameterUpdated ActionParameterUpdatedEvent;
@@ -65,49 +77,75 @@ protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
 private:
-	/** Updates all parameter lists. */
-	void UpdateParameterLists();
-	/** Defines all parameter collections. */
-	void DefineCollections();
-	/** Updates specific parameter list. */
-	void UpdateFactionParameters(const TArray<FUDFactionParameter>& parameters);
-	/** Updates specific parameter list. */
-	void UpdateTextParameters(const TArray<FUDTextParameter>& parameters);
-	/** Updates specific parameter list. */
-	void UpdateValueParameters(const TArray<FUDValueParameter>& parameters);
-	/** Updates specific parameter list. */
-	void UpdateTileParameters(const TArray<FUDTileParameter>& parameters);
-	/** Updates specific parameter list. */
-	void UpdateActionParameters(const TArray<FUDActionParameter>& parameters);
-	/** Updates specific parameter list. */
-	void UpdateResourceParameters(const TArray<FUDResourceParameter>& parameters);
+	/** Hide all parameter. */
+	void HideParameters();
+	/** Updates all parameters. */
+	void UpdateParameterInstances();
+	/** Defines all parameters instances. */
+	void DefineInstances();
+	/** Updates specific parameter. */
+	void UpdateFactionParameter(const FUDFactionParameter& parameter);
+	/** Updates specific parameter. */
+	void UpdateTileParameter(const FUDTileParameter& parameter);
+	/** Updates specific parameter. */
+	void UpdateActionParameter(const FUDActionParameter& parameter);
+	/** Updates specific parameter. */
+	void UpdateResourceParameter(const FUDResourceParameter& parameter);
+	/** Updates specific parameter. */
+	void UpdateValueParameter(const FUDValueParameter& parameter);
+	/** Updates specific parameter. */
+	void UpdateTextParameter(const FUDTextParameter& parameter);
+	/** Defines specific parameter. */
+	void DefineFactionParameter(int32 id);
+	/** Defines specific parameter. */
+	void DefineTileParameter(int32 id);
+	/** Defines specific parameter. */
+	void DefineActionParameter(int32 id);
+	/** Defines specific parameter. */
+	void DefineResourceParameter(int32 id);
+	/** Defines specific parameter. */
+	void DefineValueParameter(int32 id);
+	/** Defines specific parameter. */
+	void DefineTextParameter(int32 id);
 private:
 	// MVVM Setters & Getters
+	void SetHasFactionParameterValue(bool newHasFactionParameterValue);
+	bool GetHasFactionParameterValue() const;
+	void SetHasTileParameterValue(bool newHasTileParameterValue);
+	bool GetHasTileParameterValue() const;
+	void SetHasActionParameterValue(bool newHasActionParameterValue);
+	bool GetHasActionParameterValue() const;
+	void SetHasResourceParameterValue(bool newHasResourceParameterValue);
+	bool GetHasResourceParameterValue() const;
+	void SetHasValueParameterValue(bool newHasValueParameterValue);
+	bool GetHasValueParameterValue() const;
+	void SetHasTextParameterValue(bool newHasTextParameterValue);
+	bool GetHasTextParameterValue() const;
 private:
 	// Fields
 	FUDParameterListInfo Content;
 
-	// Current Collection in use...
-	FName FactionParameterCollectionName = TEXT("FactionParameterCollection");
+	// Current Instances in use...
+	FName FactionParameterInstanceName = TEXT("FactionParameterInstance");
 	TSubclassOf<UUDViewModel> FactionParameterType;
-	TArray<TObjectPtr<UUDFactionParameterViewModel>> FactionParameterCollection;
-	FName TileParameterCollectionName = TEXT("TileParameterCollection");
+	TObjectPtr<UUDFactionParameterViewModel> FactionParameterInstance;
+	FName TileParameterInstanceName = TEXT("TileParameterInstance");
 	TSubclassOf<UUDViewModel> TileParameterType;
-	TArray<TObjectPtr<UUDTileParameterViewModel>> TileParameterCollection;
-	FName ActionParameterCollectionName = TEXT("ActionParameterCollection");
+	TObjectPtr<UUDTileParameterViewModel> TileParameterInstance;
+	FName ActionParameterInstanceName = TEXT("ActionParameterInstance");
 	TSubclassOf<UUDViewModel> ActionParameterType;
-	TArray<TObjectPtr<UUDActionParameterViewModel>> ActionParameterCollection;
-	FName ResourceParameterCollectionName = TEXT("ResourceParameterCollection");
+	TObjectPtr<UUDActionParameterViewModel> ActionParameterInstance;
+	FName ResourceParameterInstanceName = TEXT("ResourceParameterInstance");
 	TSubclassOf<UUDViewModel> ResourceParameterType;
-	TArray<TObjectPtr<UUDResourceParameterViewModel>> ResourceParameterCollection;
-	FName ValueParameterCollectionName = TEXT("ValueParameterCollection");
+	TObjectPtr<UUDResourceParameterViewModel> ResourceParameterInstance;
+	FName ValueParameterInstanceName = TEXT("ValueParameterInstance");
 	TSubclassOf<UUDViewModel> ValueParameterType;
-	TArray<TObjectPtr<UUDValueParameterViewModel>> ValueParameterCollection;
-	FName TextParameterCollectionName = TEXT("TextParameterCollection");
+	TObjectPtr<UUDValueParameterViewModel> ValueParameterInstance;
+	FName TextParameterInstanceName = TEXT("TextParameterInstance");
 	TSubclassOf<UUDViewModel> TextParameterType;
-	TArray<TObjectPtr<UUDTextParameterViewModel>> TextParameterCollection;
+	TObjectPtr<UUDTextParameterViewModel> TextParameterInstance;
 private:
-	// Ensure uniqueness of all collections used...
+	// Ensure uniqueness of all instances used...
 	bool IsUniqueNameDefined = false;
 	// Static trick to always have unique names for each instance.
 	static int32 UniqueNameDefinition;

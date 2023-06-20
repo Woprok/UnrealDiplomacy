@@ -44,7 +44,7 @@ protected:
 private:
 	/** Updates all parameter lists. */
 	void UpdateEditor();
-	/** Defines all parameter isntances. */
+	/** Defines all parameter instances. */
 	void DefineInstances();
 private:
 	// MVVM Setters & Getters
@@ -55,7 +55,7 @@ private:
 	int32 SelectedFaction;
 	FUDFactionInteractionInfo Content;
 	// Current Instance in use...
-	FName ParameterEditorInstanceName = TEXT("ParameterEditorInstance");
+	FName ParameterEditorInstanceName = TEXT("FactionParameterEditorInstance");
 	TSubclassOf<UUDViewModel> ParameterEditorType;
 	TObjectPtr<UUDParameterEditorViewModel> ParameterEditorInstance;
 private:

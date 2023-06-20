@@ -56,6 +56,8 @@ public:
 	 */
 	UPROPERTY()
 	TArray<TObjectPtr<UUDModifier>> Modifiers;
+	UPROPERTY()
+	FString Name;
 };
 
 /**
