@@ -29,7 +29,7 @@ void UUDMessageManagementViewModel::Initialize()
 	SetMessageManagementTitleText(messageTitle);
 	FText messageCount = FText::Format(LOCTEXT("MessageManagement", "{0}/{1}"), 0, 0);
 	SetMessageCountText(messageCount);
-
+	
 	FText close = FText(LOCTEXT("MessageManagement", "X"));
 	SetCloseText(close);
 	FText first = FText(LOCTEXT("MessageManagement", "|<<"));
@@ -40,6 +40,9 @@ void UUDMessageManagementViewModel::Initialize()
 	SetNextText(next);
 	FText last = FText(LOCTEXT("MessageManagement", ">>|"));
 	SetLastText(last);
+
+	SelectedIndex = UUDGlobalData::InvalidArrayIndex;
+	SelectedMessageItem = GetInvalidMessage();
 
 	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDMessageManagementViewModel::Reload);
 	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDMessageManagementViewModel::Update);
@@ -75,7 +78,14 @@ void UUDMessageManagementViewModel::UpdateSelectedMessageItem()
 {
 	FText messageCount = FText::Format(LOCTEXT("MessageManagement", "{0}/{1}"), SelectedIndex + 1, Content.Messages.Num());
 	SetMessageCountText(messageCount);
-	MessageItemInstance->SetContent(SelectedMessageItem);
+	if (SelectedIndex == UUDGlobalData::InvalidArrayIndex)
+	{
+		MessageItemInstance->InvalidateContent(SelectedMessageItem);
+	}
+	else 
+	{
+		MessageItemInstance->SetContent(SelectedMessageItem);
+	}
 }
 
 #undef LOCTEXT_NAMESPACE
