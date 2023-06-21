@@ -49,6 +49,30 @@ public:
  * Transforms action parameters to properly named fields.
  */
 USTRUCT(BlueprintType)
+struct FUDGameDataTargetResourceAmount
+{
+	GENERATED_BODY()
+public:
+	FUDGameDataTargetResourceAmount() {}
+	FUDGameDataTargetResourceAmount(TArray<int32> valueParameters)
+	{
+		TargetId = valueParameters[0];
+		Resource = valueParameters[1];
+		Amount = valueParameters[2];
+	}
+	UPROPERTY(BlueprintReadOnly)
+	int32 TargetId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 Resource = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 Amount = 0;
+	static const int32 ParameterCount = 3;
+};
+
+/**
+ * Transforms action parameters to properly named fields.
+ */
+USTRUCT(BlueprintType)
 struct FUDGameDataTargetTile
 {
 	GENERATED_BODY()

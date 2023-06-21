@@ -66,13 +66,14 @@ void UUDWorldArbiter::EvaluateTurnGameOverState(TObjectPtr<UUDWorldState> gaiaWo
 	{
 		CrownIsEmpty = true;
 		// TODO add legitimacy
-		// This determines final usurper based on gold
-		int32 mostGold = -1;
+		// This determines final usurper based on reputation
+		int32 mostReputation = -1;
 		for (auto& player : gaiaWorldState->Factions)
 		{
-			if (player.Value->ResourceGold > mostGold && player.Value->PlayerUniqueId != UUDGlobalData::GaiaFactionId)
+			if (player.Value->Resources[UD_RESOURCE_REPUTATION_ID] > mostReputation && 
+				player.Value->PlayerUniqueId != UUDGlobalData::GaiaFactionId)
 			{
-				mostGold = player.Value->ResourceGold;
+				mostReputation = player.Value->Resources[UD_RESOURCE_REPUTATION_ID];
 				CrownableRuler = player.Value->PlayerUniqueId;
 			}
 		}

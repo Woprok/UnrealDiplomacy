@@ -1,6 +1,8 @@
 // Copyright Miroslav Valach
 
 #include "Core/Simulation/Actions/UDGameActionTileTransfer.h"
+#include "Core/Simulation/Actions/UDGameActionTileTransferAccept.h"
+#include "Core/Simulation/Actions/UDGameActionTileTransferReject.h"
 #include "Core/UDGlobalData.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDWorldState.h"
@@ -44,9 +46,16 @@ FUDActionPresentation UUDGameActionTileTransfer::GetPresentation() const
 			UD_ACTION_TAG_STRATAGEM,
 			UD_ACTION_TAG_STRATAGEM_COST_2,
 			UD_ACTION_TAG_FACTION_INTERACTION,
+			UD_ACTION_TAG_PARAMETER_FACTION,
 			UD_ACTION_TAG_PARAMETER_TILE,
 		}
 	);
+
+	presentation.AcceptActionId = UUDGameActionTileTransferAccept::ActionTypeId;
+	presentation.RejectActionId = UUDGameActionTileTransferReject::ActionTypeId;
+	presentation.MessageContentFormat = FText(LOCTEXT("TileTransfer", 
+		"Faction [{INVOKER}] offered your faction [{TARGET}] province [{TILE}].\nDo you accept ?"
+	)).ToString();
 
 	return presentation;
 }

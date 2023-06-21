@@ -51,7 +51,15 @@ protected:
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> TileNameTextWidget;
 	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> OwnerTextWidget;
+	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> FactionNameTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> ResourceTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> ResourceValueTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> ResourceTypeTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> CloseTextWidget;
 	UPROPERTY()

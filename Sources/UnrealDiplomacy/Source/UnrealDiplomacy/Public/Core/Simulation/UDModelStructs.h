@@ -199,11 +199,6 @@ public:
 };
 
 #pragma region Resources
-#define UD_RESOURCE_REPUTATION_ID 0
-#define UD_RESOURCE_GOLD_ID 1
-#define UD_RESOURCE_FOOD_ID 2
-#define UD_RESOURCE_MATERIALS_ID 3
-#define UD_RESOURCE_LUXURIES_ID 4
 /**
  * Resource holder that is taking resources and providing all additional informations.
  * TODO this should be refactored if resources are changed to separate class that is able to
@@ -296,6 +291,10 @@ public:
 	int32 FactionId = 0;
 	UPROPERTY(BlueprintReadOnly)
 	FString FactionName = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	int32 ResourceAmount = 0;
+	UPROPERTY(BlueprintReadOnly)
+	FString ResourceTypeName = TEXT("");
 };
 
 #pragma region Parameters

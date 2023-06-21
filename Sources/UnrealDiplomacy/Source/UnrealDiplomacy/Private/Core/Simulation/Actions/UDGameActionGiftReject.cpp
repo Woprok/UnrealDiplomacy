@@ -7,7 +7,7 @@
 
 bool UUDGameActionGiftReject::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	FUDGameDataTargetAmount data(action.ValueParameters);
+	FUDGameDataTargetResourceAmount data(action.ValueParameters);
 	bool isQueued = IsPendingTargetRequest(action, data.TargetId, world);
 	return UUDGameActionGift::CanExecute(action, world) && isQueued;
 }
@@ -16,7 +16,7 @@ void UUDGameActionGiftReject::Execute(const FUDActionData& action, TObjectPtr<UU
 {
 	IUDActionInterface::Execute(action, world);
 	// Request is removed from queue, without any effect being applied.
-	FUDGameDataTargetAmount data(action.ValueParameters);
+	FUDGameDataTargetResourceAmount data(action.ValueParameters);
 	RemovePendingTargetRequest(action, data.TargetId, world);
 }
 
@@ -24,7 +24,7 @@ void UUDGameActionGiftReject::Revert(const FUDActionData& action, TObjectPtr<UUD
 {
 	IUDActionInterface::Revert(action, world);
 	// Request is returned to queue.
-	FUDGameDataTargetAmount data(action.ValueParameters);
+	FUDGameDataTargetResourceAmount data(action.ValueParameters);
 	FUDActionData originalActionData = FUDActionData::AsPredecessorOf(action, UUDGameActionGift::ActionTypeId);
 	AddPendingTargetRequest(originalActionData, data.TargetId, world);
 }

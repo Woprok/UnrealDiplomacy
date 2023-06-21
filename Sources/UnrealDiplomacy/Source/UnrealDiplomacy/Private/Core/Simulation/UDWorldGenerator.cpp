@@ -41,6 +41,11 @@ int32 UUDWorldGenerator::CalculateMaximumSize()
 	return SizeOfY * SizeOfX;
 }
 
+bool InRange(int value, int32 min, int32 max)
+{
+	return value >= min && value <= max;
+}
+
 void UUDWorldGenerator::GenerateProperties(int32 mapSeed)
 {
 	// Remember core value.
@@ -52,18 +57,39 @@ void UUDWorldGenerator::GenerateProperties(int32 mapSeed)
 	{
 		for (int32 y = 0; y < SizeOfY; y++)
 		{
-			auto next = current.RandRange(1, 100);
+			int32 next = current.RandRange(1, 100);
 			int32 xy = CalculateIndex(x, y);
-			if (next >= 1 && next <= 50)
+			// TODO make this properly choose and generate all types of tiles.
+			// TODO added generator that actually does something properly.
+			if (InRange(next, 0, 40))
 			{
 				Map[xy]->Type = 69;
+				Map[xy]->ResourceType = UD_RESOURCE_FOOD_ID;
+				Map[xy]->ResourceStored = 1000;
+			}
+			else if (InRange(next, 41, 70))
+			{
+				Map[xy]->ResourceType = UD_RESOURCE_MATERIALS_ID;
+				Map[xy]->ResourceStored = 500;
+			}
+			else if (InRange(next, 71, 90))
+			{
+				Map[xy]->Type = 42;
+				Map[xy]->ResourceType = UD_RESOURCE_GOLD_ID;
+				Map[xy]->ResourceStored = 250;
+			}
+			else if (InRange(next, 91, 100))
+			{
+				Map[xy]->Type = 42;
+				Map[xy]->ResourceType = UD_RESOURCE_LUXURIES_ID;
+				Map[xy]->ResourceStored = 100;
 			}
 			else
 			{
 				Map[xy]->Type = 42;
+				Map[xy]->ResourceType = UD_RESOURCE_REPUTATION_ID;
+				Map[xy]->ResourceStored = 100;
 			}
-			// TODO make this properly choose and generate all types of tiles.
-			// TODO added generator that actually does something properly.
 		}
 	}
 }

@@ -12,11 +12,11 @@ void UUDGaiaActionResourcesAllAdd::Execute(const FUDActionData& action, TObjectP
 	FUDGaiaDataAmount data(action.ValueParameters);
 	for (auto& state : world->Factions)
 	{
-		state.Value->ResourceReputation += data.Amount / 5;
-		state.Value->ResourceGold += data.Amount;
-		state.Value->ResourceFood += data.Amount * 5;
-		state.Value->ResourceMaterials += data.Amount * 2.5;
-		state.Value->ResourceLuxuries += data.Amount / 10;
+		state.Value->Resources[UD_RESOURCE_REPUTATION_ID] += data.Amount / 5;
+		state.Value->Resources[UD_RESOURCE_GOLD_ID] += data.Amount;
+		state.Value->Resources[UD_RESOURCE_FOOD_ID] += data.Amount * 5;
+		state.Value->Resources[UD_RESOURCE_MATERIALS_ID] += data.Amount * 2.5;
+		state.Value->Resources[UD_RESOURCE_LUXURIES_ID] += data.Amount / 10;
 	}
 }
 
@@ -27,10 +27,10 @@ void UUDGaiaActionResourcesAllAdd::Revert(const FUDActionData& action, TObjectPt
 	FUDGaiaDataAmount data(action.ValueParameters);
 	for (auto& state : world->Factions)
 	{
-		state.Value->ResourceReputation -= data.Amount / 5;
-		state.Value->ResourceGold -= data.Amount;
-		state.Value->ResourceFood -= data.Amount * 5;
-		state.Value->ResourceMaterials -= data.Amount * 2.5;
-		state.Value->ResourceLuxuries -= data.Amount / 10;
+		state.Value->Resources[UD_RESOURCE_REPUTATION_ID] -= data.Amount / 5;
+		state.Value->Resources[UD_RESOURCE_GOLD_ID] -= data.Amount;
+		state.Value->Resources[UD_RESOURCE_FOOD_ID] -= data.Amount * 5;
+		state.Value->Resources[UD_RESOURCE_MATERIALS_ID] -= data.Amount * 2.5;
+		state.Value->Resources[UD_RESOURCE_LUXURIES_ID] -= data.Amount / 10;
 	}
 }

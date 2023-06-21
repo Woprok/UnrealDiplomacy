@@ -16,8 +16,16 @@ void UUDTileManagementViewModel::Initialize()
 	SetTileManagementTitleText(managementTitle);
 	FText tileName = FText(LOCTEXT("TilePanel", "Tile"));
 	SetTileNameText(tileName);
+	FText owner = FText(LOCTEXT("TilePanel", "Current Owner"));
+	SetOwnerText(owner);
 	FText factionName = FText(LOCTEXT("TilePanel", "Faction"));
 	SetFactionNameText(factionName);
+	FText resource = FText(LOCTEXT("TilePanel", "Resource Left"));
+	SetResourceText(resource);
+	FText resourceValue = FText::Format(LOCTEXT("TilePanel", "{0}"), 0);
+	SetResourceValueText(resourceValue);
+	FText resourceType = FText(LOCTEXT("TilePanel", "Type"));
+	SetResourceTypeText(resourceType);
 	FText close = FText(LOCTEXT("TilePanel", "X"));
 	SetCloseText(close);
 
@@ -46,6 +54,9 @@ void UUDTileManagementViewModel::Update()
 	FUDTileInfo tile = Model->GetTileInfo(SelectedTile);
 	SetTileNameText(FText::FromString(tile.Name));
 	SetFactionNameText(FText::FromString(tile.FactionName));
+	FText resourceValue = FText::Format(LOCTEXT("TilePanel", "{0}"), tile.ResourceAmount);
+	SetResourceValueText(resourceValue);
+	SetResourceTypeText(FText::FromString(tile.ResourceTypeName));
 
 	UpdateTileInteractionList();
 }
@@ -112,6 +123,16 @@ FText UUDTileManagementViewModel::GetTileNameText() const
 	return TileNameText;
 }
 
+void UUDTileManagementViewModel::SetOwnerText(FText newOwnerText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(OwnerText, newOwnerText);
+}
+
+FText UUDTileManagementViewModel::GetOwnerText() const
+{
+	return OwnerText;
+}
+
 void UUDTileManagementViewModel::SetFactionNameText(FText newFactionNameText)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(FactionNameText, newFactionNameText);
@@ -120,6 +141,36 @@ void UUDTileManagementViewModel::SetFactionNameText(FText newFactionNameText)
 FText UUDTileManagementViewModel::GetFactionNameText() const
 {
 	return FactionNameText;
+}
+
+void UUDTileManagementViewModel::SetResourceText(FText newResourceText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ResourceText, newResourceText);
+}
+
+FText UUDTileManagementViewModel::GetResourceText() const
+{
+	return ResourceText;
+}
+
+void UUDTileManagementViewModel::SetResourceTypeText(FText newResourceTypeText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ResourceTypeText, newResourceTypeText);
+}
+
+FText UUDTileManagementViewModel::GetResourceTypeText() const
+{
+	return ResourceTypeText;
+}
+
+void UUDTileManagementViewModel::SetResourceValueText(FText newResourceValueText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ResourceValueText, newResourceValueText);
+}
+
+FText UUDTileManagementViewModel::GetResourceValueText() const
+{
+	return ResourceValueText;
 }
 
 void UUDTileManagementViewModel::SetCloseText(FText newCloseText)

@@ -58,6 +58,10 @@ public:
 	TArray<TObjectPtr<UUDModifier>> Modifiers;
 	UPROPERTY()
 	FString Name;
+	UPROPERTY()
+	int32 ResourceType;
+	UPROPERTY()
+	int32 ResourceStored;
 };
 
 /**
@@ -139,6 +143,14 @@ enum class EUDFactionController : uint8
 	AI = 4,
 };
 
+// Resources used by the game.
+// TODO move this to resource manager.
+#define UD_RESOURCE_REPUTATION_ID 0
+#define UD_RESOURCE_GOLD_ID 1
+#define UD_RESOURCE_FOOD_ID 2
+#define UD_RESOURCE_MATERIALS_ID 3
+#define UD_RESOURCE_LUXURIES_ID 4
+
 /**
  * Faction is primary control unit of each player or AI.
  * World is considered faction as well: Gaia Faction.
@@ -173,35 +185,13 @@ public:
 	UPROPERTY()
 	int32 PlayerUniqueId;
 	/**
-	 * Core resource representing standing within the empire.
-	 * TODO Generalize into the resource manager.
+	 * Resources used by the game.
+	 * First is resource Id, second is current value.
+	 * Resource ids is supposed to be provided by ResourceManager.
+	 * If resource manager does not exists it's defined as macro constant in world state header file.
 	 */
 	UPROPERTY()
-	int32 ResourceReputation = 0;
-	/**
-	 * Primary resource for trading.
-	 * TODO Generalize into the resource manager.
-	 */
-	UPROPERTY()
-	int32 ResourceGold = 0;
-	/**
-	 * Secondary resource for economy.
-	 * TODO Generalize into the resource manager.
-	 */
-	UPROPERTY()
-	int32 ResourceFood = 0;
-	/**
-	 * Secondary resource for economy.
-	 * TODO Generalize into the resource manager.
-	 */
-	UPROPERTY()
-	int32 ResourceMaterials = 0;
-	/**
-	 * Tertiary resource for undefined behaviour.
-	 * TODO Generalize into the resource manager.
-	 */
-	UPROPERTY()
-	int32 ResourceLuxuries = 0;
+	TMap<int32, int32> Resources;
 	/**
 	 * List of all available stratagem options to use.
 	 * On other words what kind of expensive actions can be used.

@@ -31,6 +31,8 @@ struct FUDTileInfo;
 struct FUDTileMinimalInfo;
 struct FUDTileInteractionInfo;
 struct FUDResourceInfo;
+struct FUDResourceMinimalInfo;
+struct FUDActionMinimalInfo;
 
 struct FUDMessageInfo;
 struct FUDMessageInteractionInfo;
@@ -343,6 +345,8 @@ public:
 	TArray<FUDResourceInfo> GetResourceList();
 	/** Retrieves all resources and their current amount for local player. */
 	TArray<FUDResourceInfo> GetLocalFactionResourceList();
+	/** Retrieves all resources supported by the game. */
+	TArray<FUDResourceMinimalInfo> GetResourceItemList();
 #pragma endregion
 
 #pragma region Gameplay
@@ -394,20 +398,22 @@ public:
 	 * Allows to exclude single tag.
 	 * Used for removing implicit tags that is not desired to be edited.
 	 */
-	FUDParameterListInfo GetActionParameters(TSet<int32> tags, int32 excludeTag);
+	FUDParameterListInfo GetActionParameters(const TSet<int32>& tags, int32 excludeTag);
+	/** Returns list of actions that can be used as parameter. */
+	TArray<FUDActionMinimalInfo> GetActionList();
 private:
-	bool HasFactionParameter(TSet<int32> tags, int32 excludeTag);
-	bool HasTileParameter(TSet<int32> tags, int32 excludeTag);
-	bool HasActionParameter(TSet<int32> tags, int32 excludeTag);
-	bool HasResourceParameter(TSet<int32> tags, int32 excludeTag);
-	bool HasValueParameter(TSet<int32> tags, int32 excludeTag);
-	bool HasTextParameter(TSet<int32> tags, int32 excludeTag);
-	ParameterData GetFactionParameter(TSet<int32> tags);
-	ParameterData GetTileParameter(TSet<int32> tags);
-	ParameterData GetActionParameter(TSet<int32> tags);
-	ParameterData GetResourceParameter(TSet<int32> tags);
-	ParameterData GetValueParameter(TSet<int32> tags);
-	ParameterData GetTextParameter(TSet<int32> tags);
+	bool HasFactionParameter(const TSet<int32>& tags, int32 excludeTag = UD_INVALID_TAG_ID);
+	bool HasTileParameter(const TSet<int32>& tags, int32 excludeTag = UD_INVALID_TAG_ID);
+	bool HasActionParameter(const TSet<int32>& tags, int32 excludeTag = UD_INVALID_TAG_ID);
+	bool HasResourceParameter(const TSet<int32>& tags, int32 excludeTag = UD_INVALID_TAG_ID);
+	bool HasValueParameter(const TSet<int32>& tags, int32 excludeTag = UD_INVALID_TAG_ID);
+	bool HasTextParameter(const TSet<int32>& tags, int32 excludeTag = UD_INVALID_TAG_ID);
+	ParameterData GetFactionParameter(const TSet<int32>& tags);
+	ParameterData GetTileParameter(const TSet<int32>& tags);
+	ParameterData GetActionParameter(const TSet<int32>& tags);
+	ParameterData GetResourceParameter(const TSet<int32>& tags);
+	ParameterData GetValueParameter(const TSet<int32>& tags);
+	ParameterData GetTextParameter(const TSet<int32>& tags);
 #pragma endregion
 
 #pragma region Messages & Request Interaction
@@ -419,6 +425,16 @@ public:
 private:
 	/** Transforms request data into a presentable format. */
 	FUDMessageInfo CreateMessageFromRequest(int32 requestId, FUDActionData action);
+	/** Merges format and action to result string. */
+	FString GetFormattedMessageContent(FString formatString, const TSet<int32>& tags, FUDActionData action);
+	/** Retrieves parameters from the tags and associate them with action values. */
+	FStringFormatNamedArguments GetMessageContentArguments(const TSet<int32>& tags, FUDActionData action);
+	FStringFormatArg GetFactionArgument(const TArray<int32>& data, int32& startIndex);
+	FStringFormatArg GetTileArgument(const TArray<int32>& data, int32& startIndex);
+	FStringFormatArg GetActionArgument(const TArray<int32>& data, int32& startIndex);
+	FStringFormatArg GetResourceArgument(const TArray<int32>& data, int32& startIndex);
+	FStringFormatArg GetValueArgument(const TArray<int32>& data, int32& startIndex);
+	FStringFormatArg GetTextArgument(FString data);
 #pragma endregion
 
 public:
@@ -528,7 +544,7 @@ public:
 	FUDNationInfo GetCurrentNationState(int32 nationId)
 	{
 		if (IsValidNation(nationId))
-			return FUDNationInfo(nationId, State->Factions[nationId]->ResourceGold);
+			return FUDNationInfo(nationId, State->Factions[nationId]->Resources[UD_RESOURCE_GOLD_ID]);
 		return FUDNationInfo_INVALID;
 	}
 	/**
@@ -537,7 +553,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	int32 GetCurrentResourceGold()
 	{
-		return State->Factions[State->FactionPerspective]->ResourceGold;
+		return State->Factions[State->FactionPerspective]->Resources[UD_RESOURCE_GOLD_ID];
 	}
 	/**
 	 * Returns list of players in PlayerInfo format.
@@ -573,7 +589,7 @@ public:
 	{
 		return targetId != State->FactionPerspective 
 			&& goldAmount > 0 
-			&& State->Factions[State->FactionPerspective]->ResourceGold - goldAmount >= 0;
+			&& State->Factions[State->FactionPerspective]->Resources[UD_RESOURCE_GOLD_ID] - goldAmount >= 0;
 	}
 	UFUNCTION(BlueprintCallable)
 	FIntPoint GetFirstNeutralTile()

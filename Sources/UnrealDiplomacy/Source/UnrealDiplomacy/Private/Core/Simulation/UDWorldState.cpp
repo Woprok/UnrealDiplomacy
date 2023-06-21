@@ -11,7 +11,11 @@ TObjectPtr<UUDTileState> UUDTileState::CreateState(int32 x, int32 y)
 	newState->Position = FIntPoint(x, y);
 	newState->OwnerUniqueId = UUDGlobalData::GaiaFactionId;
 	newState->Type = 0;
-	newState->Name = FString::Format(TEXT("Province x{0}y{1}"), { x, y } );
+	newState->Name = FString::Format(TEXT("Province X:{0} Y:{1}"), 
+		{ FString::Printf(TEXT("%*d"), 2, x), FString::Printf(TEXT("%*d"), 2, y) }
+	);
+	newState->ResourceType = UD_RESOURCE_FOOD_ID;
+	newState->ResourceStored = 0;
 	return newState;
 }
 
@@ -22,6 +26,8 @@ TObjectPtr<UUDTileState> UUDTileState::Duplicate(TObjectPtr<UUDTileState> existi
 	newState->OwnerUniqueId = existingState->OwnerUniqueId;
 	newState->Type = existingState->Type;
 	newState->Name = FString(existingState->Name);
+	newState->ResourceType = existingState->ResourceType;
+	newState->ResourceStored = existingState->ResourceStored;
 	return MoveTempIfPossible(newState);
 }
 
@@ -61,6 +67,14 @@ TObjectPtr<UUDFactionState> UUDFactionState::CreateState(int32 factionId)
 	newState->StratagemOptions.Empty(0);
 	newState->Name = FString::Format(TEXT("Faction {0}"), { factionId });
 	newState->Controller = EUDFactionController::Error;
+	newState->Resources.Empty();
+	// TODO replace this with resource manager initialization.
+	newState->Resources.Add(UD_RESOURCE_REPUTATION_ID, 0);
+	newState->Resources.Add(UD_RESOURCE_GOLD_ID, 50);
+	newState->Resources.Add(UD_RESOURCE_FOOD_ID, 200);
+	newState->Resources.Add(UD_RESOURCE_MATERIALS_ID, 100);
+	newState->Resources.Add(UD_RESOURCE_LUXURIES_ID, 0);
+	
 	return newState;
 }
 

@@ -26,7 +26,11 @@ void UUDTileManagementUserWidget::BindWidgets()
 {
 	TileManagementTitleTextWidget = GetWidget<UTextBlock>(TEXT("TileManagementTitleText"));
 	TileNameTextWidget = GetWidget<UTextBlock>(TEXT("TileNameText"));
+	OwnerTextWidget = GetWidget<UTextBlock>(TEXT("OwnerText"));
 	FactionNameTextWidget = GetWidget<UTextBlock>(TEXT("FactionNameText"));
+	ResourceTextWidget = GetWidget<UTextBlock>(TEXT("ResourceText"));
+	ResourceValueTextWidget = GetWidget<UTextBlock>(TEXT("ResourceValueText"));
+	ResourceTypeTextWidget = GetWidget<UTextBlock>(TEXT("ResourceTypeText"));
 	CloseTextWidget = GetWidget<UTextBlock>(TEXT("CloseText"));
 	CloseButtonWidget = GetWidget<UButton>(TEXT("CloseButton"));
 	TileInteractionListWidget = GetWidget<UListView>(TEXT("TileInteractionList"));

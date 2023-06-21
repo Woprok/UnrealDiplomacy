@@ -35,7 +35,8 @@ void AUDSkirmishAIController::ProcessInTurnPlay()
 	{
 		OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetAction(UUDGameActionGift::ActionTypeId,
 			{ 
-				gifters.Pop(), 
+				gifters.Pop(),
+				1,
 				69 
 			}
 		));

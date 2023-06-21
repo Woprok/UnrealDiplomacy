@@ -295,14 +295,30 @@ TArray<FUDResourceInfo> UUDActionAdministrator::GetLocalFactionResourceList()
 
 	TObjectPtr<UUDFactionState> faction = State->Factions[State->FactionPerspective];
 
-	resources.Add(FUDResourceInfo::GetReputation(faction->ResourceReputation));
-	resources.Add(FUDResourceInfo::GetGold(faction->ResourceGold));
-	resources.Add(FUDResourceInfo::GetFood(faction->ResourceFood));
-	resources.Add(FUDResourceInfo::GetMaterials(faction->ResourceMaterials));
-	resources.Add(FUDResourceInfo::GetLuxuries(faction->ResourceLuxuries));
+	resources.Add(FUDResourceInfo::GetReputation(faction->Resources[UD_RESOURCE_REPUTATION_ID]));
+	resources.Add(FUDResourceInfo::GetGold(faction->Resources[UD_RESOURCE_GOLD_ID]));
+	resources.Add(FUDResourceInfo::GetFood(faction->Resources[UD_RESOURCE_FOOD_ID]));
+	resources.Add(FUDResourceInfo::GetMaterials(faction->Resources[UD_RESOURCE_MATERIALS_ID]));
+	resources.Add(FUDResourceInfo::GetLuxuries(faction->Resources[UD_RESOURCE_LUXURIES_ID]));
 
 	return resources;
 }
+
+TArray<FUDResourceMinimalInfo> UUDActionAdministrator::GetResourceItemList()
+{
+	TArray<FUDResourceMinimalInfo> resources = { };
+
+	for (const auto& res : GetResourceList())
+	{
+		FUDResourceMinimalInfo resource;
+		resource.Id = res.Id;
+		resource.Name = res.Name;
+		resources.Add(resource);
+	}
+
+	return resources;
+}
+
 #pragma endregion
 
 #pragma region Gameplay
@@ -430,7 +446,22 @@ FUDTileInfo UUDActionAdministrator::GetTileInfo(FIntPoint position)
 	tileInfo.Position = tile->Position;
 	tileInfo.Name = tile->Name;
 	tileInfo.FactionId	= tile->OwnerUniqueId;
-	tileInfo.FactionName = State->Factions[tile->OwnerUniqueId]->Name;
+	if (IsFactionPlayerControlled(tile->OwnerUniqueId))
+	{
+		tileInfo.FactionName = State->Factions[tile->OwnerUniqueId]->Name;
+	}
+	else
+	{
+		tileInfo.FactionName = TEXT("Gaia");
+	}
+	tileInfo.ResourceAmount = tile->ResourceStored;
+	
+	for (const auto& res : GetResourceList())
+	{
+		if (res.Id == tile->ResourceType)
+			tileInfo.ResourceTypeName = res.Name;
+	}
+	
 	return tileInfo;
 }
 
@@ -455,8 +486,22 @@ TArray<FUDTileMinimalInfo> UUDActionAdministrator::GetTileOptions()
 
 #pragma region Parameters
 #define LOCTEXT_NAMESPACE "Parameters"
+TArray<FUDActionMinimalInfo> UUDActionAdministrator::GetActionList()
+{
+	TArray<FUDActionMinimalInfo> actions = { };
 
-bool UUDActionAdministrator::HasTileParameter(TSet<int32> tags, int32 excludeTag)
+	for (const auto& stratagem : ActionManager->FilterStratagems())
+	{
+		FUDActionMinimalInfo action;
+		action.Id = stratagem.ActionId;
+		action.Name = stratagem.Name;
+		actions.Add(action);
+	}
+
+	return actions;
+}
+
+bool UUDActionAdministrator::HasTileParameter(const TSet<int32>& tags, int32 excludeTag)
 {
 	TSet<int32> searchTags = {
 		UD_ACTION_TAG_PARAMETER_TILE
@@ -471,7 +516,7 @@ bool UUDActionAdministrator::HasTileParameter(TSet<int32> tags, int32 excludeTag
 	return true;
 }
 
-bool UUDActionAdministrator::HasFactionParameter(TSet<int32> tags, int32 excludeTag)
+bool UUDActionAdministrator::HasFactionParameter(const TSet<int32>& tags, int32 excludeTag)
 {
 	TSet<int32> searchTags = {
 		UD_ACTION_TAG_PARAMETER_FACTION
@@ -486,7 +531,7 @@ bool UUDActionAdministrator::HasFactionParameter(TSet<int32> tags, int32 exclude
 	return true;
 }
 
-bool UUDActionAdministrator::HasActionParameter(TSet<int32> tags, int32 excludeTag)
+bool UUDActionAdministrator::HasActionParameter(const TSet<int32>& tags, int32 excludeTag)
 {
 	TSet<int32> searchTags = {
 		UD_ACTION_TAG_PARAMETER_ACTION
@@ -501,7 +546,7 @@ bool UUDActionAdministrator::HasActionParameter(TSet<int32> tags, int32 excludeT
 	return true;
 }
 
-bool UUDActionAdministrator::HasResourceParameter(TSet<int32> tags, int32 excludeTag)
+bool UUDActionAdministrator::HasResourceParameter(const TSet<int32>& tags, int32 excludeTag)
 {
 	TSet<int32> searchTags = {
 		UD_ACTION_TAG_PARAMETER_RESOURCE
@@ -516,7 +561,7 @@ bool UUDActionAdministrator::HasResourceParameter(TSet<int32> tags, int32 exclud
 	return true;
 }
 
-bool UUDActionAdministrator::HasValueParameter(TSet<int32> tags, int32 excludeTag)
+bool UUDActionAdministrator::HasValueParameter(const TSet<int32>& tags, int32 excludeTag)
 {
 	TSet<int32> searchTags = {
 		UD_ACTION_TAG_PARAMETER_VALUE
@@ -531,7 +576,7 @@ bool UUDActionAdministrator::HasValueParameter(TSet<int32> tags, int32 excludeTa
 	return true;
 }
 
-bool UUDActionAdministrator::HasTextParameter(TSet<int32> tags, int32 excludeTag)
+bool UUDActionAdministrator::HasTextParameter(const TSet<int32>& tags, int32 excludeTag)
 {
 	TSet<int32> searchTags = {
 		UD_ACTION_TAG_PARAMETER_TEXT
@@ -546,96 +591,103 @@ bool UUDActionAdministrator::HasTextParameter(TSet<int32> tags, int32 excludeTag
 	return true;
 }
 
-ParameterData UUDActionAdministrator::GetTileParameter(TSet<int32> tags)
+ParameterData UUDActionAdministrator::GetTileParameter(const TSet<int32>& tags)
 {
 	ParameterData data;
-	FUDTileParameter tile;
+	FUDTileParameter parameter;
 
-	tile.Name = FText(LOCTEXT("Parameters", "Tile")).ToString();
-	tile.ToolTip = FText(LOCTEXT("Parameters", "Tile is required to be used with this action.")).ToString();
+	parameter.Name = FText(LOCTEXT("Parameters", "Tile")).ToString();
+	parameter.ToolTip = FText(LOCTEXT("Parameters", "Tile is required to be used with this action.")).ToString();
 
-	tile.Options = GetTileOptions();
+	parameter.Options = GetTileOptions();
 
-	data.Set<FUDTileParameter>(tile);
+	data.Set<FUDTileParameter>(parameter);
 	return data;
 }
 
-ParameterData UUDActionAdministrator::GetFactionParameter(TSet<int32> tags)
+ParameterData UUDActionAdministrator::GetFactionParameter(const TSet<int32>& tags)
 {
 	ParameterData data;
-	FUDFactionParameter tile;
+	FUDFactionParameter parameter;
 
-	tile.Name = FText(LOCTEXT("Parameters", "Faction")).ToString();
-	tile.ToolTip = FText(LOCTEXT("Parameters", "Faction is required to be selected with this action.")).ToString();
+	parameter.Name = FText(LOCTEXT("Parameters", "Faction")).ToString();
+	parameter.ToolTip = FText(LOCTEXT("Parameters", "Faction is required to be selected with this action.")).ToString();
 
-	data.Set<FUDFactionParameter>(tile);
+	parameter.Options = GetFactionList();
+
+	data.Set<FUDFactionParameter>(parameter);
 	return data;
 }
 
-ParameterData UUDActionAdministrator::GetActionParameter(TSet<int32> tags)
+ParameterData UUDActionAdministrator::GetActionParameter(const TSet<int32>& tags)
 {
 	ParameterData data;
-	FUDActionParameter tile;
+	FUDActionParameter parameter;
 
-	tile.Name = FText(LOCTEXT("Parameters", "Action")).ToString();
-	tile.ToolTip = FText(LOCTEXT("Parameters", "Action is required to be selected for this action.")).ToString();
+	parameter.Name = FText(LOCTEXT("Parameters", "Action")).ToString();
+	parameter.ToolTip = FText(LOCTEXT("Parameters", "Action is required to be selected for this action.")).ToString();
 
-	data.Set<FUDActionParameter>(tile);
+	parameter.Options = GetActionList();
+
+	data.Set<FUDActionParameter>(parameter);
 	return data;
 }
 
-ParameterData UUDActionAdministrator::GetResourceParameter(TSet<int32> tags)
+ParameterData UUDActionAdministrator::GetResourceParameter(const TSet<int32>& tags)
 {
 	ParameterData data;
-	FUDResourceParameter tile;
+	FUDResourceParameter parameter;
 
-	tile.Name = FText(LOCTEXT("Parameters", "Resource")).ToString();
-	tile.ToolTip = FText(LOCTEXT("Parameters", "Resource is required to be chosen with this action.")).ToString();
+	parameter.Name = FText(LOCTEXT("Parameters", "Resource")).ToString();
+	parameter.ToolTip = FText(LOCTEXT("Parameters", "Resource is required to be chosen with this action.")).ToString();
 
-	data.Set<FUDResourceParameter>(tile);
+	parameter.Options = GetResourceItemList();
+
+	data.Set<FUDResourceParameter>(parameter);
 	return data;
 }
 
-ParameterData UUDActionAdministrator::GetValueParameter(TSet<int32> tags)
+ParameterData UUDActionAdministrator::GetValueParameter(const TSet<int32>& tags)
 {
 	ParameterData data;
-	FUDValueParameter tile;
+	FUDValueParameter parameter;
 
 	if (tags.Contains(UD_ACTION_TAG_PARAMETER_VALUE_AMOUNT))
 	{
-		tile.Name = FText(LOCTEXT("Parameters", "Amount")).ToString();
-		tile.ToolTip = FText(LOCTEXT("Parameters", "Amount is required to be chosen for this action.")).ToString();
+		parameter.Name = FText(LOCTEXT("Parameters", "Amount")).ToString();
+		parameter.ToolTip = FText(LOCTEXT("Parameters", "Amount is required to be chosen for this action.")).ToString();
 	}
 	else
 	{
-		tile.Name = FText(LOCTEXT("Parameters", "Value")).ToString();
-		tile.ToolTip = FText(LOCTEXT("Parameters", "Value is required to be defined with this action.")).ToString();
+		parameter.Name = FText(LOCTEXT("Parameters", "Value")).ToString();
+		parameter.ToolTip = FText(LOCTEXT("Parameters", "Value is required to be defined with this action.")).ToString();
 	}
 
-	tile.MinValue = 1;
-	tile.MaxValue = 100;
+	parameter.MinValue = 1;
+	parameter.MaxValue = 100;
 	if (tags.Contains(UD_ACTION_TAG_PARAMETER_VALUE_SMALL_MAX))
 	{
-		tile.MaxValue = 50;
+		parameter.MaxValue = 50;
 	}
 
-	data.Set<FUDValueParameter>(tile);
+	data.Set<FUDValueParameter>(parameter);
 	return data;
 }
 
-ParameterData UUDActionAdministrator::GetTextParameter(TSet<int32> tags)
+ParameterData UUDActionAdministrator::GetTextParameter(const TSet<int32>& tags)
 {
 	ParameterData data;
-	FUDTextParameter tile;
+	FUDTextParameter parameter;
 
-	tile.Name = FText(LOCTEXT("Parameters", "Text")).ToString();
-	tile.ToolTip = FText(LOCTEXT("Parameters", "Text is required to be provided with this action.")).ToString();
+	parameter.Name = FText(LOCTEXT("Parameters", "Text")).ToString();
+	parameter.ToolTip = FText(LOCTEXT("Parameters", "Text is required to be provided with this action.")).ToString();
 
-	data.Set<FUDTextParameter>(tile);
+	data.Set<FUDTextParameter>(parameter);
 	return data;
 }
 
-FUDParameterListInfo UUDActionAdministrator::GetActionParameters(TSet<int32> tags, int32 excludeTag)
+// Note this is similiar to GetMessageContentArguments, in case of changing this change the other one to match.
+FUDParameterListInfo UUDActionAdministrator::GetActionParameters(const TSet<int32>& tags, int32 excludeTag)
 {
 	FUDParameterListInfo parameters;
 	parameters.OrderedType.Empty(0);
@@ -680,13 +732,109 @@ FUDParameterListInfo UUDActionAdministrator::GetActionParameters(TSet<int32> tag
 #pragma endregion
 
 #pragma region Messages & Request Interaction
+FStringFormatArg UUDActionAdministrator::GetFactionArgument(const TArray<int32>& data, int32& startIndex)
+{
+	int32 factionId = data[startIndex++];
+	return FStringFormatArg(State->Factions[factionId]->Name);
+}
+
+FStringFormatArg UUDActionAdministrator::GetTileArgument(const TArray<int32>& data, int32& startIndex)
+{
+	int32 x = data[startIndex++];
+	int32 y = data[startIndex++];
+	return FStringFormatArg(State->Map->GetTile(FIntPoint(x, y))->Name);
+}
+
+FStringFormatArg UUDActionAdministrator::GetActionArgument(const TArray<int32>& data, int32& startIndex)
+{
+	int32 actionId = data[startIndex++];
+	return FStringFormatArg(ActionManager->GetAction(actionId)->GetPresentation().Name);
+}
+
+FStringFormatArg UUDActionAdministrator::GetResourceArgument(const TArray<int32>& data, int32& startIndex)
+{
+	int32 resourceId = data[startIndex++];
+	FString name = TEXT("");
+	for (const auto& resource : GetResourceList())
+	{
+		if (resource.Id == resourceId)
+		{
+			name = resource.Name;
+			break;
+		}
+	}
+	return FStringFormatArg(name);
+}
+
+FStringFormatArg UUDActionAdministrator::GetValueArgument(const TArray<int32>& data, int32& startIndex)
+{
+	int32 value = data[startIndex++];
+	return FStringFormatArg(value);
+}
+
+FStringFormatArg UUDActionAdministrator::GetTextArgument(FString data)
+{
+	return FStringFormatArg(data);
+}
+
+// Note this is similiar to GetActionParameters, in case of changing this change the other one to match.
+FStringFormatNamedArguments UUDActionAdministrator::GetMessageContentArguments(const TSet<int32>& tags, FUDActionData action)
+{
+	FStringFormatNamedArguments args;
+	int32 startIndex = 0;
+
+	args.Add(UD_PARAMETER_ARG_FACTION_INVOKER,
+		FStringFormatArg(State->Factions[action.InvokerFactionId]->Name));
+
+	if (HasFactionParameter(tags, UD_INVALID_TAG_ID))
+	{
+		args.Add(UD_PARAMETER_ARG_FACTION_TARGET,
+			GetFactionArgument(action.ValueParameters, startIndex));
+	}
+	if (HasTileParameter(tags, UD_INVALID_TAG_ID))
+	{
+		args.Add(UD_PARAMETER_ARG_TILE,
+			GetTileArgument(action.ValueParameters, startIndex));
+	}
+	if (HasActionParameter(tags, UD_INVALID_TAG_ID))
+	{
+		args.Add(UD_PARAMETER_ARG_ACTION,
+			GetActionArgument(action.ValueParameters, startIndex));
+	}
+	if (HasResourceParameter(tags, UD_INVALID_TAG_ID))
+	{
+		args.Add(UD_PARAMETER_ARG_RESOURCE, 
+			GetResourceArgument(action.ValueParameters, startIndex));
+	}
+	if (HasValueParameter(tags, UD_INVALID_TAG_ID))
+	{
+		args.Add(UD_PARAMETER_ARG_VALUE, 
+			GetValueArgument(action.ValueParameters, startIndex));
+	}
+	if (HasTextParameter(tags, UD_INVALID_TAG_ID))
+	{
+		args.Add(UD_PARAMETER_ARG_TEXT, 
+			GetTextArgument(action.TextParameter));
+	}
+
+	return args;
+}
+
+FString UUDActionAdministrator::GetFormattedMessageContent(FString formatString, const TSet<int32>& tags, FUDActionData action)
+{
+	return FString::Format(*formatString, GetMessageContentArguments(tags, action));
+}
 
 FUDMessageInfo UUDActionAdministrator::CreateMessageFromRequest(int32 requestId, FUDActionData action)
 {
 	FUDMessageInfo message = FUDMessageInfo();
-	
 	message.RequestId = requestId;
-
+	FUDActionPresentation presentation = ActionManager->GetAction(action.ActionTypeId)->GetPresentation();
+	message.ActionId = presentation.ActionId;
+	message.Name = presentation.Name;
+	message.AcceptId = presentation.AcceptActionId;
+	message.RejectId = presentation.RejectActionId;
+	message.Content = GetFormattedMessageContent(presentation.MessageContentFormat, presentation.Tags, action);
 	return message;
 }
 

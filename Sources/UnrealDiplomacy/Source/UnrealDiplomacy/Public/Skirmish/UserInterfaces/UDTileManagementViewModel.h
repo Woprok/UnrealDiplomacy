@@ -36,7 +36,15 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText TileNameText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText OwnerText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText FactionNameText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText ResourceText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText ResourceValueText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText ResourceTypeText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText CloseText;
 	// Events
@@ -58,8 +66,16 @@ private:
 	FText GetTileManagementTitleText() const;
 	void SetTileNameText(FText newTileNameText);
 	FText GetTileNameText() const;
+	void SetOwnerText(FText newOwnerText);
+	FText GetOwnerText() const;
 	void SetFactionNameText(FText newFactionNameText);
 	FText GetFactionNameText() const;
+	void SetResourceText(FText newResourceText);
+	FText GetResourceText() const;
+	void SetResourceTypeText(FText newResourceTypeText);
+	FText GetResourceTypeText() const;
+	void SetResourceValueText(FText newResourceValueText);
+	FText GetResourceValueText() const;
 	void SetCloseText(FText newCloseText);
 	FText GetCloseText() const;
 private:

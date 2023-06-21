@@ -38,6 +38,9 @@ class UUDModifierManager;
 
 // TODO Reevaluate if this can be done it in different way to reduce complexity.
 
+// This is tag value that is never used for anything.
+// Safe to be used as placeholder or value that is desired to be ignored.
+#define UD_INVALID_TAG_ID -1
 // Useable for internal purposes only.
 #define UD_ACTION_TAG_INVALID 0
 // Useable for external purposes as well.
@@ -66,6 +69,17 @@ class UUDModifierManager;
 #define UD_ACTION_TAG_PARAMETER_VALUE_AMOUNT 17
 #define UD_ACTION_TAG_PARAMETER_VALUE_SMALL_MAX 18
 
+// This is definitely start of global nightmare...
+// Do not change the values and in case you have to change it inside of all actions.
+// Outside of the actions everything refers to it with macro name...
+#define UD_PARAMETER_ARG_FACTION_INVOKER TEXT("INVOKER")
+#define UD_PARAMETER_ARG_FACTION_TARGET TEXT("TARGET")
+#define UD_PARAMETER_ARG_TILE TEXT("TILE")
+#define UD_PARAMETER_ARG_ACTION TEXT("ACTION")
+#define UD_PARAMETER_ARG_RESOURCE TEXT("RESOURCE")
+#define UD_PARAMETER_ARG_VALUE TEXT("VALUE")
+#define UD_PARAMETER_ARG_TEXT TEXT("TEXT")
+
 /**
  * Defines informations about the action and how it can be displayed in UI.
  */
@@ -81,6 +95,15 @@ public:
 	TSet<int32> Tags;
 	/** Main name of this action. */
 	FString Name = TEXT("");
+	/** Defines if this action is acceptable. If not returns InvalidActionId. */
+	int32 AcceptActionId;
+	/** Defines if this action is rejectable. If not returns InvalidActionId. */
+	int32 RejectActionId;
+	/** 
+	 * Defines format for converting action to offer message string based on action parameters. 
+	 * To use this use format and supply all parameters required by tags.
+	 */
+	FString MessageContentFormat = TEXT("");
 };
 
 /** 
