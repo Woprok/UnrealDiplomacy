@@ -46,6 +46,7 @@ void UUDActionManager::Initialize()
 
 	WorldGenerator = NewObject<UUDWorldGenerator>(this);
 	ModifierManager = NewObject<UUDModifierManager>(this);
+	ModifierManager->Initialize();
 
 	RegisterCoreActions();
 	RegisterAdditionalActions();

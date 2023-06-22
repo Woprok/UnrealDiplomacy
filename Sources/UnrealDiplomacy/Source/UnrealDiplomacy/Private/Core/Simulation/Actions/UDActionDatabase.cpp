@@ -65,6 +65,7 @@
 #include "Core/Simulation/Actions/UDGameActionTileTransfer.h"
 #include "Core/Simulation/Actions/UDGameActionTileTransferAccept.h"
 #include "Core/Simulation/Actions/UDGameActionTileTransferReject.h"
+#include "Core/Simulation/Actions/UDGameActionThroneSupport.h"
 // Setting
 #include "Core/Simulation/Actions/UDSettingAction.h"
 #include "Core/Simulation/Actions/UDSettingActionAICountChange.h"
@@ -140,7 +141,8 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetGameActions(U
 		NewObject<UUDGameActionTileTake>(parent),
 		NewObject<UUDGameActionTileTransfer>(parent),
 		NewObject<UUDGameActionTileTransferAccept>(parent),
-		NewObject<UUDGameActionTileTransferReject>(parent)
+		NewObject<UUDGameActionTileTransferReject>(parent),
+		NewObject<UUDGameActionThroneSupport>(parent)
 	};
 }
 

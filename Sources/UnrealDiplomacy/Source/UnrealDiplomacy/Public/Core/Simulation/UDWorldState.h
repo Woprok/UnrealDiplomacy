@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UDModifier.h"
 
+#include "UDModifierData.h"
 #include "UDActionData.h"
 
 #include "UDWorldState.generated.h"
@@ -52,10 +52,9 @@ public:
 	int32 Type;
 	/**
 	 * List of all modifiers applied to this tile.
-	 * This are modifiers that are applied to this tile.
 	 */
 	UPROPERTY()
-	TArray<TObjectPtr<UUDModifier>> Modifiers;
+	TArray<FUDModifierData> Modifiers;
 	UPROPERTY()
 	FString Name;
 	UPROPERTY()
@@ -174,11 +173,10 @@ public:
 	UPROPERTY()
 	TMap<int32, FUDActionData> PendingRequests;
 	/**
-	 * List of all modifiers applied to this player.
-	 * This are modifiers that are applied to this player.
+	 * List of all modifiers applied to this faction.
 	 */
 	UPROPERTY()
-	TArray<TObjectPtr<UUDModifier>> Modifiers;
+	TArray<FUDModifierData> Modifiers;
 	/**
 	 * Unique id assigned to the owner.
 	 */

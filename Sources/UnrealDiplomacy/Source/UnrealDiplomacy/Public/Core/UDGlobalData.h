@@ -54,6 +54,8 @@ public:
 	static const int32 InvalidArrayIndex = -1;
 	/** This Id is always considered invalid for all resource operations. */
 	static const int32 InvalidResourceId = -1;
+	/** This Id is always considered invalid for all modifier operations. */
+	static const int32 InvalidModifierId = -1;
 public:
 	// Default values that are expected to exists or be used.
 
@@ -61,6 +63,10 @@ public:
 	 * Amount of optional parameters required for actions.
 	 */
 	static const int32 DefaultActionParameterCount = 0;
+	/**
+	 * Amount of optional parameters required for modifiers.
+	 */
+	static const int32 DefaultModifierParameterCount = 0;
 	/**
 	 * Default level name that should be same as default level.
 	 */

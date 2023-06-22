@@ -7,14 +7,14 @@ FUDActionData::FUDActionData()
 
 }
 
-FUDActionData::FUDActionData(const FUDActionData& action) 
+FUDActionData::FUDActionData(const FUDActionData& existingAction)
 	: 
-	ActionTypeId(action.ActionTypeId),
-	UniqueId(action.UniqueId),
-	SourceUniqueId(action.SourceUniqueId),
-	InvokerFactionId(action.InvokerFactionId),
-	ValueParameters(action.ValueParameters),
-	TextParameter(action.TextParameter)
+	ActionTypeId(existingAction.ActionTypeId),
+	UniqueId(existingAction.UniqueId),
+	SourceUniqueId(existingAction.SourceUniqueId),
+	InvokerFactionId(existingAction.InvokerFactionId),
+	ValueParameters(existingAction.ValueParameters),
+	TextParameter(existingAction.TextParameter)
 {
 
 }

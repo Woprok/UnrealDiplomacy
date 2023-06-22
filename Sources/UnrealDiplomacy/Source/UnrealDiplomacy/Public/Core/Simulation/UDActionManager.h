@@ -28,7 +28,7 @@ public:
 	 * Returns Action associated with the supplied Id.
 	 */
 	UFUNCTION(BlueprintCallable)
-	TScriptInterface<IUDActionInterface> GetAction(int32 actionId);
+	TScriptInterface<IUDActionInterface> GetAction(int32 actionTypeId);
 	/**
 	 * Returns true if action was registered succeffully.
 	 * This can fail if action has duplicate id with already existing one.
@@ -40,7 +40,7 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable)
 	void Initialize();
-#pragma region Action Filter API
+#pragma region Action Type Filter API
 public:
 	/**
 	 * Retrieves all actions that are tagged as stratagems.

@@ -75,7 +75,7 @@ FString IUDActionInterface::ToString() const
 	formatArgs.Add(TEXT("aid"), GetId());
 	formatArgs.Add(TEXT("values"), GetParameterCount());
 
-	FString formatted = FString::Format(TEXT("Executor[ID={aid}, OPTIONAL={values}]"), formatArgs);
+	FString formatted = FString::Format(TEXT("Action Executor[ID={aid}, OPTIONAL={values}]"), formatArgs);
 
 	return formatted;
 }

@@ -4,14 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Core/Simulation/Actions/UDGameAction.h"
-#include "UDGameActionPermitTileExploit.generated.h"
+#include "UDGameActionThroneSupport.generated.h"
 
 /**
- * Enables other player to exploit tile.
- * Simple/First use of modifier system.
+ * Enables player to usurp the throne.
  */
 UCLASS(Blueprintable, BlueprintType)
-class UNREALDIPLOMACY_API UUDGameActionPermitTileExploit : public UUDGameAction
+class UNREALDIPLOMACY_API UUDGameActionThroneSupport : public UUDGameAction
 {
 	GENERATED_BODY()
 public:
@@ -19,11 +18,11 @@ public:
 	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual int32 GetId() const override { return ActionTypeId; };
-	virtual int32 GetParameterCount() const override { return FUDGameDataTargetTile::ParameterCount; };
+	virtual int32 GetParameterCount() const override { return FUDGameDataTarget::ParameterCount; };
 	virtual void SetModifierManager(TObjectPtr<UUDModifierManager> modifierManager) override;
 	virtual FUDActionPresentation GetPresentation() const override;
 public:
-	static const int32 ActionTypeId = 2013;
+	static const int32 ActionTypeId = 2014;
 protected:
 	UPROPERTY()
 	TWeakObjectPtr<UUDModifierManager> ModifierManager = nullptr;

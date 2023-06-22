@@ -36,7 +36,7 @@ class UUDModifierManager;
 // SETTINGS
 // Value
 
-// TODO Reevaluate if this can be done it in different way to reduce complexity.
+// TODO Reevaluate if this tag system can be done it in different way to reduce complexity.
 
 // This is tag value that is never used for anything.
 // Safe to be used as placeholder or value that is desired to be ignored.
