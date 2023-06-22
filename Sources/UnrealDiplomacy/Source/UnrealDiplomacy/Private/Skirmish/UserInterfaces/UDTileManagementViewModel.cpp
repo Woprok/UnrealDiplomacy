@@ -2,6 +2,7 @@
 
 #include "Skirmish/UserInterfaces/UDTileManagementViewModel.h"
 #include "Skirmish/UserInterfaces/UDTileInteractionViewModel.h"
+#include "Skirmish/UserInterfaces/UDModifierItemViewModel.h"
 #include "Skirmish/UDSkirmishHUD.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Core/Simulation/UDModelStructs.h"
@@ -11,6 +12,7 @@
 void UUDTileManagementViewModel::Initialize()
 {
 	TileInteractionViewModelType = UUDTileInteractionViewModel::StaticClass();
+	ModifierItemViewModelType = UUDModifierItemViewModel::StaticClass();
 
 	FText managementTitle = FText(LOCTEXT("TilePanel", "Tile Management"));
 	SetTileManagementTitleText(managementTitle);
@@ -59,6 +61,7 @@ void UUDTileManagementViewModel::Update()
 	SetResourceTypeText(FText::FromString(tile.ResourceTypeName));
 
 	UpdateTileInteractionList();
+	UpdateModifierItemList();
 }
 
 #undef LOCTEXT_NAMESPACE
@@ -101,6 +104,27 @@ void UUDTileManagementViewModel::UpdateTileInteractionList()
 	}
 
 	TileInteractionSourceUpdatedEvent.Broadcast(TileInteractionViewModelCollection);
+}
+
+void UUDTileManagementViewModel::UpdateModifierItemList()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDTilePanelViewModel: UpdateModifierItemList."));
+	// Retrieve tiles
+	TArray<FUDModifierInfo> modifiers = Model->GetTileModifierList(SelectedTile);
+	// Retrieve enough models
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(ModifierItemViewModelCollectionName, ModifierItemViewModelType, modifiers.Num());
+	// Get rid of all models
+	ModifierItemViewModelCollection.Empty();
+	for (int32 i = 0; i < modifiers.Num(); i++)
+	{
+		TObjectPtr<UUDModifierItemViewModel> newViewModel = Cast<UUDModifierItemViewModel>(viewModels[i]);
+		newViewModel->SetContent(modifiers[i]);
+		newViewModel->FullUpdate();
+		ModifierItemViewModelCollection.Add(newViewModel);
+	}
+
+	ModifierItemSourceUpdatedEvent.Broadcast(ModifierItemViewModelCollection);
 }
 
 void UUDTileManagementViewModel::SetTileManagementTitleText(FText newTileManagementTitleText)

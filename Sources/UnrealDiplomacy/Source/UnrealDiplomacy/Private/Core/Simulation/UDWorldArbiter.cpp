@@ -12,8 +12,10 @@
 #include "Core/Simulation/Actions/UDSystemActionRegentChange.h"
 #include "Core/Simulation/Actions/UDSystemActionGameEnd.h"
 #include "Core/Simulation/Actions/UDGameActionThroneReceive.h"
+#include "Core/Simulation/Modifiers/UDFactionModifierThroneSupport.h"
+#include "Core/Simulation/UDModifierData.h"
 
-bool UUDWorldArbiter::OnActionExecutionFinished(int32 actionType, TObjectPtr<UUDWorldState> gaiaWorldState)
+bool UUDWorldArbiter::OnActionExecutionFinished(int32 actionType, const TObjectPtr<UUDWorldState>& gaiaWorldState)
 {
 	if (GameReachedEnd)
 	{
@@ -52,7 +54,22 @@ TArray<FUDActionData> UUDWorldArbiter::EndGame()
 	return actions;
 }
 
-void UUDWorldArbiter::EvaluateTurnGameOverState(TObjectPtr<UUDWorldState> gaiaWorldState)
+int32 GetTotalSupport(const TObjectPtr<UUDWorldState>& state, int32 factionId)
+{
+	int32 baseSupport = state->Factions[factionId]->Resources[UD_RESOURCE_REPUTATION_ID];
+	int32 additionalSupport = 0;
+
+	for (const auto& modifier : state->Factions[factionId]->Modifiers)
+	{
+		if (modifier.ModifierTypeId == UUDFactionModifierThroneSupport::ModifierTypeId) {
+			additionalSupport += state->Factions[modifier.InvokerId]->Resources[UD_RESOURCE_REPUTATION_ID];
+		}
+	}
+
+	return baseSupport + additionalSupport;
+}
+
+void UUDWorldArbiter::EvaluateTurnGameOverState(const TObjectPtr<UUDWorldState>& gaiaWorldState)
 {
 	// Winner was found
 	if (gaiaWorldState->TurnData.Turn <= CurrentRuleSet.MaxTurnCount)
@@ -64,16 +81,22 @@ void UUDWorldArbiter::EvaluateTurnGameOverState(TObjectPtr<UUDWorldState> gaiaWo
 	// New ruler will be crowned.
 	if (gaiaWorldState->ImperialThrone.Ruler == UUDGlobalData::GaiaFactionId)
 	{
+		// Ruler is not present...
 		CrownIsEmpty = true;
-		// TODO add legitimacy
-		// This determines final usurper based on reputation
-		int32 mostReputation = -1;
+		// Determine ruler based on reputation order, including any reputation obtained from support.
+		// This always selects first player in the order ?
+		// Might need to be changed so it has additional conditions to ensure fairness.
+		// TODO this should utilize model & manager functions instead of doing raw read.
+		int32 currentMaximum = INT32_MIN;
 		for (auto& player : gaiaWorldState->Factions)
 		{
-			if (player.Value->Resources[UD_RESOURCE_REPUTATION_ID] > mostReputation && 
-				player.Value->PlayerUniqueId != UUDGlobalData::GaiaFactionId)
+			int32 currentPlayerSupport = GetTotalSupport(gaiaWorldState, player.Key);
+
+			if (currentPlayerSupport > currentMaximum &&
+				player.Value->PlayerUniqueId != UUDGlobalData::GaiaFactionId &&
+				player.Value->PlayerUniqueId != UUDGlobalData::ObserverFactionId)
 			{
-				mostReputation = player.Value->Resources[UD_RESOURCE_REPUTATION_ID];
+				currentMaximum = currentPlayerSupport;
 				CrownableRuler = player.Value->PlayerUniqueId;
 			}
 		}

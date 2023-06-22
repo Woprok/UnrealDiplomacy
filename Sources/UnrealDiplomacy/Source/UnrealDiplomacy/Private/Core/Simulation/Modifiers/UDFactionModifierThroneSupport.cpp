@@ -16,7 +16,7 @@ FUDModifierPresentation UUDFactionModifierThroneSupport::GetPresentation() const
 		}
 	);
 	presentation.ModifierDescriptionFormat = FText(LOCTEXT("ThroneSupport",
-		"Faction [{INVOKER}] supports your faction [{TARGET}] to ascend."
+		"Faction [{INVOKER}] supports faction [{TARGET}] to ascend."
 	)).ToString();
 
 	return presentation;

@@ -8,6 +8,11 @@
 // Actions
 #include "Core/Simulation/Actions/UDActionDatabase.h"
 
+TObjectPtr<UUDModifierManager> UUDActionManager::GetModifierManager()
+{
+	return ModifierManager;
+}
+
 TScriptInterface<IUDActionInterface> UUDActionManager::GetAction(int32 actionTypeId)
 {
 	check(IsInitialized);

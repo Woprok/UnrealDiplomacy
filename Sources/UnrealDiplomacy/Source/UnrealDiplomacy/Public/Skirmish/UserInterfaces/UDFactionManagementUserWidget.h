@@ -13,6 +13,7 @@ class UButton;
 class UListView;
 class UUDFactionManagementViewModel;
 class UUDFactionInteractionViewModel;
+class UUDModifierItemViewModel;
 
 /**
  * Ancestor for blueprint.
@@ -44,6 +45,10 @@ protected:
 	 * Callback to set data from view model.
 	 */
 	void SetFactionInteractionSourceCollection(const TArray<TObjectPtr<UUDFactionInteractionViewModel>>& factionInteractionViewModels);
+	/**
+	 * Callback to set data from view model.
+	 */
+	void SetModifierItemSourceCollection(const TArray<TObjectPtr<UUDModifierItemViewModel>>& modifierItemViewModels);
 protected:
 	// Bindings
 	UPROPERTY()
@@ -54,6 +59,8 @@ protected:
 	TWeakObjectPtr<UTextBlock> CloseTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> CloseButtonWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UListView> ModifierItemListWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UListView> FactionInteractionListWidget;
 	// ViewModel

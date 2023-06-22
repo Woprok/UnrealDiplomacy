@@ -10,8 +10,10 @@
 // Forward Declarations
 
 class UUDTileInteractionViewModel;
+class UUDModifierItemViewModel;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FUDTileInteractionSourceUpdated, const TArray<TObjectPtr<UUDTileInteractionViewModel>>& tileInteractionViewModels);
+DECLARE_MULTICAST_DELEGATE_OneParam(FUDTileModifierItemSourceUpdated, const TArray<TObjectPtr<UUDModifierItemViewModel>>& modifierItemViewModels);
 
 /**
  * Window that allows interacting with faction and view informations.
@@ -49,6 +51,7 @@ public:
 	FText CloseText;
 	// Events
 	FUDTileInteractionSourceUpdated TileInteractionSourceUpdatedEvent;
+	FUDTileModifierItemSourceUpdated ModifierItemSourceUpdatedEvent;
 protected:
 	virtual void Initialize() override;
 	UFUNCTION()
@@ -60,6 +63,10 @@ private:
 	 * Updates available interaction with the tile.
 	 */
 	void UpdateTileInteractionList();
+	/**
+	 * Updates available modifiers with the tile.
+	 */
+	void UpdateModifierItemList();
 private:
 	// MVVM Setters & Getters
 	void SetTileManagementTitleText(FText newTileManagementTitleText);
@@ -83,6 +90,10 @@ private:
 	FName TileInteractionViewModelCollectionName = TEXT("TileInteractionCollection");
 	TSubclassOf<UUDViewModel> TileInteractionViewModelType;
 	TArray<TObjectPtr<UUDTileInteractionViewModel>> TileInteractionViewModelCollection;
+
+	FName ModifierItemViewModelCollectionName = TEXT("TileModifierItemCollection");
+	TSubclassOf<UUDViewModel> ModifierItemViewModelType;
+	TArray<TObjectPtr<UUDModifierItemViewModel>> ModifierItemViewModelCollection;
 
 	FIntPoint SelectedTile;
 };

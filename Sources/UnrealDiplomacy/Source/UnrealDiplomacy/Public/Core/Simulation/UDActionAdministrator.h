@@ -34,6 +34,9 @@ struct FUDResourceInfo;
 struct FUDResourceMinimalInfo;
 struct FUDActionMinimalInfo;
 
+struct FUDModifierData;
+struct FUDModifierInfo;
+
 struct FUDMessageInfo;
 struct FUDMessageInteractionInfo;
 
@@ -436,6 +439,19 @@ private:
 	FStringFormatArg GetValueArgument(const TArray<int32>& data, int32& startIndex);
 	FStringFormatArg GetTextArgument(FString data);
 #pragma endregion
+
+#pragma region Modifiers
+public:
+	/** Returns list of modifiers that are part of specified tile. */
+	TArray<FUDModifierInfo> GetTileModifierList(FIntPoint tile);
+	/** Returns list of modifiers that are part of specified faction. */
+	TArray<FUDModifierInfo> GetFactionModifierList(int32 factionId);
+private:
+	TArray<FUDModifierInfo> GetModifierList(const TArray<FUDModifierData>& modifiers);
+	FString GetFormattedModifierContent(FString formatString, const TSet<int32>& tags, FUDModifierData modifier);
+	FStringFormatNamedArguments GetModifierContentArguments(const TSet<int32>& tags, FUDModifierData modifier);
+#pragma endregion
+
 
 public:
 	/** Checks if specified faction is owned by local player. */

@@ -17,8 +17,9 @@ bool UUDGameActionThroneSupport::CanExecute(const FUDActionData& action, TObject
 		action.InvokerFactionId, data.TargetId
 	);
 
+	bool isNotSelfTargeting = action.InvokerFactionId != data.TargetId;
 	bool isNotSupporting = !ModifierManager->HasFactionModifier(faction, modifierData);
-	return IUDActionInterface::CanExecute(action, world) && isNotSupporting;
+	return IUDActionInterface::CanExecute(action, world) && isNotSupporting && isNotSelfTargeting;
 }
 
 void UUDGameActionThroneSupport::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)

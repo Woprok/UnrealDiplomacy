@@ -31,10 +31,10 @@ public:
 	/**
 	 * Requires Gaia world state to provide accurate information.
 	 */
-	bool OnActionExecutionFinished(int32 actionType, TObjectPtr<UUDWorldState> gaiaWorldState);
+	bool OnActionExecutionFinished(int32 actionType, const TObjectPtr<UUDWorldState>& gaiaWorldState);
 	TArray<FUDActionData> EndGame();
 protected:
-	void EvaluateTurnGameOverState(TObjectPtr<UUDWorldState> gaiaWorldState);
+	void EvaluateTurnGameOverState(const TObjectPtr<UUDWorldState>& gaiaWorldState);
 	FUDActionData DetermineNewRuler();
 	FUDActionData CreateEndGame();
 private:

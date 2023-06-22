@@ -2,6 +2,7 @@
 
 #include "Skirmish/UserInterfaces/UDFactionManagementViewModel.h"
 #include "Skirmish/UserInterfaces/UDFactionInteractionViewModel.h"
+#include "Skirmish/UserInterfaces/UDModifierItemViewModel.h"
 #include "Skirmish/UDSkirmishHUD.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Core/Simulation/UDModelStructs.h"
@@ -11,6 +12,7 @@
 void UUDFactionManagementViewModel::Initialize()
 {
 	FactionInteractionViewModelType = UUDFactionInteractionViewModel::StaticClass();
+	ModifierItemViewModelType = UUDModifierItemViewModel::StaticClass();
 
 	FText managementTitle = FText(LOCTEXT("FactionPanel", "Faction Management"));
 	SetFactionManagementTitleText(managementTitle);
@@ -48,6 +50,7 @@ void UUDFactionManagementViewModel::Update()
 	SetFactionNameText(FText::FromString(faction.Name));
 
 	UpdateFactionInteractionList();
+	UpdateModifierItemList();
 }
 
 #undef LOCTEXT_NAMESPACE
@@ -90,6 +93,27 @@ void UUDFactionManagementViewModel::UpdateFactionInteractionList()
 	}
 
 	FactionInteractionSourceUpdatedEvent.Broadcast(FactionInteractionViewModelCollection);
+}
+
+void UUDFactionManagementViewModel::UpdateModifierItemList()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDFactionManagementViewModel: UpdateModifierItemList."));
+	// Retrieve tiles
+	TArray<FUDModifierInfo> modifiers = Model->GetFactionModifierList(SelectedFactionId);
+	// Retrieve enough models
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(ModifierItemViewModelCollectionName, ModifierItemViewModelType, modifiers.Num());
+	// Get rid of all models
+	ModifierItemViewModelCollection.Empty();
+	for (int32 i = 0; i < modifiers.Num(); i++)
+	{
+		TObjectPtr<UUDModifierItemViewModel> newViewModel = Cast<UUDModifierItemViewModel>(viewModels[i]);
+		newViewModel->SetContent(modifiers[i]);
+		newViewModel->FullUpdate();
+		ModifierItemViewModelCollection.Add(newViewModel);
+	}
+
+	ModifierItemSourceUpdatedEvent.Broadcast(ModifierItemViewModelCollection);
 }
 
 void UUDFactionManagementViewModel::SetFactionManagementTitleText(FText newFactionManagementTitleText)

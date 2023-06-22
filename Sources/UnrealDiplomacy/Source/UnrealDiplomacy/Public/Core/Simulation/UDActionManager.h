@@ -24,6 +24,9 @@ class UNREALDIPLOMACY_API UUDActionManager : public UObject
 {
 	GENERATED_BODY()
 public:
+	/** Retrieves inner instance of modifier manager */
+	TObjectPtr<UUDModifierManager> GetModifierManager();
+public:
 	/**
 	 * Returns Action associated with the supplied Id.
 	 */

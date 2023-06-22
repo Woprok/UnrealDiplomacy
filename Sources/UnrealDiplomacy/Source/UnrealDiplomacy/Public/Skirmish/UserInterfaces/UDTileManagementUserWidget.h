@@ -13,6 +13,7 @@ class UButton;
 class UListView;
 class UUDTileManagementViewModel;
 class UUDTileInteractionViewModel;
+class UUDModifierItemViewModel;
 
 /**
  * Ancestor for blueprint.
@@ -44,6 +45,10 @@ protected:
 	 * Callback to set data from view model.
 	 */
 	void SetTileInteractionSourceCollection(const TArray<TObjectPtr<UUDTileInteractionViewModel>>& tileInteractionViewModels);
+	/**
+	 * Callback to set data from view model.
+	 */
+	void SetModifierItemSourceCollection(const TArray<TObjectPtr<UUDModifierItemViewModel>>& modifierItemViewModels);
 protected:
 	// Bindings
 	UPROPERTY()
@@ -64,6 +69,8 @@ protected:
 	TWeakObjectPtr<UTextBlock> CloseTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> CloseButtonWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UListView> ModifierItemListWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UListView> TileInteractionListWidget;
 	// ViewModel

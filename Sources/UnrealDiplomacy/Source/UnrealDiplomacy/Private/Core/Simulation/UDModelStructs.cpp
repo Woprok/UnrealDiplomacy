@@ -189,3 +189,8 @@ FUDMessageInteractionInfo::FUDMessageInteractionInfo()
 {
 
 }
+
+FUDModifierInfo::FUDModifierInfo()
+{
+
+}

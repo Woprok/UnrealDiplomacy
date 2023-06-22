@@ -4,6 +4,9 @@
 #include "Core/Simulation/UDModelStructs.h"
 #include "Core/Simulation/UDActionManager.h"
 #include "Core/Simulation/UDWorldState.h"
+#include "Core/Simulation/UDModifierData.h"
+#include "Core/Simulation/UDModifierInterface.h"
+#include "Core/Simulation/UDModifierManager.h"
 
 #pragma region Core
 void UUDActionAdministrator::OnDataChanged(const FUDActionData& action)
@@ -854,6 +857,55 @@ FUDMessageInteractionInfo UUDActionAdministrator::GetAllLocalRequests()
 	}
 
 	return info;
+}
+#pragma endregion
+
+#pragma region Modifiers
+
+FStringFormatNamedArguments UUDActionAdministrator::GetModifierContentArguments(const TSet<int32>& tags, FUDModifierData modifier)
+{
+	FStringFormatNamedArguments args;
+	
+	args.Add(UD_PARAMETER_ARG_FACTION_INVOKER,
+		FStringFormatArg(State->Factions[modifier.InvokerId]->Name));
+	args.Add(UD_PARAMETER_ARG_FACTION_TARGET,
+		FStringFormatArg(State->Factions[modifier.TargetId]->Name));
+
+	return args;
+}
+
+FString UUDActionAdministrator::GetFormattedModifierContent(FString formatString, const TSet<int32>& tags, FUDModifierData modifier)
+{
+	return FString::Format(*formatString, GetModifierContentArguments(tags, modifier));
+}
+
+TArray<FUDModifierInfo> UUDActionAdministrator::GetTileModifierList(FIntPoint tile)
+{
+	const auto& modifiers = State->Map->GetTile(tile)->Modifiers;
+	return GetModifierList(modifiers);
+}
+
+TArray<FUDModifierInfo> UUDActionAdministrator::GetFactionModifierList(int32 factionId)
+{
+	const auto& modifiers = State->Factions[factionId]->Modifiers;
+	return GetModifierList(modifiers);
+}
+
+TArray<FUDModifierInfo> UUDActionAdministrator::GetModifierList(const TArray<FUDModifierData>& modifiers)
+{
+	TArray<FUDModifierInfo> infos = { };
+	const auto& modifierManager = ActionManager->GetModifierManager();
+	for (const auto& mod : modifiers)
+	{
+		FUDModifierInfo info = FUDModifierInfo();
+		info.Id = mod.ModifierTypeId;
+		const auto& presentation = modifierManager->GetModifier(mod.ModifierTypeId)->GetPresentation();
+		info.Name = presentation.Name;
+		info.Description = GetFormattedModifierContent(presentation.ModifierDescriptionFormat, presentation.Tags, mod);
+		infos.Add(info);
+	}
+	
+	return infos;
 }
 #pragma endregion
 

@@ -488,3 +488,17 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	TArray<FUDMessageInfo> Messages = { };
 };
+
+USTRUCT(BlueprintType)
+struct FUDModifierInfo
+{
+	GENERATED_BODY()
+public:
+	FUDModifierInfo();
+	UPROPERTY(BlueprintReadOnly)
+	FString Name;
+	UPROPERTY(BlueprintReadOnly)
+	FString Description;
+	UPROPERTY(BlueprintReadOnly)
+	int32 Id;
+};

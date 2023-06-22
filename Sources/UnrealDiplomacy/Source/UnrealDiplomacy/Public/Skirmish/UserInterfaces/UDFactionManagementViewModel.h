@@ -9,8 +9,10 @@
 // Forward Declarations
 
 class UUDFactionInteractionViewModel;
+class UUDModifierItemViewModel;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FUDFactionInteractionSourceUpdated, const TArray<TObjectPtr<UUDFactionInteractionViewModel>>& factionInteractionViewModels);
+DECLARE_MULTICAST_DELEGATE_OneParam(FUDFactionModifierItemSourceUpdated, const TArray<TObjectPtr<UUDModifierItemViewModel>>& modifierItemViewModels);
 
 /**
  * Window that allows interacting with faction and view informations.
@@ -38,6 +40,7 @@ public:
 	FText CloseText;
 	// Events
 	FUDFactionInteractionSourceUpdated FactionInteractionSourceUpdatedEvent;
+	FUDFactionModifierItemSourceUpdated ModifierItemSourceUpdatedEvent;
 protected:
 	virtual void Initialize() override;
 	UFUNCTION()
@@ -49,6 +52,10 @@ private:
 	 * Updates available interaction with the faction.
 	 */
 	void UpdateFactionInteractionList();
+	/**
+	 * Updates available modifiers with the faction.
+	 */
+	void UpdateModifierItemList();
 private:
 	// MVVM Setters & Getters
 	void SetFactionManagementTitleText(FText newFactionManagementTitleText);
@@ -62,6 +69,10 @@ private:
 	FName FactionInteractionViewModelCollectionName = TEXT("FactionInteractionCollection");
 	TSubclassOf<UUDViewModel> FactionInteractionViewModelType;
 	TArray<TObjectPtr<UUDFactionInteractionViewModel>> FactionInteractionViewModelCollection;
+
+	FName ModifierItemViewModelCollectionName = TEXT("FactionModifierItemCollection");
+	TSubclassOf<UUDViewModel> ModifierItemViewModelType;
+	TArray<TObjectPtr<UUDModifierItemViewModel>> ModifierItemViewModelCollection;
 
 	int32 SelectedFactionId;
 };
