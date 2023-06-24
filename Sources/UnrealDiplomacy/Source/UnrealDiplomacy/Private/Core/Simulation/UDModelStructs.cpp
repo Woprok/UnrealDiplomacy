@@ -194,3 +194,13 @@ FUDModifierInfo::FUDModifierInfo()
 {
 
 }
+
+FUDDealMinimalInfo::FUDDealMinimalInfo()
+{
+
+}
+
+FUDDealInteractionInfo::FUDDealInteractionInfo()
+{
+
+}

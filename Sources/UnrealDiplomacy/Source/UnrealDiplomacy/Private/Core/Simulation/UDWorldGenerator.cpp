@@ -69,6 +69,7 @@ void UUDWorldGenerator::GenerateProperties(int32 mapSeed)
 			}
 			else if (InRange(next, 41, 70))
 			{
+				Map[xy]->Type = 69;
 				Map[xy]->ResourceType = UD_RESOURCE_MATERIALS_ID;
 				Map[xy]->ResourceStored = 500;
 			}

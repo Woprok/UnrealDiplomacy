@@ -923,9 +923,6 @@ private:
 	}
 };
 
-/**
- * 
- */
 UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDDealProcessViewModel : public UUDViewModelBase
 {
@@ -938,10 +935,6 @@ public:
 	bool IsSessionActive;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	int32 CurrentDeal = 0;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	bool IsEnabledPreviousDeal = 0;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	bool IsEnabledNextDeal = 0;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsModerator = false;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
@@ -959,110 +952,26 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	int32 MaxVote;
 protected:
-	/**
-	 * Deals sorted by time they were created.
-	 */
 	TArray<int32> DealsByTimeline;
-	/**
-	 * Current deal displayed by viewmodel.
-	 */
 	FUDDealInfo CurrentDealItem;
-	/**
-	 * Current deal displayed by viewmodel.
-	 */
 	int32 CurrentIndex;
-
 public:
 	virtual void OnUpdate() override
 	{
 		if (ActionModel->IsGameInProgress())
 		{
 			TArray<int32> deals = ActionModel->GetDealIds();
-			if (deals.Num() > 0)
-			{
-				UpdateInteractions(deals);
-			}
-			else
-			{
-				// this will happen only once ?
-				OnDealEmpty(ActionModel->GetDealInfoAnyDEBUG());
-			}
-		}
-		else
-		{
-			// This should not be visible ?
 		}
 	}
-	/**
-	 * Invoked when this requires view to rebind.
-	 */
 	UPROPERTY(BlueprintAssignable)
 	FUDParticipantsUpdated ParticipantsOnUpdated;
-	/**
-	 * Invoked when this requires view to rebind.
-	 */
 	UPROPERTY(BlueprintAssignable)
 	FUDPDealPointUpdated PointsOnUpdated;
-	/**
-	 * Invoked when this requires view to rebind.
-	 */
 	UPROPERTY(BlueprintAssignable)
 	FUDChatUpdated ChatOnUpdated;
-	/**
-	 * Invoked when this requires view to rebind.
-	 */
 	UPROPERTY(BlueprintAssignable)
 	FUDActionInfoUpdated ActionInfoUpdated;
 
-	/**
-	 * Called by button.
-	 */
-	UFUNCTION(BlueprintCallable)
-	void ItemPrevious()
-	{
-		int32 prev = FMath::Max(0, CurrentIndex - 1);
-		if (prev == CurrentIndex)
-		{
-			prev = DealsByTimeline.Num() - 1;
-		}
-		UpdateView(DealsByTimeline.Num(), DealsByTimeline[prev], prev);
-	}
-	/**
-	 * Called by button.
-	 */
-	UFUNCTION(BlueprintCallable)
-	void ItemReject()
-	{
-		//if (CurrentItem.ActionTypeId == UUDGiftAction::ActionTypeId)
-		//	ActionModel->RequestAction(ActionModel->GetRejectConditionalGiftGoldAction(CurrentItem));
-		//else
-		//	ActionModel->RequestAction(ActionModel->GetRejectParticipantDealAction(CurrentItem));
-	}
-	/**
-	 * Called by button.
-	 */
-	UFUNCTION(BlueprintCallable)
-	void ItemAccept()
-	{
-		//if (CurrentItem.ActionTypeId == UUDGiftAction::ActionTypeId)
-		//	ActionModel->RequestAction(ActionModel->GetConfirmConditionalGiftGoldAction(CurrentItem));
-		//else
-		//	ActionModel->RequestAction(ActionModel->GetAcceptParticipantDealAction(CurrentItem));
-
-	}
-	/**
-	 * Called by button.
-	 */
-	UFUNCTION(BlueprintCallable)
-	void ItemNext()
-	{
-		int32 next = FMath::Min(DealsByTimeline.Num() - 1, CurrentIndex + 1);
-		if (next == CurrentIndex)
-		{
-			next = 0;
-		}
-		UpdateView(DealsByTimeline.Num(), DealsByTimeline[next], next);
-	}
 	UFUNCTION(BlueprintCallable)
 	void ItemClose()
 	{
@@ -1119,78 +1028,11 @@ protected:
 		CurrentDeal = dealUniqueId;
 		CurrentIndex = arrayPosition;
 
-		if (dealHistoryCount > 0)
-		{
-			SetIsEnabledPreviousDeal(true);
-			SetIsEnabledNextDeal(true);
-		}
-		else
-		{
-			SetIsEnabledPreviousDeal(false);
-			SetIsEnabledNextDeal(false);
-		}
-
 		OnDealPresent(CurrentDealItem);
-		/*
-		SetPendingCount(dealHistoryCount);
-		SetCurrentItem(data); //at least one must be present...
-		SetCurrentItemShown(arrayPosition);
-		auto rs1 = FText(
-			LOCTEXT("Gift", "Gift")
-		).ToString();
-		SetCurrentItemName(rs1);
-		auto rs2 = FText::Format(
-			LOCTEXT("Gift", "A{0} Player {1} offered {2} as gift. Do we accept ?"),
-			action.ActionTypeId,
-			action.InvokerFactionId,
-			action.ValueParameter
-		).ToString();
-		SetCurrentItemDescription(rs2);*/
 	}
 	
-	void UpdateInteractions(TArray<int32> deals)
-	{
-		if (CurrentDeal == 0 && deals.Num() > 0)
-		{
-			UpdateView(deals.Num(), deals[0], 0);
-			// otherwise there is nothing to show yet...
-		}
-		// list already contains item from previous update
-		// current list will be updated to new list, preserving selection
-		// note: CurrentDeal != 0 is used as deal is eligible to have negative id.
-		else if (CurrentDeal != 0 && deals.Num() > 0)
-		{
-			// find current deal in new array
-			int32 oldItemPosition = deals.Find(CurrentDeal);
-
-			// set old back
-			if (oldItemPosition != -1)
-			{
-				UpdateView(deals.Num(), deals[oldItemPosition], oldItemPosition);
-			}
-			// fallback to start (delete is unlikely to happen)
-			else
-			{
-				UpdateView(deals.Num(), deals[0], 0);
-			}
-		}
-		// list is now empty, so we define empty item as current... (TODO skip empty item phase ?)
-		else // in case of CurrentDeal == 0 and deals.Num() == 0
-		{
-			// First initialization, empty deal is only deal that can have 0
-			// TODO this is only temporary fallback, in case we would accidently call it.
-			OnDealEmpty(ActionModel->GetDealInfoAnyDEBUG());
-		}
-		// finally update the array
-		DealsByTimeline = deals;
-	}
-
-
-
 	void OnDealEmpty(FUDDealInfo info)
 	{
-		SetIsEnabledPreviousDeal(false);
-		SetIsEnabledNextDeal(false);
 		SetIsSessionActive(false);
 		SetDealState(info.State);
 		SetDealResult(info.Result);
@@ -1247,22 +1089,6 @@ private:
 	int32 GetCurrentDeal() const
 	{
 		return CurrentDeal;
-	}
-	void SetIsEnabledPreviousDeal(bool newIsEnabledPreviousDeal)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(IsEnabledPreviousDeal, newIsEnabledPreviousDeal);
-	}
-	bool GetIsEnabledPreviousDeal() const
-	{
-		return IsEnabledPreviousDeal;
-	}
-	void SetIsEnabledNextDeal(bool newIsEnabledNextDeal)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(IsEnabledNextDeal, newIsEnabledNextDeal);
-	}
-	bool GetIsEnabledNextDeal() const
-	{
-		return IsEnabledNextDeal;
 	}
 	void SetDealState(EUDDealSimulationState newDealState)
 	{

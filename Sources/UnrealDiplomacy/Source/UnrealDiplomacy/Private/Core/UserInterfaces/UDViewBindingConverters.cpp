@@ -60,3 +60,8 @@ bool UUDViewBindingConverters::CollapsedToBool(ESlateVisibility InVisibility)
 		break;
 	}
 }
+
+bool UUDViewBindingConverters::ValueToBool(int32 InValue, int32 PrimaryValue)
+{
+	return InValue == PrimaryValue;
+}

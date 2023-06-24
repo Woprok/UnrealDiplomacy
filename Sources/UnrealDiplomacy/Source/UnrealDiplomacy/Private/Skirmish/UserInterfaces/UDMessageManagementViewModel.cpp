@@ -16,8 +16,8 @@ FUDMessageInfo GetInvalidMessage()
 	info.ActionId = UUDGlobalData::InvalidActionId;
 	info.AcceptId = UUDGlobalData::InvalidActionId;
 	info.RejectId = UUDGlobalData::InvalidActionId;
-	info.Name = FText(LOCTEXT("MessageItem", "No Pending Requests")).ToString();
-	info.Content = FText(LOCTEXT("MessageItem", "")).ToString();
+	info.Name = FText(LOCTEXT("MessageManagement", "No Pending Requests")).ToString();
+	info.Content = FText(LOCTEXT("MessageManagement", "")).ToString();
 	return info;
 }
 

@@ -505,6 +505,11 @@ public:
 	 */
 	UPROPERTY()
 	TArray<FUDDiscussionAction> DealActionList;
+	/**
+	 * Current deal name that can be displayed.
+	 */
+	UPROPERTY()
+	FString Name;
 };
 
 /**

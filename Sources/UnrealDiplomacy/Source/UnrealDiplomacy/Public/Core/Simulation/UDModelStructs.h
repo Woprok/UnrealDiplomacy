@@ -502,3 +502,38 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	int32 Id;
 };
+
+USTRUCT(BlueprintType)
+struct FUDDealMinimalInfo
+{
+	GENERATED_BODY()
+public:
+	FUDDealMinimalInfo();
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	FString Name = TEXT("");
+public:
+	/** Equality over UniqueId field. */
+	inline bool operator!=(const FUDDealMinimalInfo& rhs) const
+	{
+		return !(*this == rhs);
+	}
+	/** Equality over UniqueId field. */
+	inline bool operator==(const FUDDealMinimalInfo& rhs) const
+	{
+		return DealId == rhs.DealId;
+	}
+};
+
+USTRUCT(BlueprintType)
+struct FUDDealInteractionInfo
+{
+	GENERATED_BODY()
+public:
+	FUDDealInteractionInfo();
+	UPROPERTY(BlueprintReadOnly)
+	TArray<FUDDealMinimalInfo> Active = { };
+	UPROPERTY(BlueprintReadOnly)
+	TArray<FUDDealMinimalInfo> History = { };
+};

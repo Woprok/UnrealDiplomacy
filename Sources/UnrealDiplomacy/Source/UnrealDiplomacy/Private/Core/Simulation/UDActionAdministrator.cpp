@@ -909,6 +909,42 @@ TArray<FUDModifierInfo> UUDActionAdministrator::GetModifierList(const TArray<FUD
 }
 #pragma endregion
 
+#pragma region Deals
+
+FUDDealInteractionInfo UUDActionAdministrator::GetAllLocalDeals()
+{
+	FUDDealInteractionInfo info;
+
+	info.Active = { };
+	info.History = { };
+
+	for (const auto& deal : State->Deals)
+	{
+		// Ignore deals that we are not part of at the moment.
+		if (!deal.Value->Participants.Contains(State->FactionPerspective))
+			continue;
+		if (deal.Value->DealSimulationResult == EUDDealSimulationResult::Opened)
+		{
+			// It's opened.
+			FUDDealMinimalInfo dealInfo = FUDDealMinimalInfo();
+			dealInfo.DealId = deal.Key;
+			dealInfo.Name = deal.Value->Name;
+			info.Active.Add(dealInfo);
+		}
+		else 
+		{
+			// It's resolved.
+			FUDDealMinimalInfo dealInfo = FUDDealMinimalInfo();
+			dealInfo.Name = deal.Value->Name;
+			info.Active.Add(dealInfo);
+		}
+	}
+
+	return info;
+}
+
+#pragma endregion
+
 bool UUDActionAdministrator::IsLocalFactionPlayer()
 {
 	bool notGaia = State->FactionPerspective != UUDGlobalData::GaiaFactionId;

@@ -56,6 +56,8 @@ public:
 	static const int32 InvalidResourceId = -1;
 	/** This Id is always considered invalid for all modifier operations. */
 	static const int32 InvalidModifierId = -1;
+	/** This Id is always considered invalid for all deal operations. */
+	static const int32 InvalidDealId = -1;
 public:
 	// Default values that are expected to exists or be used.
 

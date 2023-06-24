@@ -49,6 +49,8 @@ struct FUDTextParameter;
 typedef TVariant<FUDFactionParameter, FUDTileParameter, FUDActionParameter, 
 	FUDResourceParameter, FUDValueParameter, FUDTextParameter> ParameterData;
 
+struct FUDDealInteractionInfo;
+
 #include "Core/Simulation/Actions/UDDealActionContractCreate.h"
 
 #include "UDActionAdministrator.generated.h"
@@ -452,6 +454,12 @@ private:
 	FStringFormatNamedArguments GetModifierContentArguments(const TSet<int32>& tags, FUDModifierData modifier);
 #pragma endregion
 
+#pragma region Deals
+public:
+	/** Returns all active deals separated by active and history for current player. */
+	FUDDealInteractionInfo GetAllLocalDeals();
+
+#pragma endregion
 
 public:
 	/** Checks if specified faction is owned by local player. */
@@ -676,19 +684,6 @@ public:
 			keys.Sort();
 		}
 		return keys;
-	}
-	UFUNCTION(BlueprintCallable)
-	FUDDealInfo GetDealInfoAnyDEBUG()
-	{
-		if (State->Deals.Num() != 0)
-		{
-			for (auto& deal : State->Deals)
-			{
-				return FUDDealInfo(deal.Key, deal.Value->DealSimulationState, deal.Value->DealSimulationResult);
-			}
-		}
-
-		return GetDealInfo(0);
 	}
 	UFUNCTION(BlueprintCallable)
 	bool IsModerator(int32 dealUniqueId)

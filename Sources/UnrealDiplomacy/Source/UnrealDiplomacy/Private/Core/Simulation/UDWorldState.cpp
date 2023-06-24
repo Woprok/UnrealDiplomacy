@@ -91,6 +91,7 @@ TObjectPtr<UUDDealState> UUDDealState::CreateState(int32 dealId, int32 ownerId)
 	newState->ChatHistory.Empty(0);
 	newState->IsReadyPlayerList.Empty(0);
 	newState->PositiveVotePlayerList.Empty(0);
+	newState->Name = FString::Format(TEXT("Deal {0}"), { dealId });
 	return newState;
 }
 
