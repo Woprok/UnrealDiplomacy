@@ -9,6 +9,7 @@
 
 // Forward Declarations
 
+class UTextBlock;
 class UUDChatItemViewModel;
 
 /**
@@ -44,6 +45,10 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> FactionTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> MessageTextWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDChatItemViewModel> ViewModel;

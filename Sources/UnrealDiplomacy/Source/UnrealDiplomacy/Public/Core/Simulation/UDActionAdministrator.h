@@ -50,6 +50,7 @@ typedef TVariant<FUDFactionParameter, FUDTileParameter, FUDActionParameter,
 	FUDResourceParameter, FUDValueParameter, FUDTextParameter> ParameterData;
 
 struct FUDDealInteractionInfo;
+struct FUDChatMessageInfo;
 
 #include "Core/Simulation/Actions/UDDealActionContractCreate.h"
 
@@ -458,7 +459,8 @@ private:
 public:
 	/** Returns all active deals separated by active and history for current player. */
 	FUDDealInteractionInfo GetAllLocalDeals();
-
+	/** Retrives chat for the local deal. */
+	TArray<FUDChatMessageInfo> GetDealChatHistory(int32 dealId);
 #pragma endregion
 
 public:
@@ -761,14 +763,6 @@ public:
 		if (State->Deals[dealUniqueId]->Participants.Num() == 0)
 			return false;
 		return State->Deals[dealUniqueId]->Participants.Num();
-	}
-
-	UFUNCTION(BlueprintCallable)
-	TArray<FString> GetDealMessages(int32 dealUniqueId)
-	{
-		if (State->Deals.Num() == 0 || !State->Deals.Contains(dealUniqueId))
-			return TArray<FString>();
-		return State->Deals[dealUniqueId]->ChatHistory;
 	}
 
 	// structs do not support recursion so we need to make it little less recursive...

@@ -942,8 +942,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	EUDDealSimulationResult DealResult = EUDDealSimulationResult::Undefined;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FString CurrentChatMessage;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	int32 CurrentReady;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	int32 MaxReady;
@@ -982,12 +980,6 @@ public:
 	{
 		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionPointAdd::ActionTypeId, { CurrentDealItem.DealUniqueId }));
 	}
-	UFUNCTION(BlueprintCallable)
-	void ItemAddMessage()
-	{
-		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionMessageSend::ActionTypeId,{ CurrentDealItem.DealUniqueId }, CurrentChatMessage));
-		SetCurrentChatMessage(FString());
-	}
 
 	UFUNCTION(BlueprintCallable)
 	void ItemForceResolution()
@@ -1008,12 +1000,6 @@ public:
 	TArray<FUDDealActionInfo> GetAllActionForOtherPlayers()
 	{
 		return ActionModel->GetAllActionForOtherPlayers(CurrentDealItem.DealUniqueId);
-	}
-
-	UFUNCTION(BlueprintCallable)
-	TArray<FString> GetRecentChatMessages()
-	{
-		return ActionModel->GetDealMessages(CurrentDealItem.DealUniqueId);
 	}
 
 	UFUNCTION(BlueprintCallable)
@@ -1113,14 +1099,6 @@ private:
 	bool GetIsModerator() const
 	{
 		return IsModerator;
-	}
-	void SetCurrentChatMessage(FString newCurrentChatMessage)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(CurrentChatMessage, newCurrentChatMessage);
-	}
-	FString GetCurrentChatMessage() const
-	{
-		return CurrentChatMessage;
 	}
 	void SetCurrentReady(int32 newCurrentReady)
 	{

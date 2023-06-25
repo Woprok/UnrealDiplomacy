@@ -427,6 +427,23 @@ public:
 };
 
 /**
+ * Represents single message.
+ */
+USTRUCT(BlueprintType)
+struct UNREALDIPLOMACY_API FUDChatMessage
+{
+	GENERATED_BODY()
+public:
+	FUDChatMessage() {}
+	FUDChatMessage(int32 authorId, FString message)
+		: AuthorId(authorId), Message(message) {}
+	UPROPERTY(BlueprintReadOnly)
+	int32 AuthorId;
+	UPROPERTY(BlueprintReadOnly)
+	FString Message;
+};
+
+/**
  * Represents state of single deal that is being / was made.
  */
 UCLASS()
@@ -482,7 +499,7 @@ public:
 	 * Server received history of chat messages.
 	 */
 	UPROPERTY()
-	TArray<FString> ChatHistory;
+	TArray<FUDChatMessage> ChatHistory;
 	/**
 	 * List of players that selected ready in current phase.
 	 * This will/should be automatically reset on phase change.

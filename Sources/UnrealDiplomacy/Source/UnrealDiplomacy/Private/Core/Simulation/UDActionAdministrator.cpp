@@ -943,6 +943,21 @@ FUDDealInteractionInfo UUDActionAdministrator::GetAllLocalDeals()
 	return info;
 }
 
+TArray<FUDChatMessageInfo> UUDActionAdministrator::GetDealChatHistory(int32 dealId)
+{
+	TArray<FUDChatMessageInfo> history = { };
+
+	for (const auto& deal : State->Deals[dealId]->ChatHistory)
+	{
+		FUDChatMessageInfo info;
+		info.FactionName = State->Factions[deal.AuthorId]->Name;
+		info.Message = deal.Message;
+		history.Add(info);
+	}
+
+	return history;
+}
+
 #pragma endregion
 
 bool UUDActionAdministrator::IsLocalFactionPlayer()

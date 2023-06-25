@@ -17,7 +17,7 @@ void UUDDealActionMessageSend::Execute(const FUDActionData& action, TObjectPtr<U
 	IUDActionInterface::Execute(action, world);
 	// Add message to history.
 	FUDDealData data(action.ValueParameters);
-	world->Deals[data.DealId]->ChatHistory.Add(action.TextParameter);
+	world->Deals[data.DealId]->ChatHistory.Add(FUDChatMessage(action.InvokerFactionId, action.TextParameter));
 }
 void UUDDealActionMessageSend::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {

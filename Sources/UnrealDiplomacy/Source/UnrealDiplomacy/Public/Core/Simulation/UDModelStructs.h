@@ -503,6 +503,8 @@ public:
 	int32 Id;
 };
 
+#pragma region Deals
+
 USTRUCT(BlueprintType)
 struct FUDDealMinimalInfo
 {
@@ -537,3 +539,17 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	TArray<FUDDealMinimalInfo> History = { };
 };
+
+USTRUCT(BlueprintType)
+struct FUDChatMessageInfo
+{
+	GENERATED_BODY()
+public:
+	FUDChatMessageInfo();
+	UPROPERTY(BlueprintReadOnly)
+	FString FactionName;
+	UPROPERTY(BlueprintReadOnly)
+	FString Message;
+};
+
+#pragma endregion

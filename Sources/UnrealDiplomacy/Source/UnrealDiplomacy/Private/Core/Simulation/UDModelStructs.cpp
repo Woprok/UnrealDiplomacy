@@ -195,6 +195,8 @@ FUDModifierInfo::FUDModifierInfo()
 
 }
 
+#pragma region Deals
+
 FUDDealMinimalInfo::FUDDealMinimalInfo()
 {
 
@@ -204,3 +206,10 @@ FUDDealInteractionInfo::FUDDealInteractionInfo()
 {
 
 }
+
+FUDChatMessageInfo::FUDChatMessageInfo()
+{
+
+}
+
+#pragma endregion

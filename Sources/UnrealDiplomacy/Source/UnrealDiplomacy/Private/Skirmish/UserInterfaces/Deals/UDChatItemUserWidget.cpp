@@ -27,4 +27,6 @@ void UUDChatItemUserWidget::BindDelegates()
 
 void UUDChatItemUserWidget::BindWidgets()
 {
+	FactionTextWidget = GetWidget<UTextBlock>(TEXT("FactionText"));
+	MessageTextWidget = GetWidget<UTextBlock>(TEXT("MessageText"));
 }
