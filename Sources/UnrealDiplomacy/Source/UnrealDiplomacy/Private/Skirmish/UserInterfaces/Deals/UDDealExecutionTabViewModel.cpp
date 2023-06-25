@@ -38,14 +38,12 @@ void UUDDealExecutionTabViewModel::InvalidateContent(FUDDealMinimalInfo content)
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDDealExecutionTabViewModel: InvalidateContent."));
 	Content = content;
-	Update();
 }
 
 void UUDDealExecutionTabViewModel::SetContent(FUDDealMinimalInfo content)
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDDealExecutionTabViewModel: SetContent."));
 	Content = content;
-	Update();
 }
 
 void UUDDealExecutionTabViewModel::SetDealNameText(FText newDealNameText)

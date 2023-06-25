@@ -383,8 +383,6 @@ FText UUDDealManagementViewModel::GetHistoryText() const
 void UUDDealManagementViewModel::SetSelectedTabValue(int32 newSelectedTabValue)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(SelectedTabValue, newSelectedTabValue);
-	//UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(ActiveTabValue);
-	//UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(HistoryTabValue);
 }
 
 int32 UUDDealManagementViewModel::GetSelectedTabValue() const

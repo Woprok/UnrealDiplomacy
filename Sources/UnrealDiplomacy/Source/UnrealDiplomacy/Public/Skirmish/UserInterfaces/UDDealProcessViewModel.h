@@ -951,7 +951,7 @@ public:
 	int32 MaxVote;
 protected:
 	TArray<int32> DealsByTimeline;
-	FUDDealInfo CurrentDealItem;
+	//FUDDealInfo CurrentDealItem;
 	int32 CurrentIndex;
 public:
 	virtual void OnUpdate() override
@@ -973,50 +973,50 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ItemClose()
 	{
-		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionResultClose::ActionTypeId, { CurrentDealItem.DealUniqueId }));
+		//ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionResultClose::ActionTypeId, { CurrentDealItem.DealUniqueId }));
 	}
 	UFUNCTION(BlueprintCallable)
 	void ItemAddPoint()
 	{
-		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionPointAdd::ActionTypeId, { CurrentDealItem.DealUniqueId }));
+		//ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionPointAdd::ActionTypeId, { CurrentDealItem.DealUniqueId }));
 	}
 
 	UFUNCTION(BlueprintCallable)
 	void ItemForceResolution()
 	{
-		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionContractCreate::ActionTypeId,{ CurrentDealItem.DealUniqueId }));
+		//ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionContractCreate::ActionTypeId,{ CurrentDealItem.DealUniqueId }));
 	}
 	UFUNCTION(BlueprintCallable)
 	void ItemForceExecution()
 	{
-		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionContractExecute::ActionTypeId,{ CurrentDealItem.DealUniqueId }));
+		//ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionContractExecute::ActionTypeId,{ CurrentDealItem.DealUniqueId }));
 	}
-	UFUNCTION(BlueprintCallable)
-	TArray<FUDDealActionInfo> GetAllActionForCurrentPlayer()
-	{
-		return ActionModel->GetAllActionForCurrentPlayer(CurrentDealItem.DealUniqueId);
-	}
-	UFUNCTION(BlueprintCallable)
-	TArray<FUDDealActionInfo> GetAllActionForOtherPlayers()
-	{
-		return ActionModel->GetAllActionForOtherPlayers(CurrentDealItem.DealUniqueId);
-	}
-
-	UFUNCTION(BlueprintCallable)
-	TArray<FUDActionData> GetCurrentActionPreviewList()
-	{
-		return ActionModel->GetDealPointsAsUnfoldedActions(CurrentDealItem.DealUniqueId);
-	}
+	//UFUNCTION(BlueprintCallable)
+	//TArray<FUDDealActionInfo> GetAllActionForCurrentPlayer()
+	//{
+	//	//return ActionModel->GetAllActionForCurrentPlayer(CurrentDealItem.DealUniqueId);
+	//}
+	//UFUNCTION(BlueprintCallable)
+	//TArray<FUDDealActionInfo> GetAllActionForOtherPlayers()
+	//{
+	//	//return ActionModel->GetAllActionForOtherPlayers(CurrentDealItem.DealUniqueId);
+	//}
+	//
+	//UFUNCTION(BlueprintCallable)
+	//TArray<FUDActionData> GetCurrentActionPreviewList()
+	//{
+	//	//return ActionModel->GetDealPointsAsUnfoldedActions(CurrentDealItem.DealUniqueId);
+	//}
 protected:
 	void UpdateView(int32 dealHistoryCount, int32 dealUniqueId, int32 arrayPosition)
 	{
-		CurrentDealItem = ActionModel->GetDealInfo(dealUniqueId);
+		//CurrentDealItem = ActionModel->GetDealInfo(dealUniqueId);
 		CurrentDeal = dealUniqueId;
 		CurrentIndex = arrayPosition;
 
-		OnDealPresent(CurrentDealItem);
+		//OnDealPresent(CurrentDealItem);
 	}
-	
+	/*/
 	void OnDealEmpty(FUDDealInfo info)
 	{
 		SetIsSessionActive(false);
@@ -1049,7 +1049,7 @@ protected:
 		ChatOnUpdated.Broadcast();
 		PointsOnUpdated.Broadcast(ActionModel->GetDealPointsTree(info.DealUniqueId));
 		ActionInfoUpdated.Broadcast();
-	}
+	}*/
 private:
 	// MVVM Setters & Getters
 	void SetSessionDescription(FString newSessionDescription)

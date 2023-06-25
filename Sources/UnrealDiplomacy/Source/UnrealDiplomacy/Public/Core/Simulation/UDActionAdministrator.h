@@ -53,6 +53,8 @@ typedef TVariant<FUDDealParameter ,FUDFactionParameter, FUDTileParameter, FUDAct
 struct FUDDealInteractionInfo;
 struct FUDChatMessageInfo;
 struct FUDDealMinimalInfo;
+struct FUDDealInfo;
+struct FUDDealFactionInfo;
 
 #include "Core/Simulation/Actions/UDDealActionContractCreate.h"
 
@@ -102,22 +104,6 @@ public:
 	TArray<FUDPlayerInfo> BlockedParticipants;
 	UPROPERTY(BlueprintReadOnly)
 	TArray<FUDPlayerInfo> AvailableParticipants;
-};
-
-USTRUCT(BlueprintType)
-struct FUDDealInfo
-{
-	GENERATED_BODY()
-public:
-	FUDDealInfo() {}
-	FUDDealInfo(int32 dealUniqueId, EUDDealSimulationState state, EUDDealSimulationResult result) 
-		: DealUniqueId(dealUniqueId), State(state), Result(result) {}
-	UPROPERTY(BlueprintReadOnly)
-	int32 DealUniqueId = 0;
-	UPROPERTY(BlueprintReadOnly)
-	EUDDealSimulationState State;
-	UPROPERTY(BlueprintReadOnly)
-	EUDDealSimulationResult Result;
 };
 
 USTRUCT(BlueprintType)
@@ -468,6 +454,15 @@ public:
 	TArray<FUDChatMessageInfo> GetDealChatHistory(int32 dealId);
 	/** Returns list of deals that can be used as parameter. */
 	TArray<FUDDealMinimalInfo> GetDealList();
+	/** Returns extended deal info. */
+	FUDDealInfo GetDealInfo(int32 dealId);
+	/** Returns list of participants. */
+	TArray<FUDDealFactionInfo> GetDealParticipantList(int32 dealId);
+	/** Returns list of inviteable. */
+	TArray<FUDDealFactionInfo> GetDealInviteList(int32 dealId);
+private:
+	/** Converts state and result to unified name. */
+	FText GetStateName(EUDDealSimulationState stae, EUDDealSimulationResult result);
 #pragma endregion
 
 public:
@@ -699,18 +694,6 @@ public:
 	{
 		return State->Deals[dealUniqueId]->OwnerUniqueId == State->FactionPerspective;
 
-	}
-	/**
-	 * Returns list of active participants, blocked participants, available participants.
-	 */
-	UFUNCTION(BlueprintCallable)
-	FUDDealInfo GetDealInfo(int32 dealUniqueId)
-	{
-		if (State->Deals.Num() == 0 || !State->Deals.Contains(dealUniqueId))
-			return FUDDealInfo(0, EUDDealSimulationState::Undefined, EUDDealSimulationResult::Undefined);
-
-		TObjectPtr<UUDDealState> deal = State->Deals[dealUniqueId];
-		return FUDDealInfo(deal->UniqueDealId, deal->DealSimulationState, deal->DealSimulationResult);
 	}
 	UFUNCTION(BlueprintCallable)
 	bool IsParticipantInCurrentDeal(int32 dealUniqueId, int32 playerId)

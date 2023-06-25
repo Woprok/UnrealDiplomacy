@@ -583,9 +583,35 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	FString FactionName;
 	UPROPERTY(BlueprintReadOnly)
+	bool IsInviteble = false;
+	UPROPERTY(BlueprintReadOnly)
 	bool IsReady;
 	UPROPERTY(BlueprintReadOnly)
 	bool IsYesVote;
+};
+
+USTRUCT(BlueprintType)
+struct FUDDealInfo
+{
+	GENERATED_BODY()
+public:
+	FUDDealInfo();
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	bool IsModerator = false;
+	UPROPERTY(BlueprintReadOnly)
+	FString State;
+	UPROPERTY(BlueprintReadOnly)
+	int32 ReadyCount = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 VoteCount = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 ParticipantCount = 0;
+	UPROPERTY(BlueprintReadOnly)
+	bool LocalReady = false;
+	UPROPERTY(BlueprintReadOnly)
+	bool LocalVote = false;
 };
 
 #pragma endregion

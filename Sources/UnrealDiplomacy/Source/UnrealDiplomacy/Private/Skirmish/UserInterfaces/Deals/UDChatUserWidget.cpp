@@ -18,7 +18,7 @@ void UUDChatUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 void UUDChatUserWidget::BindDelegates()
 {
 	// Bind view to updates.
-	ViewModel->ChatSourceUpdatedEvent.AddUObject(this, &UUDChatUserWidget::SetChatSourceCollection);
+	ViewModel->ChatItemSourceUpdatedEvent.AddUObject(this, &UUDChatUserWidget::SetChatSourceCollection);
 	// Bind viewmodel to widgets.
 	EditableMessageTextBoxWidget->OnTextChanged.AddUniqueDynamic(ViewModel.Get(), &UUDChatViewModel::StartTextEditation);
 	EditableMessageTextBoxWidget->OnTextCommitted.AddUniqueDynamic(ViewModel.Get(), &UUDChatViewModel::StopTextEditation);

@@ -1,6 +1,7 @@
 // Copyright Miroslav Valach
 
 #include "Skirmish/UserInterfaces/Deals/UDChatViewModel.h"
+#include "Skirmish/UserInterfaces/Deals/UDChatItemViewModel.h"
 #include "Core/Simulation/UDModelStructs.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Skirmish/UDSkirmishHUD.h"
@@ -10,6 +11,8 @@
 
 void UUDChatViewModel::Initialize()
 {
+	ChatItemViewModelType = UUDChatItemViewModel::StaticClass();
+
 	FText chat = FText(LOCTEXT("Chat", "Chat"));
 	SetChatTitleText(chat);
 	FText send = FText(LOCTEXT("Chat", "Send"));
@@ -64,7 +67,7 @@ void UUDChatViewModel::UpdateChatItemList()
 		ChatItemViewModelCollection.Add(newViewModel);
 	}
 
-	ChatSourceUpdatedEvent.Broadcast(ChatItemViewModelCollection);
+	ChatItemSourceUpdatedEvent.Broadcast(ChatItemViewModelCollection);
 }
 
 void UUDChatViewModel::StartTextEditation(const FText& InText)

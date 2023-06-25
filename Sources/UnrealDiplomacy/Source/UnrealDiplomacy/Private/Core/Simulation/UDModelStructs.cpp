@@ -222,4 +222,9 @@ FUDDealFactionInfo::FUDDealFactionInfo()
 
 }
 
+FUDDealInfo::FUDDealInfo()
+{
+
+}
+
 #pragma endregion

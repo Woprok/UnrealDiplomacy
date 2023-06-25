@@ -1019,6 +1019,113 @@ TArray<FUDDealMinimalInfo> UUDActionAdministrator::GetDealList()
 	return deals;
 }
 
+#define LOCTEXT_NAMESPACE "DealStateConvertor"
+
+FText UUDActionAdministrator::GetStateName(EUDDealSimulationState state, EUDDealSimulationResult result)
+{
+	switch (result)
+	{
+	case EUDDealSimulationResult::Opened:
+		switch (state)
+		{
+		case EUDDealSimulationState::CreatingDraft:
+			return FText(LOCTEXT("DealStateConvertor", "Draft Phase"));
+			break;
+		case EUDDealSimulationState::Assembling:
+			return FText(LOCTEXT("DealStateConvertor", "Assemble Phase"));
+			break;
+		case EUDDealSimulationState::ExtendingDraft:
+			return FText(LOCTEXT("DealStateConvertor", "Extension Phase"));
+			break;
+		case EUDDealSimulationState::DemandsAndRequests:
+			return FText(LOCTEXT("DealStateConvertor", "Demands & Requests Phase"));
+			break;
+		case EUDDealSimulationState::Bidding:
+			return FText(LOCTEXT("DealStateConvertor", "Bidding Phase"));
+			break;
+		case EUDDealSimulationState::FinalizingDraft:
+			return FText(LOCTEXT("DealStateConvertor", "Final Check Phase"));
+			break;
+		case EUDDealSimulationState::Vote:
+			return FText(LOCTEXT("DealStateConvertor", "Vote Phase"));
+			break;
+		case EUDDealSimulationState::Resolution:
+			return FText(LOCTEXT("DealStateConvertor", "Resolution Phase"));
+			break;
+		}
+		break;
+	case EUDDealSimulationResult::Passed:
+		return FText(LOCTEXT("DealStateConvertor", "Passed"));
+		break;
+	case EUDDealSimulationResult::Vetoed:
+		return FText(LOCTEXT("DealStateConvertor", "Vetoed"));
+		break;
+	case EUDDealSimulationResult::Disassembled:
+		return FText(LOCTEXT("DealStateConvertor", "Disassembled"));
+		break;
+	case EUDDealSimulationResult::Closed:
+		return FText(LOCTEXT("DealStateConvertor", "Closed"));
+		break;
+	}
+	return FText(LOCTEXT("DealStateConvertor", "Undefined Phase"));
+}
+
+#undef LOCTEXT_NAMESPACE
+
+FUDDealInfo UUDActionAdministrator::GetDealInfo(int32 dealId)
+{
+	FUDDealInfo dealInfo = FUDDealInfo();
+	dealInfo.IsModerator = State->Deals[dealId]->OwnerUniqueId == State->FactionPerspective;
+	dealInfo.State = GetStateName(State->Deals[dealId]->DealSimulationState, State->Deals[dealId]->DealSimulationResult).ToString();
+	dealInfo.ReadyCount = State->Deals[dealId]->IsReadyPlayerList.Num();
+	dealInfo.VoteCount = State->Deals[dealId]->PositiveVotePlayerList.Num();
+	dealInfo.ParticipantCount = State->Deals[dealId]->Participants.Num();
+	dealInfo.LocalReady = State->Deals[dealId]->IsReadyPlayerList.Contains(State->FactionPerspective);
+	dealInfo.LocalVote = State->Deals[dealId]->PositiveVotePlayerList.Contains(State->FactionPerspective);
+	return dealInfo;
+}
+TArray<FUDDealFactionInfo> UUDActionAdministrator::GetDealParticipantList(int32 dealId)
+{
+	TArray<FUDDealFactionInfo> participants = { };
+
+	for (const auto& member : State->Deals[dealId]->Participants)
+	{
+		FUDDealFactionInfo faction;
+		faction.DealId = dealId;
+		faction.FactionId = member;
+		faction.FactionName = State->Factions[member]->Name;
+		faction.IsInviteble = false;
+		faction.IsReady = State->Deals[dealId]->IsReadyPlayerList.Contains(member);
+		faction.IsYesVote = State->Deals[dealId]->PositiveVotePlayerList.Contains(member);
+		participants.Add(faction);
+	}
+
+	return participants;
+}
+
+TArray<FUDDealFactionInfo> UUDActionAdministrator::GetDealInviteList(int32 dealId)
+{
+	TArray<FUDDealFactionInfo> inviteables = { };
+
+	for (const auto& nonmember : State->Factions)
+	{
+		if (State->Deals[dealId]->Participants.Contains(nonmember.Key))
+		{
+			continue;
+		}
+		FUDDealFactionInfo faction;
+		faction.DealId = dealId;
+		faction.FactionId = nonmember.Key;
+		faction.FactionName = nonmember.Value->Name;
+		// revert of blocked list, only nonblocked can join
+		faction.IsInviteble = !State->Deals[dealId]->BlockedParticipants.Contains(nonmember.Key);
+		faction.IsReady = false;
+		faction.IsYesVote = false;
+		inviteables.Add(faction);
+	}
+
+	return inviteables;
+}
 
 #pragma endregion
 

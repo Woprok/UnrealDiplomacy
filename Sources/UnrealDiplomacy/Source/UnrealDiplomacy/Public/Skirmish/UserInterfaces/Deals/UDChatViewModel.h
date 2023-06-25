@@ -13,7 +13,7 @@ enum ETextCommit::Type : int;
 struct FUDDealMinimalInfo;
 class UUDChatItemViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDChatSourceUpdated, const TArray<TObjectPtr<UUDChatItemViewModel>>& chatItemViewModels);
+DECLARE_MULTICAST_DELEGATE_OneParam(FUDChatItemSourceUpdated, const TArray<TObjectPtr<UUDChatItemViewModel>>& chatItemViewModels);
 
 /**
  * Single faction in a list.
@@ -43,7 +43,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText SelectedText;
 	// Events
-	FUDChatSourceUpdated ChatSourceUpdatedEvent;
+	FUDChatItemSourceUpdated ChatItemSourceUpdatedEvent;
 protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
