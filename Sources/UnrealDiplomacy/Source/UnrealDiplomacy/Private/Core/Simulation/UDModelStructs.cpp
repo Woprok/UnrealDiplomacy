@@ -159,6 +159,11 @@ FUDTileParameter::FUDTileParameter()
 
 }
 
+FUDDealParameter::FUDDealParameter()
+{
+
+}
+
 FUDFactionParameter::FUDFactionParameter()
 {
 
@@ -208,6 +213,11 @@ FUDDealInteractionInfo::FUDDealInteractionInfo()
 }
 
 FUDChatMessageInfo::FUDChatMessageInfo()
+{
+
+}
+
+FUDDealFactionInfo::FUDDealFactionInfo()
 {
 
 }

@@ -27,4 +27,7 @@ void UUDParticipantItemUserWidget::BindDelegates()
 
 void UUDParticipantItemUserWidget::BindWidgets()
 {
+	FactionNameTextWidget = GetWidget<UTextBlock>(TEXT("FactionNameText"));
+	ReadyStateTextWidget = GetWidget<UTextBlock>(TEXT("ReadyStateText"));
+	VoteStateTextWidget = GetWidget<UTextBlock>(TEXT("VoteStateText"));
 }

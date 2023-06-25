@@ -59,15 +59,16 @@ class UUDModifierManager;
 #define UD_ACTION_TAG_TILE_INTERACTION 9
 // Specific parameter that should be included in parameter list.
 #define UD_ACTION_TAG_PARAMETER_NONE 10
-#define UD_ACTION_TAG_PARAMETER_FACTION 11
-#define UD_ACTION_TAG_PARAMETER_TILE 12
-#define UD_ACTION_TAG_PARAMETER_RESOURCE 13
-#define UD_ACTION_TAG_PARAMETER_ACTION 14
-#define UD_ACTION_TAG_PARAMETER_VALUE 15
-#define UD_ACTION_TAG_PARAMETER_TEXT 16
+#define UD_ACTION_TAG_PARAMETER_DEAL 11
+#define UD_ACTION_TAG_PARAMETER_FACTION 12
+#define UD_ACTION_TAG_PARAMETER_TILE 13
+#define UD_ACTION_TAG_PARAMETER_RESOURCE 14
+#define UD_ACTION_TAG_PARAMETER_ACTION 15
+#define UD_ACTION_TAG_PARAMETER_VALUE 16
+#define UD_ACTION_TAG_PARAMETER_TEXT 17
 // Details
-#define UD_ACTION_TAG_PARAMETER_VALUE_AMOUNT 17
-#define UD_ACTION_TAG_PARAMETER_VALUE_SMALL_MAX 18
+#define UD_ACTION_TAG_PARAMETER_VALUE_AMOUNT 18
+#define UD_ACTION_TAG_PARAMETER_VALUE_SMALL_MAX 19
 
 // This is definitely start of global nightmare...
 // Do not change the values and in case you have to change it inside of all actions.
@@ -79,6 +80,7 @@ class UUDModifierManager;
 #define UD_PARAMETER_ARG_RESOURCE TEXT("RESOURCE")
 #define UD_PARAMETER_ARG_VALUE TEXT("VALUE")
 #define UD_PARAMETER_ARG_TEXT TEXT("TEXT")
+#define UD_PARAMETER_ARG_DEAL TEXT("DEAL")
 
 /**
  * Defines informations about the action and how it can be displayed in UI.

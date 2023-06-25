@@ -23,8 +23,12 @@ void UUDInviteItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 void UUDInviteItemUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	InviteButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDInviteItemViewModel::Invite);
 }
 
 void UUDInviteItemUserWidget::BindWidgets()
 {
+	FactionNameTextWidget = GetWidget<UTextBlock>(TEXT("FactionNameText"));
+	InviteTextWidget = GetWidget<UTextBlock>(TEXT("InviteText"));
+	InviteButtonWidget = GetWidget<UButton>(TEXT("InviteButton"));
 }

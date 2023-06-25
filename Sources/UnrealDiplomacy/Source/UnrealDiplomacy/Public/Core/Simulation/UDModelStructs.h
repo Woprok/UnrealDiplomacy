@@ -5,6 +5,31 @@
 #include "CoreMinimal.h"
 #include "UDModelStructs.generated.h"
 
+// Forward Declarations
+
+USTRUCT(BlueprintType)
+struct FUDDealMinimalInfo
+{
+	GENERATED_BODY()
+public:
+	FUDDealMinimalInfo();
+	UPROPERTY(BlueprintReadOnly)
+		int32 DealId = 0;
+	UPROPERTY(BlueprintReadOnly)
+		FString Name = TEXT("");
+public:
+	/** Equality over UniqueId field. */
+	inline bool operator!=(const FUDDealMinimalInfo& rhs) const
+	{
+		return !(*this == rhs);
+	}
+	/** Equality over UniqueId field. */
+	inline bool operator==(const FUDDealMinimalInfo& rhs) const
+	{
+		return DealId == rhs.DealId;
+	}
+};
+
 /**
  * Describes state of the session and game.
  */
@@ -304,6 +329,8 @@ public:
 UENUM(BlueprintType)
 enum class EUDParameterType : uint8
 {
+	/** List with deals to select from. */
+	Deal,
 	/** List with factions to select from. */
 	Faction,
 	/** List with tiles to select from. */
@@ -361,6 +388,20 @@ public:
 };
 
 USTRUCT(BlueprintType)
+struct FUDDealParameter
+{
+	GENERATED_BODY()
+public:
+	FUDDealParameter();
+	UPROPERTY(BlueprintReadOnly)
+	FString Name = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	FString ToolTip = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	TArray<FUDDealMinimalInfo> Options = { };
+};
+
+USTRUCT(BlueprintType)
 struct FUDFactionParameter
 {
 	GENERATED_BODY()
@@ -403,7 +444,7 @@ public:
 };
 
 /** Question is whatever it's chicken or an egg. */
-typedef TVariant<FUDFactionParameter, FUDTileParameter, FUDActionParameter,
+typedef TVariant<FUDDealParameter, FUDFactionParameter, FUDTileParameter, FUDActionParameter,
 	FUDResourceParameter, FUDValueParameter, FUDTextParameter> ParameterData;
 
 USTRUCT(BlueprintType)
@@ -506,29 +547,6 @@ public:
 #pragma region Deals
 
 USTRUCT(BlueprintType)
-struct FUDDealMinimalInfo
-{
-	GENERATED_BODY()
-public:
-	FUDDealMinimalInfo();
-	UPROPERTY(BlueprintReadOnly)
-	int32 DealId = 0;
-	UPROPERTY(BlueprintReadOnly)
-	FString Name = TEXT("");
-public:
-	/** Equality over UniqueId field. */
-	inline bool operator!=(const FUDDealMinimalInfo& rhs) const
-	{
-		return !(*this == rhs);
-	}
-	/** Equality over UniqueId field. */
-	inline bool operator==(const FUDDealMinimalInfo& rhs) const
-	{
-		return DealId == rhs.DealId;
-	}
-};
-
-USTRUCT(BlueprintType)
 struct FUDDealInteractionInfo
 {
 	GENERATED_BODY()
@@ -550,6 +568,24 @@ public:
 	FString FactionName;
 	UPROPERTY(BlueprintReadOnly)
 	FString Message;
+};
+
+USTRUCT(BlueprintType)
+struct FUDDealFactionInfo
+{
+	GENERATED_BODY()
+public:
+	FUDDealFactionInfo();
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealId;
+	UPROPERTY(BlueprintReadOnly)
+	int32 FactionId;
+	UPROPERTY(BlueprintReadOnly)
+	FString FactionName;
+	UPROPERTY(BlueprintReadOnly)
+	bool IsReady;
+	UPROPERTY(BlueprintReadOnly)
+	bool IsYesVote;
 };
 
 #pragma endregion

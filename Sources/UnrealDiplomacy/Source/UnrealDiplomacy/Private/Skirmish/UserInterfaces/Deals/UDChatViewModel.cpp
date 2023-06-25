@@ -10,6 +10,8 @@
 
 void UUDChatViewModel::Initialize()
 {
+	FText chat = FText(LOCTEXT("Chat", "Chat"));
+	SetChatTitleText(chat);
 	FText send = FText(LOCTEXT("Chat", "Send"));
 	SetSendText(send);
 }
@@ -81,6 +83,16 @@ void UUDChatViewModel::StopTextEditation(const FText& InText, ETextCommit::Type 
 	{
 		SetSelectedText(newText);
 	}
+}
+
+void UUDChatViewModel::SetChatTitleText(FText newChatTitleText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ChatTitleText, newChatTitleText);
+}
+
+FText UUDChatViewModel::GetChatTitleText() const
+{
+	return ChatTitleText;
 }
 
 void UUDChatViewModel::SetSendText(FText newSendText)

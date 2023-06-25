@@ -519,6 +519,21 @@ bool UUDActionAdministrator::HasTileParameter(const TSet<int32>& tags, int32 exc
 	return true;
 }
 
+bool UUDActionAdministrator::HasDealParameter(const TSet<int32>& tags, int32 excludeTag)
+{
+	TSet<int32> searchTags = {
+		UD_ACTION_TAG_PARAMETER_DEAL
+	};
+
+	if (searchTags.Contains(excludeTag))
+		return false;
+
+	if (searchTags.Intersect(tags).Num() == 0)
+		return false;
+
+	return true;
+}
+
 bool UUDActionAdministrator::HasFactionParameter(const TSet<int32>& tags, int32 excludeTag)
 {
 	TSet<int32> searchTags = {
@@ -592,6 +607,20 @@ bool UUDActionAdministrator::HasTextParameter(const TSet<int32>& tags, int32 exc
 		return false;
 
 	return true;
+}
+
+ParameterData UUDActionAdministrator::GetDealParameter(const TSet<int32>& tags)
+{
+	ParameterData data;
+	FUDDealParameter parameter;
+
+	parameter.Name = FText(LOCTEXT("Parameters", "Deal")).ToString();
+	parameter.ToolTip = FText(LOCTEXT("Parameters", "Deal is required to be selected with this action.")).ToString();
+
+	parameter.Options = GetDealList();
+
+	data.Set<FUDDealParameter>(parameter);
+	return data;
 }
 
 ParameterData UUDActionAdministrator::GetTileParameter(const TSet<int32>& tags)
@@ -697,6 +726,11 @@ FUDParameterListInfo UUDActionAdministrator::GetActionParameters(const TSet<int3
 	parameters.OrderedData.Empty(0);
 	// Good old if hell.
 	// TODO create smarter system for parameters.
+	if (HasDealParameter(tags, excludeTag))
+	{
+		parameters.OrderedType.Add(EUDParameterType::Deal);
+		parameters.OrderedData.Add(GetDealParameter(tags));
+	}
 	if (HasFactionParameter(tags, excludeTag))
 	{
 		parameters.OrderedType.Add(EUDParameterType::Faction);
@@ -735,6 +769,13 @@ FUDParameterListInfo UUDActionAdministrator::GetActionParameters(const TSet<int3
 #pragma endregion
 
 #pragma region Messages & Request Interaction
+
+FStringFormatArg UUDActionAdministrator::GetDealArgument(const TArray<int32>& data, int32& startIndex)
+{
+	int32 dealId = data[startIndex++];
+	return FStringFormatArg(State->Deals[dealId]->Name);
+}
+
 FStringFormatArg UUDActionAdministrator::GetFactionArgument(const TArray<int32>& data, int32& startIndex)
 {
 	int32 factionId = data[startIndex++];
@@ -789,6 +830,11 @@ FStringFormatNamedArguments UUDActionAdministrator::GetMessageContentArguments(c
 	args.Add(UD_PARAMETER_ARG_FACTION_INVOKER,
 		FStringFormatArg(State->Factions[action.InvokerFactionId]->Name));
 
+	if (HasDealParameter(tags, UD_INVALID_TAG_ID))
+	{
+		args.Add(UD_PARAMETER_ARG_DEAL,
+			GetDealArgument(action.ValueParameters, startIndex));
+	}
 	if (HasFactionParameter(tags, UD_INVALID_TAG_ID))
 	{
 		args.Add(UD_PARAMETER_ARG_FACTION_TARGET,
@@ -957,6 +1003,22 @@ TArray<FUDChatMessageInfo> UUDActionAdministrator::GetDealChatHistory(int32 deal
 
 	return history;
 }
+
+TArray<FUDDealMinimalInfo> UUDActionAdministrator::GetDealList()
+{
+	TArray<FUDDealMinimalInfo> deals = { };
+
+	for (const auto& dealDetail : State->Deals)
+	{
+		FUDDealMinimalInfo deal;
+		deal.DealId = dealDetail.Key;
+		deal.Name = dealDetail.Value->Name;
+		deals.Add(deal);
+	}
+
+	return deals;
+}
+
 
 #pragma endregion
 

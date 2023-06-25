@@ -9,6 +9,7 @@
 
 // Forward Declarations
 
+struct FUDDealFactionInfo;
 
 /**
  * Single faction in a list.
@@ -21,15 +22,28 @@ public:
 	/**
 	 * Set content of the strategy option.
 	 */
-	void SetContent();
+	void SetContent(FUDDealFactionInfo content);
 public:
 	// Button Functions
 	// MVVM Fields
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText FactionNameText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText ReadyStateText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText VoteStateText;
 protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
 private:
 	// MVVM Setters & Getters
+	void SetFactionNameText(FText newFactionNameText);
+	FText GetFactionNameText() const;
+	void SetReadyStateText(FText newReadyStateText);
+	FText GetReadyStateText() const;
+	void SetVoteStateText(FText newVoteStateText);
+	FText GetVoteStateText() const;
 private:
 	// Fields
+	FUDDealFactionInfo Content;
 };

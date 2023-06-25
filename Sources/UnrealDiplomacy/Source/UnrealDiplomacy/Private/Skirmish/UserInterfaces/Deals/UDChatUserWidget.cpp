@@ -27,6 +27,7 @@ void UUDChatUserWidget::BindDelegates()
 
 void UUDChatUserWidget::BindWidgets()
 {
+	ChatTitleTextWidget = GetWidget<UTextBlock>(TEXT("ChatTitleText"));
 	SendTextWidget = GetWidget<UTextBlock>(TEXT("SendText"));
 	EditableMessageTextBoxWidget = GetWidget<UMultiLineEditableTextBox>(TEXT("EditableMessageTextBox"));
 	SendButtonWidget = GetWidget<UButton>(TEXT("SendButton"));

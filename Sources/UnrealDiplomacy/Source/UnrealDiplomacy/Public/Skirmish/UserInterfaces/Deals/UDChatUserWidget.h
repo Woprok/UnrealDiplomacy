@@ -49,6 +49,8 @@ protected:
 protected:
 	// Bindings
 	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> ChatTitleTextWidget;
+	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> SendTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UMultiLineEditableTextBox> EditableMessageTextBoxWidget;

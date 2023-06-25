@@ -1,6 +1,8 @@
 // Copyright Miroslav Valach
 
 #include "Core/Simulation/Actions/UDDealActionParticipantInvite.h"
+#include "Core/Simulation/Actions/UDDealActionParticipantInviteAccept.h"
+#include "Core/Simulation/Actions/UDDealActionParticipantInviteReject.h"
 #include "Core/UDGlobalData.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDWorldState.h"
@@ -28,3 +30,29 @@ void UUDDealActionParticipantInvite::Revert(const FUDActionData& action, TObject
 	FUDDealDataTarget data(action.ValueParameters);
 	RemovePendingTargetRequest(action, data.TargetId, world);
 }
+
+#define LOCTEXT_NAMESPACE "ParticipantInvite"
+FUDActionPresentation UUDDealActionParticipantInvite::GetPresentation() const
+{
+	if (GetId() != UUDDealActionParticipantInvite::ActionTypeId)
+		return Super::GetPresentation();
+	FUDActionPresentation presentation = FUDActionPresentation();
+	presentation.ActionId = GetId();
+	presentation.Name = FText(LOCTEXT("ParticipantInvite", "Deal Invite")).ToString();
+	presentation.Tags.Append(
+		{
+			UD_ACTION_TAG_VALID,
+			UD_ACTION_TAG_PARAMETER_DEAL,
+			UD_ACTION_TAG_PARAMETER_FACTION,
+		}
+	);
+
+	presentation.AcceptActionId = UUDDealActionParticipantInviteAccept::ActionTypeId;
+	presentation.RejectActionId = UUDDealActionParticipantInviteReject::ActionTypeId;
+	presentation.MessageContentFormat = FText(LOCTEXT("ParticipantInvite",
+		"Your faction [{TARGET}] has been invited to participate in [{INVOKER}]'s deal: [{DEAL}].\nHow do you answer ?"
+	)).ToString();
+
+	return presentation;
+}
+#undef LOCTEXT_NAMESPACE

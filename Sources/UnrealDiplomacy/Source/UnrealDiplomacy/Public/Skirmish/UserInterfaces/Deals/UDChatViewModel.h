@@ -37,6 +37,8 @@ public:
 	void Send();
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText ChatTitleText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText SendText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText SelectedText;
@@ -52,6 +54,8 @@ private:
 	void UpdateChatItemList();
 private:
 	// MVVM Setters & Getters
+	void SetChatTitleText(FText newChatTitleText);
+	FText GetChatTitleText() const;
 	void SetSendText(FText newSendText);
 	FText GetSendText() const;
 	void SetSelectedText(FText newSelectedText);

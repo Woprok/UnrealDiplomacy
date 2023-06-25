@@ -9,6 +9,8 @@
 
 // Forward Declarations
 
+class UTextBlock;
+class UButton;
 class UUDParticipantItemViewModel;
 
 /**
@@ -44,6 +46,12 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> FactionNameTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> ReadyStateTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> VoteStateTextWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDParticipantItemViewModel> ViewModel;

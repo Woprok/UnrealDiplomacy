@@ -40,17 +40,19 @@ struct FUDModifierInfo;
 struct FUDMessageInfo;
 struct FUDMessageInteractionInfo;
 
+struct FUDDealParameter;
 struct FUDFactionParameter;
 struct FUDTileParameter;
 struct FUDActionParameter;
 struct FUDResourceParameter;
 struct FUDValueParameter;
 struct FUDTextParameter;
-typedef TVariant<FUDFactionParameter, FUDTileParameter, FUDActionParameter, 
+typedef TVariant<FUDDealParameter ,FUDFactionParameter, FUDTileParameter, FUDActionParameter, 
 	FUDResourceParameter, FUDValueParameter, FUDTextParameter> ParameterData;
 
 struct FUDDealInteractionInfo;
 struct FUDChatMessageInfo;
+struct FUDDealMinimalInfo;
 
 #include "Core/Simulation/Actions/UDDealActionContractCreate.h"
 
@@ -408,12 +410,14 @@ public:
 	/** Returns list of actions that can be used as parameter. */
 	TArray<FUDActionMinimalInfo> GetActionList();
 private:
+	bool HasDealParameter(const TSet<int32>& tags, int32 excludeTag = UD_INVALID_TAG_ID);
 	bool HasFactionParameter(const TSet<int32>& tags, int32 excludeTag = UD_INVALID_TAG_ID);
 	bool HasTileParameter(const TSet<int32>& tags, int32 excludeTag = UD_INVALID_TAG_ID);
 	bool HasActionParameter(const TSet<int32>& tags, int32 excludeTag = UD_INVALID_TAG_ID);
 	bool HasResourceParameter(const TSet<int32>& tags, int32 excludeTag = UD_INVALID_TAG_ID);
 	bool HasValueParameter(const TSet<int32>& tags, int32 excludeTag = UD_INVALID_TAG_ID);
 	bool HasTextParameter(const TSet<int32>& tags, int32 excludeTag = UD_INVALID_TAG_ID);
+	ParameterData GetDealParameter(const TSet<int32>& tags);
 	ParameterData GetFactionParameter(const TSet<int32>& tags);
 	ParameterData GetTileParameter(const TSet<int32>& tags);
 	ParameterData GetActionParameter(const TSet<int32>& tags);
@@ -435,6 +439,7 @@ private:
 	FString GetFormattedMessageContent(FString formatString, const TSet<int32>& tags, FUDActionData action);
 	/** Retrieves parameters from the tags and associate them with action values. */
 	FStringFormatNamedArguments GetMessageContentArguments(const TSet<int32>& tags, FUDActionData action);
+	FStringFormatArg GetDealArgument(const TArray<int32>& data, int32& startIndex);
 	FStringFormatArg GetFactionArgument(const TArray<int32>& data, int32& startIndex);
 	FStringFormatArg GetTileArgument(const TArray<int32>& data, int32& startIndex);
 	FStringFormatArg GetActionArgument(const TArray<int32>& data, int32& startIndex);
@@ -461,6 +466,8 @@ public:
 	FUDDealInteractionInfo GetAllLocalDeals();
 	/** Retrives chat for the local deal. */
 	TArray<FUDChatMessageInfo> GetDealChatHistory(int32 dealId);
+	/** Returns list of deals that can be used as parameter. */
+	TArray<FUDDealMinimalInfo> GetDealList();
 #pragma endregion
 
 public:
