@@ -4,20 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDUserWidget.h"
-#include "UDDealItemUserWidget.generated.h"
+#include "UDDealExecutionTabUserWidget.generated.h"
 
 // Forward Declarations
 
 class UTextBlock;
 class UButton;
 class UCheckBox;
-class UUDDealItemViewModel;
+class UUDDealExecutionTabViewModel;
 
 /**
  * Ancestor for blueprint.
  */
 UCLASS(Abstract)
-class UNREALDIPLOMACY_API UUDDealItemUserWidget : public UUDUserWidget
+class UNREALDIPLOMACY_API UUDDealExecutionTabUserWidget : public UUDUserWidget
 {
 	GENERATED_BODY()
 public:
@@ -25,7 +25,7 @@ public:
 	 * Enables blueprint to bind view model.
 	 */
 	UFUNCTION(BlueprintImplementableEvent)
-	void SetBlueprintViewModel(UUDDealItemViewModel* model);
+	void SetBlueprintViewModel(UUDDealExecutionTabViewModel* model);
 protected:
 	/**
 	 * Enables to define view model used by this widet for delegates.
@@ -43,5 +43,5 @@ protected:
 	// Bindings
 	// ViewModel
 	UPROPERTY()
-	TWeakObjectPtr<UUDDealItemViewModel> ViewModel;
+	TWeakObjectPtr<UUDDealExecutionTabViewModel> ViewModel;
 };

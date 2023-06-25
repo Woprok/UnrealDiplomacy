@@ -1,27 +1,27 @@
 // Copyright Miroslav Valach
 
-#include "Skirmish/UserInterfaces/Deals/UDDealItemViewModel.h"
+#include "Skirmish/UserInterfaces/Deals/UDDealExecutionTabViewModel.h"
 #include "Skirmish/UDSkirmishHUD.h"
 #include "Skirmish/UDSkirmishPlayerController.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Core/Simulation/UDModelStructs.h"
 
-#define LOCTEXT_NAMESPACE "DealItem"
+#define LOCTEXT_NAMESPACE "DealExecutionTab"
 
-void UUDDealItemViewModel::Initialize()
+void UUDDealExecutionTabViewModel::Initialize()
 {
-	FText dealName = FText(LOCTEXT("DealItem", "Deal"));
+	FText dealName = FText(LOCTEXT("DealExecutionTab", "Deal"));
 	SetDealNameText(dealName);
 
 	Update();
 }
 
-void UUDDealItemViewModel::Reload()
+void UUDDealExecutionTabViewModel::Reload()
 {
 	Update();
 }
 
-void UUDDealItemViewModel::Update()
+void UUDDealExecutionTabViewModel::Update()
 {
 	SetDealNameText(FText::FromString(Content.Name));
 
@@ -34,26 +34,26 @@ void UUDDealItemViewModel::Update()
 
 #undef LOCTEXT_NAMESPACE
 
-void UUDDealItemViewModel::InvalidateContent(FUDDealMinimalInfo content)
+void UUDDealExecutionTabViewModel::InvalidateContent(FUDDealMinimalInfo content)
 {
-	UE_LOG(LogTemp, Log, TEXT("UUDDealItemViewModel: InvalidateContent."));
+	UE_LOG(LogTemp, Log, TEXT("UUDDealExecutionTabViewModel: InvalidateContent."));
 	Content = content;
 	Update();
 }
 
-void UUDDealItemViewModel::SetContent(FUDDealMinimalInfo content)
+void UUDDealExecutionTabViewModel::SetContent(FUDDealMinimalInfo content)
 {
-	UE_LOG(LogTemp, Log, TEXT("UUDDealItemViewModel: SetContent."));
+	UE_LOG(LogTemp, Log, TEXT("UUDDealExecutionTabViewModel: SetContent."));
 	Content = content;
 	Update();
 }
 
-void UUDDealItemViewModel::SetDealNameText(FText newDealNameText)
+void UUDDealExecutionTabViewModel::SetDealNameText(FText newDealNameText)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(DealNameText, newDealNameText);
 }
 
-FText UUDDealItemViewModel::GetDealNameText() const
+FText UUDDealExecutionTabViewModel::GetDealNameText() const
 {
 	return DealNameText;
 }

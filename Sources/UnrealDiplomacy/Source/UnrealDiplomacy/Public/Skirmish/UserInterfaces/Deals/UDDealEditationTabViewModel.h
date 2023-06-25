@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
 #include "Core/Simulation/UDModelStructs.h"
-#include "UDDealItemViewModel.generated.h"
+#include "UDDealEditationTabViewModel.generated.h"
 
 // Forward Declarations
 
@@ -15,7 +15,7 @@ struct FUDDealMinimalInfo;
  * Window for showing and editing deals.
  */
 UCLASS(Blueprintable, BlueprintType)
-class UNREALDIPLOMACY_API UUDDealItemViewModel : public UUDViewModel
+class UNREALDIPLOMACY_API UUDDealEditationTabViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:

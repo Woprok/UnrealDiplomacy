@@ -1,24 +1,23 @@
 // Copyright Miroslav Valach
 
-#include "Skirmish/UserInterfaces/Deals/UDDealItemUserWidget.h"
-#include "Skirmish/UserInterfaces/Deals/UDDealItemViewModel.h"
+#include "Skirmish/UserInterfaces/Deals/UDDealGeneralTabUserWidget.h"
+#include "Skirmish/UserInterfaces/Deals/UDDealGeneralTabViewModel.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
-#include "Components/CheckBox.h"
 
-void UUDDealItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
+void UUDDealGeneralTabUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
-	UUDDealItemViewModel* dealItemViewModel = CastChecked<UUDDealItemViewModel>(viewModel.Get());
+	UUDDealGeneralTabViewModel* dealItemViewModel = CastChecked<UUDDealGeneralTabViewModel>(viewModel.Get());
 	ViewModel = dealItemViewModel;
 	SetBlueprintViewModel(ViewModel.Get());
 }
 
-void UUDDealItemUserWidget::BindDelegates()
+void UUDDealGeneralTabUserWidget::BindDelegates()
 {
 	// Bind view to updates.
 	// Bind viewmodel to widgets.
 }
 
-void UUDDealItemUserWidget::BindWidgets()
+void UUDDealGeneralTabUserWidget::BindWidgets()
 {
 }

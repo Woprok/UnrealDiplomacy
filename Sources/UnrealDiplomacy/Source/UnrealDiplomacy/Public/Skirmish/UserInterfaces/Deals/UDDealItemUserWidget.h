@@ -10,7 +10,6 @@
 
 class UTextBlock;
 class UButton;
-class UCheckBox;
 class UUDDealItemViewModel;
 
 /**

@@ -4,7 +4,6 @@
 #include "Skirmish/UserInterfaces/Deals/UDDealItemViewModel.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
-#include "Components/CheckBox.h"
 
 void UUDDealItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
