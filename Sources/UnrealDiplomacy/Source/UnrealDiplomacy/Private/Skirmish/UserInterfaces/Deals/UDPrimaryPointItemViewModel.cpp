@@ -2,6 +2,7 @@
 
 #include "Skirmish/UserInterfaces/Deals/UDPrimaryPointItemViewModel.h"
 #include "Skirmish/UserInterfaces/Deals/UDSecondaryPointItemViewModel.h"
+#include "Skirmish/UserInterfaces/Deals/UDPointContentViewModel.h"
 #include "Core/Simulation/UDModelStructs.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Skirmish/UDSkirmishHUD.h"
@@ -27,6 +28,10 @@ void UUDPrimaryPointItemViewModel::Initialize()
 		int32 uniqueId = UUDPrimaryPointItemViewModel::UniqueNameDefinition++;
 		PointItemViewModelType = UUDSecondaryPointItemViewModel::StaticClass();
 		PointItemViewModelCollectionName = FName(PointItemViewModelCollectionName.ToString() + FString::FromInt(uniqueId));
+
+		PointContentViewModelType = UUDPointContentViewModel::StaticClass();
+		PointContentViewModelInstanceName = FName(PointContentViewModelInstanceName.ToString() + FString::FromInt(uniqueId));
+
 		UE_LOG(LogTemp, Log, TEXT("UUDPrimaryPointItemViewModel: Defined points [%d]."), uniqueId);
 		IsUniqueNameDefined = true;
 	}
@@ -40,6 +45,7 @@ void UUDPrimaryPointItemViewModel::Update()
 	{
 		// Valid can already have childs
 		UpdatePointList();
+		UpdatePointContent();
 	}
 	else
 	{
@@ -56,10 +62,23 @@ void UUDPrimaryPointItemViewModel::SetContent(FUDDealPointMinimalInfo content, b
 	Content = content;
 }
 
+void UUDPrimaryPointItemViewModel::UpdatePointContent()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDPrimaryPointItemViewModel: UpdatePointContent."));
+	// Retrieve model
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(PointContentViewModelInstanceName, PointContentViewModelType);
+	// Get rid of all models
+	PointContentViewModelInstance = Cast<UUDPointContentViewModel>(viewModel);
+	PointContentViewModelInstance->SetContent(Content);
+	PointContentViewModelInstance->FullUpdate();
+	PointContentSourceUpdatedEvent.Broadcast(PointContentViewModelInstance);
+}
+
 void UUDPrimaryPointItemViewModel::UpdatePointList()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDPrimaryPointItemViewModel: UpdatePointList."));
-	// Retrieve factions
+	// Retrieve points
 	TArray<FUDDealPointMinimalInfo> points = Model->GetDealSecondaryPointList(Content.DealId, Content.PointId);
 	// We will use one additional model for new point node.
 	int32 desiredPointCount = points.Num() + 1;

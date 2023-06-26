@@ -56,6 +56,7 @@ struct FUDDealMinimalInfo;
 struct FUDDealInfo;
 struct FUDDealFactionInfo;
 struct FUDDealPointMinimalInfo;
+struct FUDDealActionInfo;
 
 #include "Core/Simulation/Actions/UDDealActionContractCreate.h"
 
@@ -163,6 +164,7 @@ public:
 	FString TextParameter;
 };
 
+// TODO rework this
 USTRUCT(BlueprintType)
 struct FUDDealActionInfo
 {
@@ -467,6 +469,8 @@ public:
 	TArray<FUDDealPointMinimalInfo> GetDealSecondaryPointList(int32 dealId, int32 pointId);
 	/** Retrieves all tertiary points of the specified deal. */
 	TArray<FUDDealPointMinimalInfo> GetDealTertiaryPointList(int32 dealId, int32 pointId);
+	/** Retrieves all actions associated with the specified deal for execution. */
+	TArray<FUDDealActionInfo> GetDealActionList(int32 dealId);
 private:
 	/** Converts state and result to unified name. */
 	FText GetStateName(EUDDealSimulationState stae, EUDDealSimulationResult result);

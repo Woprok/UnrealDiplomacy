@@ -10,6 +10,9 @@
 // Forward Declarations
 
 struct FUDDealPointMinimalInfo;
+class UUDPointContentViewModel;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FUDPointContentSourceUpdated, const TObjectPtr<UUDPointContentViewModel>& itemViewModel);
 
 /**
  * Single faction in a list.
@@ -32,9 +35,16 @@ public:
 	FText CreateTertiaryPointText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsValidContentValue;
+	// Events
+	FUDPointContentSourceUpdated PointContentSourceUpdatedEvent;
 protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
+private:
+	/**
+	 * Fill current point with data.
+	 */
+	void UpdatePointContent();
 private:
 	// MVVM Setters & Getters
 	void SetCreateTertiaryPointText(FText newCreateTertiaryPointText);
@@ -44,4 +54,13 @@ private:
 private:
 	// Fields
 	FUDDealPointMinimalInfo Content;
+	// Instances
+	FName PointContentViewModelInstanceName = TEXT("TertiaryPointContentInstance");
+	TSubclassOf<UUDViewModel> PointContentViewModelType;
+	TObjectPtr<UUDPointContentViewModel> PointContentViewModelInstance;
+private:
+	// Ensure uniqueness of all collections used...
+	bool IsUniqueNameDefined = false;
+	// Static trick to always have unique names for each instance.
+	static int32 UniqueNameDefinition;
 };

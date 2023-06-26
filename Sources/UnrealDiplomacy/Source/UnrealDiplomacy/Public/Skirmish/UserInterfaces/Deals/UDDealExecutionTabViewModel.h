@@ -10,9 +10,12 @@
 // Forward Declarations
 
 struct FUDDealMinimalInfo;
+class UUDActionItemViewModel;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FUDActionItemSourceUpdated, const TArray<TObjectPtr<UUDActionItemViewModel>>& itemViewModels);
 
 /**
- * Window for showing and editing deals.
+ * Tab for showing and editing actions that are part of deal.
  */
 UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDDealExecutionTabViewModel : public UUDViewModel
@@ -30,9 +33,8 @@ public:
 public:
 	// Button Functions
 	// MVVM Fields
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FText DealNameText;
 	// Events
+	FUDActionItemSourceUpdated ActionItemSourceUpdatedEvent;
 protected:
 	virtual void Initialize() override;
 	UFUNCTION()
@@ -40,10 +42,17 @@ protected:
 	UFUNCTION()
 	void Reload();
 private:
+	/**
+	 * Fill with current deal points.
+	 */
+	void UpdateActionList();
+private:
 	// MVVM Setters & Getters
-	void SetDealNameText(FText newDealNameText);
-	FText GetDealNameText() const;
 private:
 	// Fields
 	FUDDealMinimalInfo Content;
+	// Collections
+	FName ActionItemViewModelCollectionName = TEXT("ActionItemCollection");
+	TSubclassOf<UUDViewModel> ActionItemViewModelType;
+	TArray<TObjectPtr<UUDActionItemViewModel>> ActionItemViewModelCollection;
 };

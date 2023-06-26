@@ -1168,6 +1168,36 @@ TArray<FUDDealPointMinimalInfo> UUDActionAdministrator::GetDealTertiaryPointList
 	return tertiaryPoints;
 }
 
+TArray<FUDDealActionInfo> UUDActionAdministrator::GetDealActionList(int32 dealId)
+{
+	TArray<FUDDealActionInfo> actions = { };
+
+	// TODO actions!!!!!!!
+	// TODO actions!!!!!!!
+	// TODO actions!!!!!!!
+	// TODO actions!!!!!!!
+	// TODO actions!!!!!!!
+	// TODO actions!!!!!!!
+	// TODO actions!!!!!!!
+	// TODO actions!!!!!!!
+	// TODO actions!!!!!!!
+	// TODO actions!!!!!!!
+	// TODO actions!!!!!!!
+	// TODO actions!!!!!!!
+	// TODO actions!!!!!!!
+	// TODO actions!!!!!!!
+	// TODO actions!!!!!!!
+	// TODO actions!!!!!!!
+	// TODO actions!!!!!!!
+	// TODO actions!!!!!!!
+	// TODO actions!!!!!!!
+	// TODO actions!!!!!!!
+	// TODO actions!!!!!!!
+	// TODO actions!!!!!!!
+	// TODO actions!!!!!!!
+
+	return actions;
+}
 #pragma endregion
 
 bool UUDActionAdministrator::IsLocalFactionPlayer()

@@ -15,7 +15,7 @@ class UUDPrimaryPointItemViewModel;
 DECLARE_MULTICAST_DELEGATE_OneParam(FUDPrimaryPointItemSourceUpdated, const TArray<TObjectPtr<UUDPrimaryPointItemViewModel>>& itemViewModels);
 
 /**
- * Window for showing and editing deals.
+ * Tab for showing and editing points that are part of deal.
  */
 UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDDealEditationTabViewModel : public UUDViewModel

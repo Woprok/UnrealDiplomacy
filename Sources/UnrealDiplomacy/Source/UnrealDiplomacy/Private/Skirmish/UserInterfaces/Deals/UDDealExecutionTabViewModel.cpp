@@ -1,6 +1,7 @@
 // Copyright Miroslav Valach
 
 #include "Skirmish/UserInterfaces/Deals/UDDealExecutionTabViewModel.h"
+#include "Skirmish/UserInterfaces/Deals/UDActionItemViewModel.h"
 #include "Skirmish/UDSkirmishHUD.h"
 #include "Skirmish/UDSkirmishPlayerController.h"
 #include "Core/Simulation/UDActionAdministrator.h"
@@ -10,9 +11,7 @@
 
 void UUDDealExecutionTabViewModel::Initialize()
 {
-	FText dealName = FText(LOCTEXT("DealExecutionTab", "Deal"));
-	SetDealNameText(dealName);
-
+	ActionItemViewModelType = UUDActionItemViewModel::StaticClass();
 	Update();
 }
 
@@ -23,8 +22,6 @@ void UUDDealExecutionTabViewModel::Reload()
 
 void UUDDealExecutionTabViewModel::Update()
 {
-	SetDealNameText(FText::FromString(Content.Name));
-
 	if (!Model->IsOverseeingStatePresent())
 		return;
 	if (!Model->IsGamePlayed())
@@ -32,6 +29,7 @@ void UUDDealExecutionTabViewModel::Update()
 	if (Content.DealId == UUDGlobalData::InvalidDealId)
 		return;
 	// Following updates require model.
+	UpdateActionList();
 }
 
 #undef LOCTEXT_NAMESPACE
@@ -48,12 +46,23 @@ void UUDDealExecutionTabViewModel::SetContent(FUDDealMinimalInfo content)
 	Content = content;
 }
 
-void UUDDealExecutionTabViewModel::SetDealNameText(FText newDealNameText)
+void UUDDealExecutionTabViewModel::UpdateActionList()
 {
-	UE_MVVM_SET_PROPERTY_VALUE(DealNameText, newDealNameText);
-}
-
-FText UUDDealExecutionTabViewModel::GetDealNameText() const
-{
-	return DealNameText;
+	UE_LOG(LogTemp, Log, TEXT("UUDDealExecutionTabViewModel: UpdateActionList."));
+	// Retrieve points
+	TArray<FUDDealActionInfo> actions = Model->GetDealActionList(Content.DealId);
+	// Retrieve enough models
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(ActionItemViewModelCollectionName,
+		ActionItemViewModelType, actions.Num());
+	// Get rid of all models
+	ActionItemViewModelCollection.Empty();
+	for (int32 i = 0; i < actions.Num(); i++)
+	{
+		TObjectPtr<UUDActionItemViewModel> newViewModel = Cast<UUDActionItemViewModel>(viewModels[i]);
+		newViewModel->SetContent(actions[i]);
+		newViewModel->FullUpdate();
+		ActionItemViewModelCollection.Add(newViewModel);
+	}
+	ActionItemSourceUpdatedEvent.Broadcast(ActionItemViewModelCollection);
 }

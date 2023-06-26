@@ -9,6 +9,7 @@
 
 // Forward Declarations
 
+struct FUDDealActionInfo;
 
 /**
  * Single faction in a list.
@@ -21,15 +22,44 @@ public:
 	/**
 	 * Set content of the strategy option.
 	 */
-	void SetContent();
+	void SetContent(FUDDealActionInfo content);
 public:
 	// Button Functions
+	UFUNCTION()
+	void Accept();
+	UFUNCTION()
+	void Change();
+	UFUNCTION()
+	void Deny();
+	UFUNCTION()
+	void Sabotage();
 	// MVVM Fields
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText ActionText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText AcceptText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText ChangeText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText DenyText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText SabotageText;
 protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
 private:
 	// MVVM Setters & Getters
+	void SetActionText(FText newActionText);
+	FText GetActionText() const;
+	void SetAcceptText(FText newAcceptText);
+	FText GetAcceptText() const;
+	void SetChangeText(FText newChangeText);
+	FText GetChangeText() const;
+	void SetDenyText(FText newDenyText);
+	FText GetDenyText() const;
+	void SetSabotageText(FText newSabotageText);
+	FText GetSabotageText() const;
 private:
 	// Fields
+	FUDDealActionInfo Content;
 };

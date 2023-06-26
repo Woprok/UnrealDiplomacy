@@ -59,12 +59,6 @@
 
 #define LOCTEXT_NAMESPACE "ActionUI"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUDParticipantsUpdated, FUDDealParticipantsInfo, infos);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUDPDealPointUpdated, FUDDealPointTreeInfo, dealRoot);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDChatUpdated);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDEditedDealUpdated);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDActionInfoUpdated);
-
 UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDPointActionFinalViewModel : public UUDStaticViewModelBase
 {
@@ -111,38 +105,6 @@ public:
 		//SetIsResolved(action.ActionBody.SelectedResult != EUDDealActionResult::Unresolved);
 		//SetIsSabotaged(action.ActionBody.WasSabotaged);
 		//SetIsExecutor(isOwner);
-	}
-
-	UFUNCTION(BlueprintCallable)
-	void AcceptAction()
-	{
-		ActionModel->RequestAction(
-			ActionModel->GetAction(UUDDealActionContractPointAccept::ActionTypeId,
-				{ CurrentData.DealUniqueId, CurrentData.ActionIndex }));
-	}
-
-	UFUNCTION(BlueprintCallable)
-	void ChangeAction()
-	{
-		ActionModel->RequestAction(
-			ActionModel->GetAction(UUDDealActionContractPointTamper::ActionTypeId,
-				{ CurrentData.DealUniqueId, CurrentData.ActionIndex }));
-	}
-
-	UFUNCTION(BlueprintCallable)
-	void DenyAction()
-	{
-		ActionModel->RequestAction(
-			ActionModel->GetAction(UUDDealActionContractPointReject::ActionTypeId,
-				{ CurrentData.DealUniqueId, CurrentData.ActionIndex }));
-	}
-
-	UFUNCTION(BlueprintCallable)
-	void SabotageAction()
-	{
-		ActionModel->RequestAction(
-			ActionModel->GetAction(UUDDealActionContractPointSabotage::ActionTypeId,
-				{ CurrentData.DealUniqueId, CurrentData.ActionIndex }));
 	}
 };
 
@@ -294,75 +256,6 @@ public:
 		}
 		//SetTargetList(tarList.ToString());
 	}
-
-	/**
-	 * Returns array of child points, that can be used for setting additional viewmodels that 
-	 * are starting from this viewmodel.
-	 */
-	UFUNCTION(BlueprintCallable)
-	TArray<FUDDealPointChildInfo> GetChildPoints()
-	{
-		return ActionModel->GetDealPointChildTree(CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId);
-		// returns list of all subpoints converted for tree construction
-	}
-	UFUNCTION(BlueprintCallable)
-	void ItemAddChildPoint()
-	{
-		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionPointChildAdd::ActionTypeId,{ CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId }));
-	}
-};
-
-/**
- * Each parameter type that is supported for actions
- * TODO Make this modular.
- */
-UCLASS(Blueprintable, BlueprintType)
-class UNREALDIPLOMACY_API UUDActionParameterEditorViewModel : public UUDStaticViewModelBase
-{
-	GENERATED_BODY()
-public:
-	// MVVM Field.
-	int32 ValueParameter;
-	FIntPoint TileParameter;
-	FString TextParameter;
-	bool HasValueParameter;
-	bool HasTileParameter;
-	bool HasTextParameter;
-	//EUDParameterCountType InvokeType;
-public:
-	//UFUNCTION(BlueprintCallable)
-//	void UpdateSelection(EUDParameterCountType inInvokeType)
-	//{
-		//InvokeType = inInvokeType;
-		//switch (inInvokeType)
-		//{
-		//case EUDParameterCountType::None:
-		//	SetHasTileParameter(false);
-		//	SetHasValueParameter(false);
-		//	SetHasTextParameter(false);
-		//	break;
-		//case EUDParameterCountType::SingleValue:
-		//	SetHasTileParameter(false);
-		//	SetHasValueParameter(true);
-		//	SetHasTextParameter(false);
-		//	break;
-		//case EUDParameterCountType::SingleTile:
-		//	SetHasTileParameter(true);
-		//	SetHasValueParameter(false);
-		//	SetHasTextParameter(false);
-		//	break;
-		//case EUDParameterCountType::TileValue:
-		//	SetHasTileParameter(true);
-		//	SetHasValueParameter(true);
-		//	SetHasTextParameter(false);
-		//	break;
-		//default:
-		//	SetHasTileParameter(false);
-		//	SetHasValueParameter(false);
-		//	SetHasTextParameter(false);
-		//	break;
-		//}
-	//}
 };
 
 // TODO make this modular
@@ -398,11 +291,6 @@ public:
 		}
 	}
 
-	/**
-	 * Invoked when this requires subviews to rebind.
-	 */
-	UPROPERTY(BlueprintAssignable)
-	FUDEditedDealUpdated EditedDealUpdated;
 
 	/*/TArray<FUDNamedOption> GetAvailableTypes()
 	{
@@ -494,139 +382,11 @@ public:
 	}
 };
 
-
-UCLASS(Blueprintable, BlueprintType)
-class UNREALDIPLOMACY_API UUDParticipantViewModel : public UUDStaticViewModelBase
-{
-	GENERATED_BODY()
-public:
-	 // MVVM Field.
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FString Name;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	bool IsParticipant;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	bool IsReady;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	bool IsPositiveVote;
-private:
-	FUDPlayerInfo CurrentInfo;
-	int32 CurrentDealUniqueId;
-public:
-	UFUNCTION(BlueprintCallable)
-	void SetBindingTarget(FUDPlayerInfo info, int32 dealUniqueId)
-	{
-		CurrentInfo = info;
-		CurrentDealUniqueId = dealUniqueId;
-		auto rs1 = FText::Format(
-			LOCTEXT("Participant", "Player {0}"),
-			info.Id
-		).ToString();
-		SetName(rs1);
-		SetIsParticipant(ActionModel->IsParticipantInCurrentDeal(dealUniqueId, info.Id));
-		SetIsReady(ActionModel->IsReadyInCurrentDeal(dealUniqueId, info.Id));
-		SetIsPositiveVote(ActionModel->IsPositiveVotingCurrentDeal(dealUniqueId, info.Id));
-	}
-
-	UFUNCTION(BlueprintCallable)
-	void InvitePlayer()
-	{
-		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionParticipantInvite::ActionTypeId, { CurrentDealUniqueId, CurrentInfo.Id }));
-	}
-	UFUNCTION(BlueprintCallable)
-	void LeaveDeal()
-	{
-		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionParticipantLeave::ActionTypeId, { CurrentDealUniqueId, CurrentInfo.Id }));
-	}
-	UFUNCTION(BlueprintCallable)
-	void ChangeToReady()
-	{
-		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionReadyRevert::ActionTypeId, { CurrentDealUniqueId }));
-	}
-	UFUNCTION(BlueprintCallable)
-	void ChangeToNotReady()
-	{
-		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionReady::ActionTypeId, { CurrentDealUniqueId }));
-	}
-	UFUNCTION(BlueprintCallable)
-	void ChangeToYes()
-	{
-		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionVoteYes::ActionTypeId, { CurrentDealUniqueId }));
-	}
-	UFUNCTION(BlueprintCallable)
-	void ChangeToNo()
-	{
-		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionVoteNo::ActionTypeId, { CurrentDealUniqueId }));
-	}
-private:
-	// MVVM Setters & Getters
-	void SetName(FString newName)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(Name, newName);
-	}
-	FString GetName() const
-	{
-		return Name;
-	}
-	void SetIsParticipant(bool newIsParticipant)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(IsParticipant, newIsParticipant);
-	}
-	bool GetIsParticipant() const
-	{
-		return IsParticipant;
-	}
-	void SetIsReady(bool newIsReady)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(IsReady, newIsReady);
-	}
-	bool GetIsReady() const
-	{
-		return IsReady;
-	}
-	void SetIsPositiveVote(bool newIsPositiveVote)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(IsPositiveVote, newIsPositiveVote);
-	}
-	bool GetIsPositiveVote() const
-	{
-		return IsPositiveVote;
-	}
-};
-
 UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDDealProcessViewModel : public UUDViewModelBase
 {
 	GENERATED_BODY()
 public:
-	// MVVM Fields
-	FString SessionDescription;
-	bool IsSessionActive;
-	int32 CurrentDeal = 0;
-	bool IsModerator = false;
-	EUDDealSimulationState DealState = EUDDealSimulationState::Undefined;
-	EUDDealSimulationResult DealResult = EUDDealSimulationResult::Undefined;
-	int32 CurrentReady;
-	int32 MaxReady;
-	int32 CurrentPositiveVote;
-	int32 MaxVote;
-protected:
-	TArray<int32> DealsByTimeline;
-	//FUDDealInfo CurrentDealItem;
-	int32 CurrentIndex;
-public:
-	virtual void OnUpdate() override
-	{
-		if (ActionModel->IsGameInProgress())
-		{
-			TArray<int32> deals = ActionModel->GetDealIds();
-		}
-	}
-	FUDParticipantsUpdated ParticipantsOnUpdated;
-	FUDPDealPointUpdated PointsOnUpdated;
-	FUDChatUpdated ChatOnUpdated;
-	FUDActionInfoUpdated ActionInfoUpdated;
-
 	UFUNCTION(BlueprintCallable)
 	void ItemForceResolution()
 	{
@@ -653,48 +413,5 @@ public:
 	//{
 	//	//return ActionModel->GetDealPointsAsUnfoldedActions(CurrentDealItem.DealUniqueId);
 	//}
-protected:
-	void UpdateView(int32 dealHistoryCount, int32 dealUniqueId, int32 arrayPosition)
-	{
-		//CurrentDealItem = ActionModel->GetDealInfo(dealUniqueId);
-		CurrentDeal = dealUniqueId;
-		CurrentIndex = arrayPosition;
-
-		//OnDealPresent(CurrentDealItem);
-	}
-	/*/
-	void OnDealEmpty(FUDDealInfo info)
-	{
-		SetIsSessionActive(false);
-		SetDealState(info.State);
-		SetDealResult(info.Result);
-		SetIsModerator(false);
-		auto rs1 = FText(
-			LOCTEXT("DealState", "No deal is currently discussed with you.")
-		).ToString();
-		SetSessionDescription(rs1);
-	}
-	void OnDealPresent(FUDDealInfo info)
-	{
-		SetIsSessionActive(true);
-		SetDealState(info.State);
-		SetDealResult(info.Result);
-		auto rs1 = FText::Format(
-			LOCTEXT("DealState", "Deal is currently discussed with you, ID{0}."),
-			info.DealUniqueId
-		).ToString();
-		SetSessionDescription(rs1);
-		SetIsModerator(ActionModel->IsModerator(info.DealUniqueId));
-		SetCurrentReady(ActionModel->GetReadyParticipantCount(info.DealUniqueId));
-		SetMaxReady(ActionModel->GetParticipantCount(info.DealUniqueId));
-		SetCurrentPositiveVote(ActionModel->GetPositiveVoteCurrentDealCount(info.DealUniqueId));
-		SetMaxVote(ActionModel->GetParticipantCount(info.DealUniqueId));
-
-		auto data = ActionModel->GetDealParticipants(info.DealUniqueId);
-		ParticipantsOnUpdated.Broadcast(data);
-		ChatOnUpdated.Broadcast();
-		PointsOnUpdated.Broadcast(ActionModel->GetDealPointsTree(info.DealUniqueId));
-		ActionInfoUpdated.Broadcast();
-	}*/	
 };
 #undef LOCTEXT_NAMESPACE

@@ -12,6 +12,8 @@
 class UTextBlock;
 class UButton;
 class UUDTertiaryPointItemViewModel;
+class UUDPointContentUserWidget;
+class UUDPointContentViewModel;
 
 /**
  * Ancestor for blueprint.
@@ -44,12 +46,18 @@ protected:
 	 * Automatically invoked by native on initialized.
 	 */
 	virtual void BindWidgets() override;
+	/**
+	 * Callback to set data from view model.
+	 */
+	void SetPointContentSourceCollection(const TObjectPtr<UUDPointContentViewModel>& itemViewModel);
 protected:
 	// Bindings
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> CreateTertiaryPointTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> CreateTertiaryPointButtonWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UUDPointContentUserWidget> PointContentViewWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDTertiaryPointItemViewModel> ViewModel;

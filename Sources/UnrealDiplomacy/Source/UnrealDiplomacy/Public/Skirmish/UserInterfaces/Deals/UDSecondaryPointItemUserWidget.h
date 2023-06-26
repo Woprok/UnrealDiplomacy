@@ -14,6 +14,8 @@ class UButton;
 class UListView;
 class UUDSecondaryPointItemViewModel;
 class UUDTertiaryPointItemViewModel;
+class UUDPointContentUserWidget;
+class UUDPointContentViewModel;
 
 /**
  * Ancestor for blueprint.
@@ -50,6 +52,10 @@ protected:
 	 * Callback to set data from view model.
 	 */
 	void SetPointItemSourceCollection(const TArray<TObjectPtr<UUDTertiaryPointItemViewModel>>& itemViewModels);
+	/**
+	 * Callback to set data from view model.
+	 */
+	void SetPointContentSourceCollection(const TObjectPtr<UUDPointContentViewModel>& itemViewModel);
 protected:
 	// Bindings
 	UPROPERTY()
@@ -58,6 +64,8 @@ protected:
 	TWeakObjectPtr<UButton> CreateSecondaryPointButtonWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UListView> PointItemListWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UUDPointContentUserWidget> PointContentViewWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDSecondaryPointItemViewModel> ViewModel;

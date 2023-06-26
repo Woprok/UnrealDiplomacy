@@ -25,8 +25,6 @@ public:
 	void SetContent(FUDDealPointMinimalInfo content);
 public:
 	// Button Functions
-	UFUNCTION()
-	void CreatePoint();
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText PointTitleText;

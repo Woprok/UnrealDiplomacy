@@ -57,7 +57,7 @@ void UUDDealEditationTabViewModel::SetContent(FUDDealMinimalInfo content)
 void UUDDealEditationTabViewModel::UpdatePointList()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDDealEditationTabViewModel: UpdatePointList."));
-	// Retrieve factions
+	// Retrieve points
 	TArray<FUDDealPointMinimalInfo> points = Model->GetDealPrimaryPointList(Content.DealId);
 	// We will use one additional model for new primary point node.
 	int32 desiredPointCount = points.Num() + 1;

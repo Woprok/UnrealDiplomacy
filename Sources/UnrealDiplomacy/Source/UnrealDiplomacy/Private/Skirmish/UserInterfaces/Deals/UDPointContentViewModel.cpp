@@ -10,20 +10,14 @@
 
 void UUDPointContentViewModel::Initialize()
 {
-	FText pointTitle = FText(LOCTEXT("PointContent", "Point Title"));
-	SetPointTitleText(pointTitle);
+	//FText pointTitle = FText(LOCTEXT("PointContent", "Point Title"));
+	//SetPointTitleText(pointTitle);
 }
 
 void UUDPointContentViewModel::Update()
 {
-	if (Content.PointId == UUDGlobalData::InvalidDealPointId)
-	{
-		SetIsValidContentValue(false);
-	}
-	else
-	{
-		SetIsValidContentValue(true);
-	}
+	FText pointTitle = FText::Format(LOCTEXT("PointContent", "Deal {0} Point {1}"), Content.DealId, Content.PointId);
+	SetPointTitleText(pointTitle);
 }
 
 #undef LOCTEXT_NAMESPACE
@@ -31,13 +25,14 @@ void UUDPointContentViewModel::Update()
 void UUDPointContentViewModel::SetContent(FUDDealPointMinimalInfo content)
 {
 	Content = content;
+	//FUDDealInfo fullContent = Model->GetDealInfo(Content.DealId, Content.PointId);
 }
 
-void UUDPointContentViewModel::CreatePoint()
-{
-	UE_LOG(LogTemp, Log, TEXT("UUDPointContentViewModel: CreatePoint."));
-	Model->RequestAction(Model->GetAction(UUDDealActionPointAdd::ActionTypeId, { Content.DealId }));
-}
+//void UUDPointContentViewModel::CreatePoint()
+//{
+//	UE_LOG(LogTemp, Log, TEXT("UUDPointContentViewModel: CreatePoint."));
+//	Model->RequestAction(Model->GetAction(UUDDealActionPointAdd::ActionTypeId, { Content.DealId }));
+//}
 
 void UUDPointContentViewModel::SetPointTitleText(FText newPointTitleText)
 {

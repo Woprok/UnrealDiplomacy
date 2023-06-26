@@ -11,8 +11,10 @@
 
 struct FUDDealPointMinimalInfo;
 class UUDTertiaryPointItemViewModel;
+class UUDPointContentViewModel;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FUDTertiaryPointItemSourceUpdated, const TArray<TObjectPtr<UUDTertiaryPointItemViewModel>>& itemViewModels);
+DECLARE_MULTICAST_DELEGATE_OneParam(FUDPointContentSourceUpdated, const TObjectPtr<UUDPointContentViewModel>& itemViewModel);
 
 /**
  * Single faction in a list.
@@ -37,6 +39,7 @@ public:
 	bool IsValidContentValue;
 	// Events
 	FUDTertiaryPointItemSourceUpdated PointItemSourceUpdatedEvent;
+	FUDPointContentSourceUpdated PointContentSourceUpdatedEvent;
 protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
@@ -45,6 +48,10 @@ private:
 	 * Fill with current deal points.
 	 */
 	void UpdatePointList();
+	/**
+	 * Fill current point with data.
+	 */
+	void UpdatePointContent();
 private:
 	// MVVM Setters & Getters
 	void SetCreateSecondaryPointText(FText newCreateSecondaryPointText);
@@ -54,6 +61,10 @@ private:
 private:
 	// Fields
 	FUDDealPointMinimalInfo Content;
+	// Instances
+	FName PointContentViewModelInstanceName = TEXT("SecondaryPointContentInstance");
+	TSubclassOf<UUDViewModel> PointContentViewModelType;
+	TObjectPtr<UUDPointContentViewModel> PointContentViewModelInstance;
 	// Collections
 	FName PointItemViewModelCollectionName = TEXT("TertiaryPointItemCollection");
 	TSubclassOf<UUDViewModel> PointItemViewModelType;
