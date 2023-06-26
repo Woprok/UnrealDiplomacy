@@ -1,7 +1,7 @@
 // Copyright Miroslav Valach
 
 #include "Skirmish/UserInterfaces/Deals/UDDealEditationTabViewModel.h"
-#include "Skirmish/UserInterfaces/Deals/UDPointItemViewModel.h"
+#include "Skirmish/UserInterfaces/Deals/UDPrimaryPointItemViewModel.h"
 #include "Skirmish/UDSkirmishHUD.h"
 #include "Skirmish/UDSkirmishPlayerController.h"
 #include "Core/Simulation/UDActionAdministrator.h"
@@ -19,6 +19,7 @@ FUDDealPointMinimalInfo GetInvalidPrimaryPoint(int32 dealId)
 
 void UUDDealEditationTabViewModel::Initialize()
 {
+	PointItemViewModelType = UUDPrimaryPointItemViewModel::StaticClass();
 	Update();
 }
 
@@ -69,14 +70,14 @@ void UUDDealEditationTabViewModel::UpdatePointList()
 	PointItemViewModelCollection.Empty();
 	for (int32 i = 0; i < points.Num(); i++)
 	{
-		TObjectPtr<UUDPointItemViewModel> newViewModel = Cast<UUDPointItemViewModel>(viewModels[i]);
-		newViewModel->SetContent(points[i]);
+		TObjectPtr<UUDPrimaryPointItemViewModel> newViewModel = Cast<UUDPrimaryPointItemViewModel>(viewModels[i]);
+		newViewModel->SetContent(points[i], true);
 		newViewModel->FullUpdate();
 		PointItemViewModelCollection.Add(newViewModel);
 	}
 	// Finally add invalid node.
-	TObjectPtr<UUDPointItemViewModel> newViewModel = Cast<UUDPointItemViewModel>(viewModels[desiredPointIndex]);
-	newViewModel->SetContent(GetInvalidPrimaryPoint(Content.DealId));
+	TObjectPtr<UUDPrimaryPointItemViewModel> newViewModel = Cast<UUDPrimaryPointItemViewModel>(viewModels[desiredPointIndex]);
+	newViewModel->SetContent(GetInvalidPrimaryPoint(Content.DealId), false);
 	newViewModel->FullUpdate();
 	PointItemViewModelCollection.Add(newViewModel);
 

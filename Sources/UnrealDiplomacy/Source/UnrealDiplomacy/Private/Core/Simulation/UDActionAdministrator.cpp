@@ -1137,8 +1137,35 @@ TArray<FUDDealPointMinimalInfo> UUDActionAdministrator::GetDealPrimaryPointList(
 		FUDDealPointMinimalInfo info = FUDDealPointMinimalInfo();
 		info.DealId = dealId;
 		info.PointId = primaryId;
+		primaryPoints.Add(info);
 	}
 	return primaryPoints;
+}
+
+TArray<FUDDealPointMinimalInfo> UUDActionAdministrator::GetDealSecondaryPointList(int32 dealId, int32 pointId)
+{
+	TArray<FUDDealPointMinimalInfo> secondaryPoints = { };
+	for (const auto& pointItem : State->Deals[dealId]->Points[pointId]->Consequencies)
+	{
+		FUDDealPointMinimalInfo info = FUDDealPointMinimalInfo();
+		info.DealId = dealId;
+		info.PointId = pointItem;
+		secondaryPoints.Add(info);
+	}
+	return secondaryPoints;
+}
+
+TArray<FUDDealPointMinimalInfo> UUDActionAdministrator::GetDealTertiaryPointList(int32 dealId, int32 pointId)
+{
+	TArray<FUDDealPointMinimalInfo> tertiaryPoints = { };
+	for (const auto& pointItem : State->Deals[dealId]->Points[pointId]->Consequencies)
+	{
+		FUDDealPointMinimalInfo info = FUDDealPointMinimalInfo();
+		info.DealId = dealId;
+		info.PointId = pointItem;
+		tertiaryPoints.Add(info);
+	}
+	return tertiaryPoints;
 }
 
 #pragma endregion

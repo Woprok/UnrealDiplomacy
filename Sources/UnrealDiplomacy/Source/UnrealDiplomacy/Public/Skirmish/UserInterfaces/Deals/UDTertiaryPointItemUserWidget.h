@@ -5,20 +5,20 @@
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDUserWidget.h"
 #include "Blueprint/IUserObjectListEntry.h"
-#include "UDPointItemUserWidget.generated.h"
+#include "UDTertiaryPointItemUserWidget.generated.h"
 
 // Forward Declarations
 
 class UTextBlock;
 class UButton;
-class UUDPointItemViewModel;
+class UUDTertiaryPointItemViewModel;
 
 /**
  * Ancestor for blueprint.
  * Supports IUserObjectListEntry for list view initializations.
  */
 UCLASS(Abstract)
-class UNREALDIPLOMACY_API UUDPointItemUserWidget : public UUDUserWidget, public IUserObjectListEntry
+class UNREALDIPLOMACY_API UUDTertiaryPointItemUserWidget : public UUDUserWidget, public IUserObjectListEntry
 {
 	GENERATED_BODY()
 public:
@@ -26,7 +26,7 @@ public:
 	 * Enables blueprint to bind view model.
 	 */
 	UFUNCTION(BlueprintImplementableEvent)
-	void SetBlueprintViewModel(UUDPointItemViewModel* model);
+	void SetBlueprintViewModel(UUDTertiaryPointItemViewModel* model);
 protected:
 	/**
 	 * Allows List View to define context.
@@ -47,10 +47,10 @@ protected:
 protected:
 	// Bindings
 	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> CreatePointTextWidget;
+	TWeakObjectPtr<UTextBlock> CreateTertiaryPointTextWidget;
 	UPROPERTY()
-	TWeakObjectPtr<UButton> CreatePointButtonWidget;
+	TWeakObjectPtr<UButton> CreateTertiaryPointButtonWidget;
 	// ViewModel
 	UPROPERTY()
-	TWeakObjectPtr<UUDPointItemViewModel> ViewModel;
+	TWeakObjectPtr<UUDTertiaryPointItemViewModel> ViewModel;
 };

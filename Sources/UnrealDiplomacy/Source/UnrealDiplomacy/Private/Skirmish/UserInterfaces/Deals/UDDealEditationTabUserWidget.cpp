@@ -2,7 +2,7 @@
 
 #include "Skirmish/UserInterfaces/Deals/UDDealEditationTabUserWidget.h"
 #include "Skirmish/UserInterfaces/Deals/UDDealEditationTabViewModel.h"
-#include "Skirmish/UserInterfaces/Deals/UDPointItemViewModel.h"
+#include "Skirmish/UserInterfaces/Deals/UDPrimaryPointItemViewModel.h"
 #include "Components/ListView.h"
 
 void UUDDealEditationTabUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
@@ -24,7 +24,7 @@ void UUDDealEditationTabUserWidget::BindWidgets()
 	PointItemListWidget = GetWidget<UListView>(TEXT("PointItemList"));
 }
 
-void UUDDealEditationTabUserWidget::SetPointItemSourceCollection(const TArray<TObjectPtr<UUDPointItemViewModel>>& itemViewModels)
+void UUDDealEditationTabUserWidget::SetPointItemSourceCollection(const TArray<TObjectPtr<UUDPrimaryPointItemViewModel>>& itemViewModels)
 {
 	PointItemListWidget->SetListItems(itemViewModels);
 }

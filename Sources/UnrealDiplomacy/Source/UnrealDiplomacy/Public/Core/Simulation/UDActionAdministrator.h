@@ -463,6 +463,10 @@ public:
 	TArray<FUDDealFactionInfo> GetDealInviteList(int32 dealId);
 	/** Retrieves all primary points of the specified deal. */
 	TArray<FUDDealPointMinimalInfo> GetDealPrimaryPointList(int32 dealId);
+	/** Retrieves all secondary points of the specified deal. */
+	TArray<FUDDealPointMinimalInfo> GetDealSecondaryPointList(int32 dealId, int32 pointId);
+	/** Retrieves all tertiary points of the specified deal. */
+	TArray<FUDDealPointMinimalInfo> GetDealTertiaryPointList(int32 dealId, int32 pointId);
 private:
 	/** Converts state and result to unified name. */
 	FText GetStateName(EUDDealSimulationState stae, EUDDealSimulationResult result);

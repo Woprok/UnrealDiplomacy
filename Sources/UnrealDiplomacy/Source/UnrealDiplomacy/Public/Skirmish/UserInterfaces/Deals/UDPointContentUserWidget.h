@@ -4,19 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDUserWidget.h"
-#include "UDDealEditationTabUserWidget.generated.h"
+#include "UDPointContentUserWidget.generated.h"
 
 // Forward Declarations
 
-class UListView;
-class UUDDealEditationTabViewModel;
-class UUDPrimaryPointItemViewModel;
+class UTextBlock;
+class UButton;
+class UUDPointContentViewModel;
 
 /**
  * Ancestor for blueprint.
+ * Supports IUserObjectListEntry for list view initializations.
  */
 UCLASS(Abstract)
-class UNREALDIPLOMACY_API UUDDealEditationTabUserWidget : public UUDUserWidget
+class UNREALDIPLOMACY_API UUDPointContentUserWidget : public UUDUserWidget
 {
 	GENERATED_BODY()
 public:
@@ -24,7 +25,7 @@ public:
 	 * Enables blueprint to bind view model.
 	 */
 	UFUNCTION(BlueprintImplementableEvent)
-	void SetBlueprintViewModel(UUDDealEditationTabViewModel* model);
+	void SetBlueprintViewModel(UUDPointContentViewModel* model);
 protected:
 	/**
 	 * Enables to define view model used by this widet for delegates.
@@ -38,15 +39,11 @@ protected:
 	 * Automatically invoked by native on initialized.
 	 */
 	virtual void BindWidgets() override;
-	/**
-	 * Callback to set data from view model.
-	 */
-	void SetPointItemSourceCollection(const TArray<TObjectPtr<UUDPrimaryPointItemViewModel>>& itemViewModels);
 protected:
 	// Bindings
 	UPROPERTY()
-	TWeakObjectPtr<UListView> PointItemListWidget;
+	TWeakObjectPtr<UTextBlock> PointTitleTextWidget;
 	// ViewModel
 	UPROPERTY()
-	TWeakObjectPtr<UUDDealEditationTabViewModel> ViewModel;
+	TWeakObjectPtr<UUDPointContentViewModel> ViewModel;
 };
