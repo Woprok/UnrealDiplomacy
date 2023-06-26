@@ -65,3 +65,8 @@ bool UUDViewBindingConverters::ValueToBool(int32 InValue, int32 PrimaryValue)
 {
 	return InValue == PrimaryValue;
 }
+
+bool UUDViewBindingConverters::ValueToNotBool(int32 InValue, int32 PrimaryValue)
+{
+	return InValue != PrimaryValue;
+}

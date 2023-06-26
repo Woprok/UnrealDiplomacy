@@ -29,6 +29,8 @@ void UUDDealExecutionTabViewModel::Update()
 		return;
 	if (!Model->IsGamePlayed())
 		return;
+	if (Content.DealId == UUDGlobalData::InvalidDealId)
+		return;
 	// Following updates require model.
 }
 

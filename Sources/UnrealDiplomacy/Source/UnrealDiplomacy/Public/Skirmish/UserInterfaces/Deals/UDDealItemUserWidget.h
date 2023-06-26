@@ -65,7 +65,7 @@ protected:
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> EditationTextWidget;
 	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> ExecutableTextWidget;
+	TWeakObjectPtr<UTextBlock> ExecutionTextWidget;
 
 	UPROPERTY()
 	TWeakObjectPtr<UButton> GeneralButtonWidget;

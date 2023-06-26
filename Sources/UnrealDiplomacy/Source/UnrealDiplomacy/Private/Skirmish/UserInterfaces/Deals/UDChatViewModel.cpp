@@ -40,7 +40,7 @@ void UUDChatViewModel::Send()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDChatViewModel: Send."));
 	FString message = GetSelectedText().ToString();
-	Model->RequestAction(Model->GetAction(UUDDealActionMessageSend::ActionTypeId, message));
+	Model->RequestAction(Model->GetAction(UUDDealActionMessageSend::ActionTypeId, { Content.DealId }, message));
 }
 
 void UUDChatViewModel::SetContent(FUDDealMinimalInfo content)

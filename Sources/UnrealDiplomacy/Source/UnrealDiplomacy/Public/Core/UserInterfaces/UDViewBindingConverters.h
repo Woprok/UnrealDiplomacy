@@ -28,9 +28,9 @@ public:
 	/** Returns true if the provided values are same. */
 	UFUNCTION(BlueprintPure, meta = (DisplayName = "Value To Bool", CompactNodeTitle = "ValueToBool", BlueprintAutocast), Category = "Convertors")
 	static bool ValueToBool(int32 InValue, int32 PrimaryValue);
-	/** Returns true or false based on whatever the provided values are same. */
-	//UFUNCTION(BlueprintPure, meta = (DisplayName = "Bool To Value", CompactNodeTitle = "BoolToValue", BlueprintAutocast), Category = "Convertors")
-	//static int32 BoolToValue(bool InBool, int32 PrimaryValue);
+	/** Returns true if the provided values are not same. */
+	UFUNCTION(BlueprintPure, meta = (DisplayName = "Value To Not Bool", CompactNodeTitle = "ValueToNotBool", BlueprintAutocast), Category = "Convertors")
+	static bool ValueToNotBool(int32 InValue, int32 PrimaryValue);
 
 
 	/** If bPickA is true, A is returned, otherwise B is */

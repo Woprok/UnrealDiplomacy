@@ -59,6 +59,8 @@ public:
 	int32 EditationTabValue = 1;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Getter)
 	int32 ExecutionTabValue = 2;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Getter)
+	bool IsValidContentValue = false;
 	// Events
 	FUDGeneralSourceUpdated GeneralSourceUpdatedEvent;
 	FUDEditationSourceUpdated EditationSourceUpdatedEvent;
@@ -103,6 +105,8 @@ private:
 	int32 GetGeneralTabValue() const;
 	int32 GetEditationTabValue() const;
 	int32 GetExecutionTabValue() const;
+	void SetIsValidContentValue(bool newIsValidContentValue);
+	bool GetIsValidContentValue() const;
 private:
 	// Fields
 	FUDDealMinimalInfo Content;

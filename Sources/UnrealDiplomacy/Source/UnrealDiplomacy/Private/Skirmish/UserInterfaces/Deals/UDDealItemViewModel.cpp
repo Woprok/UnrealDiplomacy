@@ -59,6 +59,8 @@ void UUDDealItemViewModel::Update()
 		return;
 	if (!Model->IsGamePlayed())
 		return;
+	if (Content.DealId == UUDGlobalData::InvalidDealId)
+		return;
 	// Following updates require model.
 	GeneralTabViewModelInstance->SetContent(Content);
 	EditationTabViewModelInstance->SetContent(Content);
@@ -92,6 +94,7 @@ void UUDDealItemViewModel::InvalidateContent(FUDDealMinimalInfo content)
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDDealItemViewModel: InvalidateContent."));
 	Content = content;
+	SetIsValidContentValue(false);
 	Update();
 }
 
@@ -99,6 +102,7 @@ void UUDDealItemViewModel::SetContent(FUDDealMinimalInfo content)
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDDealItemViewModel: SetContent."));
 	Content = content;
+	SetIsValidContentValue(true);
 	Update();
 }
 
@@ -165,4 +169,14 @@ int32 UUDDealItemViewModel::GetEditationTabValue() const
 int32 UUDDealItemViewModel::GetExecutionTabValue() const
 {
 	return ExecutionTabValue;
+}
+
+void UUDDealItemViewModel::SetIsValidContentValue(bool newIsValidContentValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(IsValidContentValue, newIsValidContentValue);
+}
+
+bool UUDDealItemViewModel::GetIsValidContentValue() const
+{
+	return IsValidContentValue;
 }

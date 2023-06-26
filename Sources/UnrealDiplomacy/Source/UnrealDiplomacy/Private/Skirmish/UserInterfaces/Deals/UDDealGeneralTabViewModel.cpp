@@ -53,12 +53,17 @@ void UUDDealGeneralTabViewModel::Update()
 		return;
 	if (!Model->IsGamePlayed())
 		return;
+	if (Content.DealId == UUDGlobalData::InvalidDealId)
+		return;
 	// Following updates require model.
 
 	FUDDealInfo dealInfo = Model->GetDealInfo(Content.DealId);
 	SetIsModeratorValue(dealInfo.IsModerator);
 	SetStateText(FText::FromString(dealInfo.State));
-	SetIsModeratorValue(dealInfo.IsModerator);
+	FText readyCount = FText::Format(LOCTEXT("DealGeneralTab", "Ready {0}/{1}"), dealInfo.ReadyCount, dealInfo.ParticipantCount);
+	SetReadyCountText(readyCount);
+	FText voteCount = FText::Format(LOCTEXT("DealGeneralTab", "Vote Yes {0}/{1}"), dealInfo.VoteCount, dealInfo.ParticipantCount);
+	SetVoteCountText(voteCount);
 
 	UpdateChatInstance();
 	UpdateParticipantItemList();

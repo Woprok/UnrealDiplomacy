@@ -35,7 +35,7 @@ void UUDDealItemUserWidget::BindWidgets()
 	DealNameTextWidget = GetWidget<UTextBlock>(TEXT("DealNameText"));
 	GeneralTextWidget = GetWidget<UTextBlock>(TEXT("GeneralText"));
 	EditationTextWidget = GetWidget<UTextBlock>(TEXT("EditationText"));
-	ExecutableTextWidget = GetWidget<UTextBlock>(TEXT("ExecutableText"));
+	ExecutionTextWidget = GetWidget<UTextBlock>(TEXT("ExecutionText"));
 
 	GeneralButtonWidget = GetWidget<UButton>(TEXT("GeneralButton"));
 	EditationButtonWidget = GetWidget<UButton>(TEXT("EditationButton"));

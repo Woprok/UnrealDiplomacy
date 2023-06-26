@@ -981,8 +981,9 @@ FUDDealInteractionInfo UUDActionAdministrator::GetAllLocalDeals()
 		{
 			// It's resolved.
 			FUDDealMinimalInfo dealInfo = FUDDealMinimalInfo();
+			dealInfo.DealId = deal.Key;
 			dealInfo.Name = deal.Value->Name;
-			info.Active.Add(dealInfo);
+			info.History.Add(dealInfo);
 		}
 	}
 
@@ -1109,7 +1110,8 @@ TArray<FUDDealFactionInfo> UUDActionAdministrator::GetDealInviteList(int32 dealI
 
 	for (const auto& nonmember : State->Factions)
 	{
-		if (State->Deals[dealId]->Participants.Contains(nonmember.Key))
+		if (State->Deals[dealId]->Participants.Contains(nonmember.Key) || 
+			!IsFactionPlayerControlled(nonmember.Key))
 		{
 			continue;
 		}
