@@ -14,6 +14,8 @@
 #include "Core/Simulation/Actions/UDDealActionReadyRevert.h"
 #include "Core/Simulation/Actions/UDDealActionVoteYes.h"
 #include "Core/Simulation/Actions/UDDealActionVoteNo.h"
+#include "Core/Simulation/Actions/UDDealActionContractCreate.h"
+#include "Core/Simulation/Actions/UDDealActionContractExecute.h"
 
 #define LOCTEXT_NAMESPACE "DealGeneralTab"
 
@@ -30,6 +32,7 @@ void UUDDealGeneralTabViewModel::Initialize()
 	SetParticipantText(participant);
 	FText invite = FText(LOCTEXT("DealGeneralTab", "Non-Participants"));
 	SetInviteableText(invite);
+	
 	FText ready = FText(LOCTEXT("DealGeneralTab", "Ready"));
 	SetReadyText(ready);
 	FText vote = FText(LOCTEXT("DealGeneralTab", "Vote"));
@@ -38,6 +41,11 @@ void UUDDealGeneralTabViewModel::Initialize()
 	SetLeaveText(leave);
 	FText cancel = FText(LOCTEXT("DealGeneralTab", "Cancel"));
 	SetCancelText(cancel);
+	
+	FText createContract = FText(LOCTEXT("DealGeneralTab", "Create Contract"));
+	SetCreateContractText(createContract);
+	FText executeContract = FText(LOCTEXT("DealGeneralTab", "Execute Contract"));
+	SetExecuteContractText(executeContract);
 
 	Update();
 }
@@ -115,6 +123,24 @@ void UUDDealGeneralTabViewModel::Cancel()
 	if (IsModeratorValue)
 	{
 		Model->RequestAction(Model->GetAction(UUDDealActionResultClose::ActionTypeId, { Content.DealId }));
+	}
+}
+
+void UUDDealGeneralTabViewModel::CreateContract()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDDealGeneralTabViewModel: CreateContract."));
+	if (IsModeratorValue)
+	{
+		Model->RequestAction(Model->GetAction(UUDDealActionContractCreate::ActionTypeId, { Content.DealId }));
+	}
+}
+
+void UUDDealGeneralTabViewModel::ExecuteContract()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDDealGeneralTabViewModel: ExecuteContract."));
+	if (IsModeratorValue)
+	{
+		Model->RequestAction(Model->GetAction(UUDDealActionContractExecute::ActionTypeId, { Content.DealId }));
 	}
 }
 
@@ -292,4 +318,24 @@ void UUDDealGeneralTabViewModel::SetCancelText(FText newCancelText)
 FText UUDDealGeneralTabViewModel::GetCancelText() const
 {
 	return CancelText;
+}
+
+void UUDDealGeneralTabViewModel::SetExecuteContractText(FText newExecuteContractText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ExecuteContractText, newExecuteContractText);
+}
+
+FText UUDDealGeneralTabViewModel::GetExecuteContractText() const
+{
+	return ExecuteContractText;
+}
+
+void UUDDealGeneralTabViewModel::SetCreateContractText(FText newCreateContractText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(CreateContractText, newCreateContractText);
+}
+
+FText UUDDealGeneralTabViewModel::GetCreateContractText() const
+{
+	return CreateContractText;
 }

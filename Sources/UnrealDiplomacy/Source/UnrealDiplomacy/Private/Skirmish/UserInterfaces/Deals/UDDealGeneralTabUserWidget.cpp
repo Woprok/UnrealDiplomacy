@@ -28,6 +28,9 @@ void UUDDealGeneralTabUserWidget::BindDelegates()
 	ChangeVoteButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDDealGeneralTabViewModel::ChangeVote);
 	LeaveButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDDealGeneralTabViewModel::Leave);
 	CancelButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDDealGeneralTabViewModel::Cancel);
+
+	CreateContractButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDDealGeneralTabViewModel::CreateContract);
+	ExecuteContractButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDDealGeneralTabViewModel::ExecuteContract);
 }
 
 void UUDDealGeneralTabUserWidget::BindWidgets()
@@ -48,6 +51,9 @@ void UUDDealGeneralTabUserWidget::BindWidgets()
 	ChangeVoteButtonWidget = GetWidget<UButton>(TEXT("ChangeVoteButton"));
 	LeaveButtonWidget = GetWidget<UButton>(TEXT("LeaveButton"));
 	CancelButtonWidget = GetWidget<UButton>(TEXT("CancelButton"));
+
+	CreateContractButtonWidget = GetWidget<UButton>(TEXT("CreateContractButton"));
+	ExecuteContractButtonWidget = GetWidget<UButton>(TEXT("ExecuteContractButton"));
 
 	ParticipantItemListWidget = GetWidget<UListView>(TEXT("ParticipantItemList"));
 	InviteItemListWidget = GetWidget<UListView>(TEXT("InviteItemList"));

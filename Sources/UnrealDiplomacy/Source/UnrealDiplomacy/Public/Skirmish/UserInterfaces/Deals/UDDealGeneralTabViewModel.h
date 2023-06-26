@@ -44,6 +44,10 @@ public:
 	void Leave();
 	UFUNCTION()
 	void Cancel();
+	UFUNCTION()
+	void CreateContract();
+	UFUNCTION()
+	void ExecuteContract();
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsModeratorValue;
@@ -67,6 +71,10 @@ public:
 	FText LeaveText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText CancelText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText CreateContractText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText ExecuteContractText;
 	// Events
 	FUDParticipantItemSourceUpdated ParticipantItemSourceUpdatedEvent;
 	FUDInviteItemSourceUpdated InviteItemSourceUpdatedEvent;
@@ -114,6 +122,10 @@ private:
 	FText GetLeaveText() const;
 	void SetCancelText(FText newCancelText);
 	FText GetCancelText() const;
+	void SetExecuteContractText(FText newExecuteContractText);
+	FText GetExecuteContractText() const;
+	void SetCreateContractText(FText newCreateContractText);
+	FText GetCreateContractText() const;
 private:
 	// Fields
 	FUDDealMinimalInfo Content;

@@ -276,7 +276,7 @@ public:
 		CurrentPoint = info;
 		//SetSelectedActionId(CurrentPoint.ActionId);
 		//SetSelectedType(CurrentPoint.Type);
-		EditedDealUpdated.Broadcast();
+		//EditedDealUpdated.Broadcast();
 	}
 
 	virtual void OnUpdate() override
@@ -390,12 +390,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ItemForceResolution()
 	{
-		//ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionContractCreate::ActionTypeId,{ CurrentDealItem.DealUniqueId }));
+		//ActionModel->RequestAction(ActionModel->GetAction(::ActionTypeId,{ CurrentDealItem.DealUniqueId }));
 	}
 	UFUNCTION(BlueprintCallable)
 	void ItemForceExecution()
 	{
-		//ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionContractExecute::ActionTypeId,{ CurrentDealItem.DealUniqueId }));
+		//ActionModel->RequestAction(ActionModel->GetAction(::ActionTypeId,{ CurrentDealItem.DealUniqueId }));
 	}
 	//UFUNCTION(BlueprintCallable)
 	//TArray<FUDDealActionInfo> GetAllActionForCurrentPlayer()

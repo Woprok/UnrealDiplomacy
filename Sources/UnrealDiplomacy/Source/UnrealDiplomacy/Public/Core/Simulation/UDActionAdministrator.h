@@ -176,6 +176,8 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	int32 DealUniqueId;
 	UPROPERTY(BlueprintReadOnly)
+	int32 DealId;
+	UPROPERTY(BlueprintReadOnly)
 	int32 ActionIndex;
 	UPROPERTY(BlueprintReadOnly)
 	FUDDiscussionAction ActionBody;

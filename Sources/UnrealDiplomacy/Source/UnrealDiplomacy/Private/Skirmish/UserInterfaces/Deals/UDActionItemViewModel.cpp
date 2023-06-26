@@ -32,25 +32,25 @@ void UUDActionItemViewModel::SetContent(FUDDealActionInfo content)
 void UUDActionItemViewModel::Accept()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDActionItemViewModel: Accept."));
-	Model->RequestAction(Model->GetAction(UUDDealActionContractPointAccept::ActionTypeId, { DealId }));
+	Model->RequestAction(Model->GetAction(UUDDealActionContractPointAccept::ActionTypeId, { Content.DealId }));
 }
 
 void UUDActionItemViewModel::Change()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDActionItemViewModel: Change."));
-	Model->RequestAction(Model->GetAction(UUDDealActionContractPointTamper::ActionTypeId, { DealId }));
+	Model->RequestAction(Model->GetAction(UUDDealActionContractPointTamper::ActionTypeId, { Content.DealId }));
 }
 
 void UUDActionItemViewModel::Deny()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDActionItemViewModel: Deny."));
-	Model->RequestAction(Model->GetAction(UUDDealActionContractPointReject::ActionTypeId, { DealId }));
+	Model->RequestAction(Model->GetAction(UUDDealActionContractPointReject::ActionTypeId, { Content.DealId }));
 }
 
 void UUDActionItemViewModel::Sabotage()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDActionItemViewModel: Sabotage."));
-	Model->RequestAction(Model->GetAction(UUDDealActionContractPointSabotage::ActionTypeId, { DealId }));
+	Model->RequestAction(Model->GetAction(UUDDealActionContractPointSabotage::ActionTypeId, { Content.DealId }));
 }
 
 void UUDActionItemViewModel::SetActionText(FText newActionText)

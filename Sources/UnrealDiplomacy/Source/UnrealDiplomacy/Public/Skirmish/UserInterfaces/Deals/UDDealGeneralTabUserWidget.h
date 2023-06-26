@@ -80,6 +80,11 @@ protected:
 	TWeakObjectPtr<UTextBlock> CancelTextWidget;
 
 	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> CreateContractTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> ExecuteContractTextWidget;
+
+	UPROPERTY()
 	TWeakObjectPtr<UButton> ChangeReadyButtonWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> ChangeVoteButtonWidget;
@@ -87,6 +92,11 @@ protected:
 	TWeakObjectPtr<UButton> LeaveButtonWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> CancelButtonWidget;
+
+	UPROPERTY()
+	TWeakObjectPtr<UButton> CreateContractButtonWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UButton> ExecuteContractButtonWidget;
 
 	UPROPERTY()
 	TWeakObjectPtr<UListView> ParticipantItemListWidget;
