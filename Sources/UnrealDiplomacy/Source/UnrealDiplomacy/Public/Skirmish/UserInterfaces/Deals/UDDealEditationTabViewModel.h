@@ -10,7 +10,9 @@
 // Forward Declarations
 
 struct FUDDealMinimalInfo;
+class UUDPointItemViewModel;
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FUDPointItemSourceUpdated, const TArray<TObjectPtr<UUDPointItemViewModel>>& itemViewModels);
 /**
  * Window for showing and editing deals.
  */
@@ -30,9 +32,8 @@ public:
 public:
 	// Button Functions
 	// MVVM Fields
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FText DealNameText;
 	// Events
+	FUDPointItemSourceUpdated PointItemSourceUpdatedEvent;
 protected:
 	virtual void Initialize() override;
 	UFUNCTION()
@@ -40,10 +41,17 @@ protected:
 	UFUNCTION()
 	void Reload();
 private:
+	/**
+	 * Fill with current deal points.
+	 */
+	void UpdatePointList();
+private:
 	// MVVM Setters & Getters
-	void SetDealNameText(FText newDealNameText);
-	FText GetDealNameText() const;
 private:
 	// Fields
 	FUDDealMinimalInfo Content;
+	// Collections
+	FName PointItemViewModelCollectionName = TEXT("PointItemCollection");
+	TSubclassOf<UUDViewModel> PointItemViewModelType;
+	TArray<TObjectPtr<UUDPointItemViewModel>> PointItemViewModelCollection;
 };

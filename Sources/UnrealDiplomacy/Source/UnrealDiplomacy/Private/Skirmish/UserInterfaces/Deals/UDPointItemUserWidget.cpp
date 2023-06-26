@@ -23,8 +23,12 @@ void UUDPointItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 void UUDPointItemUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	CreatePointButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDPointItemViewModel::CreatePoint);
 }
 
 void UUDPointItemUserWidget::BindWidgets()
 {
+	CreatePointTextWidget = GetWidget<UTextBlock>(TEXT("CreatePointText"));
+
+	CreatePointButtonWidget = GetWidget<UButton>(TEXT("CreatePointButton"));
 }

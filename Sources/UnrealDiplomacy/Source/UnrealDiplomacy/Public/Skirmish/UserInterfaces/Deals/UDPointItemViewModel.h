@@ -9,6 +9,7 @@
 
 // Forward Declarations
 
+struct FUDDealPointMinimalInfo;
 
 /**
  * Single faction in a list.
@@ -21,15 +22,26 @@ public:
 	/**
 	 * Set content of the strategy option.
 	 */
-	void SetContent();
+	void SetContent(FUDDealPointMinimalInfo content);
 public:
 	// Button Functions
+	UFUNCTION()
+	void CreatePoint();
 	// MVVM Fields
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText CreatePointText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool IsValidContentValue;
 protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
 private:
 	// MVVM Setters & Getters
+	void SetCreatePointText(FText newCreatePointText);
+	FText GetCreatePointText() const;
+	void SetIsValidContentValue(bool newIsValidContentValue);
+	bool GetIsValidContentValue() const;
 private:
 	// Fields
+	FUDDealPointMinimalInfo Content;
 };

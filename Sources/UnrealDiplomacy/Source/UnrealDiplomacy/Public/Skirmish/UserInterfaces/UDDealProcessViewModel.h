@@ -65,23 +65,18 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDChatUpdated);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDEditedDealUpdated);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDActionInfoUpdated);
 
-
 UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDPointActionFinalViewModel : public UUDStaticViewModelBase
 {
 	GENERATED_BODY()
 public:
 	// MVVM Field.
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FString Description;
 	// Resolved actions can't be updated by owner.
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsResolved;
 	// Sabotaged actions can't be sabotaged again.
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsSabotaged;
 	// Actions are different based on perspective.
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsExecutor;
 	// Fields.
 	FUDDealActionInfo CurrentData;
@@ -112,10 +107,10 @@ public:
 				param).ToString()
 			);
 		}
-		SetDescription(desc.ToString());
-		SetIsResolved(action.ActionBody.SelectedResult != EUDDealActionResult::Unresolved);
-		SetIsSabotaged(action.ActionBody.WasSabotaged);
-		SetIsExecutor(isOwner);
+		//SetDescription(desc.ToString());
+		//SetIsResolved(action.ActionBody.SelectedResult != EUDDealActionResult::Unresolved);
+		//SetIsSabotaged(action.ActionBody.WasSabotaged);
+		//SetIsExecutor(isOwner);
 	}
 
 	UFUNCTION(BlueprintCallable)
@@ -149,40 +144,6 @@ public:
 			ActionModel->GetAction(UUDDealActionContractPointSabotage::ActionTypeId,
 				{ CurrentData.DealUniqueId, CurrentData.ActionIndex }));
 	}
-private:
-	// MVVM Setters & Getters
-	void SetDescription(FString newDescription)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(Description, newDescription);
-	}
-	FString GetDescription() const
-	{
-		return Description;
-	}
-	void SetIsResolved(bool newIsResolved)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(IsResolved, newIsResolved);
-	}
-	bool GetIsResolved() const
-	{
-		return IsResolved;
-	}
-	void SetIsSabotaged(bool newIsSabotaged)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(IsSabotaged, newIsSabotaged);
-	}
-	bool GetIsSabotaged() const
-	{
-		return IsSabotaged;
-	}
-	void SetIsExecutor(bool newIsExecutor)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(IsExecutor, newIsExecutor);
-	}
-	bool GetIsExecutor() const
-	{
-		return IsExecutor;
-	}
 };
 
 UCLASS(Blueprintable, BlueprintType)
@@ -191,7 +152,6 @@ class UNREALDIPLOMACY_API UUDPointActionPreviewViewModel : public UUDStaticViewM
 	GENERATED_BODY()
 public:
 	// MVVM Field.
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FString Description;
 	// Fields.
 public:
@@ -219,17 +179,7 @@ public:
 				param).ToString()
 			);
 		}
-		SetDescription(desc.ToString());
-	}
-private:
-	// MVVM Setters & Getters
-	void SetDescription(FString newDescription)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(Description, newDescription);
-	}
-	FString GetDescription() const
-	{
-		return Description;
+		//SetDescription(desc.ToString());
 	}
 };
 
@@ -239,11 +189,8 @@ class UNREALDIPLOMACY_API UUDPointParticipantViewModel : public UUDStaticViewMod
 	GENERATED_BODY()
 public:
 	// MVVM Field.
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FString Name;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsInvoker;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsTarget;
 	// Fields.
 	FUDPlayerInfo CurrentPlayer;
@@ -259,11 +206,11 @@ public:
 			LOCTEXT("Participant", "Player {0}"),
 			CurrentPlayer.Id
 		).ToString();
-		SetName(rs1);
+		//SetName(rs1);
 		bool isInv = ActionModel->IsDealPointInvoker(CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, CurrentPlayer.Id);
-		SetIsInvoker(isInv);
+		//SetIsInvoker(isInv);
 		bool isTar = ActionModel->IsDealPointTarget(CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, CurrentPlayer.Id);
-		SetIsTarget(isTar);
+		//SetIsTarget(isTar);
 
 	}
 	UFUNCTION(BlueprintCallable)
@@ -294,32 +241,6 @@ public:
 			ActionModel->GetAction(UUDDealActionPointModifyTargetRemove::ActionTypeId,
 				{ CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, CurrentPlayer.Id }));
 	}
-private:
-	// MVVM Setters & Getters
-	void SetName(FString newName)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(Name, newName);
-	}
-	FString GetName() const
-	{
-		return Name;
-	}
-	void SetIsInvoker(bool newIsInvoker)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(IsInvoker, newIsInvoker);
-	}
-	bool GetIsInvoker() const
-	{
-		return IsInvoker;
-	}
-	void SetIsTarget(bool newIsTarget)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(IsTarget, newIsTarget);
-	}
-	bool GetIsTarget() const
-	{
-		return IsTarget;
-	}
 };
 
 
@@ -329,13 +250,9 @@ class UNREALDIPLOMACY_API UUDPointViewModel : public UUDStaticViewModelBase
 	GENERATED_BODY()
 public:
 	// MVVM Field.
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FString Title;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FString Description;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FString InvokerList;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FString TargetList;
 	// Public Field
 	UPROPERTY(BlueprintReadOnly)
@@ -351,14 +268,14 @@ public:
 			info.PointUniqueId,
 			info.DealUniqueId
 		).ToString();
-		SetTitle(rs1);
+		//SetTitle(rs1);
 		auto rs2 = FText::Format(
 			LOCTEXT("Participant", "Type {0}: Action {1} will be applied to all targets."),
 			(int32)CurrentPoint.Type,
 			CurrentPoint.ActionId
 		).ToString();
-		SetDescription(rs2);
-
+		//SetDescription(rs2);
+		
 		auto invokers = ActionModel->GetInvokerPointPlayerList(info.DealUniqueId, info.PointUniqueId);
 		TStringBuilder<64> invList;
 		for (auto player : invokers)
@@ -366,7 +283,7 @@ public:
 			invList.Append(FString::FromInt(player.Id));
 			invList.Append(",");
 		}
-		SetInvokerList(invList.ToString());
+		//SetInvokerList(invList.ToString());
 
 		auto targets = ActionModel->GetTargetPointPlayerList(info.DealUniqueId, info.PointUniqueId);
 		TStringBuilder<64> tarList;
@@ -375,7 +292,7 @@ public:
 			tarList.Append(FString::FromInt(player.Id));
 			tarList.Append(",");
 		}
-		SetTargetList(tarList.ToString());
+		//SetTargetList(tarList.ToString());
 	}
 
 	/**
@@ -393,70 +310,6 @@ public:
 	{
 		ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionPointChildAdd::ActionTypeId,{ CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId }));
 	}
-private:
-	// MVVM Setters & Getters
-	void SetTitle(FString newTitle)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(Title, newTitle);
-	}
-	FString GetTitle() const
-	{
-		return Title;
-	}
-	void SetDescription(FString newDescription)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(Description, newDescription);
-	}
-	FString GetDescription() const
-	{
-		return Description;
-	}
-	void SetInvokerList(FString newInvokerList)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(InvokerList, newInvokerList);
-	}
-	FString GetInvokerList() const
-	{
-		return InvokerList;
-	}
-	void SetTargetList(FString newTargetList)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(TargetList, newTargetList);
-	}
-	FString GetTargetList() const
-	{
-		return TargetList;
-	}
-};
-
-USTRUCT(Blueprintable, BlueprintType)
-struct FUDNamedOption
-{
-	GENERATED_BODY()
-public:
-	FUDNamedOption() {}
-	FUDNamedOption(FText name, int32 optionCode) 
-		: Name(name), OptionCode(optionCode) {}
-	FUDNamedOption(FText name, int32 optionCode, int32 optionCode2)
-		: Name(name), OptionCode(optionCode), OptionCode2(optionCode2) {}
-	UPROPERTY(BlueprintReadOnly)
-	FText Name;
-	UPROPERTY(BlueprintReadOnly)
-	int32 OptionCode;
-	UPROPERTY(BlueprintReadOnly)
-	int32 OptionCode2;
-};
-
-/**
- * Represents parameter type
- */
-UENUM(BlueprintType)
-enum class EUDParameterCountType : uint8
-{
-	None = 0,
-	SingleValue = 1,
-	SingleTile = 2,
-	TileValue = 3,
 };
 
 /**
@@ -469,125 +322,47 @@ class UNREALDIPLOMACY_API UUDActionParameterEditorViewModel : public UUDStaticVi
 	GENERATED_BODY()
 public:
 	// MVVM Field.
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	int32 ValueParameter;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FIntPoint TileParameter;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FString TextParameter;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool HasValueParameter;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool HasTileParameter;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool HasTextParameter;
-	UPROPERTY(BlueprintReadOnly)
-	EUDParameterCountType InvokeType;
+	//EUDParameterCountType InvokeType;
 public:
-	UFUNCTION(BlueprintCallable)
-	void UpdateSelection(EUDParameterCountType inInvokeType)
-	{
-		InvokeType = inInvokeType;
-		switch (inInvokeType)
-		{
-		case EUDParameterCountType::None:
-			SetHasTileParameter(false);
-			SetHasValueParameter(false);
-			SetHasTextParameter(false);
-			break;
-		case EUDParameterCountType::SingleValue:
-			SetHasTileParameter(false);
-			SetHasValueParameter(true);
-			SetHasTextParameter(false);
-			break;
-		case EUDParameterCountType::SingleTile:
-			SetHasTileParameter(true);
-			SetHasValueParameter(false);
-			SetHasTextParameter(false);
-			break;
-		case EUDParameterCountType::TileValue:
-			SetHasTileParameter(true);
-			SetHasValueParameter(true);
-			SetHasTextParameter(false);
-			break;
-		default:
-			SetHasTileParameter(false);
-			SetHasValueParameter(false);
-			SetHasTextParameter(false);
-			break;
-		}
-	}
-	UFUNCTION(BlueprintCallable)
-	void UpdateParameters(FIntPoint tile, int32 value)
-	{
-		switch (InvokeType)
-		{
-		case EUDParameterCountType::None:
-			break;
-		case EUDParameterCountType::SingleValue:
-			SetValueParameter(value);
-			break;
-		case EUDParameterCountType::SingleTile:
-			SetTileParameter(tile);
-			break;
-		case EUDParameterCountType::TileValue:
-			SetTileParameter(tile);
-			SetValueParameter(value);
-			break;
-		default:
-			break;
-		}
-	}
-private:
-	// MVVM Setters & Getters
-	void SetValueParameter(int32 newValueParameter)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(ValueParameter, newValueParameter);
-	}
-	int32 GetValueParameter() const
-	{
-		return ValueParameter;
-	}
-	void SetTileParameter(FIntPoint newTileParameter)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(TileParameter, newTileParameter);
-	}
-	FIntPoint GetTileParameter() const
-	{
-		return TileParameter;
-	}
-	void SetTextParameter(FString newTextParameter)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(TextParameter, newTextParameter);
-	}
-	FString GetTextParameter() const
-	{
-		return TextParameter;
-	}
-	void SetHasValueParameter(bool newHasValueParameter)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(HasValueParameter, newHasValueParameter);
-	}
-	bool GetHasValueParameter() const
-	{
-		return HasValueParameter;
-	}
-	void SetHasTileParameter(bool newHasTileParameter)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(HasTileParameter, newHasTileParameter);
-	}
-	bool GetHasTileParameter() const
-	{
-		return HasTileParameter;
-	}
-	void SetHasTextParameter(bool newHasTextParameter)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(HasTextParameter, newHasTextParameter);
-	}
-	bool GetHasTextParameter() const
-	{
-		return HasTextParameter;
-	}
+	//UFUNCTION(BlueprintCallable)
+//	void UpdateSelection(EUDParameterCountType inInvokeType)
+	//{
+		//InvokeType = inInvokeType;
+		//switch (inInvokeType)
+		//{
+		//case EUDParameterCountType::None:
+		//	SetHasTileParameter(false);
+		//	SetHasValueParameter(false);
+		//	SetHasTextParameter(false);
+		//	break;
+		//case EUDParameterCountType::SingleValue:
+		//	SetHasTileParameter(false);
+		//	SetHasValueParameter(true);
+		//	SetHasTextParameter(false);
+		//	break;
+		//case EUDParameterCountType::SingleTile:
+		//	SetHasTileParameter(true);
+		//	SetHasValueParameter(false);
+		//	SetHasTextParameter(false);
+		//	break;
+		//case EUDParameterCountType::TileValue:
+		//	SetHasTileParameter(true);
+		//	SetHasValueParameter(true);
+		//	SetHasTextParameter(false);
+		//	break;
+		//default:
+		//	SetHasTileParameter(false);
+		//	SetHasValueParameter(false);
+		//	SetHasTextParameter(false);
+		//	break;
+		//}
+	//}
 };
 
 // TODO make this modular
@@ -597,20 +372,17 @@ class UNREALDIPLOMACY_API UUDPointEditorViewModel : public UUDViewModelBase
 	GENERATED_BODY()
 public:
 	// MVVM Field.
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	int32 SelectedActionId;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	EUDPointType SelectedType;
 	// Fields.
-	UPROPERTY(BlueprintReadOnly)
 	FUDDealPointInfo CurrentPoint;
 public:
 	UFUNCTION(BlueprintCallable)
 	void SetBindingTarget(FUDDealPointInfo info)
 	{
 		CurrentPoint = info;
-		SetSelectedActionId(CurrentPoint.ActionId);
-		SetSelectedType(CurrentPoint.Type);
+		//SetSelectedActionId(CurrentPoint.ActionId);
+		//SetSelectedType(CurrentPoint.Type);
 		EditedDealUpdated.Broadcast();
 	}
 
@@ -624,10 +396,6 @@ public:
 				SetBindingTarget(CurrentPoint);
 			}
 		}
-		else
-		{
-			// This should not be visible ?
-		}
 	}
 
 	/**
@@ -636,91 +404,14 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FUDEditedDealUpdated EditedDealUpdated;
 
-	UFUNCTION(BlueprintCallable)
-	TArray<FUDNamedOption> GetAvailableTiles()
+	/*/TArray<FUDNamedOption> GetAvailableTypes()
 	{
 		return {
-			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "-x-")), -1, -1),
-			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "0x0")), 0, 0),
-			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "0x1")), 0, 1),
-			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "0x2")), 0, 2),
-			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "1x0")), 1, 0),
-			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "1x1")), 1, 1),
-			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "1x2")), 1, 2),
-			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "2x0")), 2, 0),
-			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "2x1")), 2, 1),
-			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "2x2")), 2, 2),
+			//FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Propose")), UUDDealActionPointModifyType::PointTypeToInteger(EUDPointType::Proposal)),
+			//FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Demand")), UUDDealActionPointModifyType::PointTypeToInteger(EUDPointType::Demand)),
+			//FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Offer")), UUDDealActionPointModifyType::PointTypeToInteger(EUDPointType::Offer)),
 		};
-	}
-
-	UFUNCTION(BlueprintCallable)
-	EUDParameterCountType GetCurrentForAction()
-	{
-		switch (CurrentPoint.ActionId)
-		{
-		case UUDGameActionGiftIrrevocable::ActionTypeId:
-			return EUDParameterCountType::SingleValue;
-		case UUDGameActionTileTransfer::ActionTypeId:
-			return EUDParameterCountType::TileValue;
-		case UUDGameActionPermitTileExploit::ActionTypeId:
-			return EUDParameterCountType::TileValue;
-		case UUDGameActionThroneAbdicate::ActionTypeId:
-			return EUDParameterCountType::None;
-		default:
-			return EUDParameterCountType::None;
-			break;
-		}
-	}
-
-	UFUNCTION(BlueprintCallable)
-	int32 GetSelectedValue()
-	{
-		if (CurrentPoint.ValueParameters.Num() == 1)
-			return CurrentPoint.ValueParameters[0];
-		if (CurrentPoint.ValueParameters.Num() == 3)
-			return CurrentPoint.ValueParameters[2];
-		return 0;
-	}
-
-	UFUNCTION(BlueprintCallable)
-	FIntPoint GetSelectedTile()
-	{
-		if (CurrentPoint.ValueParameters.Num() >= 2)
-			return FIntPoint(CurrentPoint.ValueParameters[0], CurrentPoint.ValueParameters[1]);
-		return FIntPoint(-1, -1);
-	}
-
-	UFUNCTION(BlueprintCallable)
-	TArray<FUDNamedOption> GetAvailableActions()
-	{
-		return {
-			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "UNDEFINED")), 0),
-			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Give Gift")), UUDGameActionGiftIrrevocable::ActionTypeId),
-			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Transfer Tile")), UUDGameActionTileTransfer::ActionTypeId),
-			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Grant Exploit Tile")), UUDGameActionPermitTileExploit::ActionTypeId),
-			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Abdicate")), UUDGameActionThroneAbdicate::ActionTypeId),
-		};
-	}
-
-	UFUNCTION(BlueprintCallable)
-	int32 GetSelectedActionCode()
-	{
-		return GetSelectedActionId();
-	}
-	UFUNCTION(BlueprintCallable)
-	TArray<FUDNamedOption> GetAvailableTypes()
-	{
-		return {
-			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Propose")), UUDDealActionPointModifyType::PointTypeToInteger(EUDPointType::Proposal)),
-			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Demand")), UUDDealActionPointModifyType::PointTypeToInteger(EUDPointType::Demand)),
-			FUDNamedOption(FText(LOCTEXT("NamedActionOption", "Offer")), UUDDealActionPointModifyType::PointTypeToInteger(EUDPointType::Offer)),
-		};
-	}
-	UFUNCTION(BlueprintCallable)
-	int32 GetSelectedTypeCode()
-	{
-		return UUDDealActionPointModifyType::PointTypeToInteger(GetSelectedType());
-	}
+	}*//*/
 	UFUNCTION(BlueprintCallable)
 	void UpdatePointAction(FUDNamedOption option)
 	{
@@ -757,7 +448,7 @@ public:
 			// safely ignore the fake actions or actions that don't need parameter.
 			break;
 		}
-	}
+	}*/
 	UFUNCTION(BlueprintCallable)
 	void ItemUpdateValue(int32 value)
 	{
@@ -786,7 +477,7 @@ public:
 				{ dealId, pointId, tile.X, tile.Y, value }));
 	}
 
-	UFUNCTION(BlueprintCallable)
+	/*/UFUNCTION(BlueprintCallable)
 	void UpdatePointType(FUDNamedOption option) 
 	{
 		EUDPointType type = UUDDealActionPointModifyType::IntegerToPointType(option.OptionCode);
@@ -794,33 +485,13 @@ public:
 		ActionModel->RequestAction(
 			ActionModel->GetAction(UUDDealActionPointModifyType::ActionTypeId,
 				{ CurrentPoint.DealUniqueId, CurrentPoint.PointUniqueId, typeAsInt }));
-	}
+	}*/
 
 	UFUNCTION(BlueprintCallable)
 	TArray<FUDPlayerInfo> GetAllPlayers()
 	{
 		return ActionModel->GetPlayerList();
 	}
-private:
-	// MVVM Setters & Getters
-	void SetSelectedActionId(int32 newSelectedActionId)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(SelectedActionId, newSelectedActionId);
-	}
-	int32 GetSelectedActionId() const
-	{
-		return SelectedActionId;
-	}
-
-	void SetSelectedType(EUDPointType newSelectedType)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(SelectedType, newSelectedType);
-	}
-	EUDPointType GetSelectedType() const
-	{
-		return SelectedType;
-	}
-
 };
 
 
@@ -929,25 +600,15 @@ class UNREALDIPLOMACY_API UUDDealProcessViewModel : public UUDViewModelBase
 	GENERATED_BODY()
 public:
 	// MVVM Fields
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FString SessionDescription;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsSessionActive;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	int32 CurrentDeal = 0;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsModerator = false;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	EUDDealSimulationState DealState = EUDDealSimulationState::Undefined;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	EUDDealSimulationResult DealResult = EUDDealSimulationResult::Undefined;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	int32 CurrentReady;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	int32 MaxReady;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	int32 CurrentPositiveVote;
-	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	int32 MaxVote;
 protected:
 	TArray<int32> DealsByTimeline;
@@ -961,25 +622,10 @@ public:
 			TArray<int32> deals = ActionModel->GetDealIds();
 		}
 	}
-	UPROPERTY(BlueprintAssignable)
 	FUDParticipantsUpdated ParticipantsOnUpdated;
-	UPROPERTY(BlueprintAssignable)
 	FUDPDealPointUpdated PointsOnUpdated;
-	UPROPERTY(BlueprintAssignable)
 	FUDChatUpdated ChatOnUpdated;
-	UPROPERTY(BlueprintAssignable)
 	FUDActionInfoUpdated ActionInfoUpdated;
-
-	UFUNCTION(BlueprintCallable)
-	void ItemClose()
-	{
-		//ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionResultClose::ActionTypeId, { CurrentDealItem.DealUniqueId }));
-	}
-	UFUNCTION(BlueprintCallable)
-	void ItemAddPoint()
-	{
-		//ActionModel->RequestAction(ActionModel->GetAction(UUDDealActionPointAdd::ActionTypeId, { CurrentDealItem.DealUniqueId }));
-	}
 
 	UFUNCTION(BlueprintCallable)
 	void ItemForceResolution()
@@ -1049,89 +695,6 @@ protected:
 		ChatOnUpdated.Broadcast();
 		PointsOnUpdated.Broadcast(ActionModel->GetDealPointsTree(info.DealUniqueId));
 		ActionInfoUpdated.Broadcast();
-	}*/
-private:
-	// MVVM Setters & Getters
-	void SetSessionDescription(FString newSessionDescription)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(SessionDescription, newSessionDescription);
-	}
-	FString GetSessionDescription() const
-	{
-		return SessionDescription;
-	}
-	void SetIsSessionActive(bool newIsSessionActive)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(IsSessionActive, newIsSessionActive);
-	}
-	bool GetIsSessionActive() const
-	{
-		return IsSessionActive;
-	}
-	void SetCurrentDeal(int32 newCurrentDeal)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(CurrentDeal, newCurrentDeal);
-	}
-	int32 GetCurrentDeal() const
-	{
-		return CurrentDeal;
-	}
-	void SetDealState(EUDDealSimulationState newDealState)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(DealState, newDealState);
-	}
-	EUDDealSimulationState GetDealState() const
-	{
-		return DealState;
-	}
-	void SetDealResult(EUDDealSimulationResult newDealResult)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(DealResult, newDealResult);
-	}
-	EUDDealSimulationResult GetDealResult() const
-	{
-		return DealResult;
-	}
-	void SetIsModerator(bool newIsModerator)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(IsModerator, newIsModerator);
-	}
-	bool GetIsModerator() const
-	{
-		return IsModerator;
-	}
-	void SetCurrentReady(int32 newCurrentReady)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(CurrentReady, newCurrentReady);
-	}
-	int32 GetCurrentReady() const
-	{
-		return CurrentReady;
-	}
-	void SetMaxReady(int32 newMaxReady)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(MaxReady, newMaxReady);
-	}
-	int32 GetMaxReady() const
-	{
-		return MaxReady;
-	}
-	void SetCurrentPositiveVote(int32 newCurrentPositiveVote)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(CurrentPositiveVote, newCurrentPositiveVote);
-	}
-	int32 GetCurrentPositiveVote() const
-	{
-		return CurrentPositiveVote;
-	}
-	void SetMaxVote(int32 newMaxVote)
-	{
-		UE_MVVM_SET_PROPERTY_VALUE(MaxVote, newMaxVote);
-	}
-	int32 GetMaxVote() const
-	{
-		return MaxVote;
-	}
-	
+	}*/	
 };
 #undef LOCTEXT_NAMESPACE

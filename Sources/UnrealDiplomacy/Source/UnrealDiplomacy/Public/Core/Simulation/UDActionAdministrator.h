@@ -55,6 +55,7 @@ struct FUDChatMessageInfo;
 struct FUDDealMinimalInfo;
 struct FUDDealInfo;
 struct FUDDealFactionInfo;
+struct FUDDealPointMinimalInfo;
 
 #include "Core/Simulation/Actions/UDDealActionContractCreate.h"
 
@@ -460,6 +461,8 @@ public:
 	TArray<FUDDealFactionInfo> GetDealParticipantList(int32 dealId);
 	/** Returns list of inviteable. */
 	TArray<FUDDealFactionInfo> GetDealInviteList(int32 dealId);
+	/** Retrieves all primary points of the specified deal. */
+	TArray<FUDDealPointMinimalInfo> GetDealPrimaryPointList(int32 dealId);
 private:
 	/** Converts state and result to unified name. */
 	FText GetStateName(EUDDealSimulationState stae, EUDDealSimulationResult result);

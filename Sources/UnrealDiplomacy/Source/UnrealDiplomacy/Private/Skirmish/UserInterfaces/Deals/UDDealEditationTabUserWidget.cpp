@@ -2,8 +2,8 @@
 
 #include "Skirmish/UserInterfaces/Deals/UDDealEditationTabUserWidget.h"
 #include "Skirmish/UserInterfaces/Deals/UDDealEditationTabViewModel.h"
-#include "Components/TextBlock.h"
-#include "Components/Button.h"
+#include "Skirmish/UserInterfaces/Deals/UDPointItemViewModel.h"
+#include "Components/ListView.h"
 
 void UUDDealEditationTabUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
@@ -15,9 +15,16 @@ void UUDDealEditationTabUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewM
 void UUDDealEditationTabUserWidget::BindDelegates()
 {
 	// Bind view to updates.
+	ViewModel->PointItemSourceUpdatedEvent.AddUObject(this, &UUDDealEditationTabUserWidget::SetPointItemSourceCollection);
 	// Bind viewmodel to widgets.
 }
 
 void UUDDealEditationTabUserWidget::BindWidgets()
 {
+	PointItemListWidget = GetWidget<UListView>(TEXT("PointItemList"));
+}
+
+void UUDDealEditationTabUserWidget::SetPointItemSourceCollection(const TArray<TObjectPtr<UUDPointItemViewModel>>& itemViewModels)
+{
+	PointItemListWidget->SetListItems(itemViewModels);
 }

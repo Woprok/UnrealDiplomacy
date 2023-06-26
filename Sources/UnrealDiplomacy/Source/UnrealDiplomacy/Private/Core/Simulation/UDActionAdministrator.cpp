@@ -1129,6 +1129,18 @@ TArray<FUDDealFactionInfo> UUDActionAdministrator::GetDealInviteList(int32 dealI
 	return inviteables;
 }
 
+TArray<FUDDealPointMinimalInfo> UUDActionAdministrator::GetDealPrimaryPointList(int32 dealId)
+{
+	TArray<FUDDealPointMinimalInfo> primaryPoints = { };
+	for (const auto& primaryId : State->Deals[dealId]->PrimaryPoints)
+	{
+		FUDDealPointMinimalInfo info = FUDDealPointMinimalInfo();
+		info.DealId = dealId;
+		info.PointId = primaryId;
+	}
+	return primaryPoints;
+}
+
 #pragma endregion
 
 bool UUDActionAdministrator::IsLocalFactionPlayer()

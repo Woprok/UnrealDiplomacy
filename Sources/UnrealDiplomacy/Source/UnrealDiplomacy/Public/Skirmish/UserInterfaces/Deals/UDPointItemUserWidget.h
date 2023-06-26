@@ -9,6 +9,8 @@
 
 // Forward Declarations
 
+class UTextBlock;
+class UButton;
 class UUDPointItemViewModel;
 
 /**
@@ -44,6 +46,10 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> CreatePointTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UButton> CreatePointButtonWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDPointItemViewModel> ViewModel;

@@ -227,4 +227,9 @@ FUDDealInfo::FUDDealInfo()
 
 }
 
+FUDDealPointMinimalInfo::FUDDealPointMinimalInfo()
+{
+
+}
+
 #pragma endregion

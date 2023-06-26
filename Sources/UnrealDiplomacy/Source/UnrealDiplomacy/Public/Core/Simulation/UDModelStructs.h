@@ -614,4 +614,16 @@ public:
 	bool LocalVote = false;
 };
 
+USTRUCT(BlueprintType)
+struct FUDDealPointMinimalInfo
+{
+	GENERATED_BODY()
+public:
+	FUDDealPointMinimalInfo();
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 PointId = 0;
+};
+
 #pragma endregion
