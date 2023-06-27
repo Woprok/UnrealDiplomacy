@@ -4,10 +4,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UDActionInterface.h"
 #include "UDWorldState.h"
-#include "Core/UDGlobalData.h"
-#include "Core/Simulation/UDActionData.h"
+#include "UDActionAdministrator.generated.h"
 
 // Forward Declarations
 
@@ -58,83 +56,6 @@ struct FUDDealFactionInfo;
 struct FUDDealPointMinimalInfo;
 struct FUDDealActionInfo;
 
-#include "UDActionAdministrator.generated.h"
-
-
-USTRUCT(BlueprintType)
-struct FUDPlayerInfo
-{
-	GENERATED_BODY()
-public:
-	FUDPlayerInfo() {}
-	FUDPlayerInfo(int32 id) : Id(id) { }
-	UPROPERTY(BlueprintReadOnly)
-	int32 Id = 0;
-	UPROPERTY(BlueprintReadOnly)
-	FText Name = FText::GetEmpty();
-};
-
-USTRUCT(BlueprintType)
-struct FUDNationInfo
-{
-	GENERATED_BODY()
-public:
-	FUDNationInfo() {}
-	FUDNationInfo(int32 id, int32 gold) : Id(id), Gold(gold) {}
-	UPROPERTY(BlueprintReadOnly)
-	int32 Id = 0;
-	UPROPERTY(BlueprintReadOnly)
-	int32 Gold = 0;
-};
-
-USTRUCT(BlueprintType)
-struct FUDDealParticipantsInfo
-{
-	GENERATED_BODY()
-public:
-	FUDDealParticipantsInfo() {}
-	FUDDealParticipantsInfo(int32 dealUniqueId, TArray<FUDPlayerInfo> active, TArray<FUDPlayerInfo> blocked, TArray<FUDPlayerInfo> available) 
-		: DealUniqueId(dealUniqueId),
-		ActiveParticipants(active), BlockedParticipants(blocked), AvailableParticipants(available) {}
-	UPROPERTY(BlueprintReadOnly)
-	int32 DealUniqueId = 0;
-	UPROPERTY(BlueprintReadOnly)
-	TArray<FUDPlayerInfo> ActiveParticipants;
-	UPROPERTY(BlueprintReadOnly)
-	TArray<FUDPlayerInfo> BlockedParticipants;
-	UPROPERTY(BlueprintReadOnly)
-	TArray<FUDPlayerInfo> AvailableParticipants;
-};
-
-USTRUCT(BlueprintType)
-struct FUDDealPointChildInfo
-{
-	GENERATED_BODY()
-public:
-	FUDDealPointChildInfo() {}
-	FUDDealPointChildInfo(int32 dealUniqueId, int32 pointUniqueId)
-		: DealUniqueId(dealUniqueId), PointUniqueId(pointUniqueId) {}
-	UPROPERTY(BlueprintReadOnly)
-	int32 DealUniqueId = 0;
-	UPROPERTY(BlueprintReadOnly)
-	int32 PointUniqueId = 0;
-};
-
-USTRUCT(BlueprintType)
-struct FUDDealPointTreeInfo
-{
-	GENERATED_BODY()
-public:
-	FUDDealPointTreeInfo() {}
-	FUDDealPointTreeInfo(int32 dealUniqueId, int32 pointCount, TArray<FUDDealPointChildInfo> childPoints)
-		: DealUniqueId(dealUniqueId), TotalPointCount(pointCount), PrimaryPoints(childPoints) {}
-	UPROPERTY(BlueprintReadOnly)
-	int32 DealUniqueId = 0;
-	UPROPERTY(BlueprintReadOnly)
-	int32 TotalPointCount = 0;
-	UPROPERTY(BlueprintReadOnly)
-	TArray<FUDDealPointChildInfo> PrimaryPoints;
-};
 
 USTRUCT(BlueprintType)
 struct FUDDealPointInfo
@@ -142,14 +63,8 @@ struct FUDDealPointInfo
 	GENERATED_BODY()
 public:
 	FUDDealPointInfo() {}
-	FUDDealPointInfo(int32 dealUniqueId, int32 pointUniqueId, EUDPointType type, int32 actionId) 
-		: DealUniqueId(dealUniqueId), PointUniqueId(pointUniqueId), Type(type), ActionId(actionId) {}
-	FUDDealPointInfo(int32 dealUniqueId, int32 pointUniqueId, EUDPointType type, int32 actionId,
-		TArray<int32> valueParameters, FString textParameter)
-		: DealUniqueId(dealUniqueId), PointUniqueId(pointUniqueId), Type(type), ActionId(actionId),
-		ValueParameters(valueParameters), TextParameter(textParameter) {}
 	UPROPERTY(BlueprintReadOnly)
-	int32 DealUniqueId = 0;
+	int32 DealId = 0;
 	UPROPERTY(BlueprintReadOnly)
 	int32 PointUniqueId = 0;
 	UPROPERTY(BlueprintReadOnly)
@@ -169,10 +84,6 @@ struct FUDDealActionInfo
 	GENERATED_BODY()
 public:
 	FUDDealActionInfo() {}
-	FUDDealActionInfo(int32 dealUniqueId, int32 actionIndex, FUDDiscussionAction actionBody)
-		: DealUniqueId(dealUniqueId), ActionIndex(actionIndex), ActionBody(actionBody) {}
-	UPROPERTY(BlueprintReadOnly)
-	int32 DealUniqueId;
 	UPROPERTY(BlueprintReadOnly)
 	int32 DealId;
 	UPROPERTY(BlueprintReadOnly)
@@ -209,8 +120,6 @@ UCLASS(Blueprintable)
 class UNREALDIPLOMACY_API UUDActionAdministrator : public UObject
 {
 	GENERATED_BODY()
-private:
-	FUDNationInfo FUDNationInfo_INVALID = FUDNationInfo(-1, -1);
 #pragma region Core
 public:
 	/**
@@ -401,13 +310,13 @@ public:
 	/** Returns list of actions that can be used as parameter. */
 	TArray<FUDActionMinimalInfo> GetActionList();
 private:
-	bool HasDealParameter(const TSet<int32>& tags, int32 excludeTag = UD_INVALID_TAG_ID);
-	bool HasFactionParameter(const TSet<int32>& tags, int32 excludeTag = UD_INVALID_TAG_ID);
-	bool HasTileParameter(const TSet<int32>& tags, int32 excludeTag = UD_INVALID_TAG_ID);
-	bool HasActionParameter(const TSet<int32>& tags, int32 excludeTag = UD_INVALID_TAG_ID);
-	bool HasResourceParameter(const TSet<int32>& tags, int32 excludeTag = UD_INVALID_TAG_ID);
-	bool HasValueParameter(const TSet<int32>& tags, int32 excludeTag = UD_INVALID_TAG_ID);
-	bool HasTextParameter(const TSet<int32>& tags, int32 excludeTag = UD_INVALID_TAG_ID);
+	bool HasDealParameter(const TSet<int32>& tags, int32 excludeTag);
+	bool HasFactionParameter(const TSet<int32>& tags, int32 excludeTag);
+	bool HasTileParameter(const TSet<int32>& tags, int32 excludeTag);
+	bool HasActionParameter(const TSet<int32>& tags, int32 excludeTag);
+	bool HasResourceParameter(const TSet<int32>& tags, int32 excludeTag);
+	bool HasValueParameter(const TSet<int32>& tags, int32 excludeTag);
+	bool HasTextParameter(const TSet<int32>& tags, int32 excludeTag);
 	ParameterData GetDealParameter(const TSet<int32>& tags);
 	ParameterData GetFactionParameter(const TSet<int32>& tags);
 	ParameterData GetTileParameter(const TSet<int32>& tags);

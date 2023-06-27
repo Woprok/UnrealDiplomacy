@@ -3,10 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UDHelpers.generated.h"
 
 /**
- * 
+ * ...
  */
-class UNREALDIPLOMACY_API FUDHelpers
+UCLASS(meta = (BlueprintThreadSafe, ScriptName = "Helpers"))
+class UNREALDIPLOMACY_API UUDHelpers : public UBlueprintFunctionLibrary
 {
+	GENERATED_BODY()
+public:
 };

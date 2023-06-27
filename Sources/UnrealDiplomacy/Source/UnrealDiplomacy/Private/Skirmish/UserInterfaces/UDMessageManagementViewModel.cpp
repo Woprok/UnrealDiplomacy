@@ -6,6 +6,7 @@
 #include "Skirmish/UDSkirmishPlayerController.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Core/Simulation/UDModelStructs.h"
+#include "Core/UDGlobalData.h"
 
 #define LOCTEXT_NAMESPACE "MessageManagement"
 

@@ -1,12 +1,15 @@
 // Copyright Miroslav Valach
 
 #include "Core/Simulation/UDActionAdministrator.h"
+#include "Core/UDGlobalData.h"
+#include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDModelStructs.h"
 #include "Core/Simulation/UDActionManager.h"
 #include "Core/Simulation/UDWorldState.h"
 #include "Core/Simulation/UDModifierData.h"
 #include "Core/Simulation/UDModifierInterface.h"
 #include "Core/Simulation/UDModifierManager.h"
+#include "Core/Simulation/UDActionInterface.h"
 
 #pragma region Core
 void UUDActionAdministrator::OnDataChanged(const FUDActionData& action)
