@@ -37,6 +37,7 @@ void UUDResourceParameterViewModel::Update()
 	FUDResourceMinimalInfo selected = GetSelectedOrDefault(SelectedResource);
 	SelectedResource = selected.Id;
 	SetNameText(FText::FromString(selected.Name));
+	OnChangeEvent.Broadcast();
 }
 
 FUDResourceMinimalInfo UUDResourceParameterViewModel::GetSelectedOrDefault(int32 desiredSelectedItem)
@@ -72,6 +73,7 @@ void UUDResourceParameterViewModel::PreviousResource()
 		FUDResourceMinimalInfo selected = Content.Options[SelectedResourceIndex];
 		SelectedResource = selected.Id;
 		SetNameText(FText::FromString(selected.Name));
+		OnChangeEvent.Broadcast();
 	}
 }
 
@@ -84,6 +86,7 @@ void UUDResourceParameterViewModel::NextResource()
 		FUDResourceMinimalInfo selected = Content.Options[SelectedResourceIndex];
 		SelectedResource = selected.Id;
 		SetNameText(FText::FromString(selected.Name));
+		OnChangeEvent.Broadcast();
 	}
 }
 

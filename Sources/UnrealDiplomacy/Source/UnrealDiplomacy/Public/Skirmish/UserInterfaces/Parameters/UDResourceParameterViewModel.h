@@ -12,6 +12,8 @@
 struct FUDResourceMinimalInfo;
 struct FUDResourceParameter;
 
+DECLARE_MULTICAST_DELEGATE(FUDParameterChanged);
+
 /**
  * Single editable parameter for an action.
  */
@@ -41,6 +43,8 @@ public:
 	FText PreviousText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText NextText;
+	// Events
+	FUDParameterChanged OnChangeEvent;
 protected:
 	virtual void Initialize() override;
 	virtual void Update() override;

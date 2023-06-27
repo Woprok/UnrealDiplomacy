@@ -12,6 +12,8 @@
 enum ETextCommit::Type : int;
 struct FUDTextParameter;
 
+DECLARE_MULTICAST_DELEGATE(FUDParameterChanged);
+
 /**
  * Single editable parameter for an action.
  */
@@ -37,6 +39,8 @@ public:
 	FText ToolTipText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText SelectedText;
+	// Events
+	FUDParameterChanged OnChangeEvent;
 protected:
 	virtual void Initialize() override;
 	virtual void Update() override;

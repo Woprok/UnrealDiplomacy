@@ -78,7 +78,7 @@ void UUDFactionInteractionViewModel::DefineInstances()
 	int32 uniqueId = UUDFactionInteractionViewModel::UniqueNameDefinition++;
 	ParameterEditorType = UUDParameterEditorViewModel::StaticClass();
 	ParameterEditorInstanceName = FName(ParameterEditorInstanceName.ToString() + FString::FromInt(uniqueId));
-	UE_LOG(LogTemp, Log, TEXT("UUDTileInteractionViewModel: Defined editor [%d]."), uniqueId);
+	UE_LOG(LogTemp, Log, TEXT("UUDFactionInteractionViewModel: Defined editor [%d]."), uniqueId);
 }
 
 void UUDFactionInteractionViewModel::SetInteractText(FText newInteractText)

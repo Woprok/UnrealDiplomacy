@@ -45,7 +45,8 @@ void UUDParameterEditorViewModel::SetContent(FUDParameterListInfo content)
 
 void UUDParameterEditorViewModel::HideParameters()
 {
-	SetHasFactionParameterValue(false);
+	SetHasFactionInvokerParameterValue(false);
+	SetHasFactionTargetParameterValue(false);
 	SetHasTileParameterValue(false);
 	SetHasActionParameterValue(false);
 	SetHasResourceParameterValue(false);
@@ -63,8 +64,11 @@ TArray<int32> UUDParameterEditorViewModel::GetValueParameters()
 		// TODO Decide if it's worth keeping enum or it should be removed.
 		switch (Content.OrderedType[i])
 		{
-		case EUDParameterType::Faction:
-			parameters.Add(FactionParameterInstance->GetAsValue());
+		case EUDParameterType::FactionInvoker:
+			parameters.Add(FactionInvokerParameterInstance->GetAsValue());
+			break;
+		case EUDParameterType::FactionTarget:
+			parameters.Add(FactionTargetParameterInstance->GetAsValue());
 			break;
 		case EUDParameterType::Tile:
 			parameters.Append(TileParameterInstance->GetAsValueRange());
@@ -101,11 +105,12 @@ FString UUDParameterEditorViewModel::GetTextParameter()
 		case EUDParameterType::Text:
 			return TextParameterInstance->GetAsText();
 			break;
-		case EUDParameterType::Value:
+		case EUDParameterType::FactionInvoker:
+		case EUDParameterType::FactionTarget:
 		case EUDParameterType::Tile:
-		case EUDParameterType::Faction:
 		case EUDParameterType::Action:
 		case EUDParameterType::Resource:
+		case EUDParameterType::Value:
 			// Skip
 			break;
 		default:
@@ -127,8 +132,11 @@ void UUDParameterEditorViewModel::UpdateParameterInstances()
 		// TODO Decide if it's worth keeping enum or it should be removed.
 		switch (Content.OrderedType[i])
 		{
-		case EUDParameterType::Faction:
-			UpdateFactionParameter(Content.OrderedData[i].Get<FUDFactionParameter>());
+		case EUDParameterType::FactionInvoker:
+			UpdateFactionInvokerParameter(Content.OrderedData[i].Get<FUDFactionParameter>());
+			break;
+		case EUDParameterType::FactionTarget:
+			UpdateFactionTargetParameter(Content.OrderedData[i].Get<FUDFactionParameter>());
 			break;
 		case EUDParameterType::Tile:
 			UpdateTileParameter(Content.OrderedData[i].Get<FUDTileParameter>());
@@ -150,12 +158,48 @@ void UUDParameterEditorViewModel::UpdateParameterInstances()
 			break;
 		}
 	}
+} 
+
+void UUDParameterEditorViewModel::OnFactionInvokerParameterChanged()
+{
+
+}
+
+void UUDParameterEditorViewModel::OnFactionTargetParameterChanged()
+{
+
+}
+
+void UUDParameterEditorViewModel::OnTileParameterChanged()
+{
+
+}
+
+void UUDParameterEditorViewModel::OnActionParameterChanged()
+{
+
+}
+
+void UUDParameterEditorViewModel::OnResourceParameterChanged()
+{
+
+}
+
+void UUDParameterEditorViewModel::OnValueParameterChanged()
+{
+
+}
+
+void UUDParameterEditorViewModel::OnTextParameterChanged()
+{
+
 }
 
 void UUDParameterEditorViewModel::DefineInstances()
 {
 	int32 uniqueId = UUDParameterEditorViewModel::UniqueNameDefinition++;
-	DefineFactionParameter(uniqueId);
+	DefineFactionInvokerParameter(uniqueId);
+	DefineFactionTargetParameter(uniqueId);
 	DefineTileParameter(uniqueId);
 	DefineActionParameter(uniqueId);
 	DefineResourceParameter(uniqueId);
@@ -164,17 +208,30 @@ void UUDParameterEditorViewModel::DefineInstances()
 	UE_LOG(LogTemp, Log, TEXT("UUDParameterEditorViewModel: Defined isntances with subname [%d]."), uniqueId);
 }
 
-void UUDParameterEditorViewModel::DefineFactionParameter(int32 id)
+void UUDParameterEditorViewModel::DefineFactionInvokerParameter(int32 id)
 {
-	FactionParameterType = UUDFactionParameterViewModel::StaticClass();
-	FactionParameterInstanceName = FName(FactionParameterInstanceName.ToString() + FString::FromInt(id));
+	FactionInvokerParameterType = UUDFactionParameterViewModel::StaticClass();
+	FactionInvokerParameterInstanceName = FName(FactionInvokerParameterInstanceName.ToString() + FString::FromInt(id));
 
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(FactionParameterInstanceName, FactionParameterType);
-	FactionParameterInstance = Cast<UUDFactionParameterViewModel>(viewModel);
-	FactionParameterUpdatedEvent.Broadcast(FactionParameterInstance);
+	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(FactionInvokerParameterInstanceName, FactionInvokerParameterType);
+	FactionInvokerParameterInstance = Cast<UUDFactionParameterViewModel>(viewModel);
+	FactionInvokerParameterUpdatedEvent.Broadcast(FactionInvokerParameterInstance);
+	FactionInvokerParameterInstance->OnChangeEvent.AddUObject(this, &UUDParameterEditorViewModel::OnFactionInvokerParameterChanged);
+	FactionInvokerParameterInstance->FullUpdate();
+}
 
-	FactionParameterInstance->FullUpdate();
+void UUDParameterEditorViewModel::DefineFactionTargetParameter(int32 id)
+{
+	FactionTargetParameterType = UUDFactionParameterViewModel::StaticClass();
+	FactionTargetParameterInstanceName = FName(FactionTargetParameterInstanceName.ToString() + FString::FromInt(id));
+
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(FactionTargetParameterInstanceName, FactionTargetParameterType);
+	FactionTargetParameterInstance = Cast<UUDFactionParameterViewModel>(viewModel);
+	FactionTargetParameterUpdatedEvent.Broadcast(FactionTargetParameterInstance);
+	FactionTargetParameterInstance->OnChangeEvent.AddUObject(this, &UUDParameterEditorViewModel::OnFactionTargetParameterChanged);
+	FactionTargetParameterInstance->FullUpdate();
 }
 
 void UUDParameterEditorViewModel::DefineTileParameter(int32 id)
@@ -186,7 +243,7 @@ void UUDParameterEditorViewModel::DefineTileParameter(int32 id)
 	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(TileParameterInstanceName, TileParameterType);
 	TileParameterInstance = Cast<UUDTileParameterViewModel>(viewModel);
 	TileParameterUpdatedEvent.Broadcast(TileParameterInstance);
-
+	TileParameterInstance->OnChangeEvent.AddUObject(this, &UUDParameterEditorViewModel::OnTileParameterChanged);
 	TileParameterInstance->FullUpdate();
 }
 
@@ -199,7 +256,7 @@ void UUDParameterEditorViewModel::DefineActionParameter(int32 id)
 	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(ActionParameterInstanceName, ActionParameterType);
 	ActionParameterInstance = Cast<UUDActionParameterViewModel>(viewModel);
 	ActionParameterUpdatedEvent.Broadcast(ActionParameterInstance);
-
+	ActionParameterInstance->OnChangeEvent.AddUObject(this, &UUDParameterEditorViewModel::OnActionParameterChanged);
 	ActionParameterInstance->FullUpdate();
 }
 
@@ -212,7 +269,7 @@ void UUDParameterEditorViewModel::DefineResourceParameter(int32 id)
 	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(ResourceParameterInstanceName, ResourceParameterType);
 	ResourceParameterInstance = Cast<UUDResourceParameterViewModel>(viewModel);
 	ResourceParameterUpdatedEvent.Broadcast(ResourceParameterInstance);
-
+	ResourceParameterInstance->OnChangeEvent.AddUObject(this, &UUDParameterEditorViewModel::OnResourceParameterChanged);
 	ResourceParameterInstance->FullUpdate();
 }
 
@@ -225,7 +282,7 @@ void UUDParameterEditorViewModel::DefineValueParameter(int32 id)
 	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(ValueParameterInstanceName, ValueParameterType);
 	ValueParameterInstance = Cast<UUDValueParameterViewModel>(viewModel);
 	ValueParameterUpdatedEvent.Broadcast(ValueParameterInstance);
-
+	ValueParameterInstance->OnChangeEvent.AddUObject(this, &UUDParameterEditorViewModel::OnValueParameterChanged);
 	ValueParameterInstance->FullUpdate();
 }
 
@@ -238,16 +295,24 @@ void UUDParameterEditorViewModel::DefineTextParameter(int32 id)
 	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(TextParameterInstanceName, TextParameterType);
 	TextParameterInstance = Cast<UUDTextParameterViewModel>(viewModel);
 	TextParameterUpdatedEvent.Broadcast(TextParameterInstance);
-
+	TextParameterInstance->OnChangeEvent.AddUObject(this, &UUDParameterEditorViewModel::OnTextParameterChanged);
 	TextParameterInstance->FullUpdate();
 }
 
-void UUDParameterEditorViewModel::UpdateFactionParameter(const FUDFactionParameter& parameter)
+void UUDParameterEditorViewModel::UpdateFactionInvokerParameter(const FUDFactionParameter& parameter)
 {
-	FactionParameterInstance->SetContent(parameter);
-	SetHasFactionParameterValue(true);
-	FactionParameterUpdatedEvent.Broadcast(FactionParameterInstance);
-	FactionParameterInstance->FullUpdate();
+	FactionInvokerParameterInstance->SetContent(parameter);
+	SetHasFactionInvokerParameterValue(true);
+	FactionInvokerParameterUpdatedEvent.Broadcast(FactionInvokerParameterInstance);
+	FactionInvokerParameterInstance->FullUpdate();
+}
+
+void UUDParameterEditorViewModel::UpdateFactionTargetParameter(const FUDFactionParameter& parameter)
+{
+	FactionTargetParameterInstance->SetContent(parameter);
+	SetHasFactionTargetParameterValue(true);
+	FactionTargetParameterUpdatedEvent.Broadcast(FactionTargetParameterInstance);
+	FactionTargetParameterInstance->FullUpdate();
 }
 
 void UUDParameterEditorViewModel::UpdateTileParameter(const FUDTileParameter& parameter)
@@ -290,14 +355,25 @@ void UUDParameterEditorViewModel::UpdateTextParameter(const FUDTextParameter& pa
 	TextParameterInstance->FullUpdate();
 }
 
-void UUDParameterEditorViewModel::SetHasFactionParameterValue(bool newHasFactionParameterValue)
+void UUDParameterEditorViewModel::SetHasFactionInvokerParameterValue(bool newHasFactionInvokerParameterValue)
 {
-	UE_MVVM_SET_PROPERTY_VALUE(HasFactionParameterValue, newHasFactionParameterValue);
+	UE_MVVM_SET_PROPERTY_VALUE(HasFactionInvokerParameterValue, newHasFactionInvokerParameterValue);
 }
 
-bool UUDParameterEditorViewModel::GetHasFactionParameterValue() const
+bool UUDParameterEditorViewModel::GetHasFactionInvokerParameterValue() const
 {
-	return HasFactionParameterValue;
+	return HasFactionInvokerParameterValue;
+}
+
+
+void UUDParameterEditorViewModel::SetHasFactionTargetParameterValue(bool newHasFactionTargetParameterValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(HasFactionTargetParameterValue, newHasFactionTargetParameterValue);
+}
+
+bool UUDParameterEditorViewModel::GetHasFactionTargetParameterValue() const
+{
+	return HasFactionTargetParameterValue;
 }
 
 void UUDParameterEditorViewModel::SetHasTileParameterValue(bool newHasTileParameterValue)

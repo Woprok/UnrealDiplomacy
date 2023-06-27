@@ -1,6 +1,7 @@
 // Copyright Miroslav Valach
 
 #include "Skirmish/UserInterfaces/Deals/UDActionItemViewModel.h"
+#include "Skirmish/UserInterfaces/UDParameterEditorViewModel.h"
 #include "Core/Simulation/UDModelStructs.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Skirmish/UDSkirmishHUD.h"
@@ -11,8 +12,15 @@
 
 #define LOCTEXT_NAMESPACE "ActionItem"
 
+int32 UUDActionItemViewModel::UniqueNameDefinition = 0;
+
 void UUDActionItemViewModel::Initialize()
 {
+	if (!IsUniqueNameDefined)
+	{
+		DefineInstances();
+		IsUniqueNameDefined = true;
+	}
 
 }
 
@@ -51,6 +59,20 @@ void UUDActionItemViewModel::Sabotage()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDActionItemViewModel: Sabotage."));
 	Model->RequestAction(Model->GetAction(UUDDealActionContractPointSabotage::ActionTypeId, { Content.DealId }));
+}
+
+void UUDActionItemViewModel::UpdateEditor()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDActionItemViewModel: UpdateEditor."));
+	ParameterEditorInstance->SetContent(Content.Parameters);
+}
+
+void UUDActionItemViewModel::DefineInstances()
+{
+	int32 uniqueId = UUDActionItemViewModel::UniqueNameDefinition++;
+	ParameterEditorType = UUDParameterEditorViewModel::StaticClass();
+	ParameterEditorInstanceName = FName(ParameterEditorInstanceName.ToString() + FString::FromInt(uniqueId));
+	UE_LOG(LogTemp, Log, TEXT("UUDActionItemViewModel: Defined editor [%d]."), uniqueId);
 }
 
 void UUDActionItemViewModel::SetActionText(FText newActionText)

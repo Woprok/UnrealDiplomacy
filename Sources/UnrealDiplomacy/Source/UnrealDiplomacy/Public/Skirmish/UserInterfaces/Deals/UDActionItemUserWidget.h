@@ -12,6 +12,8 @@
 class UTextBlock;
 class UButton;
 class UUDActionItemViewModel;
+class UUDParameterEditorUserWidget;
+class UUDParameterEditorViewModel;
 
 /**
  * Ancestor for blueprint.
@@ -44,6 +46,10 @@ protected:
 	 * Automatically invoked by native on initialized.
 	 */
 	virtual void BindWidgets() override;
+	/**
+	 * Callback to set data from view model.
+	 */
+	void SetParameterEditorSourceInstance(const TObjectPtr<UUDParameterEditorViewModel>& parameterEditorViewModel);
 protected:
 	// Bindings
 	UPROPERTY()
@@ -65,6 +71,9 @@ protected:
 	TWeakObjectPtr<UButton> DenyButtonWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> SabotageButtonWidget;
+
+	UPROPERTY()
+	TWeakObjectPtr<UUDParameterEditorUserWidget> ParameterEditorViewWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDActionItemViewModel> ViewModel;

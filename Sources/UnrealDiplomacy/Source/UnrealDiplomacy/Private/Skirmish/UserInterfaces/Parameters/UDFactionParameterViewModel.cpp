@@ -37,6 +37,7 @@ void UUDFactionParameterViewModel::Update()
 	FUDFactionMinimalInfo selected = GetSelectedOrDefault(SelectedFaction);
 	SelectedFaction = selected.Id;
 	SetNameText(FText::FromString(selected.Name));
+	OnChangeEvent.Broadcast();
 }
 
 FUDFactionMinimalInfo UUDFactionParameterViewModel::GetSelectedOrDefault(int32 desiredSelectedItem)
@@ -72,6 +73,7 @@ void UUDFactionParameterViewModel::PreviousFaction()
 		FUDFactionMinimalInfo selected = Content.Options[SelectedFactionIndex];
 		SelectedFaction = selected.Id;
 		SetNameText(FText::FromString(selected.Name));
+		OnChangeEvent.Broadcast();
 	}
 }
 
@@ -84,6 +86,7 @@ void UUDFactionParameterViewModel::NextFaction()
 		FUDFactionMinimalInfo selected = Content.Options[SelectedFactionIndex];
 		SelectedFaction = selected.Id;
 		SetNameText(FText::FromString(selected.Name));
+		OnChangeEvent.Broadcast();
 	}
 }
 

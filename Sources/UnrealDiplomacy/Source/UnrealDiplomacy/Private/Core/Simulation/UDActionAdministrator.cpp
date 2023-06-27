@@ -733,7 +733,7 @@ FUDParameterListInfo UUDActionAdministrator::GetActionParameters(const TSet<int3
 	}
 	if (HasFactionParameter(tags, excludeTag))
 	{
-		parameters.OrderedType.Add(EUDParameterType::Faction);
+		parameters.OrderedType.Add(EUDParameterType::FactionTarget);
 		parameters.OrderedData.Add(GetFactionParameter(tags));
 	}
 	if (HasTileParameter(tags, excludeTag))

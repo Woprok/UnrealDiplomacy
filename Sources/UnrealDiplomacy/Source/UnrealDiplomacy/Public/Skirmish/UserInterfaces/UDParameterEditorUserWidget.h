@@ -50,7 +50,9 @@ protected:
 	 */
 	virtual void BindWidgets() override;
 	/** Callback to set data from view model. */
-	void SetFactionParameterInstance(const TObjectPtr<UUDFactionParameterViewModel>& parameterViewModel);
+	void SetFactionTargetParameterInstance(const TObjectPtr<UUDFactionParameterViewModel>& parameterViewModel);
+	/** Callback to set data from view model. */
+	void SetFactionInvokerParameterInstance(const TObjectPtr<UUDFactionParameterViewModel>& parameterViewModel);
 	/** Callback to set data from view model. */
 	void SetTileParameterInstance(const TObjectPtr<UUDTileParameterViewModel>& parameterViewModel);
 	/** Callback to set data from view model. */
@@ -64,7 +66,9 @@ protected:
 protected:
 	// Bindings
 	UPROPERTY()
-	TWeakObjectPtr<UUDFactionParameterUserWidget> FactionParameterWidget;
+	TWeakObjectPtr<UUDFactionParameterUserWidget> FactionInvokerParameterWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UUDFactionParameterUserWidget> FactionTargetParameterWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UUDTileParameterUserWidget> TileParameterWidget;
 	UPROPERTY()

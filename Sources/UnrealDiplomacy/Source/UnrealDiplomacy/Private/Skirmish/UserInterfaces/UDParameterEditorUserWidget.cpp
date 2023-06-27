@@ -25,7 +25,8 @@ void UUDParameterEditorUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewMo
 void UUDParameterEditorUserWidget::BindDelegates()
 {
 	// Bind view to updates.
-	ViewModel->FactionParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetFactionParameterInstance);
+	ViewModel->FactionInvokerParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetFactionInvokerParameterInstance);
+	ViewModel->FactionTargetParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetFactionTargetParameterInstance);
 	ViewModel->ActionParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetActionParameterInstance);
 	ViewModel->TileParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetTileParameterInstance);
 	ViewModel->ValueParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetValueParameterInstance);
@@ -36,7 +37,8 @@ void UUDParameterEditorUserWidget::BindDelegates()
 
 void UUDParameterEditorUserWidget::BindWidgets()
 {
-	FactionParameterWidget = GetWidget<UUDFactionParameterUserWidget>(TEXT("FactionParameter"));
+	FactionInvokerParameterWidget = GetWidget<UUDFactionParameterUserWidget>(TEXT("FactionInvokerParameter"));
+	FactionTargetParameterWidget = GetWidget<UUDFactionParameterUserWidget>(TEXT("FactionTargetParameter"));
 	TileParameterWidget = GetWidget<UUDTileParameterUserWidget>(TEXT("TileParameter"));
 	ActionParameterWidget = GetWidget<UUDActionParameterUserWidget>(TEXT("ActionParameter"));
 	ResourceParameterWidget = GetWidget<UUDResourceParameterUserWidget>(TEXT("ResourceParameter"));
@@ -44,9 +46,14 @@ void UUDParameterEditorUserWidget::BindWidgets()
 	TextParameterWidget = GetWidget<UUDTextParameterUserWidget>(TEXT("TextParameter"));
 }
 
-void UUDParameterEditorUserWidget::SetFactionParameterInstance(const TObjectPtr<UUDFactionParameterViewModel>& parameterViewModel)
+void UUDParameterEditorUserWidget::SetFactionInvokerParameterInstance(const TObjectPtr<UUDFactionParameterViewModel>& parameterViewModel)
 {
-	FactionParameterWidget->SetViewModel(parameterViewModel);
+	FactionInvokerParameterWidget->SetViewModel(parameterViewModel);
+}
+
+void UUDParameterEditorUserWidget::SetFactionTargetParameterInstance(const TObjectPtr<UUDFactionParameterViewModel>& parameterViewModel)
+{
+	FactionTargetParameterWidget->SetViewModel(parameterViewModel);
 }
 
 void UUDParameterEditorUserWidget::SetTileParameterInstance(const TObjectPtr<UUDTileParameterViewModel>& parameterViewModel)

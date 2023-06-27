@@ -8,8 +8,8 @@
 bool UUDGameActionThroneUsurp::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
 	bool isThroneEmpty = world->ImperialThrone.Ruler == UUDGlobalData::GaiaFactionId;
-	bool hasStratagem = world->Factions[action.InvokerFactionId]->StratagemOptions.Contains(ActionTypeId);
-	return IUDActionInterface::CanExecute(action, world) && isThroneEmpty && hasStratagem;
+	//bool hasStratagem = world->Factions[action.InvokerFactionId]->StratagemOptions.Contains(ActionTypeId);
+	return IUDActionInterface::CanExecute(action, world) && isThroneEmpty;//&& hasStratagem;
 }
 
 void UUDGameActionThroneUsurp::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)

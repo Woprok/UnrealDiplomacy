@@ -332,7 +332,9 @@ enum class EUDParameterType : uint8
 	/** List with deals to select from. */
 	Deal,
 	/** List with factions to select from. */
-	Faction,
+	FactionInvoker,
+	/** List with factions to select from. */
+	FactionTarget,
 	/** List with tiles to select from. */
 	Tile,
 	/** List with actions to select from. */

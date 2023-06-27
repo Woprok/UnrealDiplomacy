@@ -12,6 +12,8 @@
 enum ETextCommit::Type : int;
 struct FUDValueParameter;
 
+DECLARE_MULTICAST_DELEGATE(FUDParameterChanged);
+
 /**
  * Single editable parameter for an action.
  */
@@ -42,6 +44,8 @@ public:
 	float MaxValue;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	float SelectedValue;
+	// Events
+	FUDParameterChanged OnChangeEvent;
 protected:
 	virtual void Initialize() override;
 	virtual void Update() override;

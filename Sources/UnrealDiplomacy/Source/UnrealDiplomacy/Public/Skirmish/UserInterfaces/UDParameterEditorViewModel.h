@@ -55,7 +55,9 @@ public:
 	// Button Functions
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	bool HasFactionParameterValue;
+	bool HasFactionInvokerParameterValue;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool HasFactionTargetParameterValue;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool HasTileParameterValue;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
@@ -67,7 +69,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool HasTextParameterValue;
 	// Events
-	FactionParameterUpdated FactionParameterUpdatedEvent;
+	FactionParameterUpdated FactionInvokerParameterUpdatedEvent;
+	FactionParameterUpdated FactionTargetParameterUpdatedEvent;
 	ActionParameterUpdated ActionParameterUpdatedEvent;
 	TileParameterUpdated TileParameterUpdatedEvent;
 	ValueParameterUpdated ValueParameterUpdatedEvent;
@@ -84,7 +87,9 @@ private:
 	/** Defines all parameters instances. */
 	void DefineInstances();
 	/** Updates specific parameter. */
-	void UpdateFactionParameter(const FUDFactionParameter& parameter);
+	void UpdateFactionInvokerParameter(const FUDFactionParameter& parameter);
+	/** Updates specific parameter. */
+	void UpdateFactionTargetParameter(const FUDFactionParameter& parameter);
 	/** Updates specific parameter. */
 	void UpdateTileParameter(const FUDTileParameter& parameter);
 	/** Updates specific parameter. */
@@ -96,7 +101,9 @@ private:
 	/** Updates specific parameter. */
 	void UpdateTextParameter(const FUDTextParameter& parameter);
 	/** Defines specific parameter. */
-	void DefineFactionParameter(int32 id);
+	void DefineFactionInvokerParameter(int32 id);
+	/** Defines specific parameter. */
+	void DefineFactionTargetParameter(int32 id);
 	/** Defines specific parameter. */
 	void DefineTileParameter(int32 id);
 	/** Defines specific parameter. */
@@ -107,10 +114,26 @@ private:
 	void DefineValueParameter(int32 id);
 	/** Defines specific parameter. */
 	void DefineTextParameter(int32 id);
+	/** Recognizes specific parameter update. */
+	void OnFactionInvokerParameterChanged();
+	/** Recognizes specific parameter update. */
+	void OnFactionTargetParameterChanged();
+	/** Recognizes specific parameter update. */
+	void OnTileParameterChanged();
+	/** Recognizes specific parameter update. */
+	void OnActionParameterChanged();
+	/** Recognizes specific parameter update. */
+	void OnResourceParameterChanged();
+	/** Recognizes specific parameter update. */
+	void OnValueParameterChanged();
+	/** Recognizes specific parameter update. */
+	void OnTextParameterChanged();
 private:
 	// MVVM Setters & Getters
-	void SetHasFactionParameterValue(bool newHasFactionParameterValue);
-	bool GetHasFactionParameterValue() const;
+	void SetHasFactionInvokerParameterValue(bool newHasFactionInvokerParameterValue);
+	bool GetHasFactionInvokerParameterValue() const;
+	void SetHasFactionTargetParameterValue(bool newHasFactionTargetParameterValue);
+	bool GetHasFactionTargetParameterValue() const;
 	void SetHasTileParameterValue(bool newHasTileParameterValue);
 	bool GetHasTileParameterValue() const;
 	void SetHasActionParameterValue(bool newHasActionParameterValue);
@@ -126,9 +149,12 @@ private:
 	FUDParameterListInfo Content;
 
 	// Current Instances in use...
-	FName FactionParameterInstanceName = TEXT("FactionParameterInstance");
-	TSubclassOf<UUDViewModel> FactionParameterType;
-	TObjectPtr<UUDFactionParameterViewModel> FactionParameterInstance;
+	FName FactionInvokerParameterInstanceName = TEXT("FactionInvokerParameterInstance");
+	TSubclassOf<UUDViewModel> FactionInvokerParameterType;
+	TObjectPtr<UUDFactionParameterViewModel> FactionInvokerParameterInstance;
+	FName FactionTargetParameterInstanceName = TEXT("FactionTargetParameterInstance");
+	TSubclassOf<UUDViewModel> FactionTargetParameterType;
+	TObjectPtr<UUDFactionParameterViewModel> FactionTargetParameterInstance;
 	FName TileParameterInstanceName = TEXT("TileParameterInstance");
 	TSubclassOf<UUDViewModel> TileParameterType;
 	TObjectPtr<UUDTileParameterViewModel> TileParameterInstance;

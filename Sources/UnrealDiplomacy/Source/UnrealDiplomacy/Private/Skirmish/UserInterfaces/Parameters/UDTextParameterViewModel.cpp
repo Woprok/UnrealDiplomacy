@@ -50,6 +50,7 @@ void UUDTextParameterViewModel::StopTextEditation(const FText& InText, ETextComm
 	if (!oldText.EqualTo(newText))
 	{
 		SetSelectedText(newText);
+		OnChangeEvent.Broadcast();
 	}
 }
 

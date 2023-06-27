@@ -54,6 +54,7 @@ void UUDValueParameterViewModel::StopValueEditation(float InValue, ETextCommit::
 	if (oldValue != newValue)
 	{
 		SetSelectedValue(newValue);
+		OnChangeEvent.Broadcast();
 	}
 }
 

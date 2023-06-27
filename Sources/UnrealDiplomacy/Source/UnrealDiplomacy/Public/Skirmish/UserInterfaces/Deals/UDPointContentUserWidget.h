@@ -11,6 +11,8 @@
 class UTextBlock;
 class UButton;
 class UUDPointContentViewModel;
+class UUDParameterEditorUserWidget;
+class UUDParameterEditorViewModel;
 
 /**
  * Ancestor for blueprint.
@@ -39,10 +41,17 @@ protected:
 	 * Automatically invoked by native on initialized.
 	 */
 	virtual void BindWidgets() override;
+	/**
+	 * Callback to set data from view model.
+	 */
+	void SetParameterEditorSourceInstance(const TObjectPtr<UUDParameterEditorViewModel>& parameterEditorViewModel);
 protected:
 	// Bindings
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> PointTitleTextWidget;
+
+	UPROPERTY()
+	TWeakObjectPtr<UUDParameterEditorUserWidget> ParameterEditorViewWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDPointContentViewModel> ViewModel;

@@ -1,6 +1,7 @@
 // Copyright Miroslav Valach
 
 #include "Skirmish/UserInterfaces/Deals/UDPointContentViewModel.h"
+#include "Skirmish/UserInterfaces/UDParameterEditorViewModel.h"
 #include "Core/Simulation/UDModelStructs.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Skirmish/UDSkirmishHUD.h"
@@ -8,8 +9,15 @@
 
 #define LOCTEXT_NAMESPACE "PointContent"
 
+int32 UUDPointContentViewModel::UniqueNameDefinition = 0;
+
 void UUDPointContentViewModel::Initialize()
 {
+	if (!IsUniqueNameDefined)
+	{
+		DefineInstances();
+		IsUniqueNameDefined = true;
+	}
 	//FText pointTitle = FText(LOCTEXT("PointContent", "Point Title"));
 	//SetPointTitleText(pointTitle);
 }
@@ -33,6 +41,20 @@ void UUDPointContentViewModel::SetContent(FUDDealPointMinimalInfo content)
 //	UE_LOG(LogTemp, Log, TEXT("UUDPointContentViewModel: CreatePoint."));
 //	Model->RequestAction(Model->GetAction(UUDDealActionPointAdd::ActionTypeId, { Content.DealId }));
 //}
+
+void UUDPointContentViewModel::UpdateEditor()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDPointContentViewModel: UpdateEditor."));
+	ParameterEditorInstance->SetContent(Content.Parameters);
+}
+
+void UUDPointContentViewModel::DefineInstances()
+{
+	int32 uniqueId = UUDPointContentViewModel::UniqueNameDefinition++;
+	ParameterEditorType = UUDParameterEditorViewModel::StaticClass();
+	ParameterEditorInstanceName = FName(ParameterEditorInstanceName.ToString() + FString::FromInt(uniqueId));
+	UE_LOG(LogTemp, Log, TEXT("UUDPointContentViewModel: Defined editor [%d]."), uniqueId);
+}
 
 void UUDPointContentViewModel::SetPointTitleText(FText newPointTitleText)
 {

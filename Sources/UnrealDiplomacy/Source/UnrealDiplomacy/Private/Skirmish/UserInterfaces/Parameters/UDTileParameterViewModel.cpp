@@ -37,6 +37,7 @@ void UUDTileParameterViewModel::Update()
 	FUDTileMinimalInfo selected = GetSelectedOrDefault(SelectedTile);
 	SelectedTile = selected.Position;
 	SetNameText(FText::FromString(selected.Name));
+	OnChangeEvent.Broadcast();
 }
 
 FUDTileMinimalInfo UUDTileParameterViewModel::GetSelectedOrDefault(FIntPoint desiredSelectedItem)
@@ -72,6 +73,7 @@ void UUDTileParameterViewModel::PreviousTile()
 		FUDTileMinimalInfo selected = Content.Options[SelectedTileIndex];
 		SelectedTile = selected.Position;
 		SetNameText(FText::FromString(selected.Name));
+		OnChangeEvent.Broadcast();
 	}
 }
 
@@ -84,6 +86,7 @@ void UUDTileParameterViewModel::NextTile()
 		FUDTileMinimalInfo selected = Content.Options[SelectedTileIndex];
 		SelectedTile = selected.Position;
 		SetNameText(FText::FromString(selected.Name));
+		OnChangeEvent.Broadcast();
 	}
 }
 

@@ -25,19 +25,19 @@ public:
 	/**
 	 * Set content of the interaction option.
 	 */
-	 void SetContent(int32 selectedFaction, FUDFactionInteractionInfo content);
+	void SetContent(int32 selectedFaction, FUDFactionInteractionInfo content);
 public:
 	// Button Functions
 	/**
 	 * Execution of the interaction.
 	 */
-	 UFUNCTION()
-	 void Interact();
-	 // MVVM Fields
-	 UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	 FText InteractText;
-	 // Events
-	 FUDParameterEditorChanged ParameterEditorChangedEvent;
+	UFUNCTION()
+	void Interact();
+	// MVVM Fields
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText InteractText;
+	// Events
+	FUDParameterEditorChanged ParameterEditorChangedEvent;
 protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
