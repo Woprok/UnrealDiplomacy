@@ -99,6 +99,15 @@ protected:
 	 * Executes if pregame was not executed and game is played.
 	 */
 	virtual void ProcessIntermezzoPlay();
+protected:
+	/** Shortcut for executing actions. */
+	void MakeAction(int32 actionId);
+	/** Shortcut for executing actions. */
+	void MakeAction(int32 actionId, TArray<int32> values);
+	/** Shortcut for executing actions. */
+	void MakeAcceptAction(int32 actionId, FUDActionData data);
+	/** Shortcut for executing actions. */
+	void MakeRejectAction(int32 actionId, FUDActionData data);
 private:
 	/**
 	 * Internal handle for dealing with in of turn actions to avoid cycle during single execution.

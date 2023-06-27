@@ -14,6 +14,10 @@ bool IUDActionInterface::CanExecute(const FUDActionData& action, TObjectPtr<UUDW
 	
 	bool isActionSame = action.ActionTypeId == GetId();
 	bool isParameterCountSame = action.ValueParameters.Num() == GetParameterCount();
+	if (GetPresentation().Tags.Contains(UD_ACTION_TAG_VERIFY_PARAMETER_MINIMUM))
+	{
+		isParameterCountSame = action.ValueParameters.Num() >= GetParameterCount();
+	}
 	return isActionSame && isParameterCountSame;
 }	 
 

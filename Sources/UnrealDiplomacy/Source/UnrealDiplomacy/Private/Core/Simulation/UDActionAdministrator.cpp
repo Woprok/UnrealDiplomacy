@@ -416,6 +416,11 @@ int32 UUDActionAdministrator::GetUnresolvedMessagesCount()
 
 #pragma region Tile & Map Interaction
 
+bool UUDActionAdministrator::IsMapStatePresent()
+{
+	return State->Map != nullptr;
+}
+
 TObjectPtr<UUDMapState> UUDActionAdministrator::GetMapState()
 {
 	return State->Map;
@@ -1221,3 +1226,27 @@ bool UUDActionAdministrator::IsAvailableStratagem(TSet<int32> tags, int32 action
 	// Default is true as anything that was not defined as stratagem is always available to player.
 	return true;
 }
+
+bool UUDActionAdministrator::IsNeutral(int32 factionId)
+{
+	return UUDGlobalData::GaiaFactionId == factionId;
+}
+
+#pragma region AI Checks
+TArray<FUDTileMinimalInfo> UUDActionAdministrator::GetNeutralTiles()
+{
+	TArray<FUDTileMinimalInfo> tiles = {};
+
+	for (const auto& tileData : State->Map->Tiles)
+	{
+		if (IsNeutral(tileData->OwnerUniqueId))
+			continue;
+		FUDTileMinimalInfo info;
+		info.Name = tileData->Name;
+		info.Position = tileData->Position;
+		tiles.Add(info);
+	}
+
+	return tiles;
+}
+#pragma endregion

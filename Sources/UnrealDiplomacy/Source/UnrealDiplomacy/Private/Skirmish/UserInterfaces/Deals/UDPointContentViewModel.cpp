@@ -28,6 +28,8 @@ void UUDPointContentViewModel::Update()
 {
 	FText pointTitle = FText::Format(LOCTEXT("PointContent", "Deal {0} Point {1}"), Content.DealId, Content.PointId);
 	SetPointTitleText(pointTitle);
+	//FUDDealInfo fullContent = Model->GetDealInfo(Content.DealId, Content.PointId);
+	UpdateEditor();
 }
 
 #undef LOCTEXT_NAMESPACE
@@ -35,7 +37,6 @@ void UUDPointContentViewModel::Update()
 void UUDPointContentViewModel::SetContent(FUDDealPointMinimalInfo content)
 {
 	Content = content;
-	//FUDDealInfo fullContent = Model->GetDealInfo(Content.DealId, Content.PointId);
 }
 
 //void UUDPointContentViewModel::CreatePoint()
@@ -47,7 +48,13 @@ void UUDPointContentViewModel::SetContent(FUDDealPointMinimalInfo content)
 void UUDPointContentViewModel::UpdateEditor()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDPointContentViewModel: UpdateEditor."));
+	// Retrieve model
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(ParameterEditorInstanceName, ParameterEditorType);
+	ParameterEditorInstance = Cast<UUDParameterEditorViewModel>(viewModel);
 	//ParameterEditorInstance->SetContent(Content.Parameters);
+	ParameterEditorInstance->FullUpdate();
+	ParameterEditorChangedEvent.Broadcast(ParameterEditorInstance);
 }
 
 void UUDPointContentViewModel::DefineInstances()

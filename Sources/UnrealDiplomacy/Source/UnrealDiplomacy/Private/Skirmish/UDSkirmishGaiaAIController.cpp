@@ -9,8 +9,8 @@
 
 void AUDSkirmishGaiaAIController::ProcessIntermezzoPlay()
 {
-	OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetAction(UUDGaiaActionResourcesAllAdd::ActionTypeId, { 100 } ));
+	MakeAction(UUDGaiaActionResourcesAllAdd::ActionTypeId, { 100 } );
 
 	// Finish this by executing regent change and ending the intermezzo.
-	OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetAction(UUDSystemActionRegentChange::ActionTypeId));
+	MakeAction(UUDSystemActionRegentChange::ActionTypeId);
 }

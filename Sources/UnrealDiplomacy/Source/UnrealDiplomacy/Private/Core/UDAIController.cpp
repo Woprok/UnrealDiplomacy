@@ -168,3 +168,23 @@ void AUDAIController::IntermezzoExecution()
 	ProcessIntermezzoPlay();
 	IntermezzoPlay = false;
 }
+
+void AUDAIController::MakeAction(int32 actionId)
+{
+	OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetAction(actionId));
+}
+
+void AUDAIController::MakeAction(int32 actionId, TArray<int32> values)
+{
+	OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetAction(actionId, values));
+}
+
+void AUDAIController::MakeAcceptAction(int32 actionId, FUDActionData data)
+{
+	OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetAcceptAction(actionId, data));
+}
+
+void AUDAIController::MakeRejectAction(int32 actionId, FUDActionData data)
+{
+	OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetRejectAction(actionId, data));
+}

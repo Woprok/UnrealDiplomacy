@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Core/Simulation/Actions/UDDealActionPointModify.h"
-#include "UDDealActionPointModifyInvokerRemove.generated.h"
+#include "UDDealActionPointModifyValueParameters.generated.h"
 
 /**
  * Remove invoker from the point.
  */
 UCLASS(Blueprintable, BlueprintType)
-class UNREALDIPLOMACY_API UUDDealActionPointModifyInvokerRemove : public UUDDealActionPointModify
+class UNREALDIPLOMACY_API UUDDealActionPointModifyValueParameters : public UUDDealActionPointModify
 {
 	GENERATED_BODY()
 public:
@@ -18,7 +18,10 @@ public:
 	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual int32 GetId() const override { return ActionTypeId; };
-	virtual int32 GetParameterCount() const override { return FUDDealDataPointTarget::ParameterCount; };
+	virtual int32 GetParameterCount() const override { return FUDDealDataPointParameters::ParameterCount; };
+	bool IsBackupRequired() const override { return true; };
+	void Backup(FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
+	virtual FUDActionPresentation GetPresentation() const override;
 public:
 	static const int32 ActionTypeId = 3029;
 };

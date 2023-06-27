@@ -38,29 +38,10 @@ TArray<FUDActionData> UUDDealActionContractCreate::FinalizeActions(TObjectPtr<UU
 		auto actionId = point.Value->ActionId;
 		// TODO figure out what this field is supposed to do in actions.
 		auto type = point.Value->Type;
-		// TODO params
-		// We require Invoker for all actions.
-		for (auto invoker : point.Value->Invokers)
-		{
-			// for each invoker and each target create a pair for actions
-			// at the moment there is no way for actions to target multiple players
-			// and for very sensible reason it will probably remain like that ?
-			// also executing one action for each pair is expected to be same as one action for 1 : N group
-			if (point.Value->Targets.Num() > 0)
-			{
-				for (auto target : point.Value->Targets)
-				{
-					TArray<int> valueParameters = { target };
-					valueParameters.Append(point.Value->ValueParameters);
-					actions.Add(FUDActionData(actionId, invoker, valueParameters, point.Value->TextParameter));
-				}
-			}
-			else
-			{
-				TArray<int> valueParameters = point.Value->ValueParameters;
-				actions.Add(FUDActionData(actionId, invoker, valueParameters, point.Value->TextParameter));
-			}
-		}
+		auto invoker = point.Value->Invoker;
+		// Value and Text parameters should be same.		
+		// Create action template by combining invoker and parameters
+		actions.Add(FUDActionData(actionId, invoker, point.Value->ValueParameters, point.Value->TextParameter));
 	}
 	return actions;
 }

@@ -26,11 +26,10 @@
 #include "Core/Simulation/Actions/UDDealActionPointIgnore.h"
 #include "Core/Simulation/Actions/UDDealActionPointModify.h"
 #include "Core/Simulation/Actions/UDDealActionPointModifyAction.h"
-#include "Core/Simulation/Actions/UDDealActionPointModifyInvokerAdd.h"
-#include "Core/Simulation/Actions/UDDealActionPointModifyInvokerRemove.h"
+#include "Core/Simulation/Actions/UDDealActionPointModifyInvoker.h"
+#include "Core/Simulation/Actions/UDDealActionPointModifyValueParameters.h"
 #include "Core/Simulation/Actions/UDDealActionPointModifyResetParameters.h"
-#include "Core/Simulation/Actions/UDDealActionPointModifyTargetAdd.h"
-#include "Core/Simulation/Actions/UDDealActionPointModifyTargetRemove.h"
+#include "Core/Simulation/Actions/UDDealActionPointModifyTextParameter.h"
 #include "Core/Simulation/Actions/UDDealActionPointModifyTile.h"
 #include "Core/Simulation/Actions/UDDealActionPointModifyTileValue.h"
 #include "Core/Simulation/Actions/UDDealActionPointModifyType.h"
@@ -169,15 +168,14 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetDealActions(U
 		NewObject<UUDDealActionPointIgnore>(parent),
 		//NewObject<UUDDealActionPointModify>(parent),
 		NewObject<UUDDealActionPointModifyAction>(parent),
-		NewObject<UUDDealActionPointModifyInvokerAdd>(parent),
-		NewObject<UUDDealActionPointModifyInvokerRemove>(parent),
-		NewObject<UUDDealActionPointModifyResetParameters>(parent),
-		NewObject<UUDDealActionPointModifyTargetAdd>(parent),
-		NewObject<UUDDealActionPointModifyTargetRemove>(parent),
-		NewObject<UUDDealActionPointModifyTile>(parent),
-		NewObject<UUDDealActionPointModifyTileValue>(parent),
 		NewObject<UUDDealActionPointModifyType>(parent),
-		NewObject<UUDDealActionPointModifyValue>(parent),
+		NewObject<UUDDealActionPointModifyResetParameters>(parent),
+		NewObject<UUDDealActionPointModifyInvoker>(parent),
+		NewObject<UUDDealActionPointModifyValueParameters>(parent),
+		NewObject<UUDDealActionPointModifyTextParameter>(parent),
+		//NewObject<UUDDealActionPointModifyTile>(parent),
+		//NewObject<UUDDealActionPointModifyTileValue>(parent),
+		//NewObject<UUDDealActionPointModifyValue>(parent),
 		//NewObject<UUDDealActionPointRemove>(parent),
 		NewObject<UUDDealActionReady>(parent),
 		//NewObject<UUDDealActionReadyReset>(parent),

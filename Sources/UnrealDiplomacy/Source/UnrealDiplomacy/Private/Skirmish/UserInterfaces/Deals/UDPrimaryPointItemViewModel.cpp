@@ -68,7 +68,6 @@ void UUDPrimaryPointItemViewModel::UpdatePointContent()
 	// Retrieve model
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
 	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(PointContentViewModelInstanceName, PointContentViewModelType);
-	// Get rid of all models
 	PointContentViewModelInstance = Cast<UUDPointContentViewModel>(viewModel);
 	PointContentViewModelInstance->SetContent(Content);
 	PointContentViewModelInstance->FullUpdate();

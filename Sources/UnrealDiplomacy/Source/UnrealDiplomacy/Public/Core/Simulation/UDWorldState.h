@@ -316,6 +316,9 @@ enum class EUDPointType : uint8
 
 /**
  * Represents single discussion point, argument or bid.
+ * Based on later decision this does no longer carry multiple invokers and targets.
+ * Fate of multi invoker is left for questioning when alliances are introduced.
+ * At the moment this is only 1:1, instead of the original N:M
  */
 UCLASS()
 class UNREALDIPLOMACY_API UUDDiscussionItem : public UObject
@@ -349,13 +352,9 @@ public:
 	 */
 	EUDPointType Type = EUDPointType::Error;
 	/**
-	 * Players that are invoking by action, so these are on left side of an action.
+	 * Faction that will invoke this action..
 	 */
-	TArray<int32> Invokers;
-	/**
-	 * Players that are targeted by action, so these are on right side of an action.
-	 */
-	TArray<int32> Targets;
+	int32 Invoker;
 	/**
 	 * Same as FUDActionData definition.
 	 */

@@ -99,12 +99,11 @@ TObjectPtr<UUDDiscussionItem> UUDDiscussionItem::CreateState(int32 ownerId)
 {
 	TObjectPtr<UUDDiscussionItem> newState = NewObject<UUDDiscussionItem>();
 	newState->EditorId = ownerId;
-	newState->ActionId = 0;
+	newState->ActionId = -1;
 	newState->Type = EUDPointType::Proposal;
 	newState->IsIgnored = false;
 	newState->Consequencies.Empty(0);
-	newState->Invokers.Empty(0);
-	newState->Targets.Empty(0);
+	newState->Invoker = - 1;
 	newState->ValueParameters.Empty(0);
 	newState->TextParameter.Empty(0);
 	return newState;

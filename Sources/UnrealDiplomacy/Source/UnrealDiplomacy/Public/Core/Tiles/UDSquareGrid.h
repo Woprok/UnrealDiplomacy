@@ -50,7 +50,7 @@ public:
 	UFUNCTION()
 	virtual void OnSynchronized()
 	{
-		if (!MapModel->IsMapStateReady())
+		if (!MapModel->IsMapStatePresent())
 		{
 			UE_LOG(LogTemp, Log, TEXT("AUDSquareGrid: Map not yet present."));
 		}

@@ -3,12 +3,15 @@
 #include "Skirmish/UDSkirmishAIController.h"
 #include "Core/Simulation/UDWorldState.h"
 #include "Core/Simulation/UDActionData.h"
+#include "Core/Simulation/UDModelStructs.h"
 #include "Core/Simulation/UDActionAdministrator.h"
+
 #include "Core/Simulation/Actions/UDGameActionGift.h"
 #include "Core/Simulation/Actions/UDGameActionGiftAccept.h"
 #include "Core/Simulation/Actions/UDGameActionTileTake.h"
 #include "Core/Simulation/Actions/UDGameActionThroneUsurp.h"
 #include "Core/Simulation/Actions/UDSystemActionTurnFinish.h"
+#include "Core/Simulation/Actions/UDGameActionThroneSupport.h"
 
 void AUDSkirmishAIController::ProcessOutTurnPlay()
 {
@@ -16,55 +19,60 @@ void AUDSkirmishAIController::ProcessOutTurnPlay()
 	ResolveRequests();
 }
 
+// TODO create dedicated AI retrieves from world state without UI junk...
 void AUDSkirmishAIController::ProcessInTurnPlay()
 {
-	if (GetAdministrator()->IsMapStateReady())
-	{
-		FIntPoint tile = GetAdministrator()->GetFirstNeutralTile();
-		if (tile != FIntPoint(-1, -1))
-		{
-			OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetAction(UUDGameActionTileTake::ActionTypeId,
-				{
-					tile.X, tile.Y
-				}));
-		}
-	}
-
-	// Naively give first player gold, TODO remove this or replace with some logic
-	if (GetAdministrator()->GetCurrentResourceGold() > 100 && gifters.Num() > 0)
-	{
-		OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetAction(UUDGameActionGift::ActionTypeId,
-			{ 
-				gifters.Pop(),
-				1,
-				69 
-			}
-		));
-	}
-
 	// Resolve requests
 	ResolveRequests();
 
-	// AI can take throne, that's completely natural thing to do if you are rich!
-	if (GetAdministrator()->GetCurrentResourceGold() >= 500 && GetAdministrator()->CanUsurpThrone())
+	const auto res = GetAdministrator()->GetLocalFactionResourceList();
+	const auto throne = GetAdministrator()->GetThroneInfo();
+	
+	// Try taking the throne or support your favorite if someone claimed it.
+	if (throne.State == EUDThroneState::Empty && res[UD_RESOURCE_REPUTATION_ID].Amount >= 500)
 	{
-		OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetAction(UUDGameActionThroneUsurp::ActionTypeId));
+		MakeAction(UUDGameActionThroneUsurp::ActionTypeId);
+	}
+	else if (throne.State == EUDThroneState::Usurper)
+	{
+		MakeAction(UUDGameActionThroneSupport::ActionTypeId, { FavoriteFaction });
+	}
+
+	// Try sharing the wealth...
+	if (res[UD_RESOURCE_GOLD_ID].Amount >= 1000)
+	{
+		TArray<int32> smallGoldGift = { FavoriteFaction,
+			UD_RESOURCE_GOLD_ID, res[UD_RESOURCE_GOLD_ID].Amount / 10
+		};
+		MakeAction(UUDGameActionGift::ActionTypeId, smallGoldGift);
+	}
+
+	// Try take some land...
+	const auto tiles = GetAdministrator()->GetNeutralTiles();
+	if (tiles.Num() > 0)
+	{
+		MakeAction(UUDGameActionTileTake::ActionTypeId, { tiles[0].Position.X, tiles[0].Position.Y });
 	}
 
 	// Finish this by executing finish turn action, thus giving up primary control.
-	OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetAction(UUDSystemActionTurnFinish::ActionTypeId));
+	MakeAction(UUDSystemActionTurnFinish::ActionTypeId);
 }
 
 void AUDSkirmishAIController::ResolveRequests()
 {
-	for (auto request : GetAdministrator()->GetPendingRequests())
+	for (const auto& request : GetAdministrator()->GetAllLocalRequests().Messages)
 	{
-		// Handle Gifts
-		if (request.ActionTypeId == UUDGameActionGift::ActionTypeId)
+		switch (request.ActionId)
 		{
-			gifters.Add(request.InvokerFactionId);
-			OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetAcceptAction(UUDGameActionGiftAccept::ActionTypeId,
-				request));
+		// Be happy we have new favorite.
+		case UUDGameActionGift::ActionTypeId:
+			MakeAcceptAction(request.AcceptId, GetAdministrator()->GetPendingRequest(request.RequestId));
+			FavoriteFaction = GetAdministrator()->GetPendingRequest(request.RequestId).InvokerFactionId;
+			break;
+		// They definitely can't request something bad right ?
+		default:
+			MakeAcceptAction(request.AcceptId, GetAdministrator()->GetPendingRequest(request.RequestId));
+			break;
 		}
 	}
 }

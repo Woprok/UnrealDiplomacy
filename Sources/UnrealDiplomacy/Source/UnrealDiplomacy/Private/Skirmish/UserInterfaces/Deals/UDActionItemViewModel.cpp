@@ -65,7 +65,13 @@ void UUDActionItemViewModel::Sabotage()
 void UUDActionItemViewModel::UpdateEditor()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDActionItemViewModel: UpdateEditor."));
+	// Retrieve model
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(ParameterEditorInstanceName, ParameterEditorType);
+	ParameterEditorInstance = Cast<UUDParameterEditorViewModel>(viewModel);
 	//ParameterEditorInstance->SetContent(Content.Parameters);
+	ParameterEditorInstance->FullUpdate();
+	ParameterEditorChangedEvent.Broadcast(ParameterEditorInstance);
 }
 
 void UUDActionItemViewModel::DefineInstances()

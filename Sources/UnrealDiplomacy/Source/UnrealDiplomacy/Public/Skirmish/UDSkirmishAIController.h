@@ -22,5 +22,5 @@ private:
 	void ResolveRequests();
 private:
 	// AI Memory fields.
-	TArray<int32> gifters;
+	int32 FavoriteFaction;
 };

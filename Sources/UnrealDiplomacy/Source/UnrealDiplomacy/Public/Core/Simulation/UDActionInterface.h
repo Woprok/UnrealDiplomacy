@@ -69,6 +69,10 @@ class UUDModifierManager;
 // Details
 #define UD_ACTION_TAG_PARAMETER_VALUE_AMOUNT 18
 #define UD_ACTION_TAG_PARAMETER_VALUE_SMALL_MAX 19
+// This is default and is not necessary.
+#define UD_ACTION_TAG_VERIFY_PARAMETER_EQUALITY 50
+// This overrides default check inside of an interface.
+#define UD_ACTION_TAG_VERIFY_PARAMETER_MINIMUM 51
 
 // This is definitely start of global nightmare...
 // Do not change the values and in case you have to change it inside of all actions.
