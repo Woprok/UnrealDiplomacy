@@ -49,6 +49,10 @@ protected:
 	// Bindings
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> PointTitleTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> PointTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> EditorTextWidget;
 
 	UPROPERTY()
 	TWeakObjectPtr<UUDParameterEditorUserWidget> ParameterEditorViewWidget;

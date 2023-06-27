@@ -32,6 +32,10 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText PointTitleText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText PointText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText EditorText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsValidContentValue;
 	// Events
 	FUDParameterEditorChanged ParameterEditorChangedEvent;
@@ -47,6 +51,10 @@ private:
 	// MVVM Setters & Getters
 	void SetPointTitleText(FText newPointTitleText);
 	FText GetPointTitleText() const;
+	void SetPointText(FText newPointText);
+	FText GetPointText() const;
+	void SetEditorText(FText newEditorText);
+	FText GetEditorText() const;
 	void SetIsValidContentValue(bool newIsValidContentValue);
 	bool GetIsValidContentValue() const;
 private:

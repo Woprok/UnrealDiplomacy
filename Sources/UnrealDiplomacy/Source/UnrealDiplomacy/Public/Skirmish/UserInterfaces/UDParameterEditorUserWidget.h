@@ -50,6 +50,8 @@ protected:
 	 */
 	virtual void BindWidgets() override;
 	/** Callback to set data from view model. */
+	void SetDealActionParameterInstance(const TObjectPtr<UUDActionParameterViewModel>& parameterViewModel);
+	/** Callback to set data from view model. */
 	void SetFactionTargetParameterInstance(const TObjectPtr<UUDFactionParameterViewModel>& parameterViewModel);
 	/** Callback to set data from view model. */
 	void SetFactionInvokerParameterInstance(const TObjectPtr<UUDFactionParameterViewModel>& parameterViewModel);
@@ -65,6 +67,8 @@ protected:
 	void SetTextParameterInstance(const TObjectPtr<UUDTextParameterViewModel>& parameterViewModel);
 protected:
 	// Bindings
+	UPROPERTY()
+	TWeakObjectPtr<UUDActionParameterUserWidget> DealActionParameterWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UUDFactionParameterUserWidget> FactionInvokerParameterWidget;
 	UPROPERTY()

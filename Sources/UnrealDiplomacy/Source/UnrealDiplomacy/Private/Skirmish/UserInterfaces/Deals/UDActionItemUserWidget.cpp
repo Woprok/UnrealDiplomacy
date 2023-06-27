@@ -40,6 +40,7 @@ void UUDActionItemUserWidget::BindWidgets()
 	ChangeTextWidget = GetWidget<UTextBlock>(TEXT("ChangeText"));
 	DenyTextWidget = GetWidget<UTextBlock>(TEXT("DenyText"));
 	SabotageTextWidget = GetWidget<UTextBlock>(TEXT("SabotageText"));
+	EditorTextWidget = GetWidget<UTextBlock>(TEXT("EditorText"));
 
 	AcceptButtonWidget = GetWidget<UButton>(TEXT("AcceptButton"));
 	ChangeButtonWidget = GetWidget<UButton>(TEXT("ChangeButton"));

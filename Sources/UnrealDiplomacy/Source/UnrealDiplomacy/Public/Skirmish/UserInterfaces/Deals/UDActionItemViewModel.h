@@ -47,6 +47,8 @@ public:
 	FText DenyText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText SabotageText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText EditorText;
 	// Events
 	FUDParameterEditorChanged ParameterEditorChangedEvent;
 protected:
@@ -69,6 +71,8 @@ private:
 	FText GetDenyText() const;
 	void SetSabotageText(FText newSabotageText);
 	FText GetSabotageText() const;
+	void SetEditorText(FText newEditorText);
+	FText GetEditorText() const;
 private:
 	// Fields
 	FUDDealActionInfo Content;

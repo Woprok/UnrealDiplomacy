@@ -45,6 +45,7 @@ void UUDParameterEditorViewModel::SetContent(FUDParameterListInfo content)
 
 void UUDParameterEditorViewModel::HideParameters()
 {
+	SetHasDealActionParameterValue(false);
 	SetHasFactionInvokerParameterValue(false);
 	SetHasFactionTargetParameterValue(false);
 	SetHasTileParameterValue(false);
@@ -64,6 +65,9 @@ TArray<int32> UUDParameterEditorViewModel::GetValueParameters()
 		// TODO Decide if it's worth keeping enum or it should be removed.
 		switch (Content.OrderedType[i])
 		{
+		case EUDParameterType::DealAction:
+			parameters.Add(DealActionParameterInstance->GetAsValue());
+			break;
 		case EUDParameterType::FactionInvoker:
 			parameters.Add(FactionInvokerParameterInstance->GetAsValue());
 			break;
@@ -105,6 +109,7 @@ FString UUDParameterEditorViewModel::GetTextParameter()
 		case EUDParameterType::Text:
 			return TextParameterInstance->GetAsText();
 			break;
+		case EUDParameterType::DealAction:
 		case EUDParameterType::FactionInvoker:
 		case EUDParameterType::FactionTarget:
 		case EUDParameterType::Tile:
@@ -132,6 +137,9 @@ void UUDParameterEditorViewModel::UpdateParameterInstances()
 		// TODO Decide if it's worth keeping enum or it should be removed.
 		switch (Content.OrderedType[i])
 		{
+		case EUDParameterType::DealAction:
+			UpdateDealActionParameter(Content.OrderedData[i].Get<FUDActionParameter>());
+			break;
 		case EUDParameterType::FactionInvoker:
 			UpdateFactionInvokerParameter(Content.OrderedData[i].Get<FUDFactionParameter>());
 			break;
@@ -158,7 +166,12 @@ void UUDParameterEditorViewModel::UpdateParameterInstances()
 			break;
 		}
 	}
-} 
+}
+
+void UUDParameterEditorViewModel::OnDealActionParameterChanged()
+{
+
+}
 
 void UUDParameterEditorViewModel::OnFactionInvokerParameterChanged()
 {
@@ -198,6 +211,7 @@ void UUDParameterEditorViewModel::OnTextParameterChanged()
 void UUDParameterEditorViewModel::DefineInstances()
 {
 	int32 uniqueId = UUDParameterEditorViewModel::UniqueNameDefinition++;
+	DefineDealActionParameter(uniqueId);
 	DefineFactionInvokerParameter(uniqueId);
 	DefineFactionTargetParameter(uniqueId);
 	DefineTileParameter(uniqueId);
@@ -206,6 +220,19 @@ void UUDParameterEditorViewModel::DefineInstances()
 	DefineValueParameter(uniqueId);
 	DefineTextParameter(uniqueId);
 	UE_LOG(LogTemp, Log, TEXT("UUDParameterEditorViewModel: Defined isntances with subname [%d]."), uniqueId);
+}
+
+void UUDParameterEditorViewModel::DefineDealActionParameter(int32 id)
+{
+	DealActionParameterType = UUDActionParameterViewModel::StaticClass();
+	DealActionParameterInstanceName = FName(DealActionParameterInstanceName.ToString() + FString::FromInt(id));
+
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(DealActionParameterInstanceName, DealActionParameterType);
+	DealActionParameterInstance = Cast<UUDActionParameterViewModel>(viewModel);
+	DealActionParameterUpdatedEvent.Broadcast(DealActionParameterInstance);
+	DealActionParameterInstance->OnChangeEvent.AddUObject(this, &UUDParameterEditorViewModel::OnDealActionParameterChanged);
+	DealActionParameterInstance->FullUpdate();
 }
 
 void UUDParameterEditorViewModel::DefineFactionInvokerParameter(int32 id)
@@ -299,6 +326,14 @@ void UUDParameterEditorViewModel::DefineTextParameter(int32 id)
 	TextParameterInstance->FullUpdate();
 }
 
+void UUDParameterEditorViewModel::UpdateDealActionParameter(const FUDActionParameter& parameter)
+{
+	DealActionParameterInstance->SetContent(parameter);
+	SetHasDealActionParameterValue(true);
+	DealActionParameterUpdatedEvent.Broadcast(DealActionParameterInstance);
+	DealActionParameterInstance->FullUpdate();
+}
+
 void UUDParameterEditorViewModel::UpdateFactionInvokerParameter(const FUDFactionParameter& parameter)
 {
 	FactionInvokerParameterInstance->SetContent(parameter);
@@ -353,6 +388,16 @@ void UUDParameterEditorViewModel::UpdateTextParameter(const FUDTextParameter& pa
 	SetHasTextParameterValue(true);
 	TextParameterUpdatedEvent.Broadcast(TextParameterInstance);
 	TextParameterInstance->FullUpdate();
+}
+
+void UUDParameterEditorViewModel::SetHasDealActionParameterValue(bool newHasDealActionParameterValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(HasDealActionParameterValue, newHasDealActionParameterValue);
+}
+
+bool UUDParameterEditorViewModel::GetHasDealActionParameterValue() const
+{
+	return HasDealActionParameterValue;
 }
 
 void UUDParameterEditorViewModel::SetHasFactionInvokerParameterValue(bool newHasFactionInvokerParameterValue)

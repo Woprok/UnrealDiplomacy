@@ -55,6 +55,8 @@ public:
 	// Button Functions
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool HasDealActionParameterValue;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool HasFactionInvokerParameterValue;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool HasFactionTargetParameterValue;
@@ -69,13 +71,14 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool HasTextParameterValue;
 	// Events
+	ActionParameterUpdated DealActionParameterUpdatedEvent;
 	FactionParameterUpdated FactionInvokerParameterUpdatedEvent;
 	FactionParameterUpdated FactionTargetParameterUpdatedEvent;
-	ActionParameterUpdated ActionParameterUpdatedEvent;
 	TileParameterUpdated TileParameterUpdatedEvent;
+	ActionParameterUpdated ActionParameterUpdatedEvent;
+	ResourceParameterUpdated ResourceParameterUpdatedEvent;
 	ValueParameterUpdated ValueParameterUpdatedEvent;
 	TextParameterUpdated TextParameterUpdatedEvent;
-	ResourceParameterUpdated ResourceParameterUpdatedEvent;
 protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
@@ -86,6 +89,8 @@ private:
 	void UpdateParameterInstances();
 	/** Defines all parameters instances. */
 	void DefineInstances();
+	/** Updates specific parameter. */
+	void UpdateDealActionParameter(const FUDActionParameter& parameter);
 	/** Updates specific parameter. */
 	void UpdateFactionInvokerParameter(const FUDFactionParameter& parameter);
 	/** Updates specific parameter. */
@@ -101,6 +106,8 @@ private:
 	/** Updates specific parameter. */
 	void UpdateTextParameter(const FUDTextParameter& parameter);
 	/** Defines specific parameter. */
+	void DefineDealActionParameter(int32 id);
+	/** Defines specific parameter. */
 	void DefineFactionInvokerParameter(int32 id);
 	/** Defines specific parameter. */
 	void DefineFactionTargetParameter(int32 id);
@@ -114,6 +121,8 @@ private:
 	void DefineValueParameter(int32 id);
 	/** Defines specific parameter. */
 	void DefineTextParameter(int32 id);
+	/** Recognizes specific parameter update. */
+	void OnDealActionParameterChanged();
 	/** Recognizes specific parameter update. */
 	void OnFactionInvokerParameterChanged();
 	/** Recognizes specific parameter update. */
@@ -130,6 +139,8 @@ private:
 	void OnTextParameterChanged();
 private:
 	// MVVM Setters & Getters
+	void SetHasDealActionParameterValue(bool newHasDealActionParameterValue);
+	bool GetHasDealActionParameterValue() const;
 	void SetHasFactionInvokerParameterValue(bool newHasFactionInvokerParameterValue);
 	bool GetHasFactionInvokerParameterValue() const;
 	void SetHasFactionTargetParameterValue(bool newHasFactionTargetParameterValue);
@@ -149,6 +160,9 @@ private:
 	FUDParameterListInfo Content;
 
 	// Current Instances in use...
+	FName DealActionParameterInstanceName = TEXT("DealActionParameterInstance");
+	TSubclassOf<UUDViewModel> DealActionParameterType;
+	TObjectPtr<UUDActionParameterViewModel> DealActionParameterInstance;
 	FName FactionInvokerParameterInstanceName = TEXT("FactionInvokerParameterInstance");
 	TSubclassOf<UUDViewModel> FactionInvokerParameterType;
 	TObjectPtr<UUDFactionParameterViewModel> FactionInvokerParameterInstance;

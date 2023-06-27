@@ -25,18 +25,20 @@ void UUDParameterEditorUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewMo
 void UUDParameterEditorUserWidget::BindDelegates()
 {
 	// Bind view to updates.
+	ViewModel->DealActionParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetDealActionParameterInstance);
 	ViewModel->FactionInvokerParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetFactionInvokerParameterInstance);
 	ViewModel->FactionTargetParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetFactionTargetParameterInstance);
-	ViewModel->ActionParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetActionParameterInstance);
 	ViewModel->TileParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetTileParameterInstance);
+	ViewModel->ActionParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetActionParameterInstance);
+	ViewModel->ResourceParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetResourceParameterInstance);
 	ViewModel->ValueParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetValueParameterInstance);
 	ViewModel->TextParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetTextParameterInstance);
-	ViewModel->ResourceParameterUpdatedEvent.AddUObject(this, &UUDParameterEditorUserWidget::SetResourceParameterInstance);
 	// Bind viewmodel to widgets.
 }
 
 void UUDParameterEditorUserWidget::BindWidgets()
 {
+	DealActionParameterWidget = GetWidget<UUDActionParameterUserWidget>(TEXT("DealActionParameter"));
 	FactionInvokerParameterWidget = GetWidget<UUDFactionParameterUserWidget>(TEXT("FactionInvokerParameter"));
 	FactionTargetParameterWidget = GetWidget<UUDFactionParameterUserWidget>(TEXT("FactionTargetParameter"));
 	TileParameterWidget = GetWidget<UUDTileParameterUserWidget>(TEXT("TileParameter"));
@@ -44,6 +46,11 @@ void UUDParameterEditorUserWidget::BindWidgets()
 	ResourceParameterWidget = GetWidget<UUDResourceParameterUserWidget>(TEXT("ResourceParameter"));
 	ValueParameterWidget = GetWidget<UUDValueParameterUserWidget>(TEXT("ValueParameter"));
 	TextParameterWidget = GetWidget<UUDTextParameterUserWidget>(TEXT("TextParameter"));
+}
+
+void UUDParameterEditorUserWidget::SetDealActionParameterInstance(const TObjectPtr<UUDActionParameterViewModel>& parameterViewModel)
+{
+	DealActionParameterWidget->SetViewModel(parameterViewModel);
 }
 
 void UUDParameterEditorUserWidget::SetFactionInvokerParameterInstance(const TObjectPtr<UUDFactionParameterViewModel>& parameterViewModel)

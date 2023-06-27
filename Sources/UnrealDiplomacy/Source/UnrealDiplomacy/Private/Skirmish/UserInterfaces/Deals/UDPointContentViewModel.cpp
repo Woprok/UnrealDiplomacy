@@ -18,8 +18,10 @@ void UUDPointContentViewModel::Initialize()
 		DefineInstances();
 		IsUniqueNameDefined = true;
 	}
-	//FText pointTitle = FText(LOCTEXT("PointContent", "Point Title"));
-	//SetPointTitleText(pointTitle);
+	FText point = FText(LOCTEXT("PointContent", "Point Content"));
+	SetPointText(point);
+	FText editor = FText(LOCTEXT("PointContent", "Edit"));
+	SetEditorText(editor);
 }
 
 void UUDPointContentViewModel::Update()
@@ -45,7 +47,7 @@ void UUDPointContentViewModel::SetContent(FUDDealPointMinimalInfo content)
 void UUDPointContentViewModel::UpdateEditor()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDPointContentViewModel: UpdateEditor."));
-	ParameterEditorInstance->SetContent(Content.Parameters);
+	//ParameterEditorInstance->SetContent(Content.Parameters);
 }
 
 void UUDPointContentViewModel::DefineInstances()
@@ -64,6 +66,26 @@ void UUDPointContentViewModel::SetPointTitleText(FText newPointTitleText)
 FText UUDPointContentViewModel::GetPointTitleText() const
 {
 	return PointTitleText;
+}
+
+void UUDPointContentViewModel::SetPointText(FText newPointText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(PointText, newPointText);
+}
+
+FText UUDPointContentViewModel::GetPointText() const
+{
+	return PointText;
+}
+
+void UUDPointContentViewModel::SetEditorText(FText newEditorText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(EditorText, newEditorText);
+}
+
+FText UUDPointContentViewModel::GetEditorText() const
+{
+	return EditorText;
 }
 
 void UUDPointContentViewModel::SetIsValidContentValue(bool newIsValidContentValue)

@@ -21,7 +21,8 @@ void UUDActionItemViewModel::Initialize()
 		DefineInstances();
 		IsUniqueNameDefined = true;
 	}
-
+	FText editor = FText(LOCTEXT("PointContent", "Change"));
+	SetEditorText(editor);
 }
 
 void UUDActionItemViewModel::Update()
@@ -64,7 +65,7 @@ void UUDActionItemViewModel::Sabotage()
 void UUDActionItemViewModel::UpdateEditor()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDActionItemViewModel: UpdateEditor."));
-	ParameterEditorInstance->SetContent(Content.Parameters);
+	//ParameterEditorInstance->SetContent(Content.Parameters);
 }
 
 void UUDActionItemViewModel::DefineInstances()
@@ -123,4 +124,14 @@ void UUDActionItemViewModel::SetSabotageText(FText newSabotageText)
 FText UUDActionItemViewModel::GetSabotageText() const
 {
 	return SabotageText;
+}
+
+void UUDActionItemViewModel::SetEditorText(FText newEditorText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(EditorText, newEditorText);
+}
+
+FText UUDActionItemViewModel::GetEditorText() const
+{
+	return EditorText;
 }

@@ -62,6 +62,8 @@ protected:
 	TWeakObjectPtr<UTextBlock> DenyTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> SabotageTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> EditorTextWidget;
 
 	UPROPERTY()
 	TWeakObjectPtr<UButton> AcceptButtonWidget;
