@@ -58,8 +58,6 @@ struct FUDDealFactionInfo;
 struct FUDDealPointMinimalInfo;
 struct FUDDealActionInfo;
 
-#include "Core/Simulation/Actions/UDDealActionContractCreate.h"
-
 #include "UDActionAdministrator.generated.h"
 
 
@@ -475,13 +473,17 @@ public:
 	TArray<FUDDealPointMinimalInfo> GetDealTertiaryPointList(int32 dealId, int32 pointId);
 	/** Retrieves all actions associated with the specified deal for execution. */
 	TArray<FUDDealActionInfo> GetDealActionList(int32 dealId);
+	/** Retrieves all actions associated with the specified deal for execution by local faction. */
+	TArray<FUDDealActionInfo> GetLocalDealActionList(int32 dealId);
+	/** Retrieves all actions that might be result of this deal. */
+	TArray<FUDActionData> GetDealPointsActions(int32 dealId);
 private:
 	/** Converts state and result to unified name. */
 	FText GetStateName(EUDDealSimulationState stae, EUDDealSimulationResult result);
 #pragma endregion
 
 public:
-	/** Checks if specified faction is owned by local player. */
+	/** Checks if this state is owned by local player (not an observer or server). */
 	bool IsLocalFactionPlayer();
 	/** Checks if specified faction is owned & controlled by player or AI. */
 	bool IsFactionPlayerControlled(int32 factionId);
@@ -498,48 +500,5 @@ public:
 	/** Returns all neutral tiles. */
 	TArray<FUDTileMinimalInfo> GetNeutralTiles();
 #pragma endregion
-
-
-public:
-	/**
-	 * Returns list of actions that will be created from this deal, without any filter.
-	 */
-	UFUNCTION(BlueprintCallable)
-	TArray<FUDActionData> GetDealPointsAsUnfoldedActions(int32 dealUniqueId)
-	{
-		return UUDDealActionContractCreate::FinalizeActions(State, dealUniqueId);
-	}
-
-	UFUNCTION(BlueprintCallable)
-	TArray<FUDDealActionInfo> GetAllActionForCurrentPlayer(int32 dealUniqueId)
-	{
-		TArray<FUDDealActionInfo> actions;
-		
-		for (size_t index = 0; index < State->Deals[dealUniqueId]->DealActionList.Num(); index++)
-		{
-			FUDDiscussionAction action = State->Deals[dealUniqueId]->DealActionList[index];
-			if (action.Action.InvokerFactionId == State->FactionPerspective) {
-				actions.Add(FUDDealActionInfo(dealUniqueId, index, action));
-			}
-		}
-
-		return actions;
-	}
-
-	UFUNCTION(BlueprintCallable)
-	TArray<FUDDealActionInfo> GetAllActionForOtherPlayers(int32 dealUniqueId)
-	{
-		TArray<FUDDealActionInfo> actions;
-
-		for (size_t index = 0; index < State->Deals[dealUniqueId]->DealActionList.Num(); index++)
-		{
-			FUDDiscussionAction action = State->Deals[dealUniqueId]->DealActionList[index];
-			if (action.Action.InvokerFactionId != State->FactionPerspective) {
-				actions.Add(FUDDealActionInfo(dealUniqueId, index, action));
-			}
-		}
-
-		return actions;
-	}
 };
 #undef LOCTEXT_NAMESPACE

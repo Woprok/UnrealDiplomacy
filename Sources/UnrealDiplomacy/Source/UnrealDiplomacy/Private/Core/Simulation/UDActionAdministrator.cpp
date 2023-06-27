@@ -1173,36 +1173,50 @@ TArray<FUDDealPointMinimalInfo> UUDActionAdministrator::GetDealTertiaryPointList
 	return tertiaryPoints;
 }
 
+TArray<FUDDealActionInfo> UUDActionAdministrator::GetLocalDealActionList(int32 dealId)
+{
+	TArray<FUDDealActionInfo> actions = { };
+
+	for (const auto& item : GetDealActionList(dealId))
+	{
+		if (item.ActionBody.Action.InvokerFactionId == State->FactionPerspective)
+		{
+			actions.Add(item);
+		}
+	}
+
+	return actions;
+}
+
 TArray<FUDDealActionInfo> UUDActionAdministrator::GetDealActionList(int32 dealId)
 {
 	TArray<FUDDealActionInfo> actions = { };
 
-	// TODO actions!!!!!!!
-	// TODO actions!!!!!!!
-	// TODO actions!!!!!!!
-	// TODO actions!!!!!!!
-	// TODO actions!!!!!!!
-	// TODO actions!!!!!!!
-	// TODO actions!!!!!!!
-	// TODO actions!!!!!!!
-	// TODO actions!!!!!!!
-	// TODO actions!!!!!!!
-	// TODO actions!!!!!!!
-	// TODO actions!!!!!!!
-	// TODO actions!!!!!!!
-	// TODO actions!!!!!!!
-	// TODO actions!!!!!!!
-	// TODO actions!!!!!!!
-	// TODO actions!!!!!!!
-	// TODO actions!!!!!!!
-	// TODO actions!!!!!!!
-	// TODO actions!!!!!!!
-	// TODO actions!!!!!!!
-	// TODO actions!!!!!!!
-	// TODO actions!!!!!!!
+	for (const auto& item : State->Deals[dealId]->DealActionList)
+	{
+		FUDDealActionInfo info = FUDDealActionInfo();
+		// TODO REWORK THIS as we need something more useable then this...
+		info.ActionBody = item;
+		info.ActionIndex = actions.Num();
+		info.DealId = dealId;
+
+		actions.Add(info);
+	}
 
 	return actions;
 }
+
+// this is tied to contract action at the moment
+// if preview is not required it could go away ?
+// technically it can be produced from deal data
+#include "Core/Simulation/Actions/UDDealActionContractCreate.h"
+TArray<FUDActionData> UUDActionAdministrator::GetDealPointsActions(int32 dealId)
+{
+	TArray<FUDActionData> actions = { };
+	actions = UUDDealActionContractCreate::FinalizeActions(State, dealId);
+	return actions;
+}
+
 #pragma endregion
 
 bool UUDActionAdministrator::IsLocalFactionPlayer()
