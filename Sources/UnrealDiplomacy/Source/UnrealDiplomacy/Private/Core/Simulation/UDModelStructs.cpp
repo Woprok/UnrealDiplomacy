@@ -207,11 +207,10 @@ FUDDealMinimalInfo::FUDDealMinimalInfo()
 
 }
 
-FUDDealInteractionInfo::FUDDealInteractionInfo()
+FUDDealListInfo::FUDDealListInfo()
 {
 
 }
-
 FUDChatMessageInfo::FUDChatMessageInfo()
 {
 
@@ -228,6 +227,21 @@ FUDDealInfo::FUDDealInfo()
 }
 
 FUDDealPointMinimalInfo::FUDDealPointMinimalInfo()
+{
+
+}
+
+FUDPointInteractionInfo::FUDPointInteractionInfo()
+{
+
+}
+
+FUDActionInteractionInfo::FUDActionInteractionInfo()
+{
+
+}
+
+FUDDealActionMinimalInfo::FUDDealActionMinimalInfo()
 {
 
 }

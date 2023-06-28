@@ -36,6 +36,7 @@ void UUDActionItemUserWidget::BindDelegates()
 void UUDActionItemUserWidget::BindWidgets()
 {
 	ActionTextWidget = GetWidget<UTextBlock>(TEXT("ActionText"));
+	ActionTitleTextWidget = GetWidget<UTextBlock>(TEXT("ActionTitleText"));
 	AcceptTextWidget = GetWidget<UTextBlock>(TEXT("AcceptText"));
 	ChangeTextWidget = GetWidget<UTextBlock>(TEXT("ChangeText"));
 	DenyTextWidget = GetWidget<UTextBlock>(TEXT("DenyText"));

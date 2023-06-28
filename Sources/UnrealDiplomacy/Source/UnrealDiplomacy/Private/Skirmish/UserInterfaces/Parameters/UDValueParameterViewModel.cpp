@@ -23,7 +23,16 @@ void UUDValueParameterViewModel::Update()
 		return;
 	}
 	// But if user is not editing the value we will clamp it into the bounds by force.
-	int32 resetValue = FMath::Clamp(GetSelectedValue(), Content.MinValue, Content.MaxValue);
+	int32 resetValue;
+	if (Content.HasCurrentValue)
+	{
+		resetValue = FMath::Clamp(Content.CurrentValue, Content.MinValue, Content.MaxValue);
+	}
+	else
+	{
+		resetValue = FMath::Clamp(GetSelectedValue(), Content.MinValue, Content.MaxValue);
+	}
+ 
 	SetSelectedValue(resetValue);
 }
 
@@ -54,6 +63,14 @@ void UUDValueParameterViewModel::StopValueEditation(float InValue, ETextCommit::
 	if (oldValue != newValue)
 	{
 		SetSelectedValue(newValue);
+		ChangeAttempted();
+	}
+}
+
+void UUDValueParameterViewModel::ChangeAttempted()
+{
+	if (Content.HasCurrentValue && Content.CurrentValue != GetAsValue())
+	{
 		OnChangeEvent.Broadcast();
 	}
 }

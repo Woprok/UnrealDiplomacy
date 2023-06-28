@@ -21,45 +21,74 @@ void UUDActionItemViewModel::Initialize()
 		DefineInstances();
 		IsUniqueNameDefined = true;
 	}
-	FText editor = FText(LOCTEXT("PointContent", "Change"));
+	FText editor = FText(LOCTEXT("PointContent", "Change Editor"));
 	SetEditorText(editor);
+	FText accept = FText(LOCTEXT("PointContent", "Accept"));
+	SetAcceptText(accept);
+	FText deny = FText(LOCTEXT("PointContent", "Deny"));
+	SetDenyText(deny);
+	FText sabotage = FText(LOCTEXT("PointContent", "Sabotage"));
+	SetSabotageText(sabotage);
+	FText change = FText(LOCTEXT("PointContent", "Change"));
+	SetChangeText(change);
 }
 
 void UUDActionItemViewModel::Update()
 {
-	// TODO set action text based on parameters same way as the message is done.
-	// TODO allow editing all parameters of the actions other then invoker with the standard interaction editor ?.
+	SetActionTitleText(FText::FromString(Content.ActionTitle));
+	SetActionText(FText::FromString(Content.ActionContent));
+	SetCanAcceptValue(Content.IsInteractable);
+	SetCanDenyValue(Content.IsInteractable);
+	SetCanChangeValue(Content.IsInteractable);
+	SetCanSabotageValue(Content.IsSabotageable);
+	UpdateEditor();
 }
 
 #undef LOCTEXT_NAMESPACE
 
-void UUDActionItemViewModel::SetContent(FUDDealActionInfo content)
+void UUDActionItemViewModel::SaveValuesChange(TArray<int32> values)
 {
-	Content = content;
+	TArray<int32> valueParameters = { };
+	valueParameters.Add(Content.DealId);
+	valueParameters.Add(Content.PointIndex);
+	valueParameters.Append(values);
+	BufferedValueParameters = valueParameters;
+}
+void UUDActionItemViewModel::SaveTextChange(FString text)
+{
+	BufferedTextParameter = text;
+}
+
+void UUDActionItemViewModel::SetContent(FUDDealActionMinimalInfo content)
+{
+	Content = Model->GetActionInteraction(content.DealId, content.ActionIndex);
 }
 
 void UUDActionItemViewModel::Accept()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDActionItemViewModel: Accept."));
-	Model->RequestAction(Model->GetAction(UUDDealActionContractPointAccept::ActionTypeId, { Content.DealId }));
+	Model->RequestAction(Model->GetAction(UUDDealActionContractPointAccept::ActionTypeId, { Content.DealId, Content.PointIndex }));
 }
 
 void UUDActionItemViewModel::Change()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDActionItemViewModel: Change."));
-	Model->RequestAction(Model->GetAction(UUDDealActionContractPointTamper::ActionTypeId, { Content.DealId }));
+	Model->RequestAction(Model->GetAction(UUDDealActionContractPointTamper::ActionTypeId, 
+		BufferedValueParameters,
+		BufferedTextParameter
+	));
 }
 
 void UUDActionItemViewModel::Deny()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDActionItemViewModel: Deny."));
-	Model->RequestAction(Model->GetAction(UUDDealActionContractPointReject::ActionTypeId, { Content.DealId }));
+	Model->RequestAction(Model->GetAction(UUDDealActionContractPointReject::ActionTypeId, { Content.DealId, Content.PointIndex }));
 }
 
 void UUDActionItemViewModel::Sabotage()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDActionItemViewModel: Sabotage."));
-	Model->RequestAction(Model->GetAction(UUDDealActionContractPointSabotage::ActionTypeId, { Content.DealId }));
+	Model->RequestAction(Model->GetAction(UUDDealActionContractPointSabotage::ActionTypeId, { Content.DealId, Content.PointIndex }));
 }
 
 void UUDActionItemViewModel::UpdateEditor()
@@ -69,7 +98,13 @@ void UUDActionItemViewModel::UpdateEditor()
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
 	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(ParameterEditorInstanceName, ParameterEditorType);
 	ParameterEditorInstance = Cast<UUDParameterEditorViewModel>(viewModel);
-	//ParameterEditorInstance->SetContent(Content.Parameters);
+	ParameterEditorInstance->SetContent(Content.Parameters);
+	
+	ParameterEditorInstance->ValuesUpdated.Clear();
+	ParameterEditorInstance->TextUpdated.Clear();
+	ParameterEditorInstance->ValuesUpdated.AddUObject(this, &UUDActionItemViewModel::SaveValuesChange);
+	ParameterEditorInstance->TextUpdated.AddUObject(this, &UUDActionItemViewModel::SaveTextChange);
+
 	ParameterEditorInstance->FullUpdate();
 	ParameterEditorChangedEvent.Broadcast(ParameterEditorInstance);
 }
@@ -90,6 +125,16 @@ void UUDActionItemViewModel::SetActionText(FText newActionText)
 FText UUDActionItemViewModel::GetActionText() const
 {
 	return ActionText;
+}
+
+void UUDActionItemViewModel::SetActionTitleText(FText newActionTitleText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ActionTitleText, newActionTitleText);
+}
+
+FText UUDActionItemViewModel::GetActionTitleText() const
+{
+	return ActionTitleText;
 }
 
 void UUDActionItemViewModel::SetAcceptText(FText newAcceptText)
@@ -140,4 +185,44 @@ void UUDActionItemViewModel::SetEditorText(FText newEditorText)
 FText UUDActionItemViewModel::GetEditorText() const
 {
 	return EditorText;
+}
+
+void UUDActionItemViewModel::SetCanAcceptValue(bool newCanAcceptValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(CanAcceptValue, newCanAcceptValue);
+}
+
+bool UUDActionItemViewModel::GetCanAcceptValue() const
+{
+	return CanAcceptValue;
+}
+
+void UUDActionItemViewModel::SetCanChangeValue(bool newCanChangeValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(CanChangeValue, newCanChangeValue);
+}
+
+bool UUDActionItemViewModel::GetCanChangeValue() const
+{
+	return CanChangeValue;
+}
+
+void UUDActionItemViewModel::SetCanDenyValue(bool newCanDenyValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(CanDenyValue, newCanDenyValue);
+}
+
+bool UUDActionItemViewModel::GetCanDenyValue() const
+{
+	return CanDenyValue;
+}
+
+void UUDActionItemViewModel::SetCanSabotageValue(bool newCanSabotageValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(CanSabotageValue, newCanSabotageValue);
+}
+
+bool UUDActionItemViewModel::GetCanSabotageValue() const
+{
+	return CanSabotageValue;
 }

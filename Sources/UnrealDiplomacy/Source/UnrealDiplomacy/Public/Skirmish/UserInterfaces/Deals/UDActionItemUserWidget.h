@@ -53,6 +53,8 @@ protected:
 protected:
 	// Bindings
 	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> ActionTitleTextWidget;
+	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> ActionTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> AcceptTextWidget;

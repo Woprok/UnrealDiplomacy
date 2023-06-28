@@ -48,6 +48,9 @@ FUDActionPresentation UUDGameActionTileTake::GetPresentation() const
 			UD_ACTION_TAG_PARAMETER_TILE,
 		}
 	);
+	presentation.DealContentFormat = FText(LOCTEXT("TileTake",
+		"Faction [{INVOKER}] will attempt to seize control of province [{TILE}]."
+	)).ToString();
 
 	return presentation;
 }

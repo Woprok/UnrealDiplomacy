@@ -202,6 +202,33 @@ public:
  * Transforms action parameters to properly named fields.
  */
 USTRUCT(BlueprintType)
+struct FUDDealDataContractPointParameters
+{
+	GENERATED_BODY()
+public:
+	FUDDealDataContractPointParameters() {}
+	FUDDealDataContractPointParameters(TArray<int32> valueParameters)
+	{
+		DealId = valueParameters[0];
+		ContractPointId = valueParameters[1];
+		for (int32 i = 2; i < valueParameters.Num(); i++)
+		{
+			Parameters.Add(valueParameters[i]);
+		}
+	}
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int32 ContractPointId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	TArray<int32> Parameters = { };
+	static const int32 ParameterCount = 2;
+};
+
+/**
+ * Transforms action parameters to properly named fields.
+ */
+USTRUCT(BlueprintType)
 struct FUDDealDataTarget
 {
 	GENERATED_BODY()

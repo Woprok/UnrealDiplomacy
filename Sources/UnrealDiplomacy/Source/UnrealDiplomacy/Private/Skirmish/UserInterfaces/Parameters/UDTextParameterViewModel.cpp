@@ -21,6 +21,16 @@ void UUDTextParameterViewModel::Update()
 		return;
 	}
 	// TODO reset for text.
+	FText resetValue;
+	if (Content.HasCurrentValue)
+	{
+		resetValue = FText::FromString(Content.CurrentValue);
+	}
+	else
+	{
+		resetValue = GetSelectedText();
+	}
+	SetSelectedText(resetValue);
 }
 
 #undef LOCTEXT_NAMESPACE
@@ -50,6 +60,14 @@ void UUDTextParameterViewModel::StopTextEditation(const FText& InText, ETextComm
 	if (!oldText.EqualTo(newText))
 	{
 		SetSelectedText(newText);
+		ChangeAttempted();
+	}
+}
+
+void UUDTextParameterViewModel::ChangeAttempted()
+{
+	if (Content.HasCurrentValue && Content.CurrentValue != GetAsText())
+	{
 		OnChangeEvent.Broadcast();
 	}
 }

@@ -45,6 +45,8 @@ protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
 private:
+	void ChangeAttempted();
+private:
 	// MVVM Setters & Getters
 	void SetTextTitleText(FText newTextTitleText);
 	FText GetTextTitleText() const;

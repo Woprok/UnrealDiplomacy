@@ -6,6 +6,7 @@
 #include "Skirmish/UDSkirmishPlayerController.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Core/Simulation/UDModelStructs.h"
+#include "Core/UDGlobalData.h"
 
 #define LOCTEXT_NAMESPACE "DealExecutionTab"
 
@@ -50,7 +51,7 @@ void UUDDealExecutionTabViewModel::UpdateActionList()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDDealExecutionTabViewModel: UpdateActionList."));
 	// Retrieve points
-	TArray<FUDDealActionInfo> actions = Model->GetDealActionList(Content.DealId);
+	TArray<FUDDealActionMinimalInfo> actions = Model->GetDealActionList(Content.DealId);
 	// Retrieve enough models
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
 	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(ActionItemViewModelCollectionName,

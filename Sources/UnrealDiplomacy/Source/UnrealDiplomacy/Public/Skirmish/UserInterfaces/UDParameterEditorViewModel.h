@@ -31,6 +31,11 @@ DECLARE_MULTICAST_DELEGATE_OneParam(ValueParameterUpdated, const TObjectPtr<UUDV
 DECLARE_MULTICAST_DELEGATE_OneParam(TextParameterUpdated, const TObjectPtr<UUDTextParameterViewModel>& parameterViewModel);
 DECLARE_MULTICAST_DELEGATE_OneParam(ResourceParameterUpdated, const TObjectPtr<UUDResourceParameterViewModel>& parameterViewModel);
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FUDDealActionUpdated, int32 parameter);
+DECLARE_MULTICAST_DELEGATE_OneParam(FUDInvokerUpdated, int32 parameter);
+DECLARE_MULTICAST_DELEGATE_OneParam(FUDValuesUpdated, TArray<int32> parameters);
+DECLARE_MULTICAST_DELEGATE_OneParam(FUDTextUpdated, FString parameter);
+
 /**
  * Editor for parameters that belong to single action.
  */
@@ -79,6 +84,11 @@ public:
 	ResourceParameterUpdated ResourceParameterUpdatedEvent;
 	ValueParameterUpdated ValueParameterUpdatedEvent;
 	TextParameterUpdated TextParameterUpdatedEvent;
+
+	FUDDealActionUpdated DealActionUpdated;
+	FUDInvokerUpdated InvokerUpdated;
+	FUDValuesUpdated ValuesUpdated;
+	FUDTextUpdated TextUpdated;
 protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
@@ -137,6 +147,8 @@ private:
 	void OnValueParameterChanged();
 	/** Recognizes specific parameter update. */
 	void OnTextParameterChanged();
+private:
+	void ResolveValueParameterChange();
 private:
 	// MVVM Setters & Getters
 	void SetHasDealActionParameterValue(bool newHasDealActionParameterValue);

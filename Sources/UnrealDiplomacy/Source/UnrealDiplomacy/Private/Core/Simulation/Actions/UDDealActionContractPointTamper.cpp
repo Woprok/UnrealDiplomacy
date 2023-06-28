@@ -7,7 +7,7 @@
 
 bool UUDDealActionContractPointTamper::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	FUDDealDataContractPoint data(action.ValueParameters);
+	FUDDealDataContractPointParameters data(action.ValueParameters);
 	bool isNotResolved = world->Deals[data.DealId]->DealActionList[data.ContractPointId].SelectedResult == EUDDealActionResult::Unresolved;
 	return IUDActionInterface::CanExecute(action, world) && isNotResolved;
 }
@@ -16,14 +16,44 @@ void UUDDealActionContractPointTamper::Execute(const FUDActionData& action, TObj
 {
 	IUDActionInterface::Execute(action, world);
 	// Tampers with the contract point.
-	FUDDealDataContractPoint data(action.ValueParameters);
+	FUDDealDataContractPointParameters data(action.ValueParameters);
 	world->Deals[data.DealId]->DealActionList[data.ContractPointId].SelectedResult = EUDDealActionResult::Changed;
+	world->Deals[data.DealId]->DealActionList[data.ContractPointId].Action.TextParameter = action.TextParameter;
+	world->Deals[data.DealId]->DealActionList[data.ContractPointId].Action.ValueParameters = data.Parameters;
 }
 
 void UUDDealActionContractPointTamper::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Revert(action, world);
 	// Revert to undecided state of contract point.
-	FUDDealDataContractPoint data(action.ValueParameters);
+	FUDDealDataContractPointParameters data(action.ValueParameters);
+	FUDDealDataContractPointParameters oldData(action.BackupValueParameters);
 	world->Deals[data.DealId]->DealActionList[data.ContractPointId].SelectedResult = EUDDealActionResult::Unresolved;
+	world->Deals[data.DealId]->DealActionList[data.ContractPointId].Action.TextParameter = action.BackupTextParameter;
+	world->Deals[data.DealId]->DealActionList[data.ContractPointId].Action.ValueParameters = oldData.Parameters;
+}
+
+void UUDDealActionContractPointTamper::Backup(FUDActionData& action, TObjectPtr<UUDWorldState> world)
+{
+	// Old action is backuped for future revert use.
+	FUDDealDataContractPointParameters data(action.ValueParameters);
+	action.BackupTextParameter = world->Deals[data.DealId]->DealActionList[data.ContractPointId].Action.TextParameter;
+	action.BackupValueParameters.Empty(0);
+	action.BackupValueParameters.Add(data.DealId);
+	action.BackupValueParameters.Add(data.ContractPointId);
+	auto oldValueParams = world->Deals[data.DealId]->DealActionList[data.ContractPointId].Action.ValueParameters;
+	action.BackupValueParameters.Append(oldValueParams);
+}
+
+FUDActionPresentation UUDDealActionContractPointTamper::GetPresentation() const
+{
+	FUDActionPresentation presentation = Super::GetPresentation();
+	presentation.ActionId = GetId();
+	presentation.Tags.Append(
+		{
+			UD_ACTION_TAG_VERIFY_PARAMETER_MINIMUM,
+		}
+	);
+
+	return presentation;
 }

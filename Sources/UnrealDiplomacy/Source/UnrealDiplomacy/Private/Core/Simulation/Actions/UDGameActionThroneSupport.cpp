@@ -66,6 +66,9 @@ FUDActionPresentation UUDGameActionThroneSupport::GetPresentation() const
 			UD_ACTION_TAG_PARAMETER_FACTION,
 		}
 	);
+	presentation.DealContentFormat = FText(LOCTEXT("ThroneSupport",
+		"Faction [{INVOKER}] will provide support for claiming throne to [{TARGET}]."
+	)).ToString();
 
 	return presentation;
 }

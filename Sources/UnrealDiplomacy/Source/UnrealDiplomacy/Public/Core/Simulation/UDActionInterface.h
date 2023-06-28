@@ -96,20 +96,25 @@ struct FUDActionPresentation
 public:
 	FUDActionPresentation() {}
 	/** Unique Action Id. */
-	int32 ActionId;
+	int32 ActionId = -1;
 	/** List of all tags that are used to define behaviour in UI, etc... */
 	TSet<int32> Tags;
 	/** Main name of this action. */
 	FString Name = TEXT("");
 	/** Defines if this action is acceptable. If not returns InvalidActionId. */
-	int32 AcceptActionId;
+	int32 AcceptActionId = -1;
 	/** Defines if this action is rejectable. If not returns InvalidActionId. */
-	int32 RejectActionId;
+	int32 RejectActionId = -1;
 	/** 
 	 * Defines format for converting action to offer message string based on action parameters. 
 	 * To use this use format and supply all parameters required by tags.
 	 */
 	FString MessageContentFormat = TEXT("");
+	/** 
+	 * Defines format for converting action to deal string based on action parameters. 
+	 * To use this use format and supply all parameters required by tags.
+	 */
+	FString DealContentFormat = TEXT("");
 };
 
 /** 

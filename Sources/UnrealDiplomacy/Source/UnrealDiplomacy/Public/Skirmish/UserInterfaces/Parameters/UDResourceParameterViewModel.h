@@ -55,6 +55,8 @@ private:
 	 */
 	FUDResourceMinimalInfo GetSelectedOrDefault(int32 desiredSelectedItem);
 private:
+	void ChangeAttempted();
+private:
 	// MVVM Setters & Getters
 	void SetResourceTitleText(FText newResourceTitleText);
 	FText GetResourceTitleText() const;

@@ -55,6 +55,9 @@ FUDActionPresentation UUDGameActionTileTransfer::GetPresentation() const
 	presentation.RejectActionId = UUDGameActionTileTransferReject::ActionTypeId;
 	presentation.MessageContentFormat = FText(LOCTEXT("TileTransfer", 
 		"Faction [{INVOKER}] offered your faction [{TARGET}] province [{TILE}].\nDo you accept ?"
+	)).ToString();	
+	presentation.DealContentFormat = FText(LOCTEXT("TileTransfer", 
+		"Faction [{INVOKER}] will offer to transfer control of province [{TILE}] to faction [{TARGET}]."
 	)).ToString();
 
 	return presentation;

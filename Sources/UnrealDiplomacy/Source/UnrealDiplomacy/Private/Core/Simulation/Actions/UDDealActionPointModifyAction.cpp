@@ -19,6 +19,8 @@ void UUDDealActionPointModifyAction::Execute(const FUDActionData& action, TObjec
 	// Change to new value.
 	FUDDealDataPointValue newData(action.ValueParameters);
 	world->Deals[newData.DealId]->Points[newData.PointId]->ActionId = newData.Value;
+	// HACK TODO add proper implementation to handle order
+	world->Deals[newData.DealId]->Points[newData.PointId]->ValueParameters.Empty(0);
 }
 
 void UUDDealActionPointModifyAction::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)

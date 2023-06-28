@@ -34,10 +34,26 @@ void UUDResourceParameterViewModel::Update()
 	SetResourceTitleText(FText::FromString(Content.Name));
 	SetToolTipText(FText::FromString(Content.ToolTip));
 
-	FUDResourceMinimalInfo selected = GetSelectedOrDefault(SelectedResource);
+	FUDResourceMinimalInfo selected;
+	if (Content.HasCurrentValue)
+	{
+		selected = GetSelectedOrDefault(Content.CurrentValue);
+	}
+	else
+	{
+		selected = GetSelectedOrDefault(SelectedResource);
+	}
 	SelectedResource = selected.Id;
 	SetNameText(FText::FromString(selected.Name));
-	OnChangeEvent.Broadcast();
+	ChangeAttempted();
+}
+
+void UUDResourceParameterViewModel::ChangeAttempted()
+{
+	if (Content.HasCurrentValue && Content.CurrentValue != GetAsValue())
+	{
+		OnChangeEvent.Broadcast();
+	}
 }
 
 FUDResourceMinimalInfo UUDResourceParameterViewModel::GetSelectedOrDefault(int32 desiredSelectedItem)
@@ -73,7 +89,7 @@ void UUDResourceParameterViewModel::PreviousResource()
 		FUDResourceMinimalInfo selected = Content.Options[SelectedResourceIndex];
 		SelectedResource = selected.Id;
 		SetNameText(FText::FromString(selected.Name));
-		OnChangeEvent.Broadcast();
+		ChangeAttempted();
 	}
 }
 
@@ -86,7 +102,7 @@ void UUDResourceParameterViewModel::NextResource()
 		FUDResourceMinimalInfo selected = Content.Options[SelectedResourceIndex];
 		SelectedResource = selected.Id;
 		SetNameText(FText::FromString(selected.Name));
-		OnChangeEvent.Broadcast();
+		ChangeAttempted();
 	}
 }
 

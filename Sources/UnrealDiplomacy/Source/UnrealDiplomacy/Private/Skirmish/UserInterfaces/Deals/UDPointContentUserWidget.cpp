@@ -24,7 +24,7 @@ void UUDPointContentUserWidget::BindDelegates()
 void UUDPointContentUserWidget::BindWidgets()
 {
 	PointTitleTextWidget = GetWidget<UTextBlock>(TEXT("PointTitleText"));
-	PointTitleTextWidget = GetWidget<UTextBlock>(TEXT("PointText"));
+	PointTextWidget = GetWidget<UTextBlock>(TEXT("PointText"));
 	EditorTextWidget = GetWidget<UTextBlock>(TEXT("EditorText"));
 	ParameterEditorViewWidget = GetWidget<UUDParameterEditorUserWidget>(TEXT("ParameterEditorView"));
 }

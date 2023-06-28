@@ -55,5 +55,5 @@ TArray<FUDActionData> UUDDealActionContractExecute::GetAllContractedActions(TObj
 			finalActionList.Add(wrappedAction.Action);
 		}
 	}
-	return TArray<FUDActionData>();
+	return finalActionList;
 }

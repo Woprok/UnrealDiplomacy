@@ -41,6 +41,9 @@ FUDActionPresentation UUDGameActionThroneUsurp::GetPresentation() const
 			UD_ACTION_TAG_STRATAGEM_COST_2,
 		}
 	);
+	presentation.DealContentFormat = FText(LOCTEXT("ThroneUsurp",
+		"Faction [{INVOKER}] will attempt to take throne."
+	)).ToString();
 
 	return presentation;
 }

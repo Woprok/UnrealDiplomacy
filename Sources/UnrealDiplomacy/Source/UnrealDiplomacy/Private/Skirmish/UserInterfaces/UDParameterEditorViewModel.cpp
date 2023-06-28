@@ -170,42 +170,70 @@ void UUDParameterEditorViewModel::UpdateParameterInstances()
 
 void UUDParameterEditorViewModel::OnDealActionParameterChanged()
 {
-
+	DealActionUpdated.Broadcast(DealActionParameterInstance->GetAsValue());
 }
 
 void UUDParameterEditorViewModel::OnFactionInvokerParameterChanged()
 {
+	InvokerUpdated.Broadcast(FactionInvokerParameterInstance->GetAsValue());
+}
 
+void UUDParameterEditorViewModel::ResolveValueParameterChange()
+{
+	TArray<int32> parameters = { };
+	for (int32 i = 0; i < Content.OrderedData.Num(); i++)
+	{
+		switch (Content.OrderedType[i])
+		{
+		case EUDParameterType::FactionTarget:
+			parameters.Add(FactionTargetParameterInstance->GetAsValue());
+			break;
+		case EUDParameterType::Tile:
+			parameters.Append(TileParameterInstance->GetAsValueRange());
+			break;
+		case EUDParameterType::Action:
+			parameters.Add(ActionParameterInstance->GetAsValue());
+			break;
+		case EUDParameterType::Resource:
+			parameters.Add(ResourceParameterInstance->GetAsValue());
+			break;
+		case EUDParameterType::Value:
+			parameters.Add(ValueParameterInstance->GetAsValue());
+			break;
+		}
+	}
+
+	ValuesUpdated.Broadcast(parameters);
 }
 
 void UUDParameterEditorViewModel::OnFactionTargetParameterChanged()
 {
-
+	ResolveValueParameterChange();
 }
 
 void UUDParameterEditorViewModel::OnTileParameterChanged()
 {
-
+	ResolveValueParameterChange();
 }
 
 void UUDParameterEditorViewModel::OnActionParameterChanged()
 {
-
+	ResolveValueParameterChange();
 }
 
 void UUDParameterEditorViewModel::OnResourceParameterChanged()
 {
-
+	ResolveValueParameterChange();
 }
 
 void UUDParameterEditorViewModel::OnValueParameterChanged()
 {
-
+	ResolveValueParameterChange();
 }
 
 void UUDParameterEditorViewModel::OnTextParameterChanged()
 {
-
+	TextUpdated.Broadcast(TextParameterInstance->GetAsText());
 }
 
 void UUDParameterEditorViewModel::DefineInstances()
@@ -231,6 +259,7 @@ void UUDParameterEditorViewModel::DefineDealActionParameter(int32 id)
 	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(DealActionParameterInstanceName, DealActionParameterType);
 	DealActionParameterInstance = Cast<UUDActionParameterViewModel>(viewModel);
 	DealActionParameterUpdatedEvent.Broadcast(DealActionParameterInstance);
+	DealActionParameterInstance->OnChangeEvent.Clear();
 	DealActionParameterInstance->OnChangeEvent.AddUObject(this, &UUDParameterEditorViewModel::OnDealActionParameterChanged);
 	DealActionParameterInstance->FullUpdate();
 }
@@ -244,6 +273,7 @@ void UUDParameterEditorViewModel::DefineFactionInvokerParameter(int32 id)
 	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(FactionInvokerParameterInstanceName, FactionInvokerParameterType);
 	FactionInvokerParameterInstance = Cast<UUDFactionParameterViewModel>(viewModel);
 	FactionInvokerParameterUpdatedEvent.Broadcast(FactionInvokerParameterInstance);
+	FactionInvokerParameterInstance->OnChangeEvent.Clear();
 	FactionInvokerParameterInstance->OnChangeEvent.AddUObject(this, &UUDParameterEditorViewModel::OnFactionInvokerParameterChanged);
 	FactionInvokerParameterInstance->FullUpdate();
 }
@@ -257,6 +287,7 @@ void UUDParameterEditorViewModel::DefineFactionTargetParameter(int32 id)
 	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(FactionTargetParameterInstanceName, FactionTargetParameterType);
 	FactionTargetParameterInstance = Cast<UUDFactionParameterViewModel>(viewModel);
 	FactionTargetParameterUpdatedEvent.Broadcast(FactionTargetParameterInstance);
+	FactionTargetParameterInstance->OnChangeEvent.Clear();
 	FactionTargetParameterInstance->OnChangeEvent.AddUObject(this, &UUDParameterEditorViewModel::OnFactionTargetParameterChanged);
 	FactionTargetParameterInstance->FullUpdate();
 }
@@ -270,6 +301,7 @@ void UUDParameterEditorViewModel::DefineTileParameter(int32 id)
 	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(TileParameterInstanceName, TileParameterType);
 	TileParameterInstance = Cast<UUDTileParameterViewModel>(viewModel);
 	TileParameterUpdatedEvent.Broadcast(TileParameterInstance);
+	TileParameterInstance->OnChangeEvent.Clear();
 	TileParameterInstance->OnChangeEvent.AddUObject(this, &UUDParameterEditorViewModel::OnTileParameterChanged);
 	TileParameterInstance->FullUpdate();
 }
@@ -283,6 +315,7 @@ void UUDParameterEditorViewModel::DefineActionParameter(int32 id)
 	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(ActionParameterInstanceName, ActionParameterType);
 	ActionParameterInstance = Cast<UUDActionParameterViewModel>(viewModel);
 	ActionParameterUpdatedEvent.Broadcast(ActionParameterInstance);
+	ActionParameterInstance->OnChangeEvent.Clear();
 	ActionParameterInstance->OnChangeEvent.AddUObject(this, &UUDParameterEditorViewModel::OnActionParameterChanged);
 	ActionParameterInstance->FullUpdate();
 }
@@ -296,6 +329,7 @@ void UUDParameterEditorViewModel::DefineResourceParameter(int32 id)
 	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(ResourceParameterInstanceName, ResourceParameterType);
 	ResourceParameterInstance = Cast<UUDResourceParameterViewModel>(viewModel);
 	ResourceParameterUpdatedEvent.Broadcast(ResourceParameterInstance);
+	ResourceParameterInstance->OnChangeEvent.Clear();
 	ResourceParameterInstance->OnChangeEvent.AddUObject(this, &UUDParameterEditorViewModel::OnResourceParameterChanged);
 	ResourceParameterInstance->FullUpdate();
 }
@@ -309,6 +343,7 @@ void UUDParameterEditorViewModel::DefineValueParameter(int32 id)
 	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(ValueParameterInstanceName, ValueParameterType);
 	ValueParameterInstance = Cast<UUDValueParameterViewModel>(viewModel);
 	ValueParameterUpdatedEvent.Broadcast(ValueParameterInstance);
+	ValueParameterInstance->OnChangeEvent.Clear();
 	ValueParameterInstance->OnChangeEvent.AddUObject(this, &UUDParameterEditorViewModel::OnValueParameterChanged);
 	ValueParameterInstance->FullUpdate();
 }
@@ -322,6 +357,7 @@ void UUDParameterEditorViewModel::DefineTextParameter(int32 id)
 	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(TextParameterInstanceName, TextParameterType);
 	TextParameterInstance = Cast<UUDTextParameterViewModel>(viewModel);
 	TextParameterUpdatedEvent.Broadcast(TextParameterInstance);
+	TextParameterInstance->OnChangeEvent.Clear();
 	TextParameterInstance->OnChangeEvent.AddUObject(this, &UUDParameterEditorViewModel::OnTextParameterChanged);
 	TextParameterInstance->FullUpdate();
 }

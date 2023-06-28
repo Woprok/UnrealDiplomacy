@@ -34,10 +34,27 @@ void UUDFactionParameterViewModel::Update()
 	SetFactionTitleText(FText::FromString(Content.Name));
 	SetToolTipText(FText::FromString(Content.ToolTip));
 
-	FUDFactionMinimalInfo selected = GetSelectedOrDefault(SelectedFaction);
+	FUDFactionMinimalInfo selected;
+	if (Content.HasCurrentValue)
+	{
+		selected = GetSelectedOrDefault(Content.CurrentValue);
+	}
+	else
+	{
+		selected = GetSelectedOrDefault(SelectedFaction);
+	}
+
 	SelectedFaction = selected.Id;
 	SetNameText(FText::FromString(selected.Name));
-	OnChangeEvent.Broadcast();
+	ChangeAttempted();
+}
+
+void UUDFactionParameterViewModel::ChangeAttempted()
+{
+	if (Content.HasCurrentValue && Content.CurrentValue != GetAsValue())
+	{
+		OnChangeEvent.Broadcast();
+	}
 }
 
 FUDFactionMinimalInfo UUDFactionParameterViewModel::GetSelectedOrDefault(int32 desiredSelectedItem)
@@ -73,7 +90,7 @@ void UUDFactionParameterViewModel::PreviousFaction()
 		FUDFactionMinimalInfo selected = Content.Options[SelectedFactionIndex];
 		SelectedFaction = selected.Id;
 		SetNameText(FText::FromString(selected.Name));
-		OnChangeEvent.Broadcast();
+		ChangeAttempted();
 	}
 }
 
@@ -86,7 +103,7 @@ void UUDFactionParameterViewModel::NextFaction()
 		FUDFactionMinimalInfo selected = Content.Options[SelectedFactionIndex];
 		SelectedFaction = selected.Id;
 		SetNameText(FText::FromString(selected.Name));
-		OnChangeEvent.Broadcast();
+		ChangeAttempted();
 	}
 }
 

@@ -55,6 +55,8 @@ private:
 	 */
 	FUDFactionMinimalInfo GetSelectedOrDefault(int32 desiredSelectedItem);
 private:
+	void ChangeAttempted();
+private:
 	// MVVM Setters & Getters
 	void SetFactionTitleText(FText newFactionTitleText);
 	FText GetFactionTitleText() const;

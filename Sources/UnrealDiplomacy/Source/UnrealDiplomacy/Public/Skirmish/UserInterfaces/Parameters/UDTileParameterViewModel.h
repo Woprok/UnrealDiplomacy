@@ -26,6 +26,8 @@ public:
 	void SetContent(FUDTileParameter content);
 	/** Getter for edited value. */
 	TArray<int32> GetAsValueRange();
+	/** Getter for edited value. */
+	FIntPoint GetAsValuePoint();
 public:
 	// Button Functions
 	UFUNCTION()
@@ -54,6 +56,8 @@ private:
 	 * If options list is empty returns invalid item.
 	 */
 	FUDTileMinimalInfo GetSelectedOrDefault(FIntPoint desiredSelectedItem);
+private:
+	void ChangeAttempted();
 private:
 	// MVVM Setters & Getters
 	void SetTileTitleText(FText newTileTitleText);

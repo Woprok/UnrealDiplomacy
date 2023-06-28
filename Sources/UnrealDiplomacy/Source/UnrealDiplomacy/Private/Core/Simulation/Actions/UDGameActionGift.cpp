@@ -57,6 +57,9 @@ FUDActionPresentation UUDGameActionGift::GetPresentation() const
 	presentation.MessageContentFormat = FText(LOCTEXT("Gift",
 		"Faction [{INVOKER}] offered your faction [{TARGET}] [{VALUE}] in [{RESOURCE}].\nDo you accept ?"
 	)).ToString();
+	presentation.DealContentFormat = FText(LOCTEXT("Gift",
+		"Faction [{INVOKER}] will offer to send [{VALUE}] [{RESOURCE}] to [{TARGET}]."
+	)).ToString();
 
 	return presentation;
 }

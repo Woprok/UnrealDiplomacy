@@ -9,7 +9,8 @@
 
 // Forward Declarations
 
-struct FUDDealActionInfo;
+struct FUDDealActionMinimalInfo;
+struct FUDActionInteractionInfo;
 class UUDParameterEditorViewModel;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FUDParameterEditorChanged, const TObjectPtr<UUDParameterEditorViewModel>& editorViewModel);
@@ -25,7 +26,7 @@ public:
 	/**
 	 * Set content of the strategy option.
 	 */
-	void SetContent(FUDDealActionInfo content);
+	void SetContent(FUDDealActionMinimalInfo content);
 public:
 	// Button Functions
 	UFUNCTION()
@@ -40,6 +41,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText ActionText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText ActionTitleText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText AcceptText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText ChangeText;
@@ -49,6 +52,14 @@ public:
 	FText SabotageText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText EditorText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool CanAcceptValue;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool CanChangeValue;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool CanDenyValue;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool CanSabotageValue;
 	// Events
 	FUDParameterEditorChanged ParameterEditorChangedEvent;
 protected:
@@ -60,8 +71,13 @@ private:
 	/** Defines all parameter instances. */
 	void DefineInstances();
 private:
+	void SaveValuesChange(TArray<int32> values);
+	void SaveTextChange(FString text);
+private:
 	// MVVM Setters & Getters
 	void SetActionText(FText newActionText);
+	FText GetActionTitleText() const;
+	void SetActionTitleText(FText newActionTitleText);
 	FText GetActionText() const;
 	void SetAcceptText(FText newAcceptText);
 	FText GetAcceptText() const;
@@ -73,9 +89,19 @@ private:
 	FText GetSabotageText() const;
 	void SetEditorText(FText newEditorText);
 	FText GetEditorText() const;
+	void SetCanAcceptValue(bool newCanAcceptValue);
+	bool GetCanAcceptValue() const;
+	void SetCanChangeValue(bool newCanChangeValue);
+	bool GetCanChangeValue() const;
+	void SetCanDenyValue(bool newCanDenyValue);
+	bool GetCanDenyValue() const;
+	void SetCanSabotageValue(bool newCanSabotageValue);
+	bool GetCanSabotageValue() const;
 private:
 	// Fields
-	FUDDealActionInfo Content;
+	FUDActionInteractionInfo Content;
+	TArray<int32> BufferedValueParameters;
+	FString BufferedTextParameter;
 	// Current Instance in use...
 	FName ParameterEditorInstanceName = TEXT("ActionParameterEditorInstance");
 	TSubclassOf<UUDViewModel> ParameterEditorType;

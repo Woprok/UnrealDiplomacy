@@ -72,14 +72,20 @@ void UUDDealEditationTabViewModel::UpdatePointList()
 	{
 		TObjectPtr<UUDPrimaryPointItemViewModel> newViewModel = Cast<UUDPrimaryPointItemViewModel>(viewModels[i]);
 		newViewModel->SetContent(points[i], true);
-		newViewModel->FullUpdate();
 		PointItemViewModelCollection.Add(newViewModel);
 	}
 	// Finally add invalid node.
 	TObjectPtr<UUDPrimaryPointItemViewModel> newViewModel = Cast<UUDPrimaryPointItemViewModel>(viewModels[desiredPointIndex]);
 	newViewModel->SetContent(GetInvalidPrimaryPoint(Content.DealId), false);
-	newViewModel->FullUpdate();
 	PointItemViewModelCollection.Add(newViewModel);
+	// HACK TODO redo the update cycle
+	for (int32 i = 0; i < PointItemViewModelCollection.Num(); i++)
+	{
+		if (PointItemViewModelCollection[i])
+		{
+			PointItemViewModelCollection[i]->FullUpdate();
+		}
+	}
 
 	PointItemSourceUpdatedEvent.Broadcast(PointItemViewModelCollection);
 }

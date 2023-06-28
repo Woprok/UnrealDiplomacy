@@ -48,49 +48,15 @@ struct FUDTextParameter;
 typedef TVariant<FUDDealParameter ,FUDFactionParameter, FUDTileParameter, FUDActionParameter, 
 	FUDResourceParameter, FUDValueParameter, FUDTextParameter> ParameterData;
 
-struct FUDDealInteractionInfo;
+struct FUDDealListInfo;
+struct FUDPointInteractionInfo;
+struct FUDActionInteractionInfo;
 struct FUDChatMessageInfo;
 struct FUDDealMinimalInfo;
 struct FUDDealInfo;
 struct FUDDealFactionInfo;
 struct FUDDealPointMinimalInfo;
-struct FUDDealActionInfo;
-
-
-USTRUCT(BlueprintType)
-struct FUDDealPointInfo
-{
-	GENERATED_BODY()
-public:
-	FUDDealPointInfo() {}
-	UPROPERTY(BlueprintReadOnly)
-	int32 DealId = 0;
-	UPROPERTY(BlueprintReadOnly)
-	int32 PointUniqueId = 0;
-	UPROPERTY(BlueprintReadOnly)
-	EUDPointType Type;
-	UPROPERTY(BlueprintReadOnly)
-	int32 ActionId;
-	UPROPERTY(BlueprintReadOnly)
-	TArray<int32> ValueParameters = {};
-	UPROPERTY(BlueprintReadOnly)
-	FString TextParameter;
-};
-
-// TODO rework this
-USTRUCT(BlueprintType)
-struct FUDDealActionInfo
-{
-	GENERATED_BODY()
-public:
-	FUDDealActionInfo() {}
-	UPROPERTY(BlueprintReadOnly)
-	int32 DealId;
-	UPROPERTY(BlueprintReadOnly)
-	int32 ActionIndex;
-	UPROPERTY(BlueprintReadOnly)
-	FUDDiscussionAction ActionBody;
-};
+struct FUDDealActionMinimalInfo;
 
 #define LOCTEXT_NAMESPACE "ActionAdministrator"
 
@@ -336,9 +302,9 @@ private:
 	/** Transforms request data into a presentable format. */
 	FUDMessageInfo CreateMessageFromRequest(int32 requestId, FUDActionData action);
 	/** Merges format and action to result string. */
-	FString GetFormattedMessageContent(FString formatString, const TSet<int32>& tags, FUDActionData action);
+	FString GetFormattedPresentationString(FString formatString, const TSet<int32>& tags, FUDActionData action);
 	/** Retrieves parameters from the tags and associate them with action values. */
-	FStringFormatNamedArguments GetMessageContentArguments(const TSet<int32>& tags, FUDActionData action);
+	FStringFormatNamedArguments GetPresentationContentArguments(const TSet<int32>& tags, FUDActionData action);
 	FStringFormatArg GetDealArgument(const TArray<int32>& data, int32& startIndex);
 	FStringFormatArg GetFactionArgument(const TArray<int32>& data, int32& startIndex);
 	FStringFormatArg GetTileArgument(const TArray<int32>& data, int32& startIndex);
@@ -363,7 +329,7 @@ private:
 #pragma region Deals
 public:
 	/** Returns all active deals separated by active and history for current player. */
-	FUDDealInteractionInfo GetAllLocalDeals();
+	FUDDealListInfo GetAllLocalDeals();
 	/** Retrives chat for the local deal. */
 	TArray<FUDChatMessageInfo> GetDealChatHistory(int32 dealId);
 	/** Returns list of deals that can be used as parameter. */
@@ -381,12 +347,20 @@ public:
 	/** Retrieves all tertiary points of the specified deal. */
 	TArray<FUDDealPointMinimalInfo> GetDealTertiaryPointList(int32 dealId, int32 pointId);
 	/** Retrieves all actions associated with the specified deal for execution. */
-	TArray<FUDDealActionInfo> GetDealActionList(int32 dealId);
-	/** Retrieves all actions associated with the specified deal for execution by local faction. */
-	TArray<FUDDealActionInfo> GetLocalDealActionList(int32 dealId);
+	TArray<FUDDealActionMinimalInfo> GetDealActionList(int32 dealId);
 	/** Retrieves all actions that might be result of this deal. */
 	TArray<FUDActionData> GetDealPointsActions(int32 dealId);
+	/** Retrieves single point that can be used as editable content. */
+	FUDPointInteractionInfo GetPointInteraction(int32 dealId, int32 pointId);
+	/** Retrieves single point that can be used as executable content. */
+	FUDActionInteractionInfo GetActionInteraction(int32 dealId, int32 indexId);
+	/** Same as action parameters, but always includes special editable values for deals. */
+	FUDParameterListInfo GetDealActionParameters(const TSet<int32>& tags);
 private:
+	/** Retrieves action parameters for editing with their value. */
+	FUDParameterListInfo GeActionParametersWithValues(const TSet<int32>& tags, FUDActionData data);
+	/** Retrieves deal action parameters for editing with their value. */
+	FUDParameterListInfo GetDealActionParametersWithValues(const TSet<int32>& tags, int32 dealAction, FUDActionData data);
 	/** Converts state and result to unified name. */
 	FText GetStateName(EUDDealSimulationState stae, EUDDealSimulationResult result);
 #pragma endregion

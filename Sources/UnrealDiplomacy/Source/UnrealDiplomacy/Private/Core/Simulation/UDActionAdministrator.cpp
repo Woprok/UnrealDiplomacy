@@ -726,19 +726,21 @@ ParameterData UUDActionAdministrator::GetTextParameter(const TSet<int32>& tags)
 	return data;
 }
 
-// Note this is similiar to GetMessageContentArguments, in case of changing this change the other one to match.
+// Note this is similiar to GetPresentationContentArguments, in case of changing this change the other one to match.
 FUDParameterListInfo UUDActionAdministrator::GetActionParameters(const TSet<int32>& tags, int32 excludeTag)
 {
 	FUDParameterListInfo parameters;
 	parameters.OrderedType.Empty(0);
 	parameters.OrderedData.Empty(0);
-	// Good old if hell.
 	// TODO create smarter system for parameters.
+	// This determines only if it can supply named parameter for displaying.
+	// Deal parameter has only one use and it will need some tweaking if it ever becomes editable.
 	if (HasDealParameter(tags, excludeTag))
 	{
 		parameters.OrderedType.Add(EUDParameterType::Deal);
 		parameters.OrderedData.Add(GetDealParameter(tags));
 	}
+	// Following are standard parameters...
 	if (HasFactionParameter(tags, excludeTag))
 	{
 		parameters.OrderedType.Add(EUDParameterType::FactionTarget);
@@ -781,12 +783,16 @@ FUDParameterListInfo UUDActionAdministrator::GetActionParameters(const TSet<int3
 FStringFormatArg UUDActionAdministrator::GetDealArgument(const TArray<int32>& data, int32& startIndex)
 {
 	int32 dealId = data[startIndex++];
+	if (dealId == -1)
+		return FStringFormatArg(TEXT("INVALID"));
 	return FStringFormatArg(State->Deals[dealId]->Name);
 }
 
 FStringFormatArg UUDActionAdministrator::GetFactionArgument(const TArray<int32>& data, int32& startIndex)
 {
 	int32 factionId = data[startIndex++];
+	if (factionId == -1)
+		return FStringFormatArg(TEXT("INVALID"));
 	return FStringFormatArg(State->Factions[factionId]->Name);
 }
 
@@ -794,19 +800,22 @@ FStringFormatArg UUDActionAdministrator::GetTileArgument(const TArray<int32>& da
 {
 	int32 x = data[startIndex++];
 	int32 y = data[startIndex++];
+	if (x == -1 || y == -1)
+		return FStringFormatArg(TEXT("INVALID"));
 	return FStringFormatArg(State->Map->GetTile(FIntPoint(x, y))->Name);
 }
 
 FStringFormatArg UUDActionAdministrator::GetActionArgument(const TArray<int32>& data, int32& startIndex)
 {
 	int32 actionId = data[startIndex++];
+	// -1 is fine as invalid action is default executor.
 	return FStringFormatArg(ActionManager->GetAction(actionId)->GetPresentation().Name);
 }
 
 FStringFormatArg UUDActionAdministrator::GetResourceArgument(const TArray<int32>& data, int32& startIndex)
 {
 	int32 resourceId = data[startIndex++];
-	FString name = TEXT("");
+	FString name = TEXT("INVALID");
 	for (const auto& resource : GetResourceList())
 	{
 		if (resource.Id == resourceId)
@@ -821,6 +830,7 @@ FStringFormatArg UUDActionAdministrator::GetResourceArgument(const TArray<int32>
 FStringFormatArg UUDActionAdministrator::GetValueArgument(const TArray<int32>& data, int32& startIndex)
 {
 	int32 value = data[startIndex++];
+	// This is fine to return negative number.
 	return FStringFormatArg(value);
 }
 
@@ -830,13 +840,19 @@ FStringFormatArg UUDActionAdministrator::GetTextArgument(FString data)
 }
 
 // Note this is similiar to GetActionParameters, in case of changing this change the other one to match.
-FStringFormatNamedArguments UUDActionAdministrator::GetMessageContentArguments(const TSet<int32>& tags, FUDActionData action)
+FStringFormatNamedArguments UUDActionAdministrator::GetPresentationContentArguments(const TSet<int32>& tags, FUDActionData action)
 {
 	FStringFormatNamedArguments args;
 	int32 startIndex = 0;
 
-	args.Add(UD_PARAMETER_ARG_FACTION_INVOKER,
-		FStringFormatArg(State->Factions[action.InvokerFactionId]->Name));
+	if (action.InvokerFactionId == -1)
+	{
+		args.Add(UD_PARAMETER_ARG_FACTION_INVOKER, FStringFormatArg(TEXT("INVALID")));
+	}
+	else 
+	{
+		args.Add(UD_PARAMETER_ARG_FACTION_INVOKER, FStringFormatArg(State->Factions[action.InvokerFactionId]->Name));
+	}		
 
 	if (HasDealParameter(tags, UD_INVALID_TAG_ID))
 	{
@@ -877,9 +893,9 @@ FStringFormatNamedArguments UUDActionAdministrator::GetMessageContentArguments(c
 	return args;
 }
 
-FString UUDActionAdministrator::GetFormattedMessageContent(FString formatString, const TSet<int32>& tags, FUDActionData action)
+FString UUDActionAdministrator::GetFormattedPresentationString(FString formatString, const TSet<int32>& tags, FUDActionData action)
 {
-	return FString::Format(*formatString, GetMessageContentArguments(tags, action));
+	return FString::Format(*formatString, GetPresentationContentArguments(tags, action));
 }
 
 FUDMessageInfo UUDActionAdministrator::CreateMessageFromRequest(int32 requestId, FUDActionData action)
@@ -891,7 +907,7 @@ FUDMessageInfo UUDActionAdministrator::CreateMessageFromRequest(int32 requestId,
 	message.Name = presentation.Name;
 	message.AcceptId = presentation.AcceptActionId;
 	message.RejectId = presentation.RejectActionId;
-	message.Content = GetFormattedMessageContent(presentation.MessageContentFormat, presentation.Tags, action);
+	message.Content = GetFormattedPresentationString(presentation.MessageContentFormat, presentation.Tags, action);
 	return message;
 }
 
@@ -965,9 +981,9 @@ TArray<FUDModifierInfo> UUDActionAdministrator::GetModifierList(const TArray<FUD
 
 #pragma region Deals
 
-FUDDealInteractionInfo UUDActionAdministrator::GetAllLocalDeals()
+FUDDealListInfo UUDActionAdministrator::GetAllLocalDeals()
 {
-	FUDDealInteractionInfo info;
+	FUDDealListInfo info;
 
 	info.Active = { };
 	info.History = { };
@@ -1093,6 +1109,7 @@ FUDDealInfo UUDActionAdministrator::GetDealInfo(int32 dealId)
 	dealInfo.LocalVote = State->Deals[dealId]->PositiveVotePlayerList.Contains(State->FactionPerspective);
 	return dealInfo;
 }
+
 TArray<FUDDealFactionInfo> UUDActionAdministrator::GetDealParticipantList(int32 dealId)
 {
 	TArray<FUDDealFactionInfo> participants = { };
@@ -1176,30 +1193,13 @@ TArray<FUDDealPointMinimalInfo> UUDActionAdministrator::GetDealTertiaryPointList
 	return tertiaryPoints;
 }
 
-TArray<FUDDealActionInfo> UUDActionAdministrator::GetLocalDealActionList(int32 dealId)
+TArray<FUDDealActionMinimalInfo> UUDActionAdministrator::GetDealActionList(int32 dealId)
 {
-	TArray<FUDDealActionInfo> actions = { };
-
-	for (const auto& item : GetDealActionList(dealId))
-	{
-		if (item.ActionBody.Action.InvokerFactionId == State->FactionPerspective)
-		{
-			actions.Add(item);
-		}
-	}
-
-	return actions;
-}
-
-TArray<FUDDealActionInfo> UUDActionAdministrator::GetDealActionList(int32 dealId)
-{
-	TArray<FUDDealActionInfo> actions = { };
+	TArray<FUDDealActionMinimalInfo> actions = { };
 
 	for (const auto& item : State->Deals[dealId]->DealActionList)
 	{
-		FUDDealActionInfo info = FUDDealActionInfo();
-		// TODO REWORK THIS as we need something more useable then this...
-		info.ActionBody = item;
+		FUDDealActionMinimalInfo info = FUDDealActionMinimalInfo();
 		info.ActionIndex = actions.Num();
 		info.DealId = dealId;
 
@@ -1218,6 +1218,169 @@ TArray<FUDActionData> UUDActionAdministrator::GetDealPointsActions(int32 dealId)
 	TArray<FUDActionData> actions = { };
 	actions = UUDDealActionContractCreate::FinalizeActions(State, dealId);
 	return actions;
+}
+
+FUDParameterListInfo UUDActionAdministrator::GetDealActionParameters(const TSet<int32>& tags)
+{
+	// TLDR:
+	// DealAction and FactionInvoker are not standard parameters, so they are added on top of normal parameters.
+	// This way we utilize existing functionality to handle value and text parameters while dealing with additional
+	// parameters at the same time.
+	// As long as they are not parameters, they are also not a tags...
+	FUDParameterListInfo parameters;
+	parameters.OrderedType.Empty(0);
+	parameters.OrderedData.Empty(0);
+	// This determines actions that can belong to the point.
+	parameters.OrderedType.Add(EUDParameterType::DealAction);
+	parameters.OrderedData.Add(GetActionParameter(tags));
+	// This determines invoker parameter.
+	parameters.OrderedType.Add(EUDParameterType::FactionInvoker);
+	parameters.OrderedData.Add(GetFactionParameter(tags));
+	// Always exclude deal ?
+	FUDParameterListInfo valueTextParameters = GetActionParameters(tags, UD_INVALID_TAG_ID);
+	parameters.OrderedType.Append(valueTextParameters.OrderedType);
+	parameters.OrderedData.Append(valueTextParameters.OrderedData);
+	return parameters;
+}
+
+FUDParameterListInfo UUDActionAdministrator::GetDealActionParametersWithValues(const TSet<int32>& tags, int32 dealAction, FUDActionData data)
+{
+	FUDParameterListInfo parameters = GetDealActionParameters(tags);
+
+	int32 index = 0;
+	for (int32 i = 0; i < parameters.OrderedType.Num(); i++)
+	{
+		switch (parameters.OrderedType[i])
+		{
+		case EUDParameterType::DealAction:
+			parameters.OrderedData[i].Get<FUDActionParameter>().HasCurrentValue = true;
+			parameters.OrderedData[i].Get<FUDActionParameter>().CurrentValue = dealAction;
+			break;
+		case EUDParameterType::FactionInvoker:
+			parameters.OrderedData[i].Get<FUDFactionParameter>().HasCurrentValue = true;
+			parameters.OrderedData[i].Get<FUDFactionParameter>().CurrentValue = data.InvokerFactionId;
+			break;
+		case EUDParameterType::FactionTarget:
+			parameters.OrderedData[i].Get<FUDFactionParameter>().HasCurrentValue = true;
+			parameters.OrderedData[i].Get<FUDFactionParameter>().CurrentValue = data.ValueParameters[index++];
+			break;
+		case EUDParameterType::Tile:
+			parameters.OrderedData[i].Get<FUDTileParameter>().HasCurrentValue = true;
+			parameters.OrderedData[i].Get<FUDTileParameter>().CurrentValue = FIntPoint(data.ValueParameters[index++], data.ValueParameters[index++]);
+			break;
+		case EUDParameterType::Action:
+			parameters.OrderedData[i].Get<FUDActionParameter>().HasCurrentValue = true;
+			parameters.OrderedData[i].Get<FUDActionParameter>().CurrentValue = data.ValueParameters[index++];
+			break;
+		case EUDParameterType::Resource:
+			parameters.OrderedData[i].Get<FUDResourceParameter>().HasCurrentValue = true;
+			parameters.OrderedData[i].Get<FUDResourceParameter>().CurrentValue = data.ValueParameters[index++];
+			break;
+		case EUDParameterType::Value:
+			parameters.OrderedData[i].Get<FUDValueParameter>().HasCurrentValue = true;
+			parameters.OrderedData[i].Get<FUDValueParameter>().CurrentValue = data.ValueParameters[index++];
+			break;
+		case EUDParameterType::Text:
+			parameters.OrderedData[i].Get<FUDTextParameter>().HasCurrentValue = true;
+			parameters.OrderedData[i].Get<FUDTextParameter>().CurrentValue = data.TextParameter;
+		}
+	}
+	return parameters;
+}
+
+FUDParameterListInfo UUDActionAdministrator::GeActionParametersWithValues(const TSet<int32>& tags, FUDActionData data)
+{
+	FUDParameterListInfo parameters = GetActionParameters(tags, UD_INVALID_TAG_ID);
+
+	int32 index = 0;
+	for (int32 i = 0; i < parameters.OrderedType.Num(); i++)
+	{
+		switch (parameters.OrderedType[i])
+		{
+		case EUDParameterType::FactionTarget:
+			parameters.OrderedData[i].Get<FUDFactionParameter>().HasCurrentValue = true;
+			parameters.OrderedData[i].Get<FUDFactionParameter>().CurrentValue = data.ValueParameters[index++];
+			break;
+		case EUDParameterType::Tile:
+			parameters.OrderedData[i].Get<FUDTileParameter>().HasCurrentValue = true;
+			parameters.OrderedData[i].Get<FUDTileParameter>().CurrentValue = FIntPoint(data.ValueParameters[index++], data.ValueParameters[index++]);
+			break;
+		case EUDParameterType::Action:
+			parameters.OrderedData[i].Get<FUDActionParameter>().HasCurrentValue = true;
+			parameters.OrderedData[i].Get<FUDActionParameter>().CurrentValue = data.ValueParameters[index++];
+			break;
+		case EUDParameterType::Resource:
+			parameters.OrderedData[i].Get<FUDResourceParameter>().HasCurrentValue = true;
+			parameters.OrderedData[i].Get<FUDResourceParameter>().CurrentValue = data.ValueParameters[index++];
+			break;
+		case EUDParameterType::Value:
+			parameters.OrderedData[i].Get<FUDValueParameter>().HasCurrentValue = true;
+			parameters.OrderedData[i].Get<FUDValueParameter>().CurrentValue = data.ValueParameters[index++];
+			break;
+		case EUDParameterType::Text:
+			parameters.OrderedData[i].Get<FUDTextParameter>().HasCurrentValue = true;
+			parameters.OrderedData[i].Get<FUDTextParameter>().CurrentValue = data.TextParameter;
+		}
+	}
+	return parameters;
+}
+
+FUDPointInteractionInfo UUDActionAdministrator::GetPointInteraction(int32 dealId, int32 pointId)
+{
+	FUDPointInteractionInfo interaction;
+	interaction.DealId = dealId;
+	interaction.PointId = pointId;
+	// We start with a discussion point.
+	const auto& pointData = State->Deals[dealId]->Points[pointId];
+	// Determine action that is used for all parameters.
+	interaction.PointActionTypeId = pointData->ActionId;
+	const auto& executor = ActionManager->GetAction(pointData->ActionId);
+	const auto& executorPresentation = executor->GetPresentation();
+	// Once we have action we can move to determining the rest.
+	// TODO properly named points...
+	interaction.PointTitle = executorPresentation.Name;
+
+	// Extend with dummy parameters, TODO move this to action code!
+	TArray<int32> valueParams = pointData->ValueParameters;
+	int32 desiredCount = executor->GetParameterCount();
+	while (valueParams.Num() < desiredCount)
+	{
+		valueParams.Add(-1);
+	}
+	// Fill the action.
+	FUDActionData dummyData = FUDActionData(pointData->ActionId, pointData->Invoker, valueParams, pointData->TextParameter);
+	interaction.Parameters = GetDealActionParametersWithValues(executorPresentation.Tags, pointData->ActionId, dummyData);
+	interaction.PointContent = GetFormattedPresentationString(executorPresentation.DealContentFormat, executorPresentation.Tags, dummyData);
+	// TODO find use for type, like seriously it's ignored in all iterations...
+	//pointData->Type;
+
+	// TODO parameters should try to load default value as selected before firing any update event!
+	return interaction;
+}
+
+FUDActionInteractionInfo UUDActionAdministrator::GetActionInteraction(int32 dealId, int32 indexId)
+{
+	FUDActionInteractionInfo interaction;
+	interaction.DealId = dealId;
+	interaction.PointIndex = indexId;
+	// We start with a discussion action.
+	const auto& pointData = State->Deals[dealId]->DealActionList[indexId];
+	// Determine action that is used for all parameters.
+	interaction.PointActionTypeId = pointData.Action.ActionTypeId;
+	const auto& executor = ActionManager->GetAction(pointData.Action.ActionTypeId);
+	const auto& executorPresentation = executor->GetPresentation();
+	// Once we have action we can move to determining the rest.
+	// TODO properly named points...
+	interaction.ActionTitle = executorPresentation.Name;
+	// Fill the action.
+	interaction.Parameters = GeActionParametersWithValues(executorPresentation.Tags, pointData.Action);
+	interaction.ActionContent = GetFormattedPresentationString(executorPresentation.DealContentFormat, executorPresentation.Tags, pointData.Action);
+
+	interaction.IsInteractable = pointData.Action.InvokerFactionId == State->FactionPerspective && 
+		pointData.SelectedResult == EUDDealActionResult::Unresolved;
+	interaction.IsSabotageable = pointData.Action.InvokerFactionId != State->FactionPerspective;
+
+	return interaction;
 }
 
 #pragma endregion

@@ -34,10 +34,26 @@ void UUDTileParameterViewModel::Update()
 	SetTileTitleText(FText::FromString(Content.Name));
 	SetToolTipText(FText::FromString(Content.ToolTip));
 
-	FUDTileMinimalInfo selected = GetSelectedOrDefault(SelectedTile);
+	FUDTileMinimalInfo selected;
+	if (Content.HasCurrentValue)
+	{
+		selected = GetSelectedOrDefault(Content.CurrentValue);
+	}
+	else
+	{
+		selected = GetSelectedOrDefault(SelectedTile);
+	}
 	SelectedTile = selected.Position;
 	SetNameText(FText::FromString(selected.Name));
-	OnChangeEvent.Broadcast();
+	ChangeAttempted();
+}
+
+void UUDTileParameterViewModel::ChangeAttempted()
+{
+	if (Content.HasCurrentValue && Content.CurrentValue != GetAsValuePoint())
+	{
+		OnChangeEvent.Broadcast();
+	}
 }
 
 FUDTileMinimalInfo UUDTileParameterViewModel::GetSelectedOrDefault(FIntPoint desiredSelectedItem)
@@ -73,7 +89,7 @@ void UUDTileParameterViewModel::PreviousTile()
 		FUDTileMinimalInfo selected = Content.Options[SelectedTileIndex];
 		SelectedTile = selected.Position;
 		SetNameText(FText::FromString(selected.Name));
-		OnChangeEvent.Broadcast();
+		ChangeAttempted();
 	}
 }
 
@@ -86,7 +102,7 @@ void UUDTileParameterViewModel::NextTile()
 		FUDTileMinimalInfo selected = Content.Options[SelectedTileIndex];
 		SelectedTile = selected.Position;
 		SetNameText(FText::FromString(selected.Name));
-		OnChangeEvent.Broadcast();
+		ChangeAttempted();
 	}
 }
 
@@ -97,7 +113,13 @@ void UUDTileParameterViewModel::SetContent(FUDTileParameter content)
 
 TArray<int32> UUDTileParameterViewModel::GetAsValueRange()
 {
-	return { SelectedTile.X, SelectedTile.Y };
+	const auto point = GetAsValuePoint();
+	return { point.X, point.Y };
+}
+
+FIntPoint UUDTileParameterViewModel::GetAsValuePoint()
+{
+	return SelectedTile;
 }
 
 void UUDTileParameterViewModel::SetTileTitleText(FText newTileTitleText)

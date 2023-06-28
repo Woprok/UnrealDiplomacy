@@ -10,7 +10,7 @@
 // Forward Declarations
 
 struct FUDDealMinimalInfo;
-struct FUDDealInteractionInfo;
+struct FUDDealListInfo;
 class UUDDealItemViewModel;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FUDDealItemChanged, const TObjectPtr<UUDDealItemViewModel>& dealItemViewModel);
@@ -133,7 +133,7 @@ private:
 	int32 SelectedHistoryIndex;
 	FUDDealMinimalInfo SelectedActiveDealItem;
 	FUDDealMinimalInfo SelectedHistoryDealItem;
-	FUDDealInteractionInfo Content;
+	FUDDealListInfo Content;
 
 	// Current Instance type is shared.
 	TSubclassOf<UUDViewModel> DealItemType;

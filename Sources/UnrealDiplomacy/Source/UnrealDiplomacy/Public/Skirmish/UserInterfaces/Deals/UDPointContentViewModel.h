@@ -10,6 +10,7 @@
 // Forward Declarations
 
 struct FUDDealPointMinimalInfo;
+struct FUDPointInteractionInfo;
 class UUDParameterEditorViewModel;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FUDParameterEditorChanged, const TObjectPtr<UUDParameterEditorViewModel>& editorViewModel);
@@ -48,6 +49,11 @@ private:
 	/** Defines all parameter instances. */
 	void DefineInstances();
 private:
+	void SaveDealActionChange(int32 actionId);
+	void SaveInvokerChange(int32 invokerId);
+	void SaveValuesChange(TArray<int32> values);
+	void SaveTextChange(FString text);
+private:
 	// MVVM Setters & Getters
 	void SetPointTitleText(FText newPointTitleText);
 	FText GetPointTitleText() const;
@@ -59,7 +65,7 @@ private:
 	bool GetIsValidContentValue() const;
 private:
 	// Fields
-	FUDDealPointMinimalInfo Content;
+	FUDPointInteractionInfo Content;
 	// Current Instance in use...
 	FName ParameterEditorInstanceName = TEXT("PointParameterEditorInstance");
 	TSubclassOf<UUDViewModel> ParameterEditorType;

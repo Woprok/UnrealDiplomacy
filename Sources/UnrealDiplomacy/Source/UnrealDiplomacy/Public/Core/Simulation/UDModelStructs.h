@@ -363,6 +363,10 @@ public:
 	int32 MinValue = 0;
 	UPROPERTY(BlueprintReadOnly)
 	int32 MaxValue = 0;
+	UPROPERTY(BlueprintReadOnly)
+	bool HasCurrentValue = false;
+	UPROPERTY(BlueprintReadOnly)
+	int32 CurrentValue = -1;
 };
 
 USTRUCT(BlueprintType)
@@ -375,6 +379,10 @@ public:
 	FString Name = TEXT("");
 	UPROPERTY(BlueprintReadOnly)
 	FString ToolTip = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	bool HasCurrentValue = false;
+	UPROPERTY(BlueprintReadOnly)
+	FString CurrentValue = TEXT("");
 };
 
 USTRUCT(BlueprintType)
@@ -389,6 +397,10 @@ public:
 	FString ToolTip = TEXT("");
 	UPROPERTY(BlueprintReadOnly)
 	TArray<FUDTileMinimalInfo> Options = { };
+	UPROPERTY(BlueprintReadOnly)
+	bool HasCurrentValue = false;
+	UPROPERTY(BlueprintReadOnly)
+	FIntPoint CurrentValue = FIntPoint(-1, -1);
 };
 
 USTRUCT(BlueprintType)
@@ -403,6 +415,10 @@ public:
 	FString ToolTip = TEXT("");
 	UPROPERTY(BlueprintReadOnly)
 	TArray<FUDDealMinimalInfo> Options = { };
+	UPROPERTY(BlueprintReadOnly)
+	bool HasCurrentValue = false;
+	UPROPERTY(BlueprintReadOnly)
+	int32 CurrentValue = -1;
 };
 
 USTRUCT(BlueprintType)
@@ -417,6 +433,10 @@ public:
 	FString ToolTip = TEXT("");
 	UPROPERTY(BlueprintReadOnly)
 	TArray<FUDFactionMinimalInfo> Options = { };
+	UPROPERTY(BlueprintReadOnly)
+	bool HasCurrentValue = false;
+	UPROPERTY(BlueprintReadOnly)
+	int32 CurrentValue = -1;
 };
 
 USTRUCT(BlueprintType)
@@ -431,6 +451,10 @@ public:
 	FString ToolTip = TEXT("");
 	UPROPERTY(BlueprintReadOnly)
 	TArray<FUDActionMinimalInfo> Options = { };
+	UPROPERTY(BlueprintReadOnly)
+	bool HasCurrentValue = false;
+	UPROPERTY(BlueprintReadOnly)
+	int32 CurrentValue = -1;
 };
 
 USTRUCT(BlueprintType)
@@ -445,6 +469,10 @@ public:
 	FString ToolTip = TEXT("");
 	UPROPERTY(BlueprintReadOnly)
 	TArray<FUDResourceMinimalInfo> Options = { };
+	UPROPERTY(BlueprintReadOnly)
+	bool HasCurrentValue = false;
+	UPROPERTY(BlueprintReadOnly)
+	int32 CurrentValue = -1;
 };
 
 /** Question is whatever it's chicken or an egg. */
@@ -551,11 +579,11 @@ public:
 #pragma region Deals
 
 USTRUCT(BlueprintType)
-struct FUDDealInteractionInfo
+struct FUDDealListInfo
 {
 	GENERATED_BODY()
 public:
-	FUDDealInteractionInfo();
+	FUDDealListInfo();
 	UPROPERTY(BlueprintReadOnly)
 	TArray<FUDDealMinimalInfo> Active = { };
 	UPROPERTY(BlueprintReadOnly)
@@ -630,4 +658,63 @@ public:
 	int32 PointId = 0;
 };
 
+USTRUCT(BlueprintType)
+struct FUDPointInteractionInfo
+{
+	GENERATED_BODY()
+public:
+	FUDPointInteractionInfo();
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealId = -1;
+	UPROPERTY(BlueprintReadOnly)
+	int32 PointId = -1;
+	/** Title given to this point. */
+	UPROPERTY(BlueprintReadOnly)
+	FString PointTitle = TEXT("");
+	/** Formatted content that uses parameters. */
+	UPROPERTY(BlueprintReadOnly)
+	FString PointContent = TEXT("");
+	/** Point Action determines parameters. */
+	UPROPERTY(BlueprintReadOnly)
+	int32 PointActionTypeId = 0;
+	/** Parameters are extended with deal action and invoker for full editation. */
+	UPROPERTY(BlueprintReadOnly)
+	FUDParameterListInfo Parameters;
+};
+
+USTRUCT(BlueprintType)
+struct FUDActionInteractionInfo
+{
+	GENERATED_BODY()
+public:
+	FUDActionInteractionInfo();
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealId = -1;
+	UPROPERTY(BlueprintReadOnly)
+	int32 PointIndex = -1;
+	UPROPERTY(BlueprintReadOnly)
+	FString ActionTitle = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	FString ActionContent = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	int32 PointActionTypeId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	FUDParameterListInfo Parameters;
+	UPROPERTY(BlueprintReadOnly)
+	bool IsInteractable;
+	UPROPERTY(BlueprintReadOnly)
+	bool IsSabotageable;
+};
+
+USTRUCT(BlueprintType)
+struct FUDDealActionMinimalInfo
+{
+	GENERATED_BODY()
+public:
+	FUDDealActionMinimalInfo();
+	UPROPERTY(BlueprintReadOnly)
+	int32 DealId;
+	UPROPERTY(BlueprintReadOnly)
+	int32 ActionIndex;
+};
 #pragma endregion

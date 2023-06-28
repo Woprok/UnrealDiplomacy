@@ -51,6 +51,9 @@ FUDActionPresentation UUDGameActionGiftIrrevocable::GetPresentation() const
 			UD_ACTION_TAG_PARAMETER_VALUE_AMOUNT,
 		}
 	);
+	presentation.DealContentFormat = FText(LOCTEXT("GiftIrrevocable",
+		"Faction [{INVOKER}] will send [{VALUE}] of [{RESOURCE}] to [{TARGET}]."
+	)).ToString();
 
 	return presentation;
 }
