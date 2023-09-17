@@ -230,12 +230,6 @@ void AUDWorldSimulation::AssignActionIds(FUDActionData& newAction)
 	{
 		newAction.UniqueId = GetNewActionId();
 	}
-	// Action that has parent will always carry the specified as SourceUniqueId.
-	// Otherwise this must assign the new UniqueId to it.
-	if (!HasValidActionId(newAction.SourceUniqueId))
-	{
-		newAction.SourceUniqueId = newAction.UniqueId;
-	}
 }
 void AUDWorldSimulation::CreateActionBackup(FUDActionData& newAction,
 	TScriptInterface<IUDActionInterface>& actionExecutor,

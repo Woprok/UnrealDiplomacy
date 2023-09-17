@@ -13,12 +13,10 @@
 FUDMessageInfo GetInvalidMessage()
 {
 	FUDMessageInfo info;
-	info.RequestId = UUDGlobalData::InvalidActionId;
-	info.ActionId = UUDGlobalData::InvalidActionId;
-	info.AcceptId = UUDGlobalData::InvalidActionId;
-	info.RejectId = UUDGlobalData::InvalidActionId;
-	info.Name = FText(LOCTEXT("MessageManagement", "No Pending Requests")).ToString();
-	info.Content = FText(LOCTEXT("MessageManagement", "")).ToString();
+	info.DecisionId = UUDGlobalData::InvalidActionId;
+	info.Content.ActionTypeId = UUDGlobalData::InvalidActionId;
+	info.Content.Name = FText(LOCTEXT("MessageManagement", "No Pending Messages")).ToString();
+	info.Content.Content = FText(LOCTEXT("MessageManagement", "")).ToString();
 	return info;
 }
 
@@ -102,7 +100,7 @@ void UUDMessageManagementViewModel::UpdateMessageItems()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDMessageManagementViewModel: UpdateMessageItem."));
 	Content = Model->GetAllLocalRequests();
-	SelectedMessageItem = GetSelectedOrDefault(SelectedMessageItem.RequestId);
+	SelectedMessageItem = GetSelectedOrDefault(SelectedMessageItem.DecisionId);
 	UpdateSelectedMessageItem();
 }
 
@@ -114,7 +112,7 @@ FUDMessageInfo UUDMessageManagementViewModel::GetSelectedOrDefault(int32 desired
 	SelectedIndex = UUDGlobalData::InvalidArrayIndex;
 	// Find
 	const auto& found = Content.Messages.FindByPredicate(
-		[&desiredSelectedItem](const FUDMessageInfo& item) { return item.RequestId == desiredSelectedItem; }
+		[&desiredSelectedItem](const FUDMessageInfo& item) { return item.DecisionId == desiredSelectedItem; }
 	);
 	if (found)
 	{

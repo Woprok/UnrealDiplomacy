@@ -23,7 +23,7 @@ public:
 	// This action needs to call end of intermezzo.	
 	virtual TArray<FUDActionData> GetContinuations(const FUDActionData& parentAction, TObjectPtr<UUDWorldState> world) const override;
 public:
-	static const int32 ActionTypeId = 8;
+	static const int32 ActionTypeId = 18;
 protected:
 	/**
 	 * Passes regency to next player.

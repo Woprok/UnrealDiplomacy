@@ -17,18 +17,18 @@ void UUDDealActionCreate::Execute(const FUDActionData& action, TObjectPtr<UUDWor
 {
 	IUDActionInterface::Execute(action, world);
 	// Creates new deal state with Id same as this action SourceUniqueId.
-	world->Deals.Add(action.SourceUniqueId, UUDDealState::CreateState(action.SourceUniqueId, action.InvokerFactionId));
-	world->Deals[action.SourceUniqueId]->Participants.Add(action.InvokerFactionId);
+	world->Deals.Add(action.UniqueId, UUDDealState::CreateState(action.UniqueId, action.InvokerFactionId));
+	world->Deals[action.UniqueId]->Participants.Add(action.InvokerFactionId);
 	FString factionName = world->Factions[action.InvokerFactionId]->Name;
-	world->Deals[action.SourceUniqueId]->Name = FString::Format(TEXT("{0} Deal {1}"), { factionName, action.SourceUniqueId });
+	world->Deals[action.UniqueId]->Name = FString::Format(TEXT("{0} Deal {1}"), { factionName, action.UniqueId });
 }
 
 void UUDDealActionCreate::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Revert(action, world);
 	// Removes deal with key equal to SourceUniqueId of the original action.
-	world->Deals[action.SourceUniqueId]->Participants.Remove(action.InvokerFactionId);
-	world->Deals.Remove(action.SourceUniqueId);
+	world->Deals[action.UniqueId]->Participants.Remove(action.InvokerFactionId);
+	world->Deals.Remove(action.UniqueId);
 }
 
 bool UUDDealActionCreate::IsDealModerator(TObjectPtr<UUDWorldState> world, int32 playerId) const

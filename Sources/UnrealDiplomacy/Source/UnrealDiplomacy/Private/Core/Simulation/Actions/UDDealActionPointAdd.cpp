@@ -16,17 +16,17 @@ bool UUDDealActionPointAdd::CanExecute(const FUDActionData& action, TObjectPtr<U
 void UUDDealActionPointAdd::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Execute(action, world);
-	// Creates new point with current SourceUniqueId.
+	// Creates new point with current UniqueId.
 	FUDDealData data(action.ValueParameters);
-	world->Deals[data.DealId]->Points.Add(action.SourceUniqueId, UUDDiscussionItem::CreateState(action.InvokerFactionId));
-	world->Deals[data.DealId]->PrimaryPoints.Add(action.SourceUniqueId);
+	world->Deals[data.DealId]->Points.Add(action.UniqueId, UUDDiscussionItem::CreateState(action.InvokerFactionId));
+	world->Deals[data.DealId]->PrimaryPoints.Add(action.UniqueId);
 }
 
 void UUDDealActionPointAdd::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Revert(action, world);
-	// Deletes created point that is saved with this action SourceUniqueId.
+	// Deletes created point that is saved with this action UniqueId.
 	FUDDealData data(action.ValueParameters);
-	world->Deals[data.DealId]->Points.Remove(action.SourceUniqueId);
-	world->Deals[data.DealId]->PrimaryPoints.Remove(action.SourceUniqueId);
+	world->Deals[data.DealId]->Points.Remove(action.UniqueId);
+	world->Deals[data.DealId]->PrimaryPoints.Remove(action.UniqueId);
 }

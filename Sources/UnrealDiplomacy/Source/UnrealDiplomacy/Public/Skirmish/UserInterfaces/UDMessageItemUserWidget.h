@@ -41,16 +41,22 @@ protected:
 protected:
 	// Bindings
 	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> MessageTypeTextWidget;
+	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> MessageTitleTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> MessageTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> AcceptTextWidget;
 	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> OkTextWidget;
+	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> RejectTextWidget;
 
 	UPROPERTY()
 	TWeakObjectPtr<UButton> AcceptButtonWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UButton> OkButtonWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> RejectButtonWidget;
 	// ViewModel

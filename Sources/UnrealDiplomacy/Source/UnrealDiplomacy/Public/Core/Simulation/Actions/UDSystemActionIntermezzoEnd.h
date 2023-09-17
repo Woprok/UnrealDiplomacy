@@ -21,5 +21,5 @@ public:
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual int32 GetId() const override { return ActionTypeId; };
 public:
-	static const int32 ActionTypeId = 13;
+	static const int32 ActionTypeId = 23;
 };

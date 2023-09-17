@@ -19,7 +19,7 @@ public:
 	virtual int32 GetId() const override { return ActionTypeId; };
 	virtual void SetWorldGenerator(TObjectPtr<UUDWorldGenerator> worldGenerator) override;
 public:
-	static const int32 ActionTypeId = 9;
+	static const int32 ActionTypeId = 19;
 protected:
 	UPROPERTY()
 	TWeakObjectPtr<UUDWorldGenerator> WorldGenerator = nullptr;

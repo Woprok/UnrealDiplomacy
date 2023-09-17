@@ -24,6 +24,7 @@ class UUDModifierManager;
 // Target Amount
 // Target Tile
 // -> Target Tile Amount
+// -> Target Decision
 // DEAL -> POINT OR ELSE -> POINT MODIFICATION
 // Deal
 // Deal Point
@@ -69,6 +70,16 @@ class UUDModifierManager;
 // Details
 #define UD_ACTION_TAG_PARAMETER_VALUE_AMOUNT 18
 #define UD_ACTION_TAG_PARAMETER_VALUE_SMALL_MAX 19
+// Decisions
+// Direct action on target
+#define UD_ACTION_TAG_DECISION_DIRECT 20
+// Request action from target
+#define UD_ACTION_TAG_DECISION_REQUEST 21
+// Offer action to target
+#define UD_ACTION_TAG_DECISION_OFFER 22
+// Demand action from target
+#define UD_ACTION_TAG_DECISION_DEMAND 23
+
 // This is default and is not necessary.
 #define UD_ACTION_TAG_VERIFY_PARAMETER_EQUALITY 50
 // This overrides default check inside of an interface.
@@ -192,21 +203,4 @@ public:
 	 * Contains definition for filtering and displaying action.
 	 */
 	virtual FUDActionPresentation GetPresentation() const;
-protected:
-	/**
-	 * Adds pending request associated with action and specified target.
-	 */
-	void AddPendingTargetRequest(FUDActionData action, int32 targetId, TObjectPtr<UUDWorldState> world);
-	/**
-	 * Removes pending request associated with action and specified target.
-	 */
-	void RemovePendingTargetRequest(const FUDActionData& action, int32 targetId, TObjectPtr<UUDWorldState> world);
-	/**
-	 * Checks if there is pending request associated with action and specified target.
-	 */
-	bool IsPendingTargetRequest(const FUDActionData& action, int32 targetId, TObjectPtr<UUDWorldState> world) const;
-	/**
-	 * Checks if there is pending interchangeable request associated with target.
-	 */
-	bool IsPendingInterchangeableTargetRequest(const FUDActionData& action, int32 targetId, TObjectPtr<UUDWorldState> world) const;
 };

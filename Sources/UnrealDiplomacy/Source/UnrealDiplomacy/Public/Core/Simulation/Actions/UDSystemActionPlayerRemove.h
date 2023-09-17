@@ -18,7 +18,7 @@ public:
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual int32 GetId() const override { return ActionTypeId; };
 public:
-	static const int32 ActionTypeId = 3;
+	static const int32 ActionTypeId = 13;
 };
 
 /**
@@ -33,5 +33,5 @@ public:
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual int32 GetId() const override { return ActionTypeId; };
 public:
-	static const int32 ActionTypeId = 4;
+	static const int32 ActionTypeId = 14;
 };

@@ -522,23 +522,33 @@ public:
 #pragma endregion
 
 USTRUCT(BlueprintType)
+struct FUDMessageContentInfo
+{
+	GENERATED_BODY()
+public:
+	FUDMessageContentInfo();
+	UPROPERTY(BlueprintReadOnly)
+	int32 ActionTypeId = 0;
+	UPROPERTY(BlueprintReadOnly)
+	FString Name = TEXT("");
+	UPROPERTY(BlueprintReadOnly)
+	FString Content = TEXT("");
+};
+
+USTRUCT(BlueprintType)
 struct FUDMessageInfo
 {
 	GENERATED_BODY()
 public:
 	FUDMessageInfo();
 	UPROPERTY(BlueprintReadOnly)
-	FString Name = TEXT("");
+	FString Type = TEXT("");
 	UPROPERTY(BlueprintReadOnly)
-	FString Content = TEXT("");
+	int32 DecisionId = 0;
 	UPROPERTY(BlueprintReadOnly)
-	int32 RequestId = 0;
+	FUDMessageContentInfo Content;
 	UPROPERTY(BlueprintReadOnly)
-	int32 ActionId = 0;
-	UPROPERTY(BlueprintReadOnly)
-	int32 AcceptId = 0;
-	UPROPERTY(BlueprintReadOnly)
-	int32 RejectId = 0;
+	FUDMessageContentInfo AdditionalContent;
 public:
 	/** Equality over UniqueId field. */
 	inline bool operator!=(const FUDMessageInfo& rhs) const
@@ -548,7 +558,7 @@ public:
 	/** Equality over UniqueId field. */
 	inline bool operator==(const FUDMessageInfo& rhs) const
 	{
-		return RequestId == rhs.RequestId;
+		return DecisionId == rhs.DecisionId;
 	}
 };
 

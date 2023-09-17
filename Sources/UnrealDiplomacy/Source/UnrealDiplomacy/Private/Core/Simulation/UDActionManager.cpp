@@ -60,6 +60,7 @@ void UUDActionManager::Initialize()
 void UUDActionManager::RegisterCoreActions()
 {
 	RegisterActionList(UUDActionDatabase::GetDefaultActions(this));
+	RegisterActionList(UUDActionDatabase::GetDecisionActions(this));
 	RegisterActionList(UUDActionDatabase::GetGaiaActions(this));
 	RegisterActionList(UUDActionDatabase::GetSystemActions(this));
 	RegisterActionList(UUDActionDatabase::GetGameActions(this));

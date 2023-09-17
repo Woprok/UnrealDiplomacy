@@ -2,7 +2,7 @@
 
 #include "Core/Simulation/Actions/UDDealActionParticipantInvite.h"
 #include "Core/Simulation/Actions/UDDealActionParticipantInviteAccept.h"
-#include "Core/Simulation/Actions/UDDealActionParticipantInviteReject.h"
+//#include "Core/Simulation/Actions/UDDealActionParticipantInviteReject.h"
 #include "Core/UDGlobalData.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDWorldState.h"
@@ -11,7 +11,6 @@ bool UUDDealActionParticipantInvite::CanExecute(const FUDActionData& action, TOb
 {
 	FUDDealDataTarget data(action.ValueParameters);
 	bool isNotMember = !world->Deals[data.DealId]->Participants.Contains(data.TargetId);
-	bool isQueuedAgain = IsPendingInterchangeableTargetRequest(action, data.TargetId, world);
 	return IUDActionInterface::CanExecute(action, world) && isNotMember;
 }
 
@@ -20,7 +19,7 @@ void UUDDealActionParticipantInvite::Execute(const FUDActionData& action, TObjec
 	IUDActionInterface::Execute(action, world);
 	// Queue new confirmable request.
 	FUDDealDataTarget data(action.ValueParameters);
-	AddPendingTargetRequest(action, data.TargetId, world);
+	world->Deals[data.DealId]->Participants.Add(data.TargetId);
 }
 
 void UUDDealActionParticipantInvite::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -28,7 +27,7 @@ void UUDDealActionParticipantInvite::Revert(const FUDActionData& action, TObject
 	IUDActionInterface::Revert(action, world);
 	// Remove request from queue.
 	FUDDealDataTarget data(action.ValueParameters);
-	RemovePendingTargetRequest(action, data.TargetId, world);
+	world->Deals[data.DealId]->Participants.Remove(data.TargetId);
 }
 
 #define LOCTEXT_NAMESPACE "ParticipantInvite"
@@ -48,7 +47,7 @@ FUDActionPresentation UUDDealActionParticipantInvite::GetPresentation() const
 	);
 
 	presentation.AcceptActionId = UUDDealActionParticipantInviteAccept::ActionTypeId;
-	presentation.RejectActionId = UUDDealActionParticipantInviteReject::ActionTypeId;
+	//presentation.RejectActionId = UUDDealActionParticipantInviteReject::ActionTypeId;
 	presentation.MessageContentFormat = FText(LOCTEXT("ParticipantInvite",
 		"Your faction [{TARGET}] has been invited to participate in [{INVOKER}]'s deal: [{DEAL}].\nHow do you answer ?"
 	)).ToString();

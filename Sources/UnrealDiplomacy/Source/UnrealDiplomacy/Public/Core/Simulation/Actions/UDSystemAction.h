@@ -52,5 +52,5 @@ class UNREALDIPLOMACY_API UUDSystemAction : public UObject, public IUDActionInte
 public:
 	virtual int32 GetId() const override { return ActionTypeId; };
 public:
-	static const int32 ActionTypeId = 0;
+	static const int32 ActionTypeId = 10;
 };

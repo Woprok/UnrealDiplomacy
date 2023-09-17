@@ -62,16 +62,16 @@ void AUDSkirmishAIController::ResolveRequests()
 {
 	for (const auto& request : GetAdministrator()->GetAllLocalRequests().Messages)
 	{
-		switch (request.ActionId)
+		switch (request.Content.ActionTypeId)
 		{
 		// Be happy we have new favorite.
 		case UUDGameActionGift::ActionTypeId:
-			MakeAcceptAction(request.AcceptId, GetAdministrator()->GetPendingRequest(request.RequestId));
-			FavoriteFaction = GetAdministrator()->GetPendingRequest(request.RequestId).InvokerFactionId;
+			MakeConfirmAction(request.DecisionId);
+			FavoriteFaction = GetAdministrator()->GetPendingRequest(request.DecisionId).InvokerFactionId;
 			break;
 		// They definitely can't request something bad right ?
 		default:
-			MakeAcceptAction(request.AcceptId, GetAdministrator()->GetPendingRequest(request.RequestId));
+			MakeConfirmAction(request.DecisionId);
 			break;
 		}
 	}

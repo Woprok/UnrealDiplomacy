@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Core/Simulation/Actions/UDDealActionParticipantInvite.h"
-#include "UDDealActionParticipantInviteReject.generated.h"
+#include "Core/Simulation/Actions/UDDecisionAction.h"
+#include "UDDecisionActionCreate.generated.h"
 
 /**
- * Reject and become unable to become a participant in the deal.
+ * Creates new decision that needs to be resolved by target.
  */
 UCLASS(Blueprintable, BlueprintType)
-class UNREALDIPLOMACY_API UUDDealActionParticipantInviteReject : public UUDDealActionParticipantInvite
+class UNREALDIPLOMACY_API UUDDecisionActionCreate : public UUDDecisionAction
 {
 	GENERATED_BODY()
 public:
@@ -18,7 +18,8 @@ public:
 	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual int32 GetId() const override { return ActionTypeId; };
-	virtual int32 GetParameterCount() const override { return FUDDealDataTarget::ParameterCount; };
+	virtual int32 GetParameterCount() const override { return FUDDecisionDataTargetTypeParameters::ParameterCount; };
+	virtual FUDActionPresentation GetPresentation() const override;
 public:
-	static const int32 ActionTypeId = 3004;
+	static const int32 ActionTypeId = 5001;
 };

@@ -79,14 +79,17 @@ FUDActionData UUDActionAdministrator::GetAction(int32 actionId, FString optional
 	return FUDActionData(actionId, State->FactionPerspective, optionalString);
 }
 
-FUDActionData UUDActionAdministrator::GetAcceptAction(int32 actionId, FUDActionData sourceAction)
+#include "Core/Simulation/Actions/UDDecisionActionConfirm.h"
+#include "Core/Simulation/Actions/UDDecisionActionDecline.h"
+
+FUDActionData UUDActionAdministrator::GetConfirmAction(int32 decisionId)
 {
-	return FUDActionData::AsSuccessorOf(sourceAction, actionId);
+	return FUDActionData(UUDDecisionActionConfirm::ActionTypeId, State->FactionPerspective, { decisionId });
 }
 
-FUDActionData UUDActionAdministrator::GetRejectAction(int32 actionId, FUDActionData sourceAction)
+FUDActionData UUDActionAdministrator::GetDeclineAction(int32 decisionId)
 {
-	return FUDActionData::AsSuccessorOf(sourceAction, actionId);
+	return FUDActionData(UUDDecisionActionDecline::ActionTypeId, State->FactionPerspective, { decisionId });
 }
 
 #pragma endregion
@@ -402,7 +405,8 @@ int32 UUDActionAdministrator::GetActiveDealParticipationCount()
 	int32 participating = 0;
 	for (const auto& deal : State->Deals)
 	{
-		if (deal.Value->Participants.Contains(State->FactionPerspective))
+		if (deal.Value->DealSimulationResult == EUDDealSimulationResult::Opened &&
+			deal.Value->Participants.Contains(State->FactionPerspective))
 		{
 			participating++;
 		}
@@ -412,7 +416,7 @@ int32 UUDActionAdministrator::GetActiveDealParticipationCount()
 
 int32 UUDActionAdministrator::GetUnresolvedMessagesCount()
 {
-	return State->Factions[State->FactionPerspective]->PendingRequests.Num();
+	return State->Factions[State->FactionPerspective]->PendingDecisions.Num();
 }
 
 #pragma endregion
@@ -898,22 +902,59 @@ FString UUDActionAdministrator::GetFormattedPresentationString(FString formatStr
 	return FString::Format(*formatString, GetPresentationContentArguments(tags, action));
 }
 
-FUDMessageInfo UUDActionAdministrator::CreateMessageFromRequest(int32 requestId, FUDActionData action)
+#define LOCTEXT_NAMESPACE "DecisionTypeConverter"
+FText UUDActionAdministrator::GetFormattedDecisionType(EUDDecisionType type)
+{
+	switch (type)
+	{
+	case EUDDecisionType::Gift:
+		return FText(LOCTEXT("DecisionTypeConverter", "Gift"));
+		break;
+	case EUDDecisionType::Offer:
+		return FText(LOCTEXT("DecisionTypeConverter", "Offer"));
+		break;
+	case EUDDecisionType::Request:
+		return FText(LOCTEXT("DecisionTypeConverter", "Request"));
+		break;
+	case EUDDecisionType::Demand:
+		return FText(LOCTEXT("DecisionTypeConverter", "Demand"));
+		break;
+	case EUDDecisionType::Error:
+	default:
+		break;
+	}
+	return FText(LOCTEXT("DecisionTypeConverter", "Undefined"));
+}
+#undef LOCTEXT_NAMESPACE
+
+FUDMessageContentInfo UUDActionAdministrator::CreateMessageContent(FUDActionData action)
+{
+	FUDMessageContentInfo content = FUDMessageContentInfo();
+	FUDActionPresentation presentation = ActionManager->GetAction(action.ActionTypeId)->GetPresentation();
+	content.ActionTypeId = action.ActionTypeId;
+	content.Name = presentation.Name;
+	content.Content = GetFormattedPresentationString(presentation.MessageContentFormat, presentation.Tags, action);
+	return content;
+}
+
+FUDMessageInfo UUDActionAdministrator::CreateMessageFromRequest(int32 decisionId, FUDDecision decision)
 {
 	FUDMessageInfo message = FUDMessageInfo();
-	message.RequestId = requestId;
-	FUDActionPresentation presentation = ActionManager->GetAction(action.ActionTypeId)->GetPresentation();
-	message.ActionId = presentation.ActionId;
-	message.Name = presentation.Name;
-	message.AcceptId = presentation.AcceptActionId;
-	message.RejectId = presentation.RejectActionId;
-	message.Content = GetFormattedPresentationString(presentation.MessageContentFormat, presentation.Tags, action);
+	message.DecisionId = decisionId;
+	message.Content = CreateMessageContent(decision.ConfirmAction);
+	message.Type = GetFormattedDecisionType(decision.Type).ToString();
+
+	if (decision.HasDecline)
+	{
+		message.AdditionalContent = CreateMessageContent(decision.DeclineAction);
+	}
+	
 	return message;
 }
 
-FUDActionData UUDActionAdministrator::GetPendingRequest(int32 pendingRequestId)
+FUDActionData UUDActionAdministrator::GetPendingRequest(int32 pendingDecisionId)
 {
-	return State->Factions[State->FactionPerspective]->PendingRequests[pendingRequestId];
+	return State->Factions[State->FactionPerspective]->PendingDecisions[pendingDecisionId].ConfirmAction;
 }
 
 FUDMessageInteractionInfo UUDActionAdministrator::GetAllLocalRequests()
@@ -921,7 +962,7 @@ FUDMessageInteractionInfo UUDActionAdministrator::GetAllLocalRequests()
 	FUDMessageInteractionInfo info = FUDMessageInteractionInfo();
 	info.Messages = { };
 
-	for (const auto& request : State->Factions[State->FactionPerspective]->PendingRequests)
+	for (const auto& request : State->Factions[State->FactionPerspective]->PendingDecisions)
 	{
 		info.Messages.Add(CreateMessageFromRequest(request.Key, request.Value));
 	}

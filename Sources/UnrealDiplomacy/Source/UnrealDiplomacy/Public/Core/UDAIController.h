@@ -105,9 +105,9 @@ protected:
 	/** Shortcut for executing actions. */
 	void MakeAction(int32 actionId, TArray<int32> values);
 	/** Shortcut for executing actions. */
-	void MakeAcceptAction(int32 actionId, FUDActionData data);
+	void MakeConfirmAction(int32 decisionId);
 	/** Shortcut for executing actions. */
-	void MakeRejectAction(int32 actionId, FUDActionData data);
+	void MakeDeclineAction(int32 decisionId);
 private:
 	/**
 	 * Internal handle for dealing with in of turn actions to avoid cycle during single execution.

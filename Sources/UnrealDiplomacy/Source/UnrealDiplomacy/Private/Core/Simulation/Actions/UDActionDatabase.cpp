@@ -4,6 +4,7 @@
 #include "Core/Simulation/UDActionInterface.h"
 
 // Default
+#include "Core/Simulation/Actions/UDDefaultAction.h"
 #include "Core/Simulation/Actions/UDDefaultActionInvalid.h"
 // Deal
 #include "Core/Simulation/Actions/UDDealAction.h"
@@ -18,7 +19,7 @@
 #include "Core/Simulation/Actions/UDDealActionMessageSend.h"
 #include "Core/Simulation/Actions/UDDealActionParticipantInvite.h"
 #include "Core/Simulation/Actions/UDDealActionParticipantInviteAccept.h"
-#include "Core/Simulation/Actions/UDDealActionParticipantInviteReject.h"
+#include "Core/Simulation/Actions/UDDealActionParticipantInviteConsequence.h"
 #include "Core/Simulation/Actions/UDDealActionParticipantKick.h"
 #include "Core/Simulation/Actions/UDDealActionParticipantLeave.h"
 #include "Core/Simulation/Actions/UDDealActionPointAdd.h"
@@ -46,6 +47,11 @@
 #include "Core/Simulation/Actions/UDDealActionStateExtendingDraft.h"
 #include "Core/Simulation/Actions/UDDealActionVoteNo.h"
 #include "Core/Simulation/Actions/UDDealActionVoteYes.h"
+// Decision
+#include "Core/Simulation/Actions/UDDecisionAction.h"
+#include "Core/Simulation/Actions/UDDecisionActionCreate.h"
+#include "Core/Simulation/Actions/UDDecisionActionConfirm.h"
+#include "Core/Simulation/Actions/UDDecisionActionDecline.h"
 // Gaia
 #include "Core/Simulation/Actions/UDGaiaAction.h"
 #include "Core/Simulation/Actions/UDGaiaActionResourcesAllAdd.h"
@@ -93,7 +99,8 @@
 TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetDefaultActions(UObject* parent)
 {
 	return {
-		NewObject<UUDDefaultActionInvalid>(parent),
+		NewObject<UUDDefaultAction>(parent),
+		NewObject<UUDDefaultActionInvalid>(parent)
 	};
 }
 
@@ -113,6 +120,16 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetSystemActions
 		NewObject<UUDSystemActionTurnFinish>(parent),
 		NewObject<UUDSystemActionIntermezzoStart>(parent),
 		NewObject<UUDSystemActionIntermezzoEnd>(parent)
+	};
+}
+
+TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetDecisionActions(UObject* parent)
+{
+	return {
+		//NewObject<UDDecisionAction>(parent),
+		NewObject<UUDDecisionActionCreate>(parent),
+		NewObject<UUDDecisionActionConfirm>(parent),
+		NewObject<UUDDecisionActionDecline>(parent)
 	};
 }
 
@@ -160,7 +177,7 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetDealActions(U
 		NewObject<UUDDealActionMessageSend>(parent),
 		NewObject<UUDDealActionParticipantInvite>(parent),
 		NewObject<UUDDealActionParticipantInviteAccept>(parent),
-		NewObject<UUDDealActionParticipantInviteReject>(parent),
+		NewObject<UUDDealActionParticipantInviteConsequence>(parent),
 		NewObject<UUDDealActionParticipantKick>(parent),
 		NewObject<UUDDealActionParticipantLeave>(parent),
 		NewObject<UUDDealActionPointAdd>(parent),

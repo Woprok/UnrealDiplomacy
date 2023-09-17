@@ -22,5 +22,5 @@ public:
 	// This action needs to call start of intermezzo.	
 	virtual TArray<FUDActionData> GetContinuations(const FUDActionData& parentAction, TObjectPtr<UUDWorldState> world) const override;
 public:
-	static const int32 ActionTypeId = 11;
+	static const int32 ActionTypeId = 21;
 };

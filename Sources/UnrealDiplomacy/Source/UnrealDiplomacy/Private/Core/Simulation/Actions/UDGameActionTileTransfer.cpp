@@ -19,17 +19,19 @@ bool UUDGameActionTileTransfer::CanExecute(const FUDActionData& action, TObjectP
 void UUDGameActionTileTransfer::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Execute(action, world);
-	// Queue new confirmable request.
+	// Execute change based on data. Invoker transfers to target.
 	FUDGameDataTargetTile data(action.ValueParameters);
-	AddPendingTargetRequest(action, data.TargetId, world);
+	FIntPoint tile(data.X, data.Y);
+	world->Map->GetTile(tile)->OwnerUniqueId = data.TargetId;
 }
 
 void UUDGameActionTileTransfer::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Revert(action, world);
-	// Remove request from queue.
+	// Revert change based on data. Invoker was one that gave away the tile.
 	FUDGameDataTargetTile data(action.ValueParameters);
-	RemovePendingTargetRequest(action, data.TargetId, world);
+	FIntPoint tile(data.X, data.Y);
+	world->Map->GetTile(tile)->OwnerUniqueId = action.InvokerFactionId;
 }
 
 #define LOCTEXT_NAMESPACE "TileTransfer"
@@ -48,6 +50,9 @@ FUDActionPresentation UUDGameActionTileTransfer::GetPresentation() const
 			UD_ACTION_TAG_FACTION_INTERACTION,
 			UD_ACTION_TAG_PARAMETER_FACTION,
 			UD_ACTION_TAG_PARAMETER_TILE,
+			UD_ACTION_TAG_DECISION_DIRECT,
+			UD_ACTION_TAG_DECISION_REQUEST,
+			UD_ACTION_TAG_DECISION_DEMAND,
 		}
 	);
 
@@ -57,7 +62,7 @@ FUDActionPresentation UUDGameActionTileTransfer::GetPresentation() const
 		"Faction [{INVOKER}] offered your faction [{TARGET}] province [{TILE}].\nDo you accept ?"
 	)).ToString();	
 	presentation.DealContentFormat = FText(LOCTEXT("TileTransfer", 
-		"Faction [{INVOKER}] will offer to transfer control of province [{TILE}] to faction [{TARGET}]."
+		"Faction [{INVOKER}] will transfer control of province [{TILE}] to faction [{TARGET}]."
 	)).ToString();
 
 	return presentation;

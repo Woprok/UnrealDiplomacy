@@ -35,8 +35,12 @@ struct FUDActionMinimalInfo;
 struct FUDModifierData;
 struct FUDModifierInfo;
 
+struct FUDMessageContentInfo;
 struct FUDMessageInfo;
 struct FUDMessageInteractionInfo;
+
+enum class EUDDecisionType : uint8;
+struct FUDDecision;
 
 struct FUDDealParameter;
 struct FUDFactionParameter;
@@ -143,11 +147,11 @@ public:
 	/**
 	 * Returns new action that can be invoked.
 	 */
-	FUDActionData GetAcceptAction(int32 actionId, FUDActionData sourceAction);
+	FUDActionData GetConfirmAction(int32 decisionId);
 	/**
 	 * Returns new action that can be invoked.
 	 */
-	FUDActionData GetRejectAction(int32 actionId, FUDActionData sourceAction);
+	FUDActionData GetDeclineAction(int32 decisionId);
 protected:
 	UPROPERTY()
 	TObjectPtr<UUDWorldState> State;
@@ -295,12 +299,12 @@ private:
 #pragma region Messages & Request Interaction
 public:
 	/** Retrieves specified request data. */
-	FUDActionData GetPendingRequest(int32 pendingRequestId);
+	FUDActionData GetPendingRequest(int32 pendingDecisionId);
 	/** Retrieves all request data in presentable format. */
 	FUDMessageInteractionInfo GetAllLocalRequests();
 private:
 	/** Transforms request data into a presentable format. */
-	FUDMessageInfo CreateMessageFromRequest(int32 requestId, FUDActionData action);
+	FUDMessageInfo CreateMessageFromRequest(int32 decisionId, FUDDecision decision);
 	/** Merges format and action to result string. */
 	FString GetFormattedPresentationString(FString formatString, const TSet<int32>& tags, FUDActionData action);
 	/** Retrieves parameters from the tags and associate them with action values. */
@@ -312,6 +316,9 @@ private:
 	FStringFormatArg GetResourceArgument(const TArray<int32>& data, int32& startIndex);
 	FStringFormatArg GetValueArgument(const TArray<int32>& data, int32& startIndex);
 	FStringFormatArg GetTextArgument(FString data);
+	
+	FText GetFormattedDecisionType(EUDDecisionType type);
+	FUDMessageContentInfo CreateMessageContent(FUDActionData action);
 #pragma endregion
 
 #pragma region Modifiers

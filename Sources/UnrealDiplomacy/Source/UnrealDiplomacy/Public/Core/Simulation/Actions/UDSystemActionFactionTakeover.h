@@ -26,7 +26,7 @@ public:
 	bool IsBackupRequired() const override { return true; };
 	void Backup(FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 public:
-	static const int32 ActionTypeId = 10;
+	static const int32 ActionTypeId = 20;
 	static int32 FactionControllerToInteger(EUDFactionController factionController);
 	static EUDFactionController IntegerToFactionController(int32 factionControllerValue);
 };

@@ -151,6 +151,85 @@ enum class EUDFactionController : uint8
 #define UD_RESOURCE_LUXURIES_ID 4
 
 /**
+ * Represents current type of the decision.
+ */
+UENUM(BlueprintType)
+enum class EUDDecisionType : uint8
+{
+	/**
+	 * Undefined type.
+	 */
+	Error = 0,
+	/**
+	 * Gifts are resolveable without any confirmation.
+	 * Accept is not required. Effect is applied immediately.
+	 * Decline is not possible.
+	 */
+	Gift = 1,
+	/**
+	 * Offers require confirmation, such as accepting loan from other faction.
+	 * Accept applies effect. Generally applying effect to the target.
+	 * Decline has no consequences.
+	 */
+	Offer = 2,
+	/**
+	 * Requests is polite way of asking for something, such as Military Access from other faction.
+	 * Accept applies effect. Generally providing something to invoker.
+	 * Decline has no consequences.
+	 */
+	Request = 3,
+	/**
+	 * Demands are actions that have consequences, if they are not accepted.
+	 * Result is either provided action or decline action.
+	 * Accept applies effect. Generally providing something to invoker. Negative for target.
+	 * Decline applies consequence effect. Negative to target.
+	 */
+	Demand = 4,
+};
+
+/** Represents current result of the decision.  */
+UENUM(BlueprintType)
+enum class EUDDecisionResult : uint8
+{
+	/** Waiting for resolution. */
+	Pending = 0,
+	/** Accepted by target faction. */
+	Confirmed = 0,
+	/** Rejected by target faction. */
+	Declined = 0,
+};
+
+/**
+ * Represents single action created by bilateral diplomacy actions.
+ */
+USTRUCT(BlueprintType)
+struct UNREALDIPLOMACY_API FUDDecision
+{
+	GENERATED_BODY()
+public:
+	FUDDecision() {}
+	FUDDecision(EUDDecisionType type, FUDActionData action)
+		: Type(type), ConfirmAction(action), HasDecline(false), Result(EUDDecisionResult::Pending) {}
+	/** 
+	 * Demands require decline action.This can be supplied in backup parameters.
+	 * Thus enabling for both actions to be sent in single action decision.
+	 */
+	FUDDecision(EUDDecisionType type, FUDActionData action, FUDActionData declineAction)
+		: Type(type), ConfirmAction(action), DeclineAction(declineAction), 
+		HasDecline(true), Result(EUDDecisionResult::Pending) {}
+	UPROPERTY(BlueprintReadOnly)
+	EUDDecisionType Type;
+	UPROPERTY(BlueprintReadOnly)
+	FUDActionData ConfirmAction;
+	UPROPERTY(BlueprintReadOnly)
+	FUDActionData DeclineAction;
+	UPROPERTY(BlueprintReadOnly)
+	bool HasDecline = false;
+	UPROPERTY(BlueprintReadOnly)
+	EUDDecisionResult Result = EUDDecisionResult::Pending;
+};
+
+/**
  * Faction is primary control unit of each player or AI.
  * World is considered faction as well: Gaia Faction.
  * TODO Factions can be combined to Nation.
@@ -166,12 +245,18 @@ public:
 	static TObjectPtr<UUDFactionState> CreateState(int32 factionId);
 public:
 	/**
-	 * List of unresolved requests created by actions 
-	 * that are pending for confirm/reject action from this player.
-	 * key is Source / BySource
+	 * List of unresolved decisions created by actions 
+	 * that are pending for confirm/decline action from this player.
+	 * key is actions SourceUniqueId / BySource
 	 */
 	UPROPERTY()
-	TMap<int32, FUDActionData> PendingRequests;
+	TMap<int32, FUDDecision> PendingDecisions;
+	/**
+	 * List of resolved decisions created by confirm and decline actions. 
+	 * key is actions SourceUniqueId / BySource
+	 */
+	UPROPERTY()
+	TMap<int32, FUDDecision> ResolvedDecisions;
 	/**
 	 * List of all modifiers applied to this faction.
 	 */

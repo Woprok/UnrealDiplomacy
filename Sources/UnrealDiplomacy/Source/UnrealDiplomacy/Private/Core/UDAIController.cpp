@@ -179,12 +179,12 @@ void AUDAIController::MakeAction(int32 actionId, TArray<int32> values)
 	OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetAction(actionId, values));
 }
 
-void AUDAIController::MakeAcceptAction(int32 actionId, FUDActionData data)
+void AUDAIController::MakeConfirmAction(int32 decisionId)
 {
-	OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetAcceptAction(actionId, data));
+	OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetConfirmAction(decisionId));
 }
 
-void AUDAIController::MakeRejectAction(int32 actionId, FUDActionData data)
+void AUDAIController::MakeDeclineAction(int32 decisionId)
 {
-	OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetRejectAction(actionId, data));
+	OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetDeclineAction(decisionId));
 }

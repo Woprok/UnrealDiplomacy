@@ -18,17 +18,19 @@ bool UUDGameActionGift::CanExecute(const FUDActionData& action, TObjectPtr<UUDWo
 void UUDGameActionGift::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Execute(action, world);
-	// Queue new confirmable request.
+	// Execute change based on data. Invoker transfers to target.
 	FUDGameDataTargetResourceAmount data(action.ValueParameters);
-	AddPendingTargetRequest(action, data.TargetId, world);
+	world->Factions[action.InvokerFactionId]->Resources[data.Resource] -= data.Amount;
+	world->Factions[data.TargetId]->Resources[data.Resource] += data.Amount;
 }
 
 void UUDGameActionGift::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Revert(action, world);
-	// Remove request from queue.
+	// Revert change based on data. Invoker was one that gave away the resources.
 	FUDGameDataTargetResourceAmount data(action.ValueParameters);
-	RemovePendingTargetRequest(action, data.TargetId, world);
+	world->Factions[action.InvokerFactionId]->Resources[data.Resource] += data.Amount;
+	world->Factions[data.TargetId]->Resources[data.Resource] -= data.Amount;
 }
 
 #define LOCTEXT_NAMESPACE "Gift"
@@ -49,6 +51,9 @@ FUDActionPresentation UUDGameActionGift::GetPresentation() const
 			UD_ACTION_TAG_PARAMETER_RESOURCE,
 			UD_ACTION_TAG_PARAMETER_VALUE,
 			UD_ACTION_TAG_PARAMETER_VALUE_AMOUNT,
+			UD_ACTION_TAG_DECISION_DIRECT,
+			UD_ACTION_TAG_DECISION_REQUEST,
+			UD_ACTION_TAG_DECISION_DEMAND,
 		}
 	);
 
@@ -58,7 +63,7 @@ FUDActionPresentation UUDGameActionGift::GetPresentation() const
 		"Faction [{INVOKER}] offered your faction [{TARGET}] [{VALUE}] in [{RESOURCE}].\nDo you accept ?"
 	)).ToString();
 	presentation.DealContentFormat = FText(LOCTEXT("Gift",
-		"Faction [{INVOKER}] will offer to send [{VALUE}] [{RESOURCE}] to [{TARGET}]."
+		"Faction [{INVOKER}] will send [{VALUE}] [{RESOURCE}] to [{TARGET}]."
 	)).ToString();
 
 	return presentation;

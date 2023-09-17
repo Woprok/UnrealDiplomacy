@@ -54,6 +54,28 @@ public:
 	 */
 	FUDActionData(int32 actionTypeId, int32 invokerFactionId, TArray<int32> valuePrameters, FString textPrameters);
 	/**
+	 * Returns debug friendly string from this action data.
+	 */
+	FString ToString() const;
+public:
+	/**
+	 * Creates action from provided value list.
+	 * First four fields are accepted as ActionTypeId, UniqueId, SourceId, InvokerFactionId
+	 * Remaining fields are ValueParameters.
+	 * Text and Backup is ignored.
+	 * Used with decisions, text and backup is not required as of 7/30/2023
+	 */
+	static FUDActionData FromValues(const TArray<int32>& values);
+	/**
+	 * Creates value list from provided action.
+	 * First four fields are taken from ActionTypeId, UniqueId, SourceId, InvokerFactionId
+	 * Remaining fields are ValueParameters.
+	 * Text and Backup is ignored.
+	 * Used with decisions, text and backup is not required as of 7/30/2023
+	 */
+	static TArray<int32> ToValues(const FUDActionData& action);
+private:
+	/**
 	 * Creates child from its parent. Usefull for action that are responses.
 	 */
 	static FUDActionData AsSuccessorOf(const FUDActionData& parentAction, int32 ActionTypeId);
@@ -61,10 +83,6 @@ public:
 	 * Creates parent from its child. Usefull for action that is reverting it's effect.
 	 */
 	static FUDActionData AsPredecessorOf(const FUDActionData& childAction, int32 ActionTypeId);
-	/**
-	 * Returns debug friendly string from this action data.
-	 */
-	FString ToString() const;
 private:	
 	 /**
 	  * Copy constructor for static construction of child and parent.
@@ -93,7 +111,7 @@ public:
 		return 
 			ActionTypeId == rhs.ActionTypeId && 
 			UniqueId == rhs.UniqueId &&
-			SourceUniqueId == rhs.SourceUniqueId &&
+			SourceId == rhs.SourceId &&
 			InvokerFactionId == rhs.InvokerFactionId &&
 			ValueParameters == rhs.ValueParameters &&
 			TextParameter == rhs.TextParameter;
@@ -105,22 +123,23 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	int32 ActionTypeId = 0;
 	/**
-	 * Unique identifier, that is responsible for acting as a link between different actions.
-	 * By default is assigned by WorldSimulation or copy constructor.
-	 * E.g. Gift and it's eventual confirm/reject action will share this.
-	 * Actually they can't share this like ever...
+	 * All actions receive UniqueId from server-side of simulation. 
+	 * Thus each executed action has this defined, when it's executed or received from server to be executed.
+	 * By default is assigned by WorldSimulation.
 	 */
 	UPROPERTY(BlueprintReadOnly)
 	int32 UniqueId = -1;
 	/**
-	 * By default this is same as UniqueId. 
-	 * For composite action this will contain UniqueId of the original action.
-	 * All actions valid for execution will have this assigned to parent or to self.
-	 * This is used along with UniqueId in certain cases to provide identification for objects add
-	 * to the WorldState.
+	 * By default this is expected to be left as default invalid value.
+	 * If value is non-invalid, then it might be utilized by actions for additional verification checks.
+	 * 
+	 * This fields is currently used only for checking stratagems availability for actions executed by deals.
+	 * Requests are using standard value parameters to send decision id.
+	 * Revert of composite action is not supported at the moment.
+	 * Intended support is to revert to start of turn.
 	 */
 	UPROPERTY(BlueprintReadOnly)
-	int32 SourceUniqueId = -1;
+	int32 SourceId = -1;
 	/**
 	 * Player/Ai/Server that created this action and asked for it to be executed.
 	 * This is required to be filled by creator of the action or filled for him.

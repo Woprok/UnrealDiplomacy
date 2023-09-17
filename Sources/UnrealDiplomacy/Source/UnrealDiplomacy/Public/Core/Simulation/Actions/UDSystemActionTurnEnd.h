@@ -21,7 +21,7 @@ public:
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual int32 GetId() const override { return ActionTypeId; };
 public:
-	static const int32 ActionTypeId = 7;
+	static const int32 ActionTypeId = 17;
 protected:
 	/**
 	 * Passes turn control to next player.

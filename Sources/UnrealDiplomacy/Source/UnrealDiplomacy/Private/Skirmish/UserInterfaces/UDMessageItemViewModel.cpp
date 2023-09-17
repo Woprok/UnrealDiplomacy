@@ -1,5 +1,6 @@
 // Copyright Miroslav Valach
 // TODO consider allowing editation of parameters before accepting and implement counter-offers ?
+// Counter-offers idea was scrapped ... conflicts with deals
 
 #include "Skirmish/UserInterfaces/UDMessageItemViewModel.h"
 #include "Core/Simulation/UDModelStructs.h"
@@ -16,6 +17,8 @@ void UUDMessageItemViewModel::Initialize()
 	SetMessageText(message);
 	FText accept = FText(LOCTEXT("MessageItem", "Accept"));
 	SetAcceptText(accept);
+	FText ok = FText(LOCTEXT("MessageItem", "Ok"));
+	SetOkText(ok);
 	FText reject = FText(LOCTEXT("MessageItem", "Reject"));
 	SetRejectText(reject);
 	SetHasContentValue(false);
@@ -23,8 +26,9 @@ void UUDMessageItemViewModel::Initialize()
 
 void UUDMessageItemViewModel::Update()
 {
-	SetMessageTitleText(FText::FromString(Content.Name));
-	SetMessageText(FText::FromString(Content.Content));
+	SetMessageTypeText(FText::FromString(Content.Type));
+	SetMessageTitleText(FText::FromString(Content.Content.Name));
+	SetMessageText(FText::FromString(Content.Content.Content));
 }
 
 #undef LOCTEXT_NAMESPACE
@@ -46,15 +50,19 @@ void UUDMessageItemViewModel::SetContent(FUDMessageInfo content)
 void UUDMessageItemViewModel::Accept()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDMessageItemViewModel: Accept."));
-	FUDActionData sourceAction = Model->GetPendingRequest(Content.RequestId);
-	Model->RequestAction(Model->GetAcceptAction(Content.AcceptId, sourceAction));
+	Model->RequestAction(Model->GetConfirmAction(Content.DecisionId));
+}
+
+void UUDMessageItemViewModel::Ok()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDMessageItemViewModel: Ok."));
+	//Model->RequestAction(Model->GetRejectAction(Content.RejectId, sourceAction));
 }
 
 void UUDMessageItemViewModel::Reject()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDMessageItemViewModel: Reject."));
-	FUDActionData sourceAction = Model->GetPendingRequest(Content.RequestId);
-	Model->RequestAction(Model->GetRejectAction(Content.RejectId, sourceAction));
+	Model->RequestAction(Model->GetDeclineAction(Content.DecisionId));
 }
 
 void UUDMessageItemViewModel::SetMessageTitleText(FText newMessageTitleText)
@@ -65,6 +73,16 @@ void UUDMessageItemViewModel::SetMessageTitleText(FText newMessageTitleText)
 FText UUDMessageItemViewModel::GetMessageTitleText() const
 {
 	return MessageTitleText;
+}
+
+void UUDMessageItemViewModel::SetMessageTypeText(FText newMessageTypeText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(MessageTypeText, newMessageTypeText);
+}
+
+FText UUDMessageItemViewModel::GetMessageTypeText() const
+{
+	return MessageTypeText;
 }
 
 void UUDMessageItemViewModel::SetMessageText(FText newMessageText)
@@ -85,6 +103,16 @@ void UUDMessageItemViewModel::SetAcceptText(FText newAcceptText)
 FText UUDMessageItemViewModel::GetAcceptText() const
 {
 	return AcceptText;
+}
+
+void UUDMessageItemViewModel::SetOkText(FText newOkText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(OkText, newOkText);
+}
+
+FText UUDMessageItemViewModel::GetOkText() const
+{
+	return OkText;
 }
 
 void UUDMessageItemViewModel::SetRejectText(FText newRejectText)

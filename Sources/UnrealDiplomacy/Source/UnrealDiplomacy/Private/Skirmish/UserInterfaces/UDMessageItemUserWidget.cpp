@@ -17,15 +17,19 @@ void UUDMessageItemUserWidget::BindDelegates()
 	// Bind view to updates.
 	// Bind viewmodel to widgets.
 	AcceptButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMessageItemViewModel::Accept);
+	OkButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMessageItemViewModel::Ok);
 	RejectButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMessageItemViewModel::Reject);
 }
 
 void UUDMessageItemUserWidget::BindWidgets()
 {
 	MessageTitleTextWidget = GetWidget<UTextBlock>(TEXT("MessageTitleText"));
+	MessageTypeTextWidget = GetWidget<UTextBlock>(TEXT("MessageTypeText"));
 	MessageTextWidget = GetWidget<UTextBlock>(TEXT("MessageText"));
 	AcceptTextWidget = GetWidget<UTextBlock>(TEXT("AcceptText"));
+	OkTextWidget = GetWidget<UTextBlock>(TEXT("OkText"));
 	RejectTextWidget = GetWidget<UTextBlock>(TEXT("RejectText"));
 	AcceptButtonWidget = GetWidget<UButton>(TEXT("AcceptButton"));
+	OkButtonWidget = GetWidget<UButton>(TEXT("OkButton"));
 	RejectButtonWidget = GetWidget<UButton>(TEXT("RejectButton"));
 }
