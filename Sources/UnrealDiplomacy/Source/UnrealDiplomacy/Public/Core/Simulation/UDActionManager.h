@@ -53,7 +53,7 @@ public:
 	 * Retrieves all actions that are tagged as faction interactions.
 	 * Faction interaction is any action that targets directly other faction.
 	 */
-	TArray<FUDActionPresentation> FilterFactionInteractions();
+	TArray<FUDActionPresentation> FilterFactionInteractions(int32 additionalTag);
 	/**
 	 * Retrieves all actions that are tagged as tile interactions.
 	 * Tile interaction is any action that targets tile directly.
@@ -68,6 +68,10 @@ private:
 	 * Retrieves all actions that are tagged by specified tag.
 	 */
 	TArray<FUDActionPresentation> FilterByTag(const TArray<FUDActionPresentation>& selection, int32 tag);
+	/**
+	 * Retrieves all actions that are tagged by specified tags.
+	 */
+	TArray<FUDActionPresentation> FilterByTags(const TArray<FUDActionPresentation>& selection, TSet<int32> tags);
 	/**
 	 * Tags are not changing during the game and this serves as filter startpoint.
 	 */

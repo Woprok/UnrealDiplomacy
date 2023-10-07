@@ -4,16 +4,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UDWorldState.h"
 #include "UDActionAdministrator.generated.h"
 
 // Forward Declarations
 
 class IUDActionInterface;
+struct FUDActionPresentation;
 class UUDWorldState;
+class UUDMapState;
 class UUDActionManager;
 class UUDActionDatabase;
 
+enum class EUDDealSimulationState : uint8;
+enum class EUDDealSimulationResult : uint8;
 enum class EUDGameStateInfo : uint8;
 struct FUDGameOverInfo;
 struct FUDStratagemPickableInfo;
@@ -147,6 +150,10 @@ public:
 	/**
 	 * Returns new action that can be invoked.
 	 */
+	FUDActionData GetDecisionAction(int32 targetId, EUDDecisionType type, FUDActionData requestedAction);
+	/**
+	 * Returns new action that can be invoked.
+	 */
 	FUDActionData GetConfirmAction(int32 decisionId);
 	/**
 	 * Returns new action that can be invoked.
@@ -213,6 +220,15 @@ public:
 	FUDFactionMinimalInfo GetFactionInfo(int32 factionId);
 	/** Provides list of faction interactions. */
 	TArray<FUDFactionInteractionInfo> GetFactionInteractionList();
+	/** Provides list of faction offers. */
+	TArray<FUDFactionInteractionInfo> GetFactionOfferList();
+	/** Provides list of faction requests. */
+	TArray<FUDFactionInteractionInfo> GetFactionRequestList();
+	/** Provides list of faction demands. */
+	TArray<FUDFactionInteractionInfo> GetFactionDemandList();
+private:
+	/** Provides interactions. */
+	TArray<FUDFactionInteractionInfo> CreateFactionInteractionList(TArray<FUDActionPresentation>&& availableActions);
 #pragma endregion
 
 #pragma region Resources

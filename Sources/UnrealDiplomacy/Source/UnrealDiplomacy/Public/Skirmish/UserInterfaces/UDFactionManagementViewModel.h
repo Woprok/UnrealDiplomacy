@@ -38,8 +38,19 @@ public:
 	FText FactionNameText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText CloseText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText InteractionTitleText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText OfferTitleText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText RequestTitleText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText DemandTitleText;
 	// Events
 	FUDFactionInteractionSourceUpdated FactionInteractionSourceUpdatedEvent;
+	FUDFactionInteractionSourceUpdated FactionOfferSourceUpdatedEvent;
+	FUDFactionInteractionSourceUpdated FactionRequestSourceUpdatedEvent;
+	FUDFactionInteractionSourceUpdated FactionDemandSourceUpdatedEvent;
 	FUDFactionModifierItemSourceUpdated ModifierItemSourceUpdatedEvent;
 protected:
 	virtual void Initialize() override;
@@ -49,9 +60,25 @@ protected:
 	void Reload();
 private:
 	/**
-	 * Updates available interaction with the faction.
+	 * Updates interactions with the faction.
+	 */
+	void UpdateFactionLists();
+	/**
+	 * Updates available direct interaction with the faction.
 	 */
 	void UpdateFactionInteractionList();
+	/**
+	 * Updates available offer interaction with the faction.
+	 */
+	void UpdateFactionOfferList();
+	/**
+	 * Updates available request interaction with the faction.
+	 */
+	void UpdateFactionRequestList();
+	/**
+	 * Updates available demand interaction with the faction.
+	 */
+	void UpdateFactionDemandList();
 	/**
 	 * Updates available modifiers with the faction.
 	 */
@@ -64,11 +91,28 @@ private:
 	FText GetFactionNameText() const;
 	void SetCloseText(FText newCloseText);
 	FText GetCloseText() const;
+	void SetInteractionTitleText(FText newInteractionTitleText);
+	FText GetInteractionTitleText() const;
+	void SetOfferTitleText(FText newOfferTitleText);
+	FText GetOfferTitleText() const;
+	void SetRequestTitleText(FText newRequestTitleText);
+	FText GetRequestTitleText() const;
+	void SetDemandTitleText(FText newDemandTitleText);
+	FText GetDemandTitleText() const;
 private:
 	// Fields
 	FName FactionInteractionViewModelCollectionName = TEXT("FactionInteractionCollection");
 	TSubclassOf<UUDViewModel> FactionInteractionViewModelType;
 	TArray<TObjectPtr<UUDFactionInteractionViewModel>> FactionInteractionViewModelCollection;
+
+	FName FactionOfferViewModelCollectionName = TEXT("FactionOfferCollection");
+	TArray<TObjectPtr<UUDFactionInteractionViewModel>> FactionOfferViewModelCollection;
+
+	FName FactionRequestViewModelCollectionName = TEXT("FactionRequestCollection");
+	TArray<TObjectPtr<UUDFactionInteractionViewModel>> FactionRequestViewModelCollection;
+
+	FName FactionDemandViewModelCollectionName = TEXT("FactionDemandCollection");
+	TArray<TObjectPtr<UUDFactionInteractionViewModel>> FactionDemandViewModelCollection;
 
 	FName ModifierItemViewModelCollectionName = TEXT("FactionModifierItemCollection");
 	TSubclassOf<UUDViewModel> ModifierItemViewModelType;

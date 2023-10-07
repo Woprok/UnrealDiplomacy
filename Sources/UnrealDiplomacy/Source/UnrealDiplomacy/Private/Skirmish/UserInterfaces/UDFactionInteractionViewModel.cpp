@@ -1,10 +1,14 @@
 // Copyright Miroslav Valach
+// TODO if we added continuation for executing direct actions such as gift. Then this should be updated.
+// TODO add text parameter in indirect actions.
 
 #include "Skirmish/UserInterfaces/UDFactionInteractionViewModel.h"
 #include "Skirmish/UserInterfaces/UDParameterEditorViewModel.h"
 #include "Core/Simulation/UDModelStructs.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Skirmish/UDSkirmishHUD.h"
+#include "Core/Simulation/UDActionData.h"
+#include "Core/Simulation/UDWorldState.h"
 
 #define LOCTEXT_NAMESPACE "FactionInteraction"
 
@@ -41,9 +45,10 @@ void UUDFactionInteractionViewModel::Update()
 
 #undef LOCTEXT_NAMESPACE
 
-void UUDFactionInteractionViewModel::SetContent(int32 selectedFaction, FUDFactionInteractionInfo content)
+void UUDFactionInteractionViewModel::SetContent(int32 selectedFaction, EUDDecisionType interactionType, FUDFactionInteractionInfo content)
 {
 	SelectedFaction = selectedFaction;
+	InteractionType = interactionType;
 	Content = content;
 }
 
@@ -59,11 +64,33 @@ void UUDFactionInteractionViewModel::Interact()
 
 	if (valueParameters.Num() > 0 && textParameter.Len() == 0)
 	{
-		Model->RequestAction(Model->GetAction(Content.ActionTypeId, valueParameters));
+		FUDActionData data = Model->GetAction(Content.ActionTypeId, valueParameters);
+		DecisionRequest(data);
 	}
 	else if (valueParameters.Num() > 0 && textParameter.Len() > 0)
 	{
-		Model->RequestAction(Model->GetAction(Content.ActionTypeId, valueParameters, textParameter));
+		FUDActionData data = Model->GetAction(Content.ActionTypeId, valueParameters, textParameter);
+		DecisionRequest(data);
+	}
+}
+
+void UUDFactionInteractionViewModel::DecisionRequest(FUDActionData data)
+{
+	switch (InteractionType)
+	{
+	case EUDDecisionType::Gift:
+		// Direct requests should not be propagated to decision level ?
+		Model->RequestAction(data);
+		break;
+	case EUDDecisionType::Offer:
+	case EUDDecisionType::Request:
+	case EUDDecisionType::Demand:
+		Model->RequestAction(Model->GetDecisionAction(SelectedFaction, InteractionType, data));
+		break;
+	case EUDDecisionType::Error:
+	default:
+		UE_LOG(LogTemp, Log, TEXT("UUDFactionInteractionViewModel: Failed to interact."));
+		break;
 	}
 }
 

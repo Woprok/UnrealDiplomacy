@@ -9,7 +9,9 @@
 
 // Forward Declarations
 
+enum class EUDDecisionType : uint8;
 struct FUDFactionInteractionInfo;
+struct FUDActionData;
 class UUDParameterEditorViewModel;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FUDParameterEditorChanged, const TObjectPtr<UUDParameterEditorViewModel>& editorViewModel);
@@ -25,7 +27,7 @@ public:
 	/**
 	 * Set content of the interaction option.
 	 */
-	void SetContent(int32 selectedFaction, FUDFactionInteractionInfo content);
+	void SetContent(int32 selectedFaction, EUDDecisionType interactionType, FUDFactionInteractionInfo content);
 public:
 	// Button Functions
 	/**
@@ -42,6 +44,8 @@ protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
 private:
+	/** Interacts based on current InteractionType */
+	void DecisionRequest(FUDActionData data);
 	/** Updates all parameter lists. */
 	void UpdateEditor();
 	/** Defines all parameter instances. */
@@ -53,6 +57,7 @@ private:
 private:
 	// Fields
 	int32 SelectedFaction;
+	EUDDecisionType InteractionType;
 	FUDFactionInteractionInfo Content;
 	// Current Instance in use...
 	FName ParameterEditorInstanceName = TEXT("FactionParameterEditorInstance");

@@ -9,6 +9,7 @@
 #include "Core/Simulation/UDModelStructs.h"
 #include "Core/Simulation/Actions/UDDealActionCreate.h"
 #include "Core/UDGlobalData.h"
+#include "Core/Simulation/UDActionData.h"
 
 #define LOCTEXT_NAMESPACE "DealManagement"
 

@@ -106,9 +106,10 @@ TArray<FUDActionPresentation> UUDActionManager::FilterStratagems()
 	return FilterByTag(FilterStartpoint, UD_ACTION_TAG_STRATAGEM);
 }
 
-TArray<FUDActionPresentation> UUDActionManager::FilterFactionInteractions()
+TArray<FUDActionPresentation> UUDActionManager::FilterFactionInteractions(int32 additionalTag)
 {
-	return FilterByTag(FilterStartpoint, UD_ACTION_TAG_FACTION_INTERACTION);
+	TSet<int32> filterTags = { UD_ACTION_TAG_FACTION_INTERACTION, additionalTag };
+	return FilterByTags(FilterStartpoint, filterTags);
 }
 
 TArray<FUDActionPresentation> UUDActionManager::FilterTileInteractions()
@@ -127,6 +128,20 @@ TArray<FUDActionPresentation> UUDActionManager::FilterByTag(const TArray<FUDActi
 	for (const auto& action : selection)
 	{
 		if (action.Tags.Contains(tag))
+		{
+			filtered.Add(action);
+		}
+	}
+
+	return filtered;
+}
+
+TArray<FUDActionPresentation> UUDActionManager::FilterByTags(const TArray<FUDActionPresentation>& selection, TSet<int32> tags)
+{
+	TArray<FUDActionPresentation> filtered = { };
+	for (const auto& action : selection)
+	{
+		if (action.Tags.Includes(tags))
 		{
 			filtered.Add(action);
 		}

@@ -132,11 +132,7 @@ public:
 	/**
 	 * By default this is expected to be left as default invalid value.
 	 * If value is non-invalid, then it might be utilized by actions for additional verification checks.
-	 * 
-	 * This fields is currently used only for checking stratagems availability for actions executed by deals.
-	 * Requests are using standard value parameters to send decision id.
-	 * Revert of composite action is not supported at the moment.
-	 * Intended support is to revert to start of turn.
+	 * TODO add new usecase for this field or get rid of it.
 	 */
 	UPROPERTY(BlueprintReadOnly)
 	int32 SourceId = -1;

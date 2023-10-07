@@ -48,6 +48,18 @@ protected:
 	/**
 	 * Callback to set data from view model.
 	 */
+	void SetFactionOfferSourceCollection(const TArray<TObjectPtr<UUDFactionInteractionViewModel>>& factionOfferViewModels);
+	/**
+	 * Callback to set data from view model.
+	 */
+	void SetFactionRequestSourceCollection(const TArray<TObjectPtr<UUDFactionInteractionViewModel>>& factionRequestViewModels);
+	/**
+	 * Callback to set data from view model.
+	 */
+	void SetFactionDemandSourceCollection(const TArray<TObjectPtr<UUDFactionInteractionViewModel>>& factionDemandViewModels);
+	/**
+	 * Callback to set data from view model.
+	 */
 	void SetModifierItemSourceCollection(const TArray<TObjectPtr<UUDModifierItemViewModel>>& modifierItemViewModels);
 protected:
 	// Bindings
@@ -62,7 +74,21 @@ protected:
 	UPROPERTY()
 	TWeakObjectPtr<UListView> ModifierItemListWidget;
 	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> InteractionTitleTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> OfferTitleTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> RequestTitleTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> DemandTitleTextWidget;
+	UPROPERTY()
 	TWeakObjectPtr<UListView> FactionInteractionListWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UListView> FactionOfferListWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UListView> FactionRequestListWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UListView> FactionDemandListWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDFactionManagementViewModel> ViewModel;

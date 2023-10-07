@@ -71,13 +71,13 @@ class UUDModifierManager;
 #define UD_ACTION_TAG_PARAMETER_VALUE_AMOUNT 18
 #define UD_ACTION_TAG_PARAMETER_VALUE_SMALL_MAX 19
 // Decisions
-// Direct action on target
+// Direct action on target (Give Resource)
 #define UD_ACTION_TAG_DECISION_DIRECT 20
-// Request action from target
-#define UD_ACTION_TAG_DECISION_REQUEST 21
-// Offer action to target
-#define UD_ACTION_TAG_DECISION_OFFER 22
-// Demand action from target
+// Offer action to target (Offer Alliance)
+#define UD_ACTION_TAG_DECISION_OFFER 21
+// Request action from target (Request Stratagem)
+#define UD_ACTION_TAG_DECISION_REQUEST 22
+// Demand action from target (Transfer Tile)
 #define UD_ACTION_TAG_DECISION_DEMAND 23
 
 // This is default and is not necessary.

@@ -79,8 +79,16 @@ FUDActionData UUDActionAdministrator::GetAction(int32 actionId, FString optional
 	return FUDActionData(actionId, State->FactionPerspective, optionalString);
 }
 
+#include "Core/Simulation/Actions/UDDecisionActionCreate.h"
 #include "Core/Simulation/Actions/UDDecisionActionConfirm.h"
 #include "Core/Simulation/Actions/UDDecisionActionDecline.h"
+
+FUDActionData UUDActionAdministrator::GetDecisionAction(int32 targetId, EUDDecisionType type, FUDActionData requestedAction)
+{
+	TArray<int32> parameters = { targetId, UUDDecisionAction::DecisionTypeToInteger(type) };
+	parameters.Append(FUDActionData::ToValues(requestedAction));
+	return FUDActionData(UUDDecisionActionCreate::ActionTypeId, State->FactionPerspective, parameters);
+}
 
 FUDActionData UUDActionAdministrator::GetConfirmAction(int32 decisionId)
 {
@@ -263,9 +271,29 @@ FUDFactionMinimalInfo UUDActionAdministrator::GetFactionInfo(int32 factionId)
 
 TArray<FUDFactionInteractionInfo> UUDActionAdministrator::GetFactionInteractionList()
 {
+	return CreateFactionInteractionList(GetActionManager()->FilterFactionInteractions(UD_ACTION_TAG_DECISION_DIRECT));
+}
+
+TArray<FUDFactionInteractionInfo> UUDActionAdministrator::GetFactionOfferList()
+{
+	return CreateFactionInteractionList(GetActionManager()->FilterFactionInteractions(UD_ACTION_TAG_DECISION_OFFER));
+}
+
+TArray<FUDFactionInteractionInfo> UUDActionAdministrator::GetFactionRequestList()
+{
+	return CreateFactionInteractionList(GetActionManager()->FilterFactionInteractions(UD_ACTION_TAG_DECISION_REQUEST));
+}
+
+TArray<FUDFactionInteractionInfo> UUDActionAdministrator::GetFactionDemandList()
+{
+	return CreateFactionInteractionList(GetActionManager()->FilterFactionInteractions(UD_ACTION_TAG_DECISION_DEMAND));
+}
+
+TArray<FUDFactionInteractionInfo> UUDActionAdministrator::CreateFactionInteractionList(TArray<FUDActionPresentation>&& availableActions)
+{
 	TArray<FUDFactionInteractionInfo> interactions = { };
 
-	for (const auto& interaction : GetActionManager()->FilterFactionInteractions())
+	for (const auto& interaction : availableActions)
 	{
 		bool isAvailable = IsAvailableStratagem(interaction.Tags, interaction.ActionId);
 		// continue if it's not available with next.

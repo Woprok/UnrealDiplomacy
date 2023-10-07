@@ -1,4 +1,5 @@
 // Copyright Miroslav Valach
+// TODO consider adding continuation for executing direct actions such as gift.
 
 #include "Core/Simulation/Actions/UDDecisionActionCreate.h"
 #include "Core/UDGlobalData.h"
