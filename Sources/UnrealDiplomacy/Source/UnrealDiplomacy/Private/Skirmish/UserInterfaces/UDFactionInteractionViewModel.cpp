@@ -1,5 +1,4 @@
 // Copyright Miroslav Valach
-// TODO if we added continuation for executing direct actions such as gift. Then this should be updated.
 // TODO add text parameter in indirect actions.
 
 #include "Skirmish/UserInterfaces/UDFactionInteractionViewModel.h"
@@ -58,7 +57,10 @@ void UUDFactionInteractionViewModel::Interact()
 	UE_LOG(LogTemp, Log, TEXT("UUDFactionInteractionViewModel: Interact."));
 	// Start with the guaranteed parameter.
 	TArray<int32> valueParameters = { };
+	// This is target, that will execute the action.
+	// Thus this has to be swapped for Requests and Demands in final action.
 	valueParameters.Add(SelectedFaction);
+	// Remaining parameters.
 	valueParameters.Append(ParameterEditorInstance->GetValueParameters());
 	FString textParameter = ParameterEditorInstance->GetTextParameter();
 
@@ -79,13 +81,14 @@ void UUDFactionInteractionViewModel::DecisionRequest(FUDActionData data)
 	switch (InteractionType)
 	{
 	case EUDDecisionType::Gift:
-		// Direct requests should not be propagated to decision level ?
-		Model->RequestAction(data);
-		break;
 	case EUDDecisionType::Offer:
+		Model->RequestAction(Model->GetDecisionAction(SelectedFaction, InteractionType, data));
+		break;
 	case EUDDecisionType::Request:
 	case EUDDecisionType::Demand:
-		Model->RequestAction(Model->GetDecisionAction(SelectedFaction, InteractionType, data));
+		// Note: this is who will make the decision. Thus the target is other player.
+		Model->RequestAction(Model->GetDecisionAction(SelectedFaction, InteractionType, 
+							 Model->ReverseActionInvokerAndTarget(data)));
 		break;
 	case EUDDecisionType::Error:
 	default:

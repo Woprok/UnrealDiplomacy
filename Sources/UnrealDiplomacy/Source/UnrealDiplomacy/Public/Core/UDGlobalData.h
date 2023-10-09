@@ -87,6 +87,17 @@ public:
 	}
 };
 
+/**
+ * Few optional configs, that change behaviour of systems.
+ */
+UCLASS(meta = (BlueprintThreadSafe))
+class UNREALDIPLOMACY_API UUDGlobalGameConfig : public UBlueprintFunctionLibrary
+{
+	GENERATED_BODY()
+public:
+	static const bool IsDirectExecutionEnabled = true;
+};
+
 // Following types are wrappers around otherwise engine types or values.
 
 /**

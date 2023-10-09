@@ -79,6 +79,15 @@ FUDActionData UUDActionAdministrator::GetAction(int32 actionId, FString optional
 	return FUDActionData(actionId, State->FactionPerspective, optionalString);
 }
 
+FUDActionData UUDActionAdministrator::ReverseActionInvokerAndTarget(FUDActionData actionData)
+{
+	int32 newTarget = actionData.InvokerFactionId;
+	// new Invoker is original Target
+	actionData.InvokerFactionId = actionData.ValueParameters[0];
+	actionData.ValueParameters[0] = newTarget;
+	return actionData;
+}
+
 #include "Core/Simulation/Actions/UDDecisionActionCreate.h"
 #include "Core/Simulation/Actions/UDDecisionActionConfirm.h"
 #include "Core/Simulation/Actions/UDDecisionActionDecline.h"
@@ -976,7 +985,13 @@ FUDMessageInfo UUDActionAdministrator::CreateMessageFromRequest(int32 decisionId
 	{
 		message.AdditionalContent = CreateMessageContent(decision.DeclineAction);
 	}
+	else
+	{
+		message.AdditionalContent = FUDMessageContentInfo();
+	}
 	
+	message.HasChoices = decision.Type != EUDDecisionType::Gift;
+
 	return message;
 }
 

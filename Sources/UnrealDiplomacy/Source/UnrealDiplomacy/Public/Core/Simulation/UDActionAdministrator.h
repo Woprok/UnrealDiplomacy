@@ -149,6 +149,11 @@ public:
 	FUDActionData GetAction(int32 actionId, FString optionalString);
 	/**
 	 * Returns new action that can be invoked.
+	 * This will exchange Invoker and Target. Thus this expects Target as first value parameter.
+	 */
+	FUDActionData ReverseActionInvokerAndTarget(FUDActionData actionData);
+	/**
+	 * Returns new action that can be invoked.
 	 */
 	FUDActionData GetDecisionAction(int32 targetId, EUDDecisionType type, FUDActionData requestedAction);
 	/**

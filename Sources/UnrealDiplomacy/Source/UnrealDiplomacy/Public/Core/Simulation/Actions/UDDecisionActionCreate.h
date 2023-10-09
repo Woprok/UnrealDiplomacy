@@ -20,6 +20,10 @@ public:
 	virtual int32 GetId() const override { return ActionTypeId; };
 	virtual int32 GetParameterCount() const override { return FUDDecisionDataTargetTypeParameters::ParameterCount; };
 	virtual FUDActionPresentation GetPresentation() const override;
+	virtual bool HasContinuations() const override { return true; }
+	// This action can optionally execute it's content without any confirmation.
+	virtual TArray<FUDActionData> GetContinuations(const FUDActionData& parentAction, TObjectPtr<UUDWorldState> world) const override;
+
 public:
 	static const int32 ActionTypeId = 5001;
 };

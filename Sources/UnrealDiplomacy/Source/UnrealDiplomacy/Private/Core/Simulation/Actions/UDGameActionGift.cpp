@@ -60,7 +60,7 @@ FUDActionPresentation UUDGameActionGift::GetPresentation() const
 	presentation.AcceptActionId = UUDGameActionGiftAccept::ActionTypeId;
 	presentation.RejectActionId = UUDGameActionGiftReject::ActionTypeId;
 	presentation.MessageContentFormat = FText(LOCTEXT("Gift",
-		"Faction [{INVOKER}] offered your faction [{TARGET}] [{VALUE}] in [{RESOURCE}].\nDo you accept ?"
+		"Faction [{INVOKER}] sends to faction [{TARGET}] following: [{VALUE}] in [{RESOURCE}]]."
 	)).ToString();
 	presentation.DealContentFormat = FText(LOCTEXT("Gift",
 		"Faction [{INVOKER}] will send [{VALUE}] [{RESOURCE}] to [{TARGET}]."

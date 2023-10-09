@@ -6,6 +6,7 @@
 #include "Core/Simulation/UDModelStructs.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Skirmish/UDSkirmishHUD.h"
+#include "Core/Simulation/UDActionData.h"
 
 #define LOCTEXT_NAMESPACE "MessageItem"
 
@@ -29,6 +30,8 @@ void UUDMessageItemViewModel::Update()
 	SetMessageTypeText(FText::FromString(Content.Type));
 	SetMessageTitleText(FText::FromString(Content.Content.Name));
 	SetMessageText(FText::FromString(Content.Content.Content));
+	SetMessageAdditionalText(FText::FromString(Content.AdditionalContent.Content));
+	SetHasChoicesValue(Content.HasChoices);
 }
 
 #undef LOCTEXT_NAMESPACE
@@ -56,7 +59,7 @@ void UUDMessageItemViewModel::Accept()
 void UUDMessageItemViewModel::Ok()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDMessageItemViewModel: Ok."));
-	//Model->RequestAction(Model->GetRejectAction(Content.RejectId, sourceAction));
+	Model->RequestAction(Model->GetConfirmAction(Content.DecisionId));
 }
 
 void UUDMessageItemViewModel::Reject()
@@ -93,6 +96,16 @@ void UUDMessageItemViewModel::SetMessageText(FText newMessageText)
 FText UUDMessageItemViewModel::GetMessageText() const
 {
 	return MessageText;
+}
+
+void UUDMessageItemViewModel::SetMessageAdditionalText(FText newMessageAdditionalText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(MessageAdditionalText, newMessageAdditionalText);
+}
+
+FText UUDMessageItemViewModel::GetMessageAdditionalText() const
+{
+	return MessageAdditionalText;
 }
 
 void UUDMessageItemViewModel::SetAcceptText(FText newAcceptText)
@@ -133,4 +146,14 @@ void UUDMessageItemViewModel::SetHasContentValue(bool newHasContentValue)
 bool UUDMessageItemViewModel::GetHasContentValue() const
 {
 	return HasContentValue;
+}
+
+void UUDMessageItemViewModel::SetHasChoicesValue(bool newHasChoicesValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(HasChoicesValue, newHasChoicesValue);
+}
+
+bool UUDMessageItemViewModel::GetHasChoicesValue() const
+{
+	return HasChoicesValue;
 }

@@ -50,7 +50,7 @@ FUDActionPresentation UUDGameActionTileTransfer::GetPresentation() const
 			UD_ACTION_TAG_FACTION_INTERACTION,
 			UD_ACTION_TAG_PARAMETER_FACTION,
 			UD_ACTION_TAG_PARAMETER_TILE,
-			UD_ACTION_TAG_DECISION_DIRECT,
+			UD_ACTION_TAG_DECISION_OFFER,
 			UD_ACTION_TAG_DECISION_REQUEST,
 			UD_ACTION_TAG_DECISION_DEMAND,
 		}
@@ -59,7 +59,7 @@ FUDActionPresentation UUDGameActionTileTransfer::GetPresentation() const
 	presentation.AcceptActionId = UUDGameActionTileTransferAccept::ActionTypeId;
 	presentation.RejectActionId = UUDGameActionTileTransferReject::ActionTypeId;
 	presentation.MessageContentFormat = FText(LOCTEXT("TileTransfer", 
-		"Faction [{INVOKER}] offered your faction [{TARGET}] province [{TILE}].\nDo you accept ?"
+		"Faction [{INVOKER}] transfers to faction [{TARGET}] province [{TILE}]."
 	)).ToString();	
 	presentation.DealContentFormat = FText(LOCTEXT("TileTransfer", 
 		"Faction [{INVOKER}] will transfer control of province [{TILE}] to faction [{TARGET}]."

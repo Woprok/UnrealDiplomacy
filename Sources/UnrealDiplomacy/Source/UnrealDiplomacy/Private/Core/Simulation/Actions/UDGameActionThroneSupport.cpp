@@ -64,11 +64,16 @@ FUDActionPresentation UUDGameActionThroneSupport::GetPresentation() const
 			UD_ACTION_TAG_STRATAGEM_COST_1,
 			UD_ACTION_TAG_FACTION_INTERACTION,
 			UD_ACTION_TAG_PARAMETER_FACTION,
-			UD_ACTION_TAG_DECISION_OFFER
+			UD_ACTION_TAG_DECISION_OFFER,
+			UD_ACTION_TAG_DECISION_REQUEST,
+			UD_ACTION_TAG_DECISION_DEMAND,
 		}
-	);
+	);	
+	presentation.MessageContentFormat = FText(LOCTEXT("ThroneSupport",
+		"Faction [{INVOKER}] supports [{TARGET}] claim to the throne."
+	)).ToString();
 	presentation.DealContentFormat = FText(LOCTEXT("ThroneSupport",
-		"Faction [{INVOKER}] will provide support for claiming throne to [{TARGET}]."
+		"Faction [{INVOKER}] will support [{TARGET}] claim to the throne."
 	)).ToString();
 
 	return presentation;

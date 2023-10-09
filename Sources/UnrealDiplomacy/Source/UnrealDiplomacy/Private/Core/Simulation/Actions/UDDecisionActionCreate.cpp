@@ -1,7 +1,6 @@
 // Copyright Miroslav Valach
-// TODO consider adding continuation for executing direct actions such as gift.
-
 #include "Core/Simulation/Actions/UDDecisionActionCreate.h"
+#include "Core/Simulation/Actions/UDDecisionActionConfirm.h"
 #include "Core/UDGlobalData.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDWorldState.h"
@@ -43,4 +42,19 @@ FUDActionPresentation UUDDecisionActionCreate::GetPresentation() const
 	);
 
 	return presentation;
+}
+
+TArray<FUDActionData> UUDDecisionActionCreate::GetContinuations(const FUDActionData& parentAction, TObjectPtr<UUDWorldState> world) const
+{
+	TArray<FUDActionData> directExecution = { };
+	FUDDecisionDataTargetTypeParameters data(parentAction.ValueParameters);
+	// If enabled follows execution of the direct decisions. Thus this will call confirm on these decisions immediately as consequence.
+	if (UUDGlobalGameConfig::IsDirectExecutionEnabled && 
+		UUDDecisionAction::IntegerToDecisionType(data.Type) == EUDDecisionType::Gift)
+	{
+		FUDActionData decisionAction = FUDActionData(UUDDecisionActionConfirm::ActionTypeId, data.TargetId, { parentAction.UniqueId });
+		directExecution.Add(decisionAction);
+	}
+
+	return directExecution;
 }

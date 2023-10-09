@@ -47,6 +47,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText MessageText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText MessageAdditionalText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText AcceptText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText OkText;
@@ -54,6 +56,8 @@ public:
 	FText RejectText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool HasContentValue;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool HasChoicesValue;
 protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
@@ -65,6 +69,8 @@ private:
 	FText GetMessageTitleText() const;
 	void SetMessageText(FText newMessageText);
 	FText GetMessageText() const;
+	void SetMessageAdditionalText(FText newMessageAdditionalText);
+	FText GetMessageAdditionalText() const;
 	void SetAcceptText(FText newAcceptText);
 	FText GetAcceptText() const;
 	void SetOkText(FText newOkText);
@@ -73,6 +79,8 @@ private:
 	FText GetRejectText() const;
 	void SetHasContentValue(bool newHasContentValue);
 	bool GetHasContentValue() const;
+	void SetHasChoicesValue(bool newHasChoicesValue);
+	bool GetHasChoicesValue() const;
 private:
 	// Fields
 	FUDMessageInfo Content;
