@@ -13,6 +13,24 @@ enum class EUDDecisionType : uint8;
  * Transforms action parameters to properly named fields.
  */
 USTRUCT(BlueprintType)
+struct FUDDecisionDataAction
+{
+	GENERATED_BODY()
+public:
+	FUDDecisionDataAction() {}
+	FUDDecisionDataAction(TArray<int32> valueParameters)
+	{
+		ActionId = valueParameters[0];
+	}
+	UPROPERTY(BlueprintReadOnly)
+	int32 ActionId = 0;
+	static const int32 ParameterCount = 1;
+};
+
+/**
+ * Transforms action parameters to properly named fields.
+ */
+USTRUCT(BlueprintType)
 struct FUDDecisionDataDecision
 {
 	GENERATED_BODY()

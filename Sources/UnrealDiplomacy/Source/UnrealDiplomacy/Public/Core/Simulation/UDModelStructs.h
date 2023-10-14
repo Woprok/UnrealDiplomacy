@@ -729,4 +729,23 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	int32 ActionIndex;
 };
+
+/** Single selectable policy item. */
+USTRUCT(BlueprintType)
+struct FUDPolicySelectItemInfo
+{
+	GENERATED_BODY()
+public:
+	FUDPolicySelectItemInfo();
+	/** Refers to action that is used for select. */
+	UPROPERTY(BlueprintReadOnly)
+	int32 SelectPolicyActionId;
+	/** Id of the policy. Most likely refers to an ActionId. */
+	UPROPERTY(BlueprintReadOnly)
+	int32 PolicyId;
+	UPROPERTY(BlueprintReadOnly)
+	FString Name;
+	UPROPERTY(BlueprintReadOnly)
+	bool IsSelected;
+};
 #pragma endregion

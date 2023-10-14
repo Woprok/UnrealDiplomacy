@@ -14,6 +14,8 @@ class UListView;
 class UUDFactionManagementViewModel;
 class UUDFactionInteractionViewModel;
 class UUDModifierItemViewModel;
+class UUDPolicySelectorUserWidget;
+class UUDPolicySelectorViewModel;
 
 /**
  * Ancestor for blueprint.
@@ -61,6 +63,10 @@ protected:
 	 * Callback to set data from view model.
 	 */
 	void SetModifierItemSourceCollection(const TArray<TObjectPtr<UUDModifierItemViewModel>>& modifierItemViewModels);
+	/**
+	 * Callback to set data from view model.
+	 */
+	void SetPolicySelectorSourceInstance(const TObjectPtr<UUDPolicySelectorViewModel>& policySelectorViewModel);
 protected:
 	// Bindings
 	UPROPERTY()
@@ -89,6 +95,8 @@ protected:
 	TWeakObjectPtr<UListView> FactionRequestListWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UListView> FactionDemandListWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UUDPolicySelectorUserWidget> PolicySelectorViewWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDFactionManagementViewModel> ViewModel;

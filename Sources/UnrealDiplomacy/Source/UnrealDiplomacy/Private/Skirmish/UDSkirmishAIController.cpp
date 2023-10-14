@@ -7,7 +7,6 @@
 #include "Core/Simulation/UDActionAdministrator.h"
 
 #include "Core/Simulation/Actions/UDGameActionGift.h"
-#include "Core/Simulation/Actions/UDGameActionGiftAccept.h"
 #include "Core/Simulation/Actions/UDGameActionTileTake.h"
 #include "Core/Simulation/Actions/UDGameActionThroneUsurp.h"
 #include "Core/Simulation/Actions/UDSystemActionTurnFinish.h"

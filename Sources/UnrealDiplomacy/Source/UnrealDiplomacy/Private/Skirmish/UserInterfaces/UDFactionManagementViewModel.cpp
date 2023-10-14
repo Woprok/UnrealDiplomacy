@@ -3,6 +3,7 @@
 #include "Skirmish/UserInterfaces/UDFactionManagementViewModel.h"
 #include "Skirmish/UserInterfaces/UDFactionInteractionViewModel.h"
 #include "Skirmish/UserInterfaces/UDModifierItemViewModel.h"
+#include "Skirmish/UserInterfaces/UDPolicySelectorViewModel.h"
 #include "Skirmish/UDSkirmishHUD.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Core/Simulation/UDModelStructs.h"
@@ -14,20 +15,21 @@ void UUDFactionManagementViewModel::Initialize()
 {
 	FactionInteractionViewModelType = UUDFactionInteractionViewModel::StaticClass();
 	ModifierItemViewModelType = UUDModifierItemViewModel::StaticClass();
+	PolicySelectorType = UUDPolicySelectorViewModel::StaticClass();
 
-	FText managementTitle = FText(LOCTEXT("FactionPanel", "Faction Management"));
+	FText managementTitle = FText(LOCTEXT("FactionManagement", "Faction Management"));
 	SetFactionManagementTitleText(managementTitle);
-	FText factionName = FText(LOCTEXT("FactionPanel", "Faction"));
+	FText factionName = FText(LOCTEXT("FactionManagement", "Faction"));
 	SetFactionNameText(factionName);
-	FText close = FText(LOCTEXT("FactionPanel", "X"));
+	FText close = FText(LOCTEXT("FactionManagement", "X"));
 	SetCloseText(close);
-	FText interactionTitle = FText(LOCTEXT("FactionPanel", "Interactions"));
+	FText interactionTitle = FText(LOCTEXT("FactionManagement", "Interactions"));
 	SetInteractionTitleText(interactionTitle);
-	FText offerTitle = FText(LOCTEXT("FactionPanel", "Offers"));
+	FText offerTitle = FText(LOCTEXT("FactionManagement", "Offers"));
 	SetOfferTitleText(offerTitle);
-	FText requestTitle = FText(LOCTEXT("FactionPanel", "Requests"));
+	FText requestTitle = FText(LOCTEXT("FactionManagement", "Requests"));
 	SetRequestTitleText(requestTitle);
-	FText demandTitle = FText(LOCTEXT("FactionPanel", "Demands"));
+	FText demandTitle = FText(LOCTEXT("FactionManagement", "Demands"));
 	SetDemandTitleText(demandTitle);
 
 
@@ -36,6 +38,13 @@ void UUDFactionManagementViewModel::Initialize()
 
 	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDFactionManagementViewModel::Reload);
 	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDFactionManagementViewModel::Update);
+
+
+	// Retrieve view models for sub content controls
+	TObjectPtr<UUDViewModel> policySelectorModel = hud->GetViewModelCollection(PolicySelectorInstanceName, PolicySelectorType);
+	PolicySelectorInstance = Cast<UUDPolicySelectorViewModel>(policySelectorModel);
+	// Announce them to widget for additional binding.
+	PolicySelectorChangedEvent.Broadcast(PolicySelectorInstance);
 
 	Update();
 }
@@ -57,6 +66,10 @@ void UUDFactionManagementViewModel::Update()
 	// Following updates require model.
 	FUDFactionMinimalInfo faction = Model->GetFactionInfo(SelectedFactionId);
 	SetFactionNameText(FText::FromString(faction.Name));
+
+	// Call initialize so each Instance is ready to use, once it receives data in runtime.
+	PolicySelectorInstance->SetContent();
+	PolicySelectorInstance->FullUpdate();
 
 	UpdateFactionLists();
 	UpdateModifierItemList();

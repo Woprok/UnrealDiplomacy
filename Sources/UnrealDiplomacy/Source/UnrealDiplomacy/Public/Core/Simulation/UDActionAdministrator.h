@@ -65,6 +65,8 @@ struct FUDDealFactionInfo;
 struct FUDDealPointMinimalInfo;
 struct FUDDealActionMinimalInfo;
 
+struct FUDPolicySelectItemInfo;
+
 #define LOCTEXT_NAMESPACE "ActionAdministrator"
 
 DECLARE_DELEGATE_OneParam(UserActionRequestedDelegate, FUDActionData);
@@ -216,7 +218,6 @@ public:
 	FUDGameOverInfo GetGameOverInfo();
 #pragma endregion
 
-
 #pragma region Faction Interaction
 public:	
 	/** Provides list of factions and their names if they can be interacted with. */
@@ -231,6 +232,10 @@ public:
 	TArray<FUDFactionInteractionInfo> GetFactionRequestList();
 	/** Provides list of faction demands. */
 	TArray<FUDFactionInteractionInfo> GetFactionDemandList();
+	/** Provides list of consequences for faction demands rejection. */
+	TArray<FUDFactionInteractionInfo> GetFactionConsequenceList();
+	/** Provides list of policies for consequences on demands rejection. */
+	TArray<FUDPolicySelectItemInfo> GetConsequencePolicyList();
 private:
 	/** Provides interactions. */
 	TArray<FUDFactionInteractionInfo> CreateFactionInteractionList(TArray<FUDActionPresentation>&& availableActions);

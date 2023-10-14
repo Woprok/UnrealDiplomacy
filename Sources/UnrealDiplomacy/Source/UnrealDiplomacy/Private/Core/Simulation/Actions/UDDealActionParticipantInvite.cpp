@@ -1,8 +1,6 @@
 // Copyright Miroslav Valach
 
 #include "Core/Simulation/Actions/UDDealActionParticipantInvite.h"
-#include "Core/Simulation/Actions/UDDealActionParticipantInviteAccept.h"
-//#include "Core/Simulation/Actions/UDDealActionParticipantInviteReject.h"
 #include "Core/UDGlobalData.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDWorldState.h"
@@ -46,7 +44,6 @@ FUDActionPresentation UUDDealActionParticipantInvite::GetPresentation() const
 		}
 	);
 
-	presentation.AcceptActionId = UUDDealActionParticipantInviteAccept::ActionTypeId;
 	//presentation.RejectActionId = UUDDealActionParticipantInviteReject::ActionTypeId;
 	presentation.MessageContentFormat = FText(LOCTEXT("ParticipantInvite",
 		"Your faction [{TARGET}] has been invited to participate in [{INVOKER}]'s deal: [{DEAL}].\nHow do you answer ?"

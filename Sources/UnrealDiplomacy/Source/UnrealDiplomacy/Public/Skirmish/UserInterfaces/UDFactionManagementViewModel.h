@@ -10,9 +10,11 @@
 
 class UUDFactionInteractionViewModel;
 class UUDModifierItemViewModel;
+class UUDPolicySelectorViewModel;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FUDFactionInteractionSourceUpdated, const TArray<TObjectPtr<UUDFactionInteractionViewModel>>& factionInteractionViewModels);
 DECLARE_MULTICAST_DELEGATE_OneParam(FUDFactionModifierItemSourceUpdated, const TArray<TObjectPtr<UUDModifierItemViewModel>>& modifierItemViewModels);
+DECLARE_MULTICAST_DELEGATE_OneParam(FUDPolicySelectorChanged, const TObjectPtr<UUDPolicySelectorViewModel>& policySelectorViewModel);
 
 /**
  * Window that allows interacting with faction and view informations.
@@ -52,6 +54,7 @@ public:
 	FUDFactionInteractionSourceUpdated FactionRequestSourceUpdatedEvent;
 	FUDFactionInteractionSourceUpdated FactionDemandSourceUpdatedEvent;
 	FUDFactionModifierItemSourceUpdated ModifierItemSourceUpdatedEvent;
+	FUDPolicySelectorChanged PolicySelectorChangedEvent;
 protected:
 	virtual void Initialize() override;
 	UFUNCTION()
@@ -117,6 +120,11 @@ private:
 	FName ModifierItemViewModelCollectionName = TEXT("FactionModifierItemCollection");
 	TSubclassOf<UUDViewModel> ModifierItemViewModelType;
 	TArray<TObjectPtr<UUDModifierItemViewModel>> ModifierItemViewModelCollection;
+
+	// Policies
+	FName PolicySelectorInstanceName = TEXT("DecisionConsequencePolicySelectorInstance");
+	TSubclassOf<UUDViewModel> PolicySelectorType;
+	TObjectPtr<UUDPolicySelectorViewModel> PolicySelectorInstance;
 
 	int32 SelectedFactionId;
 };

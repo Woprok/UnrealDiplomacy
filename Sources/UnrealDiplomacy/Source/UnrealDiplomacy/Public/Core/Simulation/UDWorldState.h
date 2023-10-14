@@ -258,6 +258,11 @@ public:
 	UPROPERTY()
 	TMap<int32, FUDDecision> ResolvedDecisions;
 	/**
+	 * Defines current policy used for demands in case of rejection.
+	 */
+	UPROPERTY()
+	int32 DecisionDemandPolicy;
+	/**
 	 * List of all modifiers applied to this faction.
 	 */
 	UPROPERTY()

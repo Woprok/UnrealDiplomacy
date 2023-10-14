@@ -1,8 +1,6 @@
 // Copyright Miroslav Valach
 
 #include "Core/Simulation/Actions/UDGameActionGift.h"
-#include "Core/Simulation/Actions/UDGameActionGiftAccept.h"
-#include "Core/Simulation/Actions/UDGameActionGiftReject.h"
 #include "Core/UDGlobalData.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDWorldState.h"
@@ -57,8 +55,6 @@ FUDActionPresentation UUDGameActionGift::GetPresentation() const
 		}
 	);
 
-	presentation.AcceptActionId = UUDGameActionGiftAccept::ActionTypeId;
-	presentation.RejectActionId = UUDGameActionGiftReject::ActionTypeId;
 	presentation.MessageContentFormat = FText(LOCTEXT("Gift",
 		"Faction [{INVOKER}] sends to faction [{TARGET}] following: [{VALUE}] in [{RESOURCE}]]."
 	)).ToString();

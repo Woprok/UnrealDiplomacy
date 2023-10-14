@@ -1,6 +1,7 @@
 // Copyright Miroslav Valach
 
 #include "Core/Simulation/UDModelStructs.h"
+#include "Core/Simulation/UDWorldState.h"
 
 FUDFactionMinimalInfo::FUDFactionMinimalInfo()
 {
@@ -247,6 +248,11 @@ FUDActionInteractionInfo::FUDActionInteractionInfo()
 }
 
 FUDDealActionMinimalInfo::FUDDealActionMinimalInfo()
+{
+
+}
+
+FUDPolicySelectItemInfo::FUDPolicySelectItemInfo()
 {
 
 }

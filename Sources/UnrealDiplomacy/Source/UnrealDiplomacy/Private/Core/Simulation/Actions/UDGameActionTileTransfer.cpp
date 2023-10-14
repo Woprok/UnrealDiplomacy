@@ -1,8 +1,6 @@
 // Copyright Miroslav Valach
 
 #include "Core/Simulation/Actions/UDGameActionTileTransfer.h"
-#include "Core/Simulation/Actions/UDGameActionTileTransferAccept.h"
-#include "Core/Simulation/Actions/UDGameActionTileTransferReject.h"
 #include "Core/UDGlobalData.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDWorldState.h"
@@ -56,8 +54,6 @@ FUDActionPresentation UUDGameActionTileTransfer::GetPresentation() const
 		}
 	);
 
-	presentation.AcceptActionId = UUDGameActionTileTransferAccept::ActionTypeId;
-	presentation.RejectActionId = UUDGameActionTileTransferReject::ActionTypeId;
 	presentation.MessageContentFormat = FText(LOCTEXT("TileTransfer", 
 		"Faction [{INVOKER}] transfers to faction [{TARGET}] province [{TILE}]."
 	)).ToString();	

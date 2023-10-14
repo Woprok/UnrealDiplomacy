@@ -18,7 +18,6 @@
 #include "Core/Simulation/Actions/UDDealActionFinalize.h"
 #include "Core/Simulation/Actions/UDDealActionMessageSend.h"
 #include "Core/Simulation/Actions/UDDealActionParticipantInvite.h"
-#include "Core/Simulation/Actions/UDDealActionParticipantInviteAccept.h"
 #include "Core/Simulation/Actions/UDDealActionParticipantInviteConsequence.h"
 #include "Core/Simulation/Actions/UDDealActionParticipantKick.h"
 #include "Core/Simulation/Actions/UDDealActionParticipantLeave.h"
@@ -52,15 +51,13 @@
 #include "Core/Simulation/Actions/UDDecisionActionCreate.h"
 #include "Core/Simulation/Actions/UDDecisionActionConfirm.h"
 #include "Core/Simulation/Actions/UDDecisionActionDecline.h"
+#include "Core/Simulation/Actions/UDDecisionActionConsequenceSelect.h"
 // Gaia
 #include "Core/Simulation/Actions/UDGaiaAction.h"
 #include "Core/Simulation/Actions/UDGaiaActionResourcesAllAdd.h"
 // Game
 #include "Core/Simulation/Actions/UDGameAction.h"
 #include "Core/Simulation/Actions/UDGameActionGift.h"
-#include "Core/Simulation/Actions/UDGameActionGiftAccept.h"
-#include "Core/Simulation/Actions/UDGameActionGiftIrrevocable.h"
-#include "Core/Simulation/Actions/UDGameActionGiftReject.h"
 #include "Core/Simulation/Actions/UDGameActionPermitTileExploit.h"
 #include "Core/Simulation/Actions/UDGameActionThroneAbdicate.h"
 #include "Core/Simulation/Actions/UDGameActionThroneReceive.h"
@@ -68,9 +65,12 @@
 #include "Core/Simulation/Actions/UDGameActionTileExploit.h"
 #include "Core/Simulation/Actions/UDGameActionTileTake.h"
 #include "Core/Simulation/Actions/UDGameActionTileTransfer.h"
-#include "Core/Simulation/Actions/UDGameActionTileTransferAccept.h"
-#include "Core/Simulation/Actions/UDGameActionTileTransferReject.h"
 #include "Core/Simulation/Actions/UDGameActionThroneSupport.h"
+#include "Core/Simulation/Actions/UDGameActionNone.h"
+#include "Core/Simulation/Actions/UDGameActionRumour.h"
+#include "Core/Simulation/Actions/UDGameActionBurglary.h"
+#include "Core/Simulation/Actions/UDGameActionTileRaid.h"
+#include "Core/Simulation/Actions/UDGameActionStratagemShare.h"
 // Setting
 #include "Core/Simulation/Actions/UDSettingAction.h"
 #include "Core/Simulation/Actions/UDSettingActionAICountChange.h"
@@ -129,7 +129,8 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetDecisionActio
 		//NewObject<UDDecisionAction>(parent),
 		NewObject<UUDDecisionActionCreate>(parent),
 		NewObject<UUDDecisionActionConfirm>(parent),
-		NewObject<UUDDecisionActionDecline>(parent)
+		NewObject<UUDDecisionActionDecline>(parent),
+		NewObject<UUDDecisionActionConsequenceSelect>(parent),
 	};
 }
 
@@ -146,9 +147,6 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetGameActions(U
 	return {
 		//NewObject<UUDGameAction>(parent),
 		NewObject<UUDGameActionGift>(parent),
-		NewObject<UUDGameActionGiftAccept>(parent),
-		NewObject<UUDGameActionGiftIrrevocable>(parent),
-		NewObject<UUDGameActionGiftReject>(parent),
 		NewObject<UUDGameActionPermitTileExploit>(parent),
 		NewObject<UUDGameActionThroneAbdicate>(parent),
 		NewObject<UUDGameActionThroneReceive>(parent),
@@ -156,9 +154,12 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetGameActions(U
 		NewObject<UUDGameActionTileExploit>(parent),
 		NewObject<UUDGameActionTileTake>(parent),
 		NewObject<UUDGameActionTileTransfer>(parent),
-		NewObject<UUDGameActionTileTransferAccept>(parent),
-		NewObject<UUDGameActionTileTransferReject>(parent),
-		NewObject<UUDGameActionThroneSupport>(parent)
+		NewObject<UUDGameActionThroneSupport>(parent),
+		NewObject<UUDGameActionNone>(parent),
+		NewObject<UUDGameActionRumour>(parent),
+		NewObject<UUDGameActionBurglary>(parent),
+		NewObject<UUDGameActionTileRaid>(parent),
+		NewObject<UUDGameActionStratagemShare>(parent),
 	};
 }
 
@@ -176,7 +177,6 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetDealActions(U
 		//NewObject<UUDDealActionFinalize>(parent),
 		NewObject<UUDDealActionMessageSend>(parent),
 		NewObject<UUDDealActionParticipantInvite>(parent),
-		NewObject<UUDDealActionParticipantInviteAccept>(parent),
 		NewObject<UUDDealActionParticipantInviteConsequence>(parent),
 		NewObject<UUDDealActionParticipantKick>(parent),
 		NewObject<UUDDealActionParticipantLeave>(parent),

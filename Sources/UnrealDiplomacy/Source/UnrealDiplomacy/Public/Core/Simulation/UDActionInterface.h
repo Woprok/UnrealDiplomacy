@@ -16,7 +16,7 @@ class UUDModifierManager;
 // TODO Define proper order for parameters in ValueParameters ?
 // SPECIALS:
 // Map Settings
-// TARGET/TILE/AMOUNT
+// TARGET/TILE/AMOUNT/ACTION
 // Amount
 // Tile
 // Tile Amount
@@ -79,6 +79,8 @@ class UUDModifierManager;
 #define UD_ACTION_TAG_DECISION_REQUEST 22
 // Demand action from target (Transfer Tile)
 #define UD_ACTION_TAG_DECISION_DEMAND 23
+// Defines action that can be executed on demand rejection.
+#define UD_ACTION_TAG_DECISION_CONSEQUENCE 24
 
 // This is default and is not necessary.
 #define UD_ACTION_TAG_VERIFY_PARAMETER_EQUALITY 50
@@ -112,10 +114,6 @@ public:
 	TSet<int32> Tags;
 	/** Main name of this action. */
 	FString Name = TEXT("");
-	/** Defines if this action is acceptable. If not returns InvalidActionId. */
-	int32 AcceptActionId = -1;
-	/** Defines if this action is rejectable. If not returns InvalidActionId. */
-	int32 RejectActionId = -1;
 	/** 
 	 * Defines format for converting action to offer message string based on action parameters. 
 	 * To use this use format and supply all parameters required by tags.

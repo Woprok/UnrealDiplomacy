@@ -298,6 +298,11 @@ TArray<FUDFactionInteractionInfo> UUDActionAdministrator::GetFactionDemandList()
 	return CreateFactionInteractionList(GetActionManager()->FilterFactionInteractions(UD_ACTION_TAG_DECISION_DEMAND));
 }
 
+TArray<FUDFactionInteractionInfo> UUDActionAdministrator::GetFactionConsequenceList()
+{
+	return CreateFactionInteractionList(GetActionManager()->FilterFactionInteractions(UD_ACTION_TAG_DECISION_CONSEQUENCE));
+}
+
 TArray<FUDFactionInteractionInfo> UUDActionAdministrator::CreateFactionInteractionList(TArray<FUDActionPresentation>&& availableActions)
 {
 	TArray<FUDFactionInteractionInfo> interactions = { };
@@ -317,6 +322,30 @@ TArray<FUDFactionInteractionInfo> UUDActionAdministrator::CreateFactionInteracti
 	}
 
 	return interactions;
+}
+
+#include "Core/Simulation/Actions/UDDecisionActionConsequenceSelect.h"
+
+TArray<FUDPolicySelectItemInfo> UUDActionAdministrator::GetConsequencePolicyList()
+{
+	TArray<FUDPolicySelectItemInfo> policies = { };
+
+	for (const auto& interaction : GetActionManager()->FilterFactionInteractions(UD_ACTION_TAG_DECISION_CONSEQUENCE))
+	{
+		bool isAvailable = IsAvailableStratagem(interaction.Tags, interaction.ActionId);
+		// continue if it's not available with next.
+		if (!isAvailable)
+			continue;
+
+		FUDPolicySelectItemInfo newPolicyAction;
+		newPolicyAction.Name = interaction.Name;
+		newPolicyAction.SelectPolicyActionId = UUDDecisionActionConsequenceSelect::ActionTypeId;
+		newPolicyAction.PolicyId = interaction.ActionId;
+		newPolicyAction.IsSelected = State->Factions[State->FactionPerspective]->DecisionDemandPolicy == interaction.ActionId;
+		policies.Add(newPolicyAction);
+	}
+
+	return policies;
 }
 
 #pragma endregion

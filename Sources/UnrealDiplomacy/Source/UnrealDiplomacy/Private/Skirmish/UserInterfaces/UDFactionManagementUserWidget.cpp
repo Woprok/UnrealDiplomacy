@@ -4,6 +4,8 @@
 #include "Skirmish/UserInterfaces/UDFactionManagementViewModel.h"
 #include "Skirmish/UserInterfaces/UDFactionInteractionViewModel.h"
 #include "Skirmish/UserInterfaces/UDModifierItemViewModel.h"
+#include "Skirmish/UserInterfaces/UDPolicySelectorUserWidget.h"
+#include "Skirmish/UserInterfaces/UDPolicySelectorViewModel.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
 #include "Components/ListView.h"
@@ -23,6 +25,7 @@ void UUDFactionManagementUserWidget::BindDelegates()
 	ViewModel->FactionRequestSourceUpdatedEvent.AddUObject(this, &UUDFactionManagementUserWidget::SetFactionRequestSourceCollection);
 	ViewModel->FactionDemandSourceUpdatedEvent.AddUObject(this, &UUDFactionManagementUserWidget::SetFactionDemandSourceCollection);
 	ViewModel->ModifierItemSourceUpdatedEvent.AddUObject(this, &UUDFactionManagementUserWidget::SetModifierItemSourceCollection);
+	ViewModel->PolicySelectorChangedEvent.AddUObject(this, &UUDFactionManagementUserWidget::SetPolicySelectorSourceInstance);
 	// Bind viewmodel to widgets.
 	CloseButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDFactionManagementViewModel::Close);
 }
@@ -42,6 +45,7 @@ void UUDFactionManagementUserWidget::BindWidgets()
 	FactionRequestListWidget = GetWidget<UListView>(TEXT("FactionRequestList"));
 	FactionDemandListWidget = GetWidget<UListView>(TEXT("FactionDemandList"));
 	ModifierItemListWidget = GetWidget<UListView>(TEXT("ModifierItemList"));
+	PolicySelectorViewWidget = GetWidget<UUDPolicySelectorUserWidget>(TEXT("PolicySelectorView"));
 }
 
 void UUDFactionManagementUserWidget::SetFactionInteractionSourceCollection(const TArray<TObjectPtr<UUDFactionInteractionViewModel>>& factionInteractionViewModels)
@@ -67,4 +71,9 @@ void UUDFactionManagementUserWidget::SetFactionDemandSourceCollection(const TArr
 void UUDFactionManagementUserWidget::SetModifierItemSourceCollection(const TArray<TObjectPtr<UUDModifierItemViewModel>>& modifierItemViewModels)
 {
 	ModifierItemListWidget->SetListItems(modifierItemViewModels);
+}
+
+void UUDFactionManagementUserWidget::SetPolicySelectorSourceInstance(const TObjectPtr<UUDPolicySelectorViewModel>& policySelectorViewModel)
+{
+	PolicySelectorViewWidget->SetViewModel(policySelectorViewModel);
 }
