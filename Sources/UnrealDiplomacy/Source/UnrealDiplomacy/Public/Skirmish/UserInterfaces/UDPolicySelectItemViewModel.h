@@ -20,11 +20,6 @@ class UNREALDIPLOMACY_API UUDPolicySelectItemViewModel : public UUDViewModel
 	GENERATED_BODY()
 public:
 	/**
-	 * Reset content of the interaction option to invalid.
-	 * Disabling interations.
-	 */
-	void InvalidateContent(FUDPolicySelectItemInfo content);
-	/**
 	 * Set content of the interaction option.
 	 */
 	void SetContent(FUDPolicySelectItemInfo content);
@@ -39,7 +34,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText SelectItemText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	bool IsItemSelectedValue;
+	bool CanSelectItemValue;
 protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
@@ -47,8 +42,8 @@ private:
 	// MVVM Setters & Getters
 	void SetSelectItemText(FText newSelectItemText);
 	FText GetSelectItemText() const;
-	void SetIsItemSelectedValue(bool newIsItemSelectedValue);
-	bool GetIsItemSelectedValue() const;
+	void SetCanSelectItemValue(bool newCanSelectItemValue);
+	bool GetCanSelectItemValue() const;
 private:
 	// Fields
 	FUDPolicySelectItemInfo Content;

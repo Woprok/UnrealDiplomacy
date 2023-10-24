@@ -11,27 +11,20 @@ void UUDPolicySelectItemViewModel::Initialize()
 {
 	FText selectItem = FText(LOCTEXT("PolicyItem", "Undefined"));
 	SetSelectItemText(selectItem);
-	SetIsItemSelectedValue(false);
 }
 
 void UUDPolicySelectItemViewModel::Update()
 {
 	SetSelectItemText(FText::FromString(Content.Name));
+	SetCanSelectItemValue(!Content.IsSelected);
 }
 
 #undef LOCTEXT_NAMESPACE
 
-void UUDPolicySelectItemViewModel::InvalidateContent(FUDPolicySelectItemInfo content)
-{
-	Content = content;
-	SetIsItemSelectedValue(false);
-	Update();
-}
-
 void UUDPolicySelectItemViewModel::SetContent(FUDPolicySelectItemInfo content)
 {
 	Content = content;
-	SetIsItemSelectedValue(true);
+	// Can select only these that are not selected.
 	Update();
 }
 
@@ -51,12 +44,12 @@ FText UUDPolicySelectItemViewModel::GetSelectItemText() const
 	return SelectItemText;
 }
 
-void UUDPolicySelectItemViewModel::SetIsItemSelectedValue(bool newIsItemSelectedValue)
+void UUDPolicySelectItemViewModel::SetCanSelectItemValue(bool newCanSelectItemValue)
 {
-	UE_MVVM_SET_PROPERTY_VALUE(IsItemSelectedValue, newIsItemSelectedValue);
+	UE_MVVM_SET_PROPERTY_VALUE(CanSelectItemValue, newCanSelectItemValue);
 }
 
-bool UUDPolicySelectItemViewModel::GetIsItemSelectedValue() const
+bool UUDPolicySelectItemViewModel::GetCanSelectItemValue() const
 {
-	return IsItemSelectedValue;
+	return CanSelectItemValue;
 }

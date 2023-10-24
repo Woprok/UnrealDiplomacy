@@ -18,8 +18,23 @@ void UUDDecisionActionCreate::Execute(const FUDActionData& action, TObjectPtr<UU
 	IUDActionInterface::Execute(action, world);
 	// Queue new confirmable request.
 	FUDDecisionDataTargetTypeParameters data(action.ValueParameters);
-	FUDActionData decisionAction = FUDActionData::FromValues(data.Parameters);
-	AddPendingTargetDecision(decisionAction, data.TargetId, UUDDecisionAction::IntegerToDecisionType(data.Type), action.UniqueId, world);
+	EUDDecisionType decisionType = UUDDecisionAction::IntegerToDecisionType(data.Type);
+	FUDActionData confirm = FUDActionData::FromValues(data.Parameters);
+	FUDDecision newDecision;
+	
+	// This handles the demand consequence case 
+	if (UUDDecisionAction::IntegerToDecisionType(data.Type) == EUDDecisionType::Demand)
+	{
+		FUDActionData decline(world->Factions[action.InvokerFactionId]->DecisionDemandPolicy, action.InvokerFactionId, { data.TargetId });
+		newDecision = FUDDecision(decisionType, confirm, decline);
+	}
+	else
+	{
+		newDecision = FUDDecision(decisionType, confirm);
+	}
+
+	AddPendingTargetDecision(data.TargetId, action.UniqueId, newDecision, world);
+	
 }
 
 void UUDDecisionActionCreate::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -28,7 +43,7 @@ void UUDDecisionActionCreate::Revert(const FUDActionData& action, TObjectPtr<UUD
 	// Remove request from queue.
 	FUDDecisionDataTargetTypeParameters data(action.ValueParameters);
 	FUDActionData decisionAction = FUDActionData::FromValues(data.Parameters);
-	RemovePendingTargetDecision(decisionAction, data.TargetId, action.UniqueId, world);
+	RemovePendingTargetDecision(data.TargetId, action.UniqueId, world);
 }
 
 FUDActionPresentation UUDDecisionActionCreate::GetPresentation() const

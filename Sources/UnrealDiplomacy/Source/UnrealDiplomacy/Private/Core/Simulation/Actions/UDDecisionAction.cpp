@@ -17,7 +17,7 @@ EUDDecisionType UUDDecisionAction::IntegerToDecisionType(int32 type)
 	return static_cast<EUDDecisionType>(type);
 }
 
-void UUDDecisionAction::AddPendingTargetDecision(FUDActionData action, int32 targetId, EUDDecisionType type, int32 decisionId, TObjectPtr<UUDWorldState> world)
+void UUDDecisionAction::AddPendingTargetDecision(int32 targetId, int32 decisionId, FUDDecision decision, TObjectPtr<UUDWorldState> world)
 {
 	UE_LOG(LogTemp, Log,
 		TEXT("INSTANCE(%d): Player(%d) started with (%d) decisions. Adding decision(%d)"),
@@ -28,7 +28,7 @@ void UUDDecisionAction::AddPendingTargetDecision(FUDActionData action, int32 tar
 	);
 
 	// Item is added as key value pair.
-	world->Factions[targetId]->PendingDecisions.Add(decisionId, FUDDecision(type, action));
+	world->Factions[targetId]->PendingDecisions.Add(decisionId, decision);
 
 	UE_LOG(LogTemp, Log,
 		TEXT("INSTANCE(%d): Player(%d) ended with (%d) decisions."),
@@ -38,7 +38,7 @@ void UUDDecisionAction::AddPendingTargetDecision(FUDActionData action, int32 tar
 	);
 }
 
-void UUDDecisionAction::RemovePendingTargetDecision(const FUDActionData& action, int32 targetId, int32 decisionId, TObjectPtr<UUDWorldState> world)
+void UUDDecisionAction::RemovePendingTargetDecision(int32 targetId, int32 decisionId, TObjectPtr<UUDWorldState> world)
 {
 	UE_LOG(LogTemp, Log,
 		TEXT("INSTANCE(%d): Player(%d) started with (%d) decisions. Deleting decision(%d)"),
@@ -59,7 +59,7 @@ void UUDDecisionAction::RemovePendingTargetDecision(const FUDActionData& action,
 	);
 }
 
-bool UUDDecisionAction::IsPendingTargetDecision(const FUDActionData& action, int32 targetId, int32 decisionId, TObjectPtr<UUDWorldState> world) const
+bool UUDDecisionAction::IsPendingTargetDecision(int32 targetId, int32 decisionId, TObjectPtr<UUDWorldState> world) const
 {
 	UE_LOG(LogTemp, Log,
 		TEXT("INSTANCE(%d): Player(%d) has (%d) decisions. Finding decision(%d)"),
@@ -92,7 +92,7 @@ bool UUDDecisionAction::IsPendingTargetDecision(const FUDActionData& action, int
 	return false;
 }
 
-bool UUDDecisionAction::IsPendingInterchangeableTargetDecision(const FUDActionData& action, int32 targetId, int32 decisionId, TObjectPtr<UUDWorldState> world) const
+bool UUDDecisionAction::IsPendingInterchangeableTargetDecision(const FUDDecision& decision, int32 targetId, int32 decisionId, TObjectPtr<UUDWorldState> world) const
 {
 	UE_LOG(LogTemp, Log,
 		TEXT("INSTANCE(%d): Player(%d) has (%d) decisions. Finding decision(%d)"),
@@ -107,7 +107,7 @@ bool UUDDecisionAction::IsPendingInterchangeableTargetDecision(const FUDActionDa
 
 	for (const TPair<int32, FUDDecision>& key_action : world->Factions[targetId]->PendingDecisions)
 	{
-		if (key_action.Value.ConfirmAction.IsValueEqual(action))
+		if (key_action.Value.IsValueEqual(decision))
 		{
 			hasSameActionQueued = true;
 			break;

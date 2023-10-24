@@ -8,7 +8,7 @@
 bool UUDDecisionActionConfirm::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
 	FUDDecisionDataDecision data(action.ValueParameters);
-	bool isQueued = IsPendingTargetDecision(action, action.InvokerFactionId, data.DecisionId, world);
+	bool isQueued = IsPendingTargetDecision(action.InvokerFactionId, data.DecisionId, world);
 	// TODO add test for confirm action ?
 	// bool canExecuteAction = world->Factions[data.TargetId]->PendingDecisions[data.DecisionId].ConfirmAction;
 	return UUDDecisionAction::CanExecute(action, world) && isQueued;

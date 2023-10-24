@@ -345,6 +345,7 @@ private:
 	
 	FText GetFormattedDecisionType(EUDDecisionType type);
 	FUDMessageContentInfo CreateMessageContent(FUDActionData action);
+	FUDMessageContentInfo CreateEmptyMessageContent();
 #pragma endregion
 
 #pragma region Modifiers

@@ -14,8 +14,14 @@ void UUDMessageItemViewModel::Initialize()
 {
 	FText messageTitle = FText(LOCTEXT("MessageItem", "Invalid Message"));
 	SetMessageTitleText(messageTitle);
-	FText message = FText(LOCTEXT("MessageItem", "This is not valid!"));
-	SetMessageText(message);
+	FText messageConfirm = FText(LOCTEXT("MessageItem", "This is not valid confirm!"));
+	SetMessageConfirmText(messageConfirm);
+	FText messageReject = FText(LOCTEXT("MessageItem", "This is not valid reject!"));
+	SetMessageRejectText(messageReject);
+	FText onConfirm = FText(LOCTEXT("MessageItem", "On confirm:"));
+	SetOnConfirmText(onConfirm);
+	FText onReject = FText(LOCTEXT("MessageItem", "On reject:"));
+	SetOnRejectText(onReject);
 	FText accept = FText(LOCTEXT("MessageItem", "Accept"));
 	SetAcceptText(accept);
 	FText ok = FText(LOCTEXT("MessageItem", "Ok"));
@@ -29,8 +35,9 @@ void UUDMessageItemViewModel::Update()
 {
 	SetMessageTypeText(FText::FromString(Content.Type));
 	SetMessageTitleText(FText::FromString(Content.Content.Name));
-	SetMessageText(FText::FromString(Content.Content.Content));
-	SetMessageAdditionalText(FText::FromString(Content.AdditionalContent.Content));
+	SetMessageConfirmText(FText::FromString(Content.Content.Content));
+	SetMessageRejectText(FText::FromString(Content.AdditionalContent.Content));
+	SetHasRejectValue(Content.HasReject);
 	SetHasChoicesValue(Content.HasChoices);
 }
 
@@ -88,24 +95,54 @@ FText UUDMessageItemViewModel::GetMessageTypeText() const
 	return MessageTypeText;
 }
 
-void UUDMessageItemViewModel::SetMessageText(FText newMessageText)
+void UUDMessageItemViewModel::SetMessageConfirmText(FText newMessageConfirmText)
 {
-	UE_MVVM_SET_PROPERTY_VALUE(MessageText, newMessageText);
+	UE_MVVM_SET_PROPERTY_VALUE(MessageConfirmText, newMessageConfirmText);
 }
 
-FText UUDMessageItemViewModel::GetMessageText() const
+FText UUDMessageItemViewModel::GetMessageConfirmText() const
 {
-	return MessageText;
+	return MessageConfirmText;
 }
 
-void UUDMessageItemViewModel::SetMessageAdditionalText(FText newMessageAdditionalText)
+void UUDMessageItemViewModel::SetMessageRejectText(FText newMessageRejectText)
 {
-	UE_MVVM_SET_PROPERTY_VALUE(MessageAdditionalText, newMessageAdditionalText);
+	UE_MVVM_SET_PROPERTY_VALUE(MessageRejectText, newMessageRejectText);
 }
 
-FText UUDMessageItemViewModel::GetMessageAdditionalText() const
+FText UUDMessageItemViewModel::GetMessageRejectText() const
 {
-	return MessageAdditionalText;
+	return MessageRejectText;
+}
+
+void UUDMessageItemViewModel::SetOnConfirmText(FText newOnConfirmText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(OnConfirmText, newOnConfirmText);
+}
+
+FText UUDMessageItemViewModel::GetOnConfirmText() const
+{
+	return OnConfirmText;
+}
+
+void UUDMessageItemViewModel::SetOnRejectText(FText newOnRejectText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(OnRejectText, newOnRejectText);
+}
+
+FText UUDMessageItemViewModel::GetOnRejectText() const
+{
+	return OnRejectText;
+}
+
+void UUDMessageItemViewModel::SetHasRejectValue(bool newHasRejectValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(HasRejectValue, newHasRejectValue);
+}
+
+bool UUDMessageItemViewModel::GetHasRejectValue() const
+{
+	return HasRejectValue;
 }
 
 void UUDMessageItemViewModel::SetAcceptText(FText newAcceptText)

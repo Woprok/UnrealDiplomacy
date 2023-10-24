@@ -16,7 +16,10 @@ TObjectPtr<UUDGameInstance> UUDGameInstance::Get(TObjectPtr<UWorld> world)
 FUDApplicationSettings UUDGameInstance::LoadSettings()
 {
     TObjectPtr<UGameUserSettings> globalSettings = GetGameUserSettings();
+    if (globalSettings != nullptr)
+        return FUDApplicationSettings::GetDefault();
 
+    // Assuming that settings are present...
     EWindowMode::Type type = globalSettings->GetFullscreenMode();
     EUDWindowModeType windowMode = UUDApplicationConverters::ToWindowModeType(type);
     FIntPoint resolution = globalSettings->GetScreenResolution();
@@ -35,6 +38,7 @@ void UUDGameInstance::SaveSettings(FUDApplicationSettings newSettings)
     globalSettings->SetScreenResolution(newResolution);
     globalSettings->SetFullscreenMode(newWindowMode);
     // Apply & Save.
+    globalSettings->ApplyNonResolutionSettings();
     globalSettings->ApplyResolutionSettings(false);
     globalSettings->SaveSettings();
     globalSettings->ApplySettings(false);

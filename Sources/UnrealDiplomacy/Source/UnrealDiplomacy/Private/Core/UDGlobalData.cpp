@@ -60,3 +60,8 @@ ECheckBoxState UUDApplicationConverters::ToCheckBoxState(bool isChecked)
 		return ECheckBoxState::Unchecked;
 	}
 }
+
+FUDApplicationSettings FUDApplicationSettings::GetDefault()
+{
+	return FUDApplicationSettings(FIntPoint(1280, 720), EUDWindowModeType::Windowed);
+}

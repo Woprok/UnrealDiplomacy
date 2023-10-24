@@ -25,7 +25,12 @@ void UUDMessageItemUserWidget::BindWidgets()
 {
 	MessageTitleTextWidget = GetWidget<UTextBlock>(TEXT("MessageTitleText"));
 	MessageTypeTextWidget = GetWidget<UTextBlock>(TEXT("MessageTypeText"));
-	MessageTextWidget = GetWidget<UTextBlock>(TEXT("MessageText"));
+
+	MessageConfirmTextWidget = GetWidget<UTextBlock>(TEXT("MessageConfirmText"));
+	MessageRejectTextWidget = GetWidget<UTextBlock>(TEXT("MessageRejectText"));
+	OnConfirmTextWidget = GetWidget<UTextBlock>(TEXT("OnConfirmText"));
+	OnRejectTextWidget = GetWidget<UTextBlock>(TEXT("OnRejectText"));
+
 	AcceptTextWidget = GetWidget<UTextBlock>(TEXT("AcceptText"));
 	OkTextWidget = GetWidget<UTextBlock>(TEXT("OkText"));
 	RejectTextWidget = GetWidget<UTextBlock>(TEXT("RejectText"));

@@ -45,7 +45,15 @@ protected:
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> MessageTitleTextWidget;
 	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> MessageTextWidget;
+
+	TWeakObjectPtr<UTextBlock> MessageConfirmTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> MessageRejectTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> OnConfirmTextWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> OnRejectTextWidget;
+
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> AcceptTextWidget;
 	UPROPERTY()

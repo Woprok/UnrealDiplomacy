@@ -993,6 +993,16 @@ FText UUDActionAdministrator::GetFormattedDecisionType(EUDDecisionType type)
 }
 #undef LOCTEXT_NAMESPACE
 
+#define LOCTEXT_NAMESPACE "CreateEmptyDecision"
+FUDMessageContentInfo UUDActionAdministrator::CreateEmptyMessageContent()
+{
+	FUDMessageContentInfo content = FUDMessageContentInfo();
+	content.Name = FText(LOCTEXT("CreateEmptyDecision", "Undefined Action")).ToString();
+	content.Content = FText(LOCTEXT("CreateEmptyDecision", "No action is expected.")).ToString();
+	return content;
+}
+#undef LOCTEXT_NAMESPACE
+
 FUDMessageContentInfo UUDActionAdministrator::CreateMessageContent(FUDActionData action)
 {
 	FUDMessageContentInfo content = FUDMessageContentInfo();
@@ -1013,10 +1023,12 @@ FUDMessageInfo UUDActionAdministrator::CreateMessageFromRequest(int32 decisionId
 	if (decision.HasDecline)
 	{
 		message.AdditionalContent = CreateMessageContent(decision.DeclineAction);
+		message.HasReject = true;
 	}
 	else
 	{
-		message.AdditionalContent = FUDMessageContentInfo();
+		message.AdditionalContent = CreateEmptyMessageContent();
+		message.HasReject = false;
 	}
 	
 	message.HasChoices = decision.Type != EUDDecisionType::Gift;

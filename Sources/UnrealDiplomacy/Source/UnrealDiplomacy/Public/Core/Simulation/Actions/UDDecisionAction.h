@@ -8,6 +8,7 @@
 
 // Forward Declarations
 enum class EUDDecisionType : uint8;
+struct FUDDecision;
 
 /**
  * Transforms action parameters to properly named fields.
@@ -86,19 +87,19 @@ protected:
 	/**
 	 * Adds pending decision associated with action and specified target.
 	 */
-	void AddPendingTargetDecision(FUDActionData action, int32 targetId, EUDDecisionType type, int32 decisionId, TObjectPtr<UUDWorldState> world);
+	void AddPendingTargetDecision(int32 targetId, int32 decisionId, FUDDecision decision, TObjectPtr<UUDWorldState> world);
 	/**
 	 * Removes pending decision associated with action and specified target.
 	 */
-	void RemovePendingTargetDecision(const FUDActionData& action, int32 targetId, int32 decisionId, TObjectPtr<UUDWorldState> world);
+	void RemovePendingTargetDecision(int32 targetId, int32 decisionId, TObjectPtr<UUDWorldState> world);
 	/**
 	 * Checks if there is pending decision associated with action and specified target.
 	 */
-	bool IsPendingTargetDecision(const FUDActionData& action, int32 targetId, int32 decisionId, TObjectPtr<UUDWorldState> world) const;
+	bool IsPendingTargetDecision(int32 targetId, int32 decisionId, TObjectPtr<UUDWorldState> world) const;
 	/**
 	 * Checks if there is pending interchangeable decision associated with target.
 	 */
-	bool IsPendingInterchangeableTargetDecision(const FUDActionData& action, int32 targetId, int32 decisionId, TObjectPtr<UUDWorldState> world) const;
+	bool IsPendingInterchangeableTargetDecision(const FUDDecision& decision, int32 targetId, int32 decisionId, TObjectPtr<UUDWorldState> world) const;
 	/**
 	 * Moves decision from resolved to pending.
 	 */

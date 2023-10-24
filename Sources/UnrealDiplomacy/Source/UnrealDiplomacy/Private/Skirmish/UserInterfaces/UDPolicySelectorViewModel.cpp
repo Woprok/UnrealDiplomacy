@@ -13,7 +13,7 @@ void UUDPolicySelectorViewModel::Initialize()
 {
 	PolicySelectItemViewModelType = UUDPolicySelectItemViewModel::StaticClass();
 
-	FText policyTitle = FText(LOCTEXT("PolicySelector", "Faction Management"));
+	FText policyTitle = FText(LOCTEXT("PolicySelector", "Demand Policy"));
 	SetPolicyTitleText(policyTitle);
 
 	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDPolicySelectorViewModel::Reload);

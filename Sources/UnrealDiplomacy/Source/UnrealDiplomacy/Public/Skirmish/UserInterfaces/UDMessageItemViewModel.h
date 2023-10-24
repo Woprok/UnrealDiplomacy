@@ -44,10 +44,19 @@ public:
 	FText MessageTypeText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText MessageTitleText;
+
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FText MessageText;
+	FText MessageConfirmText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	FText MessageAdditionalText;
+	FText MessageRejectText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText OnConfirmText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText OnRejectText;
+
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool HasRejectValue;
+
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText AcceptText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
@@ -67,10 +76,19 @@ private:
 	FText GetMessageTypeText() const;
 	void SetMessageTitleText(FText newMessageTitleText);
 	FText GetMessageTitleText() const;
-	void SetMessageText(FText newMessageText);
-	FText GetMessageText() const;
-	void SetMessageAdditionalText(FText newMessageAdditionalText);
-	FText GetMessageAdditionalText() const;
+
+	void SetMessageConfirmText(FText newMessageConfirmText);
+	FText GetMessageConfirmText() const;
+	void SetMessageRejectText(FText newMessageRejectText);
+	FText GetMessageRejectText() const;
+	void SetOnConfirmText(FText newOnConfirmText);
+	FText GetOnConfirmText() const;
+	void SetOnRejectText(FText newOnRejectText);
+	FText GetOnRejectText() const;
+
+	void SetHasRejectValue(bool newHasRejectValue);
+	bool GetHasRejectValue() const;
+
 	void SetAcceptText(FText newAcceptText);
 	FText GetAcceptText() const;
 	void SetOkText(FText newOkText);

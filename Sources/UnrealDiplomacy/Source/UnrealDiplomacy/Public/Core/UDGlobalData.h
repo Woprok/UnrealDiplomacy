@@ -135,6 +135,7 @@ public:
 	FIntPoint Resolution;
 	UPROPERTY(BlueprintReadOnly)
 	EUDWindowModeType WindowMode;
+	static FUDApplicationSettings GetDefault();
 };
 
 UCLASS(meta = (BlueprintThreadSafe))

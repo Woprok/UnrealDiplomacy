@@ -551,6 +551,8 @@ public:
 	FUDMessageContentInfo AdditionalContent;
 	UPROPERTY(BlueprintReadOnly)
 	bool HasChoices = true;
+	UPROPERTY(BlueprintReadOnly)
+	bool HasReject = false;
 public:
 	/** Equality over UniqueId field. */
 	inline bool operator!=(const FUDMessageInfo& rhs) const

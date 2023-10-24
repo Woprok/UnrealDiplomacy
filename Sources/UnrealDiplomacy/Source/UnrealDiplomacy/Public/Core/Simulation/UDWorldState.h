@@ -217,6 +217,7 @@ public:
 	FUDDecision(EUDDecisionType type, FUDActionData action, FUDActionData declineAction)
 		: Type(type), ConfirmAction(action), DeclineAction(declineAction), 
 		HasDecline(true), Result(EUDDecisionResult::Pending) {}
+
 	UPROPERTY(BlueprintReadOnly)
 	EUDDecisionType Type;
 	UPROPERTY(BlueprintReadOnly)
@@ -227,6 +228,19 @@ public:
 	bool HasDecline = false;
 	UPROPERTY(BlueprintReadOnly)
 	EUDDecisionResult Result = EUDDecisionResult::Pending;
+public:
+	/**
+	 * Equality over all fields.
+	 */
+	inline bool IsValueEqual(const FUDDecision& rhs) const
+	{
+		return
+			Type == rhs.Type &&
+			HasDecline == rhs.HasDecline &&
+			Result == rhs.Result &&
+			ConfirmAction.IsValueEqual(rhs.ConfirmAction) &&
+			DeclineAction.IsValueEqual(rhs.DeclineAction);
+	}
 };
 
 /**
