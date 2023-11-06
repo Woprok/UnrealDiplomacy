@@ -9,9 +9,8 @@
 // Forward Declarations
 
 class UTextBlock;
-class UListView;
+class UUDListView;
 class UUDFactionPanelViewModel;
-class UUDFactionItemViewModel;
 
 /**
  * Ancestor for blueprint.
@@ -39,10 +38,6 @@ protected:
 	 * Automatically invoked by native on initialized.
 	 */
 	virtual void BindWidgets() override;
-	/**
-	 * Callback to set data from view model.
- 	 */
-	void SetFactionSourceCollection(const TArray<TObjectPtr<UUDFactionItemViewModel>>& factionItemViewModels);
 protected:
 	// Bindings
 	UPROPERTY()
@@ -50,7 +45,7 @@ protected:
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> ControllerHeaderTextWidget;
 	UPROPERTY()
-	TWeakObjectPtr<UListView> FactionItemListWidget;
+	TWeakObjectPtr<UUDListView> FactionItemListWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDFactionPanelViewModel> ViewModel;

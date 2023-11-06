@@ -103,7 +103,7 @@ void UUDTileManagementViewModel::UpdateTileInteractionList()
 		TileInteractionViewModelCollection.Add(newViewModel);
 	}
 
-	TileInteractionSourceUpdatedEvent.Broadcast(TileInteractionViewModelCollection);
+	SetTileInteractionList(FUDViewModelList(viewModels));
 }
 
 void UUDTileManagementViewModel::UpdateModifierItemList()
@@ -124,7 +124,7 @@ void UUDTileManagementViewModel::UpdateModifierItemList()
 		ModifierItemViewModelCollection.Add(newViewModel);
 	}
 
-	ModifierItemSourceUpdatedEvent.Broadcast(ModifierItemViewModelCollection);
+	SetModifierItemList(FUDViewModelList(viewModels));
 }
 
 void UUDTileManagementViewModel::SetTileManagementTitleText(FText newTileManagementTitleText)
@@ -205,4 +205,24 @@ void UUDTileManagementViewModel::SetCloseText(FText newCloseText)
 FText UUDTileManagementViewModel::GetCloseText() const
 {
 	return CloseText;
+}
+
+void UUDTileManagementViewModel::SetTileInteractionList(FUDViewModelList newTileInteractionList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(TileInteractionList, newTileInteractionList);
+}
+
+FUDViewModelList UUDTileManagementViewModel::GetTileInteractionList() const
+{
+	return TileInteractionList;
+}
+
+void UUDTileManagementViewModel::SetModifierItemList(FUDViewModelList newModifierItemList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ModifierItemList, newModifierItemList);
+}
+
+FUDViewModelList UUDTileManagementViewModel::GetModifierItemList() const
+{
+	return ModifierItemList;
 }

@@ -119,7 +119,7 @@ void UUDJoinGameViewModel::OnSessionSearched(const TArray<FOnlineSessionSearchRe
 
 	SetSearchText(SessionCountToText(InUseViewModelCollection.Num()));
 
-	OnSessionSearchSourceUpdated.Broadcast(InUseViewModelCollection);
+	SetServerItemList(FUDViewModelList(viewModels));
 }
 
 void UUDJoinGameViewModel::OnSessionJoined(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
@@ -199,4 +199,14 @@ void UUDJoinGameViewModel::SetSearchText(FText newSearchText)
 FText UUDJoinGameViewModel::GetSearchText() const
 {
 	return SearchText;
+}
+
+void UUDJoinGameViewModel::SetServerItemList(FUDViewModelList newServerItemList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ServerItemList, newServerItemList);
+}
+
+FUDViewModelList UUDJoinGameViewModel::GetServerItemList() const
+{
+	return ServerItemList;
 }

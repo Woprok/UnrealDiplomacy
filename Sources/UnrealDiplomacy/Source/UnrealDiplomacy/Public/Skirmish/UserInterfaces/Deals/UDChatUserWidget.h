@@ -11,9 +11,8 @@
 class UMultiLineEditableTextBox;
 class UTextBlock;
 class UButton;
-class UListView;
+class UUDListView;
 class UUDChatViewModel;
-class UUDChatItemViewModel;
 
 /**
  * Ancestor for blueprint.
@@ -42,10 +41,6 @@ protected:
 	 * Automatically invoked by native on initialized.
 	 */
 	virtual void BindWidgets() override;
-	/**
-	 * Callback to set data from view model.
-	 */
-	void SetChatSourceCollection(const TArray<TObjectPtr<UUDChatItemViewModel>>& chatItemViewModels);
 protected:
 	// Bindings
 	UPROPERTY()
@@ -57,7 +52,7 @@ protected:
 	UPROPERTY()
 	TWeakObjectPtr<UButton> SendButtonWidget;
 	UPROPERTY()
-	TWeakObjectPtr<UListView> ChatItemListWidget;
+	TWeakObjectPtr<UUDListView> ChatItemListWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDChatViewModel> ViewModel;

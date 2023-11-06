@@ -7,6 +7,7 @@
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Skirmish/UDSkirmishHUD.h"
 #include "Core/Simulation/Actions/UDDealActionPointAdd.h"
+#include "Core/Simulation/UDActionData.h"
 
 #define LOCTEXT_NAMESPACE "PrimaryPointItem"
 
@@ -50,7 +51,7 @@ void UUDPrimaryPointItemViewModel::Update()
 	else
 	{
 		PointItemViewModelCollection.Empty();
-		PointItemSourceUpdatedEvent.Broadcast(PointItemViewModelCollection);
+		SetPointItemList(FUDViewModelList(TArray<TObjectPtr<UUDViewModel>>()));
 	}
 }
 
@@ -101,7 +102,7 @@ void UUDPrimaryPointItemViewModel::UpdatePointList()
 	newViewModel->FullUpdate();
 	PointItemViewModelCollection.Add(newViewModel);
 
-	PointItemSourceUpdatedEvent.Broadcast(PointItemViewModelCollection);
+	SetPointItemList(FUDViewModelList(viewModels));
 }
 
 void UUDPrimaryPointItemViewModel::CreatePoint()
@@ -128,4 +129,14 @@ void UUDPrimaryPointItemViewModel::SetIsValidContentValue(bool newIsValidContent
 bool UUDPrimaryPointItemViewModel::GetIsValidContentValue() const
 {
 	return IsValidContentValue;
+}
+
+void UUDPrimaryPointItemViewModel::SetPointItemList(FUDViewModelList newPointItemList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(PointItemList, newPointItemList);
+}
+
+FUDViewModelList UUDPrimaryPointItemViewModel::GetPointItemList() const
+{
+	return PointItemList;
 }

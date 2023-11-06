@@ -49,7 +49,7 @@ void UUDSecondaryPointItemViewModel::Update()
 	else
 	{
 		PointItemViewModelCollection.Empty();
-		PointItemSourceUpdatedEvent.Broadcast(PointItemViewModelCollection);
+		SetPointItemList(FUDViewModelList(TArray<TObjectPtr<UUDViewModel>>()));
 	}
 }
 
@@ -101,7 +101,7 @@ void UUDSecondaryPointItemViewModel::UpdatePointList()
 	newViewModel->FullUpdate();
 	PointItemViewModelCollection.Add(newViewModel);
 
-	PointItemSourceUpdatedEvent.Broadcast(PointItemViewModelCollection);
+	SetPointItemList(FUDViewModelList(viewModels));
 }
 
 void UUDSecondaryPointItemViewModel::CreateSecondaryPoint()
@@ -128,4 +128,14 @@ void UUDSecondaryPointItemViewModel::SetIsValidContentValue(bool newIsValidConte
 bool UUDSecondaryPointItemViewModel::GetIsValidContentValue() const
 {
 	return IsValidContentValue;
+}
+
+void UUDSecondaryPointItemViewModel::SetPointItemList(FUDViewModelList newPointItemList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(PointItemList, newPointItemList);
+}
+
+FUDViewModelList UUDSecondaryPointItemViewModel::GetPointItemList() const
+{
+	return PointItemList;
 }

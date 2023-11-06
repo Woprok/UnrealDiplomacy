@@ -2,13 +2,11 @@
 
 #include "Skirmish/UserInterfaces/UDFactionManagementUserWidget.h"
 #include "Skirmish/UserInterfaces/UDFactionManagementViewModel.h"
-#include "Skirmish/UserInterfaces/UDFactionInteractionViewModel.h"
-#include "Skirmish/UserInterfaces/UDModifierItemViewModel.h"
 #include "Skirmish/UserInterfaces/UDPolicySelectorUserWidget.h"
 #include "Skirmish/UserInterfaces/UDPolicySelectorViewModel.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
-#include "Components/ListView.h"
+#include "Core/UserInterfaces/Components/UDListView.h"
 
 void UUDFactionManagementUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
@@ -20,11 +18,6 @@ void UUDFactionManagementUserWidget::BindViewModel(TObjectPtr<UUDViewModel> view
 void UUDFactionManagementUserWidget::BindDelegates()
 {
 	// Bind view to updates.
-	ViewModel->FactionInteractionSourceUpdatedEvent.AddUObject(this, &UUDFactionManagementUserWidget::SetFactionInteractionSourceCollection);
-	ViewModel->FactionOfferSourceUpdatedEvent.AddUObject(this, &UUDFactionManagementUserWidget::SetFactionOfferSourceCollection);
-	ViewModel->FactionRequestSourceUpdatedEvent.AddUObject(this, &UUDFactionManagementUserWidget::SetFactionRequestSourceCollection);
-	ViewModel->FactionDemandSourceUpdatedEvent.AddUObject(this, &UUDFactionManagementUserWidget::SetFactionDemandSourceCollection);
-	ViewModel->ModifierItemSourceUpdatedEvent.AddUObject(this, &UUDFactionManagementUserWidget::SetModifierItemSourceCollection);
 	ViewModel->PolicySelectorChangedEvent.AddUObject(this, &UUDFactionManagementUserWidget::SetPolicySelectorSourceInstance);
 	// Bind viewmodel to widgets.
 	CloseButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDFactionManagementViewModel::Close);
@@ -40,37 +33,12 @@ void UUDFactionManagementUserWidget::BindWidgets()
 	OfferTitleTextWidget = GetWidget<UTextBlock>(TEXT("OfferTitleText"));
 	RequestTitleTextWidget = GetWidget<UTextBlock>(TEXT("RequestTitleText"));
 	DemandTitleTextWidget = GetWidget<UTextBlock>(TEXT("DemandTitleText"));
-	FactionInteractionListWidget = GetWidget<UListView>(TEXT("FactionInteractionList"));
-	FactionOfferListWidget = GetWidget<UListView>(TEXT("FactionOfferList"));
-	FactionRequestListWidget = GetWidget<UListView>(TEXT("FactionRequestList"));
-	FactionDemandListWidget = GetWidget<UListView>(TEXT("FactionDemandList"));
-	ModifierItemListWidget = GetWidget<UListView>(TEXT("ModifierItemList"));
+	FactionInteractionListWidget = GetWidget<UUDListView>(TEXT("FactionInteractionList"));
+	FactionOfferListWidget = GetWidget<UUDListView>(TEXT("FactionOfferList"));
+	FactionRequestListWidget = GetWidget<UUDListView>(TEXT("FactionRequestList"));
+	FactionDemandListWidget = GetWidget<UUDListView>(TEXT("FactionDemandList"));
+	ModifierItemListWidget = GetWidget<UUDListView>(TEXT("ModifierItemList"));
 	PolicySelectorViewWidget = GetWidget<UUDPolicySelectorUserWidget>(TEXT("PolicySelectorView"));
-}
-
-void UUDFactionManagementUserWidget::SetFactionInteractionSourceCollection(const TArray<TObjectPtr<UUDFactionInteractionViewModel>>& factionInteractionViewModels)
-{
-	FactionInteractionListWidget->SetListItems(factionInteractionViewModels);
-}
-
-void UUDFactionManagementUserWidget::SetFactionOfferSourceCollection(const TArray<TObjectPtr<UUDFactionInteractionViewModel>>& factionOfferViewModels)
-{
-	FactionOfferListWidget->SetListItems(factionOfferViewModels);
-}
-
-void UUDFactionManagementUserWidget::SetFactionRequestSourceCollection(const TArray<TObjectPtr<UUDFactionInteractionViewModel>>& factionRequestViewModels)
-{
-	FactionRequestListWidget->SetListItems(factionRequestViewModels);
-}
-
-void UUDFactionManagementUserWidget::SetFactionDemandSourceCollection(const TArray<TObjectPtr<UUDFactionInteractionViewModel>>& factionDemandViewModels)
-{
-	FactionDemandListWidget->SetListItems(factionDemandViewModels);
-}
-
-void UUDFactionManagementUserWidget::SetModifierItemSourceCollection(const TArray<TObjectPtr<UUDModifierItemViewModel>>& modifierItemViewModels)
-{
-	ModifierItemListWidget->SetListItems(modifierItemViewModels);
 }
 
 void UUDFactionManagementUserWidget::SetPolicySelectorSourceInstance(const TObjectPtr<UUDPolicySelectorViewModel>& policySelectorViewModel)

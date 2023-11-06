@@ -54,5 +54,15 @@ void UUDResourcePanelViewModel::UpdateResourceList()
 		ResourceViewModelCollection.Add(newViewModel);
 	}
 
-	ResourceSourceUpdatedEvent.Broadcast(ResourceViewModelCollection);
+	SetResourceList(FUDViewModelList(viewModels));
+}
+
+void UUDResourcePanelViewModel::SetResourceList(FUDViewModelList newResourceList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ResourceList, newResourceList);
+}
+
+FUDViewModelList UUDResourcePanelViewModel::GetResourceList() const
+{
+	return ResourceList;
 }

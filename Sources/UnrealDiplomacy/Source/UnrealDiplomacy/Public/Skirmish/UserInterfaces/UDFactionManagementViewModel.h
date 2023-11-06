@@ -12,8 +12,6 @@ class UUDFactionInteractionViewModel;
 class UUDModifierItemViewModel;
 class UUDPolicySelectorViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDFactionInteractionSourceUpdated, const TArray<TObjectPtr<UUDFactionInteractionViewModel>>& factionInteractionViewModels);
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDFactionModifierItemSourceUpdated, const TArray<TObjectPtr<UUDModifierItemViewModel>>& modifierItemViewModels);
 DECLARE_MULTICAST_DELEGATE_OneParam(FUDPolicySelectorChanged, const TObjectPtr<UUDPolicySelectorViewModel>& policySelectorViewModel);
 
 /**
@@ -48,12 +46,17 @@ public:
 	FText RequestTitleText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText DemandTitleText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList FactionInteractionList;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList FactionOfferList;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList FactionRequestList;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList FactionDemandList;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList ModifierItemList;
 	// Events
-	FUDFactionInteractionSourceUpdated FactionInteractionSourceUpdatedEvent;
-	FUDFactionInteractionSourceUpdated FactionOfferSourceUpdatedEvent;
-	FUDFactionInteractionSourceUpdated FactionRequestSourceUpdatedEvent;
-	FUDFactionInteractionSourceUpdated FactionDemandSourceUpdatedEvent;
-	FUDFactionModifierItemSourceUpdated ModifierItemSourceUpdatedEvent;
 	FUDPolicySelectorChanged PolicySelectorChangedEvent;
 protected:
 	virtual void Initialize() override;
@@ -102,6 +105,16 @@ private:
 	FText GetRequestTitleText() const;
 	void SetDemandTitleText(FText newDemandTitleText);
 	FText GetDemandTitleText() const;
+	void SetFactionInteractionList(FUDViewModelList newFactionInteractionList);
+	FUDViewModelList GetFactionInteractionList() const;
+	void SetFactionOfferList(FUDViewModelList newFactionOfferList);
+	FUDViewModelList GetFactionOfferList() const;
+	void SetFactionRequestList(FUDViewModelList newFactionRequestList);
+	FUDViewModelList GetFactionRequestList() const;
+	void SetFactionDemandList(FUDViewModelList newFactionDemandList);
+	FUDViewModelList GetFactionDemandList() const;
+	void SetModifierItemList(FUDViewModelList newModifierItemList);
+	FUDViewModelList GetModifierItemList() const;
 private:
 	// Fields
 	FName FactionInteractionViewModelCollectionName = TEXT("FactionInteractionCollection");

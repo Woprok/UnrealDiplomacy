@@ -122,7 +122,7 @@ void UUDFactionManagementViewModel::UpdateFactionInteractionList()
 		FactionInteractionViewModelCollection.Add(newViewModel);
 	}
 
-	FactionInteractionSourceUpdatedEvent.Broadcast(FactionInteractionViewModelCollection);
+	SetFactionInteractionList(FUDViewModelList(viewModels));
 }
 
 void UUDFactionManagementViewModel::UpdateFactionOfferList()
@@ -142,7 +142,7 @@ void UUDFactionManagementViewModel::UpdateFactionOfferList()
 		FactionOfferViewModelCollection.Add(newViewModel);
 	}
 
-	FactionOfferSourceUpdatedEvent.Broadcast(FactionOfferViewModelCollection);
+	SetFactionOfferList(FUDViewModelList(viewModels));
 }
 
 void UUDFactionManagementViewModel::UpdateFactionRequestList()
@@ -162,7 +162,7 @@ void UUDFactionManagementViewModel::UpdateFactionRequestList()
 		FactionRequestViewModelCollection.Add(newViewModel);
 	}
 
-	FactionRequestSourceUpdatedEvent.Broadcast(FactionRequestViewModelCollection);
+	SetFactionRequestList(FUDViewModelList(viewModels));
 }
 
 void UUDFactionManagementViewModel::UpdateFactionDemandList()
@@ -182,7 +182,7 @@ void UUDFactionManagementViewModel::UpdateFactionDemandList()
 		FactionDemandViewModelCollection.Add(newViewModel);
 	}
 
-	FactionDemandSourceUpdatedEvent.Broadcast(FactionDemandViewModelCollection);
+	SetFactionDemandList(FUDViewModelList(viewModels));
 }
 
 void UUDFactionManagementViewModel::UpdateModifierItemList()
@@ -203,7 +203,7 @@ void UUDFactionManagementViewModel::UpdateModifierItemList()
 		ModifierItemViewModelCollection.Add(newViewModel);
 	}
 
-	ModifierItemSourceUpdatedEvent.Broadcast(ModifierItemViewModelCollection);
+	SetModifierItemList(FUDViewModelList(viewModels));
 }
 
 void UUDFactionManagementViewModel::SetFactionManagementTitleText(FText newFactionManagementTitleText)
@@ -274,4 +274,54 @@ void UUDFactionManagementViewModel::SetDemandTitleText(FText newDemandTitleText)
 FText UUDFactionManagementViewModel::GetDemandTitleText() const
 {
 	return DemandTitleText;
+}
+
+void UUDFactionManagementViewModel::SetFactionInteractionList(FUDViewModelList newFactionInteractionList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(FactionInteractionList, newFactionInteractionList);
+}
+
+FUDViewModelList UUDFactionManagementViewModel::GetFactionInteractionList() const
+{
+	return FactionInteractionList;
+}
+
+void UUDFactionManagementViewModel::SetFactionOfferList(FUDViewModelList newFactionOfferList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(FactionOfferList, newFactionOfferList);
+}
+
+FUDViewModelList UUDFactionManagementViewModel::GetFactionOfferList() const
+{
+	return FactionOfferList;
+}
+
+void UUDFactionManagementViewModel::SetFactionRequestList(FUDViewModelList newFactionRequestList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(FactionRequestList, newFactionRequestList);
+}
+
+FUDViewModelList UUDFactionManagementViewModel::GetFactionRequestList() const
+{
+	return FactionRequestList;
+}
+
+void UUDFactionManagementViewModel::SetFactionDemandList(FUDViewModelList newFactionDemandList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(FactionDemandList, newFactionDemandList);
+}
+
+FUDViewModelList UUDFactionManagementViewModel::GetFactionDemandList() const
+{
+	return FactionDemandList;
+}
+
+void UUDFactionManagementViewModel::SetModifierItemList(FUDViewModelList newModifierItemList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ModifierItemList, newModifierItemList);
+}
+
+FUDViewModelList UUDFactionManagementViewModel::GetModifierItemList() const
+{
+	return ModifierItemList;
 }

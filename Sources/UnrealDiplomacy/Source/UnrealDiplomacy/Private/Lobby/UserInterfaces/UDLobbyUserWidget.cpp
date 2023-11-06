@@ -2,14 +2,13 @@
 
 #include "Lobby/UserInterfaces/UDLobbyUserWidget.h"
 #include "Lobby/UserInterfaces/UDLobbyViewModel.h"
-#include "Lobby/UserInterfaces/UDClientItemViewModel.h"
 #include "Lobby/UserInterfaces/UDLobbyHostViewModel.h"
 #include "Lobby/UserInterfaces/UDLobbyMemberViewModel.h"
 #include "Lobby/UserInterfaces/UDLobbyHostUserWidget.h"
 #include "Lobby/UserInterfaces/UDLobbyMemberUserWidget.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
-#include "Components/ListView.h"
+#include "Core/UserInterfaces/Components/UDListView.h"
 
 void UUDLobbyUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
@@ -23,7 +22,6 @@ void UUDLobbyUserWidget::BindDelegates()
 	// Bind view to updates.
 	ViewModel->LobbyHostSourceChangedEvent.AddUObject(this, &UUDLobbyUserWidget::SetHostSourceInstance);
 	ViewModel->LobbyMemberSourceChangedEvent.AddUObject(this, &UUDLobbyUserWidget::SetMemberSourceInstance);
-	ViewModel->LobbyClientSourceUpdatedEvent.AddUObject(this, &UUDLobbyUserWidget::SetClientSourceCollection);
 	// Bind viewmodel to widgets.
 	BackButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDLobbyViewModel::Back);
 	LeaveButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDLobbyViewModel::Leave);
@@ -42,12 +40,7 @@ void UUDLobbyUserWidget::BindWidgets()
 	StartButtonWidget = GetWidget<UButton>(TEXT("StartButton"));
 	LobbyHostViewWidget = GetWidget<UUDLobbyHostUserWidget>(TEXT("LobbyHostView"));
 	LobbyMemberViewWidget = GetWidget<UUDLobbyMemberUserWidget>(TEXT("LobbyMemberView"));
-	ClientItemListWidget = GetWidget<UListView>(TEXT("ClientItemList"));
-}
-
-void UUDLobbyUserWidget::SetClientSourceCollection(const TArray<TObjectPtr<UUDClientItemViewModel>>& clientItemViewModels)
-{
-	ClientItemListWidget->SetListItems(clientItemViewModels);
+	ClientItemListWidget = GetWidget<UUDListView>(TEXT("ClientItemList"));
 }
 
 void UUDLobbyUserWidget::SetHostSourceInstance(const TObjectPtr<UUDLobbyHostViewModel>& lobbyHostViewModel)

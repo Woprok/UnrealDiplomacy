@@ -12,8 +12,6 @@
 struct FUDDealMinimalInfo;
 class UUDPrimaryPointItemViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDPrimaryPointItemSourceUpdated, const TArray<TObjectPtr<UUDPrimaryPointItemViewModel>>& itemViewModels);
-
 /**
  * Tab for showing and editing points that are part of deal.
  */
@@ -33,8 +31,9 @@ public:
 public:
 	// Button Functions
 	// MVVM Fields
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList PointItemList;
 	// Events
-	FUDPrimaryPointItemSourceUpdated PointItemSourceUpdatedEvent;
 protected:
 	virtual void Initialize() override;
 	UFUNCTION()
@@ -48,6 +47,8 @@ private:
 	void UpdatePointList();
 private:
 	// MVVM Setters & Getters
+	void SetPointItemList(FUDViewModelList newPointItemList);
+	FUDViewModelList GetPointItemList() const;
 private:
 	// Fields
 	FUDDealMinimalInfo Content;

@@ -62,7 +62,7 @@ void UUDPolicySelectorViewModel::UpdatePolicyItemList()
 		PolicySelectItemViewModelCollection.Add(newViewModel);
 	}
 
-	PolicySelectItemSourceUpdatedEvent.Broadcast(PolicySelectItemViewModelCollection);
+	SetPolicyItemList(FUDViewModelList(viewModels));
 }
 
 void UUDPolicySelectorViewModel::SetPolicyTitleText(FText newPolicyTitleText)
@@ -73,4 +73,14 @@ void UUDPolicySelectorViewModel::SetPolicyTitleText(FText newPolicyTitleText)
 FText UUDPolicySelectorViewModel::GetPolicyTitleText() const
 {
 	return PolicyTitleText;
+}
+
+void UUDPolicySelectorViewModel::SetPolicyItemList(FUDViewModelList newPolicyItemList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(PolicyItemList, newPolicyItemList);
+}
+
+FUDViewModelList UUDPolicySelectorViewModel::GetPolicyItemList() const
+{
+	return PolicyItemList;
 }

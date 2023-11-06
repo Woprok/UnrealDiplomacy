@@ -10,7 +10,7 @@
 
 class UTextBlock;
 class UButton;
-class UListView;
+class UUDListView;
 class UUDTileManagementViewModel;
 class UUDTileInteractionViewModel;
 class UUDModifierItemViewModel;
@@ -41,14 +41,6 @@ protected:
 	 * Automatically invoked by native on initialized.
 	 */
 	virtual void BindWidgets() override;
-	/**
-	 * Callback to set data from view model.
-	 */
-	void SetTileInteractionSourceCollection(const TArray<TObjectPtr<UUDTileInteractionViewModel>>& tileInteractionViewModels);
-	/**
-	 * Callback to set data from view model.
-	 */
-	void SetModifierItemSourceCollection(const TArray<TObjectPtr<UUDModifierItemViewModel>>& modifierItemViewModels);
 protected:
 	// Bindings
 	UPROPERTY()
@@ -70,9 +62,9 @@ protected:
 	UPROPERTY()
 	TWeakObjectPtr<UButton> CloseButtonWidget;
 	UPROPERTY()
-	TWeakObjectPtr<UListView> ModifierItemListWidget;
+	TWeakObjectPtr<UUDListView> ModifierItemListWidget;
 	UPROPERTY()
-	TWeakObjectPtr<UListView> TileInteractionListWidget;
+	TWeakObjectPtr<UUDListView> TileInteractionListWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDTileManagementViewModel> ViewModel;

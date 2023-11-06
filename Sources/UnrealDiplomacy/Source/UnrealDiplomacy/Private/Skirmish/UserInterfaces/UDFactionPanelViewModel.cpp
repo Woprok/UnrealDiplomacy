@@ -59,7 +59,7 @@ void UUDFactionPanelViewModel::UpdateFactionList()
 		FactionViewModelCollection.Add(newViewModel);
 	}
 
-	FactionSourceUpdatedEvent.Broadcast(FactionViewModelCollection);
+	SetFactionItemList(FUDViewModelList(viewModels));
 }
 
 void UUDFactionPanelViewModel::SetNameHeaderText(FText newNameHeaderText)
@@ -80,4 +80,14 @@ void UUDFactionPanelViewModel::SetControllerHeaderText(FText newControllerHeader
 FText UUDFactionPanelViewModel::GetControllerHeaderText() const
 {
 	return ControllerHeaderText;
+}
+
+void UUDFactionPanelViewModel::SetFactionItemList(FUDViewModelList newFactionItemList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(FactionItemList, newFactionItemList);
+}
+
+FUDViewModelList UUDFactionPanelViewModel::GetFactionItemList() const
+{
+	return FactionItemList;
 }

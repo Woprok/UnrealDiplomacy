@@ -16,6 +16,7 @@
 #include "Core/Simulation/Actions/UDDealActionVoteNo.h"
 #include "Core/Simulation/Actions/UDDealActionContractCreate.h"
 #include "Core/Simulation/Actions/UDDealActionContractExecute.h"
+#include "Core/UDGlobalData.h"
 
 #define LOCTEXT_NAMESPACE "DealGeneralTab"
 
@@ -185,7 +186,7 @@ void UUDDealGeneralTabViewModel::UpdateParticipantItemList()
 		ParticipantItemViewModelCollection.Add(newViewModel);
 	}
 
-	ParticipantItemSourceUpdatedEvent.Broadcast(ParticipantItemViewModelCollection);
+	SetParticipantItemList(FUDViewModelList(viewModels));
 }
 
 void UUDDealGeneralTabViewModel::UpdateInviteItemList()
@@ -207,7 +208,7 @@ void UUDDealGeneralTabViewModel::UpdateInviteItemList()
 		InviteItemViewModelCollection.Add(newViewModel);
 	}
 
-	InviteItemSourceUpdatedEvent.Broadcast(InviteItemViewModelCollection);
+	SetInviteItemList(FUDViewModelList(viewModels));
 }
 
 void UUDDealGeneralTabViewModel::SetIsModeratorValue(bool newIsModeratorValue)
@@ -338,4 +339,24 @@ void UUDDealGeneralTabViewModel::SetCreateContractText(FText newCreateContractTe
 FText UUDDealGeneralTabViewModel::GetCreateContractText() const
 {
 	return CreateContractText;
+}
+
+void UUDDealGeneralTabViewModel::SetParticipantItemList(FUDViewModelList newParticipantItemList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ParticipantItemList, newParticipantItemList);
+}
+
+FUDViewModelList UUDDealGeneralTabViewModel::GetParticipantItemList() const
+{
+	return ParticipantItemList;
+}
+
+void UUDDealGeneralTabViewModel::SetInviteItemList(FUDViewModelList newInviteItemList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(InviteItemList, newInviteItemList);
+}
+
+FUDViewModelList UUDDealGeneralTabViewModel::GetInviteItemList() const
+{
+	return InviteItemList;
 }

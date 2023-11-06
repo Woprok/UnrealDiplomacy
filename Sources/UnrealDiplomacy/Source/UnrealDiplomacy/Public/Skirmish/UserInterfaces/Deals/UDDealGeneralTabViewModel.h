@@ -14,8 +14,6 @@ class UUDParticipantItemViewModel;
 class UUDInviteItemViewModel;
 class UUDChatViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDParticipantItemSourceUpdated, const TArray<TObjectPtr<UUDParticipantItemViewModel>>& itemViewModels);
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDInviteItemSourceUpdated, const TArray<TObjectPtr<UUDInviteItemViewModel>>& itemViewModels);
 DECLARE_MULTICAST_DELEGATE_OneParam(FUDChatSourceUpdated, const TObjectPtr<UUDChatViewModel>& chatViewModel);
 
 /**
@@ -75,9 +73,11 @@ public:
 	FText CreateContractText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText ExecuteContractText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList ParticipantItemList;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList InviteItemList;
 	// Events
-	FUDParticipantItemSourceUpdated ParticipantItemSourceUpdatedEvent;
-	FUDInviteItemSourceUpdated InviteItemSourceUpdatedEvent;
 	FUDChatSourceUpdated ChatSourceUpdatedEvent;
 protected:
 	virtual void Initialize() override;
@@ -126,6 +126,10 @@ private:
 	FText GetExecuteContractText() const;
 	void SetCreateContractText(FText newCreateContractText);
 	FText GetCreateContractText() const;
+	void SetParticipantItemList(FUDViewModelList newParticipantItemList);
+	FUDViewModelList GetParticipantItemList() const;
+	void SetInviteItemList(FUDViewModelList newInviteItemList);
+	FUDViewModelList GetInviteItemList() const;
 private:
 	// Fields
 	FUDDealMinimalInfo Content;

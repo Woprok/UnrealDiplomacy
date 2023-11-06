@@ -10,6 +10,7 @@
 #include "Core/Simulation/Actions/UDDealActionPointModifyAction.h"
 #include "Core/Simulation/Actions/UDDealActionPointModifyTextParameter.h"
 #include "Core/Simulation/Actions/UDDealActionPointModifyValueParameters.h"
+#include "Core/Simulation/UDActionData.h"
 
 #define LOCTEXT_NAMESPACE "PointContent"
 

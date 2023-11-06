@@ -10,7 +10,6 @@
 
 class UTextBlock;
 class UButton;
-class UListView;
 class UUDMessageManagementViewModel;
 class UUDMessageItemViewModel;
 class UUDMessageItemUserWidget;

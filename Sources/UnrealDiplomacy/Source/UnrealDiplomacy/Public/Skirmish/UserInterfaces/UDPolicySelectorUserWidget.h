@@ -9,14 +9,14 @@
 // Forward Declarations
 
 class UTextBlock;
-class UListView;
+class UUDListView;
 class UUDPolicySelectorViewModel;
 class UUDPolicySelectItemViewModel;
 
 /**
  * Ancestor for blueprint.
  */
-UCLASS()
+UCLASS(Abstract)
 class UNREALDIPLOMACY_API UUDPolicySelectorUserWidget : public UUDUserWidget
 {
 	GENERATED_BODY()
@@ -39,17 +39,13 @@ protected:
 	 * Automatically invoked by native on initialized.
 	 */
 	virtual void BindWidgets() override;
-	/**
-	 * Callback to set data from view model.
-	 */
-	void SetPolicySelectItemSourceCollection(const TArray<TObjectPtr<UUDPolicySelectItemViewModel>>& policySelectItemViewModels);
 protected:
 	// Bindings
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> PolicyTitleTextWidget;
 
 	UPROPERTY()
-	TWeakObjectPtr<UListView> PolicyItemListWidget;
+	TWeakObjectPtr<UUDListView> PolicyItemListWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDPolicySelectorViewModel> ViewModel;

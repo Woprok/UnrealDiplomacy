@@ -2,8 +2,7 @@
 
 #include "Skirmish/UserInterfaces/UDResourcePanelUserWidget.h"
 #include "Skirmish/UserInterfaces/UDResourcePanelViewModel.h"
-#include "Skirmish/UserInterfaces/UDResourceItemViewModel.h"
-#include "Components/ListView.h"
+#include "Core/UserInterfaces/Components/UDListView.h"
 
 void UUDResourcePanelUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
@@ -15,16 +14,10 @@ void UUDResourcePanelUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewMode
 void UUDResourcePanelUserWidget::BindDelegates()
 {
 	// Bind view to updates.
-	ViewModel->ResourceSourceUpdatedEvent.AddUObject(this, &UUDResourcePanelUserWidget::SetFactionSourceCollection);
 	// Bind viewmodel to widgets.
 }
 
 void UUDResourcePanelUserWidget::BindWidgets()
 {
-	ResourceItemListWidget = GetWidget<UListView>(TEXT("ResourceItemList"));
-}
-
-void UUDResourcePanelUserWidget::SetFactionSourceCollection(const TArray<TObjectPtr<UUDResourceItemViewModel>>& resourceItemViewModels)
-{
-	ResourceItemListWidget->SetListItems(resourceItemViewModels);
+	ResourceItemListWidget = GetWidget<UUDListView>(TEXT("ResourceItemList"));
 }

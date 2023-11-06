@@ -10,8 +10,59 @@
 // Forward Declarations
 
 class UUDActionAdministrator;
+class UUDViewModel;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDViewModelUpdate);
+
+/**
+ * Wrapper around pointer to list of view models.
+ * Note: this is required as UE macros can't be used with templates.
+ */
+USTRUCT(BlueprintType)
+struct FUDViewModelList
+{
+	GENERATED_BODY()
+public:
+	FUDViewModelList() { };
+	FUDViewModelList(TArray<TObjectPtr<UUDViewModel>> viewModels) : ViewModels(viewModels) { };
+	TArray<TObjectPtr<UUDViewModel>> ViewModels;
+public:
+	/** Equality over UniqueId field. */
+	inline bool operator!=(const FUDViewModelList& rhs) const
+	{
+		return !(*this == rhs);
+	}
+	/** Equality over UniqueId field. */
+	inline bool operator==(const FUDViewModelList& rhs) const
+	{
+		return ViewModels == rhs.ViewModels;
+	}
+};
+
+/**
+ * Wrapper around pointer to single view model.
+ * Note: this is required as UE macros can't be used with templates.
+ */
+USTRUCT(BlueprintType)
+struct FUDViewModelContent
+{
+	GENERATED_BODY()
+public:
+	FUDViewModelContent() { };
+	FUDViewModelContent(TObjectPtr<UUDViewModel> viewModel) : ViewModel(viewModel) { };
+	TObjectPtr<UUDViewModel> ViewModel;
+public:
+	/** Equality over UniqueId field. */
+	inline bool operator!=(const FUDViewModelContent& rhs) const
+	{
+		return !(*this == rhs);
+	}
+	/** Equality over UniqueId field. */
+	inline bool operator==(const FUDViewModelContent& rhs) const
+	{
+		return ViewModel == rhs.ViewModel;
+	}
+};
 
 /**
  * Base ancestor for all shared behaviour.
@@ -21,6 +72,23 @@ UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDViewModel : public UMVVMViewModelBase
 {
 	GENERATED_BODY()
+public:
+	/**
+	 * Initialize all necessary elements to prevent undefined behaviour.
+	 */
+	//void Initialize();
+	/**
+	 * Define content for this and all child elements to be used in updates.
+	 */
+	virtual void DefineContent() {};
+	/**
+	 * Use current content defined in DefineContent and update it, if changes deems it necessary.
+	 */
+	virtual void UpdateContent() {};
+	/**
+	 * Remove content references and disable update.
+	 */
+	virtual void ClearContent() {};
 public:
 	/**
 	 * Model is required for all view models that are using world state.

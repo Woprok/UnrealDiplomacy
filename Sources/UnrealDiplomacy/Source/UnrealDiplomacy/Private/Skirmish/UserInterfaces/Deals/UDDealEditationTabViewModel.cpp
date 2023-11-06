@@ -6,6 +6,7 @@
 #include "Skirmish/UDSkirmishPlayerController.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Core/Simulation/UDModelStructs.h"
+#include "Core/UDGlobalData.h"
 
 #define LOCTEXT_NAMESPACE "DealEditationTab"
 
@@ -87,5 +88,15 @@ void UUDDealEditationTabViewModel::UpdatePointList()
 		}
 	}
 
-	PointItemSourceUpdatedEvent.Broadcast(PointItemViewModelCollection);
+	SetPointItemList(FUDViewModelList(viewModels));
+}
+
+void UUDDealEditationTabViewModel::SetPointItemList(FUDViewModelList newPointItemList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(PointItemList, newPointItemList);
+}
+
+FUDViewModelList UUDDealEditationTabViewModel::GetPointItemList() const
+{
+	return PointItemList;
 }

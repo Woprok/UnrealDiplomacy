@@ -10,12 +10,10 @@
 
 class UTextBlock;
 class UButton;
-class UListView;
+class UUDListView;
 class UUDChatUserWidget;
 class UUDChatViewModel;
 class UUDDealGeneralTabViewModel;
-class UUDParticipantItemViewModel;
-class UUDInviteItemViewModel;
 
 /**
  * Ancestor for blueprint.
@@ -43,14 +41,6 @@ protected:
 	 * Automatically invoked by native on initialized.
 	 */
 	virtual void BindWidgets() override;
-	/**
-	 * Callback to set data from view model.
-	 */
-	void SetParticipantSourceCollection(const TArray<TObjectPtr<UUDParticipantItemViewModel>>& itemViewModels);
-	/**
-	 * Callback to set data from view model.
-	 */
-	void SetInviteSourceCollection(const TArray<TObjectPtr<UUDInviteItemViewModel>>& itemViewModels);
 	/**
 	 * Callback to set data from view model.
 	 */
@@ -99,9 +89,9 @@ protected:
 	TWeakObjectPtr<UButton> ExecuteContractButtonWidget;
 
 	UPROPERTY()
-	TWeakObjectPtr<UListView> ParticipantItemListWidget;
+	TWeakObjectPtr<UUDListView> ParticipantItemListWidget;
 	UPROPERTY()
-	TWeakObjectPtr<UListView> InviteItemListWidget;
+	TWeakObjectPtr<UUDListView> InviteItemListWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UUDChatUserWidget> DealChatViewWidget;
 	// ViewModel

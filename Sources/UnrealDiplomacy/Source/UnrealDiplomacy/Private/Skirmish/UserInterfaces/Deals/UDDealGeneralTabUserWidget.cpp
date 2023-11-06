@@ -4,11 +4,9 @@
 #include "Skirmish/UserInterfaces/Deals/UDDealGeneralTabViewModel.h"
 #include "Skirmish/UserInterfaces/Deals/UDChatUserWidget.h"
 #include "Skirmish/UserInterfaces/Deals/UDChatViewModel.h"
-#include "Skirmish/UserInterfaces/Deals/UDParticipantItemViewModel.h"
-#include "Skirmish/UserInterfaces/Deals/UDInviteItemViewModel.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
-#include "Components/ListView.h"
+#include "Core/UserInterfaces/Components/UDListView.h"
 
 void UUDDealGeneralTabUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
@@ -20,8 +18,6 @@ void UUDDealGeneralTabUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewMod
 void UUDDealGeneralTabUserWidget::BindDelegates()
 {
 	// Bind view to updates.
-	ViewModel->ParticipantItemSourceUpdatedEvent.AddUObject(this, &UUDDealGeneralTabUserWidget::SetParticipantSourceCollection);
-	ViewModel->InviteItemSourceUpdatedEvent.AddUObject(this, &UUDDealGeneralTabUserWidget::SetInviteSourceCollection);
 	ViewModel->ChatSourceUpdatedEvent.AddUObject(this, &UUDDealGeneralTabUserWidget::SetChatSourceInstance);
 	// Bind viewmodel to widgets.
 	ChangeReadyButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDDealGeneralTabViewModel::ChangeReady);
@@ -55,19 +51,9 @@ void UUDDealGeneralTabUserWidget::BindWidgets()
 	CreateContractButtonWidget = GetWidget<UButton>(TEXT("CreateContractButton"));
 	ExecuteContractButtonWidget = GetWidget<UButton>(TEXT("ExecuteContractButton"));
 
-	ParticipantItemListWidget = GetWidget<UListView>(TEXT("ParticipantItemList"));
-	InviteItemListWidget = GetWidget<UListView>(TEXT("InviteItemList"));
+	ParticipantItemListWidget = GetWidget<UUDListView>(TEXT("ParticipantItemList"));
+	InviteItemListWidget = GetWidget<UUDListView>(TEXT("InviteItemList"));
 	DealChatViewWidget = GetWidget<UUDChatUserWidget>(TEXT("DealChatView"));
-}
-
-void UUDDealGeneralTabUserWidget::SetParticipantSourceCollection(const TArray<TObjectPtr<UUDParticipantItemViewModel>>& itemViewModels)
-{
-	ParticipantItemListWidget->SetListItems(itemViewModels);
-}
-
-void UUDDealGeneralTabUserWidget::SetInviteSourceCollection(const TArray<TObjectPtr<UUDInviteItemViewModel>>& itemViewModels)
-{
-	InviteItemListWidget->SetListItems(itemViewModels);
 }
 
 void UUDDealGeneralTabUserWidget::SetChatSourceInstance(const TObjectPtr<UUDChatViewModel>& chatViewModel)

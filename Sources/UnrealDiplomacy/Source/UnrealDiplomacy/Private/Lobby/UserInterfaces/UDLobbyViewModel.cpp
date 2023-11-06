@@ -93,8 +93,8 @@ void UUDLobbyViewModel::UpdateClientList()
 		newViewModel->FullUpdate();
 		ClientViewModelCollection.Add(newViewModel);
 	}
-	
-	LobbyClientSourceUpdatedEvent.Broadcast(ClientViewModelCollection);
+
+	SetClientItemList(FUDViewModelList(viewModels));
 }
 
 void UUDLobbyViewModel::Back()
@@ -208,4 +208,14 @@ void UUDLobbyViewModel::SetIsHostValue(bool newIsHostValue)
 bool UUDLobbyViewModel::GetIsHostValue() const
 {
 	return IsHostValue;
+}
+
+void UUDLobbyViewModel::SetClientItemList(FUDViewModelList newClientItemList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ClientItemList, newClientItemList);
+}
+
+FUDViewModelList UUDLobbyViewModel::GetClientItemList() const
+{
+	return ClientItemList;
 }

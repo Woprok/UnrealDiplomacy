@@ -10,12 +10,11 @@
 
 class UTextBlock;
 class UButton;
-class UListView;
+class UUDListView;
 class UUDLobbyHostUserWidget;
 class UUDLobbyMemberUserWidget;
 class UUDLobbyHostViewModel;
 class UUDLobbyMemberViewModel;
-class UUDClientItemViewModel;
 class UUDLobbyViewModel;
 
 /**
@@ -44,10 +43,6 @@ protected:
 	 * Automatically invoked by native on initialized.
 	 */
 	virtual void BindWidgets() override;
-	/**
-	 * Callback to set data from view model.
-	 */
-	void SetClientSourceCollection(const TArray<TObjectPtr<UUDClientItemViewModel>>& clientItemViewModels);
 	/**
 	 * Callback to set data from view model.
 	 */
@@ -82,7 +77,7 @@ protected:
 	TWeakObjectPtr<UUDLobbyMemberUserWidget> LobbyMemberViewWidget;
 
 	UPROPERTY()
-	TWeakObjectPtr<UListView> ClientItemListWidget;
+	TWeakObjectPtr<UUDListView> ClientItemListWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDLobbyViewModel> ViewModel;

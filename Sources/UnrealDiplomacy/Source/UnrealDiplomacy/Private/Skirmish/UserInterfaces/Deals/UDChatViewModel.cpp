@@ -67,7 +67,7 @@ void UUDChatViewModel::UpdateChatItemList()
 		ChatItemViewModelCollection.Add(newViewModel);
 	}
 
-	ChatItemSourceUpdatedEvent.Broadcast(ChatItemViewModelCollection);
+	SetChatItemList(FUDViewModelList(viewModels));
 }
 
 void UUDChatViewModel::StartTextEditation(const FText& InText)
@@ -116,4 +116,14 @@ void UUDChatViewModel::SetSelectedText(FText newSelectedText)
 FText UUDChatViewModel::GetSelectedText() const
 {
 	return SelectedText;
+}
+
+void UUDChatViewModel::SetChatItemList(FUDViewModelList newChatItemList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ChatItemList, newChatItemList);
+}
+
+FUDViewModelList UUDChatViewModel::GetChatItemList() const
+{
+	return ChatItemList;
 }

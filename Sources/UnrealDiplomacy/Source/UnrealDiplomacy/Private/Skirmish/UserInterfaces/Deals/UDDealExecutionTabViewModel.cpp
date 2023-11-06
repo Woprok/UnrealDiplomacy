@@ -65,5 +65,15 @@ void UUDDealExecutionTabViewModel::UpdateActionList()
 		newViewModel->FullUpdate();
 		ActionItemViewModelCollection.Add(newViewModel);
 	}
-	ActionItemSourceUpdatedEvent.Broadcast(ActionItemViewModelCollection);
+	SetActionItemList(FUDViewModelList(viewModels));
+}
+
+void UUDDealExecutionTabViewModel::SetActionItemList(FUDViewModelList newActionItemList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ActionItemList, newActionItemList);
+}
+
+FUDViewModelList UUDDealExecutionTabViewModel::GetActionItemList() const
+{
+	return ActionItemList;
 }

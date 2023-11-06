@@ -8,9 +8,8 @@
 
 // Forward Declarations
 
-class UListView;
+class UUDListView;
 class UUDDealExecutionTabViewModel;
-class UUDActionItemViewModel;
 
 /**
  * Ancestor for blueprint.
@@ -38,14 +37,10 @@ protected:
 	 * Automatically invoked by native on initialized.
 	 */
 	virtual void BindWidgets() override;
-	/**
-	 * Callback to set data from view model.
-	 */
-	void SetActionItemSourceCollection(const TArray<TObjectPtr<UUDActionItemViewModel>>& itemViewModels);
 protected:
 	// Bindings
 	UPROPERTY()
-	TWeakObjectPtr<UListView> ActionItemListWidget;
+	TWeakObjectPtr<UUDListView> ActionItemListWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDDealExecutionTabViewModel> ViewModel;

@@ -8,9 +8,8 @@
 
 // Forward Declarations
 
-class UListView;
+class UUDListView;
 class UUDResourcePanelViewModel;
-class UUDResourceItemViewModel;
 
 /**
  * Ancestor for blueprint.
@@ -38,14 +37,10 @@ protected:
 	 * Automatically invoked by native on initialized.
 	 */
 	virtual void BindWidgets() override;
-	/**
-	 * Callback to set data from view model.
-	 */
-	void SetFactionSourceCollection(const TArray<TObjectPtr<UUDResourceItemViewModel>>& resourceItemViewModels);
 protected:
 	// Bindings
 	UPROPERTY()
-	TWeakObjectPtr<UListView> ResourceItemListWidget;
+	TWeakObjectPtr<UUDListView> ResourceItemListWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDResourcePanelViewModel> ViewModel;

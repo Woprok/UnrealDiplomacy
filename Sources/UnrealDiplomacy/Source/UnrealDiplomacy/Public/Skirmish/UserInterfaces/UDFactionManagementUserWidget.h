@@ -10,10 +10,8 @@
 
 class UTextBlock;
 class UButton;
-class UListView;
+class UUDListView;
 class UUDFactionManagementViewModel;
-class UUDFactionInteractionViewModel;
-class UUDModifierItemViewModel;
 class UUDPolicySelectorUserWidget;
 class UUDPolicySelectorViewModel;
 
@@ -46,26 +44,6 @@ protected:
 	/**
 	 * Callback to set data from view model.
 	 */
-	void SetFactionInteractionSourceCollection(const TArray<TObjectPtr<UUDFactionInteractionViewModel>>& factionInteractionViewModels);
-	/**
-	 * Callback to set data from view model.
-	 */
-	void SetFactionOfferSourceCollection(const TArray<TObjectPtr<UUDFactionInteractionViewModel>>& factionOfferViewModels);
-	/**
-	 * Callback to set data from view model.
-	 */
-	void SetFactionRequestSourceCollection(const TArray<TObjectPtr<UUDFactionInteractionViewModel>>& factionRequestViewModels);
-	/**
-	 * Callback to set data from view model.
-	 */
-	void SetFactionDemandSourceCollection(const TArray<TObjectPtr<UUDFactionInteractionViewModel>>& factionDemandViewModels);
-	/**
-	 * Callback to set data from view model.
-	 */
-	void SetModifierItemSourceCollection(const TArray<TObjectPtr<UUDModifierItemViewModel>>& modifierItemViewModels);
-	/**
-	 * Callback to set data from view model.
-	 */
 	void SetPolicySelectorSourceInstance(const TObjectPtr<UUDPolicySelectorViewModel>& policySelectorViewModel);
 protected:
 	// Bindings
@@ -78,7 +56,7 @@ protected:
 	UPROPERTY()
 	TWeakObjectPtr<UButton> CloseButtonWidget;
 	UPROPERTY()
-	TWeakObjectPtr<UListView> ModifierItemListWidget;
+	TWeakObjectPtr<UUDListView> ModifierItemListWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> InteractionTitleTextWidget;
 	UPROPERTY()
@@ -88,13 +66,13 @@ protected:
 	UPROPERTY()
 	TWeakObjectPtr<UTextBlock> DemandTitleTextWidget;
 	UPROPERTY()
-	TWeakObjectPtr<UListView> FactionInteractionListWidget;
+	TWeakObjectPtr<UUDListView> FactionInteractionListWidget;
 	UPROPERTY()
-	TWeakObjectPtr<UListView> FactionOfferListWidget;
+	TWeakObjectPtr<UUDListView> FactionOfferListWidget;
 	UPROPERTY()
-	TWeakObjectPtr<UListView> FactionRequestListWidget;
+	TWeakObjectPtr<UUDListView> FactionRequestListWidget;
 	UPROPERTY()
-	TWeakObjectPtr<UListView> FactionDemandListWidget;
+	TWeakObjectPtr<UUDListView> FactionDemandListWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UUDPolicySelectorUserWidget> PolicySelectorViewWidget;
 	// ViewModel

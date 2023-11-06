@@ -4,7 +4,7 @@
 #include "Skirmish/UserInterfaces/UDPolicySelectorViewModel.h"
 #include "Skirmish/UserInterfaces/UDPolicySelectItemViewModel.h"
 #include "Components/TextBlock.h"
-#include "Components/ListView.h"
+#include "Core/UserInterfaces/Components/UDListView.h"
 
 void UUDPolicySelectorUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
@@ -16,17 +16,11 @@ void UUDPolicySelectorUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewMod
 void UUDPolicySelectorUserWidget::BindDelegates()
 {
 	// Bind view to updates.
-	ViewModel->PolicySelectItemSourceUpdatedEvent.AddUObject(this, &UUDPolicySelectorUserWidget::SetPolicySelectItemSourceCollection);
 	// Bind viewmodel to widgets.
 }
 
 void UUDPolicySelectorUserWidget::BindWidgets()
 {
 	PolicyTitleTextWidget = GetWidget<UTextBlock>(TEXT("PolicyTitleText"));
-	PolicyItemListWidget = GetWidget<UListView>(TEXT("PolicyItemList"));
-}
-
-void UUDPolicySelectorUserWidget::SetPolicySelectItemSourceCollection(const TArray<TObjectPtr<UUDPolicySelectItemViewModel>>& policySelectItemViewModels)
-{
-	PolicyItemListWidget->SetListItems(policySelectItemViewModels);
+	PolicyItemListWidget = GetWidget<UUDListView>(TEXT("PolicyItemList"));
 }

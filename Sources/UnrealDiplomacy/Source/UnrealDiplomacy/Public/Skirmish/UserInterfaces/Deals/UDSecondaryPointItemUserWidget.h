@@ -11,9 +11,8 @@
 
 class UTextBlock;
 class UButton;
-class UListView;
+class UUDListView;
 class UUDSecondaryPointItemViewModel;
-class UUDTertiaryPointItemViewModel;
 class UUDPointContentUserWidget;
 class UUDPointContentViewModel;
 
@@ -51,10 +50,6 @@ protected:
 	/**
 	 * Callback to set data from view model.
 	 */
-	void SetPointItemSourceCollection(const TArray<TObjectPtr<UUDTertiaryPointItemViewModel>>& itemViewModels);
-	/**
-	 * Callback to set data from view model.
-	 */
 	void SetPointContentSourceCollection(const TObjectPtr<UUDPointContentViewModel>& itemViewModel);
 protected:
 	// Bindings
@@ -63,7 +58,7 @@ protected:
 	UPROPERTY()
 	TWeakObjectPtr<UButton> CreateSecondaryPointButtonWidget;
 	UPROPERTY()
-	TWeakObjectPtr<UListView> PointItemListWidget;
+	TWeakObjectPtr<UUDListView> PointItemListWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UUDPointContentUserWidget> PointContentViewWidget;
 	// ViewModel

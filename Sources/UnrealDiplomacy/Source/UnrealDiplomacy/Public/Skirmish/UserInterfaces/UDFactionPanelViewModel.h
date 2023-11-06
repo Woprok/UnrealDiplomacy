@@ -10,8 +10,6 @@
 
 class UUDFactionItemViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDFactionSourceUpdated, const TArray<TObjectPtr<UUDFactionItemViewModel>>& factionItemViewModels);
-
 /**
  * List that holds all factions.
  */
@@ -25,8 +23,9 @@ public:
 	FText NameHeaderText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText ControllerHeaderText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList FactionItemList;
 	// Events
-	FUDFactionSourceUpdated FactionSourceUpdatedEvent;
 protected:
 	virtual void Initialize() override;
 	UFUNCTION()
@@ -44,6 +43,8 @@ private:
 	FText GetNameHeaderText() const;
 	void SetControllerHeaderText(FText newControllerHeaderText);
 	FText GetControllerHeaderText() const;
+	void SetFactionItemList(FUDViewModelList newFactionItemList);
+	FUDViewModelList GetFactionItemList() const;
 private:
 	// Fields
 	FName FactionViewModelCollectionName = TEXT("FactionItemCollection");

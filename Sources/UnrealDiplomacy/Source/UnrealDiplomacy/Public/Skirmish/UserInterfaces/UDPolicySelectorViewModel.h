@@ -10,8 +10,6 @@
 
 class UUDPolicySelectItemViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDPolicySelectItemSourceUpdated, const TArray<TObjectPtr<UUDPolicySelectItemViewModel>>& policySelectItemViewModels);
-
 /**
  * Probides option to select from one of the options that are implemented as PolicyItemViewModel.
  */
@@ -29,8 +27,9 @@ public:
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText PolicyTitleText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList PolicyItemList;
 	// Events
-	FUDPolicySelectItemSourceUpdated PolicySelectItemSourceUpdatedEvent;
 protected:
 	virtual void Initialize() override;
 	UFUNCTION()
@@ -46,6 +45,8 @@ private:
 	// MVVM Setters & Getters
 	void SetPolicyTitleText(FText newPolicyTitleText);
 	FText GetPolicyTitleText() const;
+	void SetPolicyItemList(FUDViewModelList newPolicyItemList);
+	FUDViewModelList GetPolicyItemList() const;
 private:
 	// Fields
 	FName PolicySelectItemViewModelCollectionName = TEXT("PolicySelectItemCollection");

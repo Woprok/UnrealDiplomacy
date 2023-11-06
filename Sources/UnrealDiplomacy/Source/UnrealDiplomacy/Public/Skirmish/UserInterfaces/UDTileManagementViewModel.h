@@ -12,9 +12,6 @@
 class UUDTileInteractionViewModel;
 class UUDModifierItemViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDTileInteractionSourceUpdated, const TArray<TObjectPtr<UUDTileInteractionViewModel>>& tileInteractionViewModels);
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDTileModifierItemSourceUpdated, const TArray<TObjectPtr<UUDModifierItemViewModel>>& modifierItemViewModels);
-
 /**
  * Window that allows interacting with faction and view informations.
  */
@@ -49,9 +46,11 @@ public:
 	FText ResourceTypeText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText CloseText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList TileInteractionList;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList ModifierItemList;
 	// Events
-	FUDTileInteractionSourceUpdated TileInteractionSourceUpdatedEvent;
-	FUDTileModifierItemSourceUpdated ModifierItemSourceUpdatedEvent;
 protected:
 	virtual void Initialize() override;
 	UFUNCTION()
@@ -85,6 +84,10 @@ private:
 	FText GetResourceValueText() const;
 	void SetCloseText(FText newCloseText);
 	FText GetCloseText() const;
+	void SetTileInteractionList(FUDViewModelList newTileInteractionList);
+	FUDViewModelList GetTileInteractionList() const;
+	void SetModifierItemList(FUDViewModelList newModifierItemList);
+	FUDViewModelList GetModifierItemList() const;
 private:
 	// Fields
 	FName TileInteractionViewModelCollectionName = TEXT("TileInteractionCollection");

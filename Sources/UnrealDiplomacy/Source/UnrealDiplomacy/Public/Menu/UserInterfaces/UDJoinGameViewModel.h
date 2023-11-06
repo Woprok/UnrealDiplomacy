@@ -15,8 +15,6 @@ namespace EOnJoinSessionCompleteResult
 class FOnlineSessionSearchResult;
 class UUDServerItemViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDSearchSourceUpdated, const TArray<TObjectPtr<UUDServerItemViewModel>>& serverItemViewModels);
-
 /**
  * ViewModel for joining game.
  */
@@ -43,8 +41,9 @@ public:
 	FText PingHeaderText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText SearchText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList ServerItemList;
 	// Events
-	FUDSearchSourceUpdated OnSessionSearchSourceUpdated;
 protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
@@ -73,6 +72,8 @@ private:
 	FText GetPingHeaderText() const;
 	void SetSearchText(FText newSearchText);
 	FText GetSearchText() const;
+	void SetServerItemList(FUDViewModelList newServerItemList);
+	FUDViewModelList GetServerItemList() const;
 private:
 	// Fields
 	FName ViewModelCollectionName = TEXT("JoinServerItemCollection");

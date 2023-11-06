@@ -12,8 +12,6 @@
 struct FUDDealMinimalInfo;
 class UUDActionItemViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDActionItemSourceUpdated, const TArray<TObjectPtr<UUDActionItemViewModel>>& itemViewModels);
-
 /**
  * Tab for showing and editing actions that are part of deal.
  */
@@ -33,8 +31,9 @@ public:
 public:
 	// Button Functions
 	// MVVM Fields
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList ActionItemList;
 	// Events
-	FUDActionItemSourceUpdated ActionItemSourceUpdatedEvent;
 protected:
 	virtual void Initialize() override;
 	UFUNCTION()
@@ -48,6 +47,8 @@ private:
 	void UpdateActionList();
 private:
 	// MVVM Setters & Getters
+	void SetActionItemList(FUDViewModelList newActionItemList);
+	FUDViewModelList GetActionItemList() const;
 private:
 	// Fields
 	FUDDealMinimalInfo Content;
