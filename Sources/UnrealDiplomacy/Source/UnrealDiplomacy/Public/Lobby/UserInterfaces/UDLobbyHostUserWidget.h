@@ -3,12 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Core/UserInterfaces/UDUserWidget.h"
+#include "Core/UserInterfaces/UDContentUserWidget.h"
 #include "UDLobbyHostUserWidget.generated.h"
 
 // Forward Declarations
 
-class UTextBlock;
 class USpinBox;
 class UUDLobbyHostViewModel;
 
@@ -16,7 +15,7 @@ class UUDLobbyHostViewModel;
  * Ancestor for blueprint.
  */
 UCLASS(Abstract)
-class UNREALDIPLOMACY_API UUDLobbyHostUserWidget : public UUDUserWidget
+class UNREALDIPLOMACY_API UUDLobbyHostUserWidget : public UUDContentUserWidget
 {
 	GENERATED_BODY()
 public:
@@ -40,18 +39,6 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> HostSettingsTitleTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> AICountTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> MapSeedTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> MapWidthTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> MapHeightTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> StratagemPointsTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<USpinBox> AICountValueWidget;
 	UPROPERTY()

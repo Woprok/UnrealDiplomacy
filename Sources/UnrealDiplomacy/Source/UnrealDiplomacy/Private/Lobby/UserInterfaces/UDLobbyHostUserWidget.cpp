@@ -2,7 +2,6 @@
 
 #include "Lobby/UserInterfaces/UDLobbyHostUserWidget.h"
 #include "Lobby/UserInterfaces/UDLobbyHostViewModel.h"
-#include "Components/TextBlock.h"
 #include "Components/SpinBox.h"
 
 void UUDLobbyHostUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
@@ -29,12 +28,6 @@ void UUDLobbyHostUserWidget::BindDelegates()
 
 void UUDLobbyHostUserWidget::BindWidgets()
 {
-	HostSettingsTitleTextWidget = GetWidget<UTextBlock>(TEXT("HostSettingsTitleText"));
-	AICountTextWidget = GetWidget<UTextBlock>(TEXT("AICountText"));
-	MapSeedTextWidget = GetWidget<UTextBlock>(TEXT("MapSeedText"));
-	MapWidthTextWidget = GetWidget<UTextBlock>(TEXT("MapWidthText"));
-	MapHeightTextWidget = GetWidget<UTextBlock>(TEXT("MapHeightText"));
-	StratagemPointsTextWidget = GetWidget<UTextBlock>(TEXT("StratagemPointsText"));
 	AICountValueWidget = GetWidget<USpinBox>(TEXT("AICountValue"));
 	MapSeedValueWidget = GetWidget<USpinBox>(TEXT("MapSeedValue"));
 	MapWidthValueWidget = GetWidget<USpinBox>(TEXT("MapWidthValue"));

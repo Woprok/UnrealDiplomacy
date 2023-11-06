@@ -8,9 +8,7 @@
 
 // Forward Declarations
 
-class UTextBlock;
 class UButton;
-class UUDListView;
 class UUDLobbyHostUserWidget;
 class UUDLobbyMemberUserWidget;
 class UUDLobbyHostViewModel;
@@ -54,17 +52,6 @@ protected:
 protected:
 	// Bindings
 	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> LobbyTitleTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> NameHeaderTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> BackTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> LeaveTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> StartTextWidget;
-
-	UPROPERTY()
 	TWeakObjectPtr<UButton> BackButtonWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> LeaveButtonWidget;
@@ -75,9 +62,6 @@ protected:
 	TWeakObjectPtr<UUDLobbyHostUserWidget> LobbyHostViewWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UUDLobbyMemberUserWidget> LobbyMemberViewWidget;
-
-	UPROPERTY()
-	TWeakObjectPtr<UUDListView> ClientItemListWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDLobbyViewModel> ViewModel;

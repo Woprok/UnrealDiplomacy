@@ -6,9 +6,7 @@
 #include "Lobby/UserInterfaces/UDLobbyMemberViewModel.h"
 #include "Lobby/UserInterfaces/UDLobbyHostUserWidget.h"
 #include "Lobby/UserInterfaces/UDLobbyMemberUserWidget.h"
-#include "Components/TextBlock.h"
 #include "Components/Button.h"
-#include "Core/UserInterfaces/Components/UDListView.h"
 
 void UUDLobbyUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
@@ -30,17 +28,11 @@ void UUDLobbyUserWidget::BindDelegates()
 
 void UUDLobbyUserWidget::BindWidgets()
 {
-	LobbyTitleTextWidget = GetWidget<UTextBlock>(TEXT("LobbyTitleText"));
-	NameHeaderTextWidget = GetWidget<UTextBlock>(TEXT("NameHeaderText"));
-	BackTextWidget = GetWidget<UTextBlock>(TEXT("BackText"));
-	LeaveTextWidget = GetWidget<UTextBlock>(TEXT("LeaveText"));
-	StartTextWidget = GetWidget<UTextBlock>(TEXT("StartText"));
 	BackButtonWidget = GetWidget<UButton>(TEXT("BackButton"));
 	LeaveButtonWidget = GetWidget<UButton>(TEXT("LeaveButton"));
 	StartButtonWidget = GetWidget<UButton>(TEXT("StartButton"));
 	LobbyHostViewWidget = GetWidget<UUDLobbyHostUserWidget>(TEXT("LobbyHostView"));
 	LobbyMemberViewWidget = GetWidget<UUDLobbyMemberUserWidget>(TEXT("LobbyMemberView"));
-	ClientItemListWidget = GetWidget<UUDListView>(TEXT("ClientItemList"));
 }
 
 void UUDLobbyUserWidget::SetHostSourceInstance(const TObjectPtr<UUDLobbyHostViewModel>& lobbyHostViewModel)

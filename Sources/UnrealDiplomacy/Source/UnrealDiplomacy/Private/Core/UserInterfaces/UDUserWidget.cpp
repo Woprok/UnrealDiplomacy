@@ -17,7 +17,6 @@ void UUDUserWidget::NativeOnInitialized()
 void UUDUserWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
-	SetAppearance();
 }
 
 void UUDUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
@@ -31,11 +30,6 @@ void UUDUserWidget::BindDelegates()
 }
 
 void UUDUserWidget::BindWidgets()
-{
-	return;
-}
-
-void UUDUserWidget::SetAppearance()
 {
 	return;
 }

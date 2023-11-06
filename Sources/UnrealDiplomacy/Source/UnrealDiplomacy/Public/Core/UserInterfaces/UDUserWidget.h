@@ -32,7 +32,7 @@ protected:
 	/**
 	 * Used to call editor initializations for widget.
 	 * This is executed during the runtime as well.
-	 * For changing appearance use SetAppearance that is invoked by this.
+	 * Can be used for changing appearance.
 	 */
 	virtual void NativePreConstruct() override;
 protected:
@@ -48,10 +48,6 @@ protected:
 	 * Automatically invoked by native on initialized.
 	 */
 	virtual void BindWidgets();
-	/**
-	 * Automatically invoked by native pre construct.
-	 */
-	virtual void SetAppearance();
 	/**
 	 * Retrieve widget based on name and casts it to the specified type.
 	 * This will throw runtime error, if it can't find desired widget.

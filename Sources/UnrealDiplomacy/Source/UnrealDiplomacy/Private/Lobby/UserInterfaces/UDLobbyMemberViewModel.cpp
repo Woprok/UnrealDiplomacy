@@ -93,7 +93,7 @@ void UUDLobbyMemberViewModel::UpdateStratagemsList()
 		StratagemViewModelCollection.Add(newViewModel);
 	}
 
-	StratagemSourceUpdatedEvent.Broadcast(StratagemViewModelCollection);
+	SetStrategyOptionList(FUDViewModelList(viewModels));
 }
 
 void UUDLobbyMemberViewModel::SetMemberSettingsTitleText(FText newMemberSettingsTitleText)
@@ -144,4 +144,14 @@ void UUDLobbyMemberViewModel::SetFactionNameEditableText(FText newFactionNameEdi
 FText UUDLobbyMemberViewModel::GetFactionNameEditableText() const
 {
 	return FactionNameEditableText;
+}
+
+void UUDLobbyMemberViewModel::SetStrategyOptionList(FUDViewModelList newStrategyOptionList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(StrategyOptionList, newStrategyOptionList);
+}
+
+FUDViewModelList UUDLobbyMemberViewModel::GetStrategyOptionList() const
+{
+	return StrategyOptionList;
 }

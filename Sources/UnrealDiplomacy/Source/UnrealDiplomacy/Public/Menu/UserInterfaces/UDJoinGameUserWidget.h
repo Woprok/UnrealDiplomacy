@@ -9,9 +9,7 @@
 
 // Forward Declarations
 
-class UTextBlock;
 class UButton;
-class UUDListView;
 class UUDJoinGameViewModel;
 
 /**
@@ -43,21 +41,9 @@ protected:
 protected:
 	// Bindings
 	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> JoinGameTitleTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> BackTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> RefreshTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> NameHeaderTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> PingHeaderTextWidget;
-	UPROPERTY()
 	TWeakObjectPtr<UButton> BackButtonWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> RefreshButtonWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UUDListView> ServerItemListWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDJoinGameViewModel> ViewModel;

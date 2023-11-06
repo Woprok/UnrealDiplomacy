@@ -8,10 +8,7 @@
 
 // Forward Declarations
 
-class UTextBlock;
-class UUDListView;
 class UUDPolicySelectorViewModel;
-class UUDPolicySelectItemViewModel;
 
 /**
  * Ancestor for blueprint.
@@ -31,21 +28,7 @@ protected:
 	 * Enables to define view model used by this widet for delegates.
 	 */
 	virtual void BindViewModel(TObjectPtr<UUDViewModel> viewModel) override;
-	/**
-	 * Automatically invoked by native on initialized.
-	 */
-	virtual void BindDelegates() override;
-	/**
-	 * Automatically invoked by native on initialized.
-	 */
-	virtual void BindWidgets() override;
 protected:
-	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> PolicyTitleTextWidget;
-
-	UPROPERTY()
-	TWeakObjectPtr<UUDListView> PolicyItemListWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDPolicySelectorViewModel> ViewModel;

@@ -11,8 +11,6 @@
 enum ETextCommit::Type : int;
 class UUDStrategyOptionViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDStratagemSourceUpdated, const TArray<TObjectPtr<UUDStrategyOptionViewModel>>& stratagemViewModels);
-
 /**
  * ViewModel for defining player settings.
  */
@@ -37,8 +35,9 @@ public:
 	FText StrategyPointsText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText FactionNameEditableText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList StrategyOptionList;
 	// Events
-	FUDStratagemSourceUpdated StratagemSourceUpdatedEvent;
 protected:
 	virtual void Initialize() override;
 	UFUNCTION()
@@ -67,6 +66,8 @@ private:
 	FText GetStrategyPointsText() const;
 	void SetFactionNameEditableText(FText newFactionNameEditableText);
 	FText GetFactionNameEditableText() const;
+	void SetStrategyOptionList(FUDViewModelList newStrategyOptionList);
+	FUDViewModelList GetStrategyOptionList() const;
 private:
 	// Fields
 	bool IsNameEditing = false;
