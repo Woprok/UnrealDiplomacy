@@ -9,7 +9,6 @@
 
 // Forward Declarations
 
-class UTextBlock;
 class UButton;
 class UUDParameterEditorUserWidget;
 class UUDParameterEditorViewModel;
@@ -52,8 +51,6 @@ protected:
 	void SetParameterEditorSourceInstance(const TObjectPtr<UUDParameterEditorViewModel>& parameterEditorViewModel);
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> InteractTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> InteractButtonWidget;
 	UPROPERTY()

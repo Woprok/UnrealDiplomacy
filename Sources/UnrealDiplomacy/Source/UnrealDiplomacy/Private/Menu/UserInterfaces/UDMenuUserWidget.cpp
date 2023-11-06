@@ -2,7 +2,6 @@
 
 #include "Menu/UserInterfaces/UDMenuUserWidget.h"
 #include "Menu/UserInterfaces/UDMenuViewModel.h"
-#include "Components/TextBlock.h"
 #include "Components/Button.h"
 
 void UUDMenuUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
@@ -23,11 +22,6 @@ void UUDMenuUserWidget::BindDelegates()
 
 void UUDMenuUserWidget::BindWidgets()
 {
-	GameTitleTextWidget = GetWidget<UTextBlock>(TEXT("GameTitleText"));
-	CreateGameTextWidget = GetWidget<UTextBlock>(TEXT("CreateGameText"));
-	JoinGameTextWidget = GetWidget<UTextBlock>(TEXT("JoinGameText"));
-	SettingsTextWidget = GetWidget<UTextBlock>(TEXT("SettingsText"));
-	QuitTextWidget = GetWidget<UTextBlock>(TEXT("QuitText"));
 	CreateGameButtonWidget = GetWidget<UButton>(TEXT("CreateGameButton"));
 	JoinGameButtonWidget = GetWidget<UButton>(TEXT("JoinGameButton"));
 	SettingsButtonWidget = GetWidget<UButton>(TEXT("SettingsButton"));

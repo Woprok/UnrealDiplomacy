@@ -8,7 +8,6 @@
 
 // Forward Declarations
 
-class UTextBlock;
 class UButton;
 class UUDMessageItemViewModel;
 
@@ -40,27 +39,6 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> MessageTypeTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> MessageTitleTextWidget;
-	UPROPERTY()
-
-	TWeakObjectPtr<UTextBlock> MessageConfirmTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> MessageRejectTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> OnConfirmTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> OnRejectTextWidget;
-
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> AcceptTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> OkTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> RejectTextWidget;
-
 	UPROPERTY()
 	TWeakObjectPtr<UButton> AcceptButtonWidget;
 	UPROPERTY()

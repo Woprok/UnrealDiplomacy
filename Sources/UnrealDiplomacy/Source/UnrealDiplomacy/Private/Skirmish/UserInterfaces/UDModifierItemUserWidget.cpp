@@ -4,7 +4,6 @@
 #include "Skirmish/UserInterfaces/UDModifierItemUserWidget.h"
 #include "Skirmish/UserInterfaces/UDModifierItemViewModel.h"
 #include "Components/Image.h"
-#include "Components/TextBlock.h"
 
 void UUDModifierItemUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
@@ -28,7 +27,5 @@ void UUDModifierItemUserWidget::BindDelegates()
 
 void UUDModifierItemUserWidget::BindWidgets()
 {
-	NameTextWidget = GetWidget<UTextBlock>(TEXT("NameText"));
-	DescriptionTextWidget = GetWidget<UTextBlock>(TEXT("DescriptionText"));
 	IconImageWidget = GetWidget<UImage>(TEXT("IconImage"));
 }

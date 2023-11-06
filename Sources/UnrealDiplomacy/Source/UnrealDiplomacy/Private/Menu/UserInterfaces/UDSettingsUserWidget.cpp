@@ -2,7 +2,6 @@
 
 #include "Menu/UserInterfaces/UDSettingsUserWidget.h"
 #include "Menu/UserInterfaces/UDSettingsViewModel.h"
-#include "Components/TextBlock.h"
 #include "Components/Button.h"
 #include "Components/ComboBoxString.h"
 
@@ -27,12 +26,6 @@ void UUDSettingsUserWidget::BindDelegates()
 
 void UUDSettingsUserWidget::BindWidgets()
 {
-	SettingsTitleTextWidget = GetWidget<UTextBlock>(TEXT("SettingsTitleText"));
-	BackTextWidget = GetWidget<UTextBlock>(TEXT("BackText"));
-	SaveTextWidget = GetWidget<UTextBlock>(TEXT("SaveText"));
-	CreditsTextWidget = GetWidget<UTextBlock>(TEXT("CreditsText"));
-	WindowModeTextWidget = GetWidget<UTextBlock>(TEXT("WindowModeText"));
-	ResolutionTextWidget = GetWidget<UTextBlock>(TEXT("ResolutionText"));
 	BackButtonWidget = GetWidget<UButton>(TEXT("BackButton"));
 	SaveButtonWidget = GetWidget<UButton>(TEXT("SaveButton"));
 	CreditsButtonWidget = GetWidget<UButton>(TEXT("CreditsButton"));

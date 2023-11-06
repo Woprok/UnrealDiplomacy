@@ -3,7 +3,6 @@
 #include "Skirmish/UserInterfaces/Deals/UDInviteItemUserWidget.h"
 #include "Skirmish/UserInterfaces/Deals/UDInviteItemViewModel.h"
 #include "Components/Button.h"
-#include "Components/TextBlock.h"
 
 void UUDInviteItemUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
@@ -28,7 +27,5 @@ void UUDInviteItemUserWidget::BindDelegates()
 
 void UUDInviteItemUserWidget::BindWidgets()
 {
-	FactionNameTextWidget = GetWidget<UTextBlock>(TEXT("FactionNameText"));
-	InviteTextWidget = GetWidget<UTextBlock>(TEXT("InviteText"));
 	InviteButtonWidget = GetWidget<UButton>(TEXT("InviteButton"));
 }

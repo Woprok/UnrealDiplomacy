@@ -9,7 +9,6 @@
 // Forward Declarations
 
 class UButton;
-class UTextBlock;
 class UUDTurnViewModel;
 
 /**
@@ -40,17 +39,6 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> RegentTitleTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> RegentTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> RemainingTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> FinishTurnTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> TurnTextWidget;
-
 	UPROPERTY()
 	TWeakObjectPtr<UButton> FinishTurnButtonWidget;
 	// ViewModel

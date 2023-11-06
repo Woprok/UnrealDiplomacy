@@ -10,7 +10,6 @@
 
 class UUDGameOverViewModel;
 class UButton;
-class UTextBlock;
 
 /**
  * Ancestor for blueprint.
@@ -40,13 +39,6 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> GameOverTitleTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> WinnerFactionTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> ReturnToMenuTextWidget;
-
 	UPROPERTY()
 	TWeakObjectPtr<UButton> ReturnButtonWidget;
 	// ViewModel

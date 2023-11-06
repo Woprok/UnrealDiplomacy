@@ -8,7 +8,6 @@
 
 // Forward Declarations
 
-class UTextBlock;
 class UButton;
 class UComboBoxString;
 class UUDSettingsViewModel;
@@ -48,18 +47,6 @@ protected:
 	void SetOptions();
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> SettingsTitleTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> BackTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> SaveTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> CreditsTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> WindowModeTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> ResolutionTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> BackButtonWidget;
 	UPROPERTY()

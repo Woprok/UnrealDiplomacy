@@ -3,7 +3,6 @@
 #include "Skirmish/UserInterfaces/UDFactionItemUserWidget.h"
 #include "Skirmish/UserInterfaces/UDFactionItemViewModel.h"
 #include "Components/Button.h"
-#include "Components/TextBlock.h"
 
 void UUDFactionItemUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
@@ -28,7 +27,5 @@ void UUDFactionItemUserWidget::BindDelegates()
 
 void UUDFactionItemUserWidget::BindWidgets()
 {
-	NameTextWidget = GetWidget<UTextBlock>(TEXT("NameText"));
-	ControllerTextWidget = GetWidget<UTextBlock>(TEXT("NameText"));
 	InteractionButtonWidget = GetWidget<UButton>(TEXT("InteractionButton"));
 }

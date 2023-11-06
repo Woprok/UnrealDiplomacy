@@ -8,7 +8,6 @@
 
 // Forward Declarations
 
-class UTextBlock;
 class UButton;
 class UUDDealManagementViewModel;
 class UUDDealItemViewModel;
@@ -46,27 +45,6 @@ protected:
 	void SetHistoryItemInstance(const TObjectPtr<UUDDealItemViewModel>& dealItemViewModel);
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> DealManagementTitleTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> DealCountTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> CloseTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> FirstTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> PreviousTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> NextTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> LastTextWidget;	
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> CreateTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> ActiveTextWidget;	
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> HistoryTextWidget;
-
 	UPROPERTY()
 	TWeakObjectPtr<UButton> CreateButtonWidget;
 	UPROPERTY()

@@ -5,7 +5,6 @@
 #include "Skirmish/UserInterfaces/Deals/UDPointContentUserWidget.h"
 #include "Skirmish/UserInterfaces/Deals/UDPointContentViewModel.h"
 #include "Components/Button.h"
-#include "Components/TextBlock.h"
 
 void UUDTertiaryPointItemUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
@@ -32,7 +31,6 @@ void UUDTertiaryPointItemUserWidget::BindDelegates()
 
 void UUDTertiaryPointItemUserWidget::BindWidgets()
 {
-	CreateTertiaryPointTextWidget = GetWidget<UTextBlock>(TEXT("CreateTertiaryPointText"));
 	CreateTertiaryPointButtonWidget = GetWidget<UButton>(TEXT("CreateTertiaryPointButton"));
 	PointContentViewWidget = GetWidget<UUDPointContentUserWidget>(TEXT("PointContentView"));
 }

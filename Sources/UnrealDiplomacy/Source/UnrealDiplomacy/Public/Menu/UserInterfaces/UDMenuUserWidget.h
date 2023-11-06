@@ -8,7 +8,6 @@
 
 // Fordward Declarations
 
-class UTextBlock;
 class UButton;
 class UUDMenuViewModel;
 
@@ -31,16 +30,6 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> GameTitleTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> CreateGameTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> JoinGameTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> SettingsTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> QuitTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> CreateGameButtonWidget;
 	UPROPERTY()

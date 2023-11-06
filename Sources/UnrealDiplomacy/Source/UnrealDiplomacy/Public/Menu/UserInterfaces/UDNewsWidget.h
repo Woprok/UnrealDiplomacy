@@ -8,7 +8,6 @@
 
 // Forward Declaratiosn
 
-class UTextBlock;
 class UButton;
 class UUDNewsViewModel;
 
@@ -31,12 +30,6 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> NewsTitleTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> MessageTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> CloseTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> CloseButtonWidget;
 	// ViewModel

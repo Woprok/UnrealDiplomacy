@@ -2,7 +2,6 @@
 
 #include "Skirmish/UserInterfaces/UDPolicySelectItemUserWidget.h"
 #include "Skirmish/UserInterfaces/UDPolicySelectItemViewModel.h"
-#include "Components/TextBlock.h"
 #include "Components/Button.h"
 
 
@@ -30,6 +29,5 @@ void UUDPolicySelectItemUserWidget::BindDelegates()
 
 void UUDPolicySelectItemUserWidget::BindWidgets()
 {
-	SelectTextWidget = GetWidget<UTextBlock>(TEXT("SelectText"));
 	SelectButtonWidget = GetWidget<UButton>(TEXT("SelectButton"));
 }

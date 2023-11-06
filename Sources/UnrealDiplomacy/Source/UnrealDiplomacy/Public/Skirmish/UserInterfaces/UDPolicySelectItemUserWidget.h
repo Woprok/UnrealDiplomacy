@@ -9,7 +9,6 @@
 
 // Forward Declarations
 
-class UTextBlock;
 class UButton;
 class UUDPolicySelectItemViewModel;
 
@@ -46,9 +45,6 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> SelectTextWidget;
-
 	UPROPERTY()
 	TWeakObjectPtr<UButton> SelectButtonWidget;
 	// ViewModel

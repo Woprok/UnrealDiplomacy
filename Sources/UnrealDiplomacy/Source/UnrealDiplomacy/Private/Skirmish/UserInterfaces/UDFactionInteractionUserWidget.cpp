@@ -5,7 +5,6 @@
 #include "Skirmish/UserInterfaces/UDParameterEditorViewModel.h"
 #include "Skirmish/UserInterfaces/UDParameterEditorUserWidget.h"
 #include "Components/Button.h"
-#include "Components/TextBlock.h"
 
 void UUDFactionInteractionUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
@@ -32,7 +31,6 @@ void UUDFactionInteractionUserWidget::BindDelegates()
 
 void UUDFactionInteractionUserWidget::BindWidgets()
 {
-	InteractTextWidget = GetWidget<UTextBlock>(TEXT("InteractText"));
 	InteractButtonWidget = GetWidget<UButton>(TEXT("InteractButton"));
 	ParameterEditorViewWidget = GetWidget<UUDParameterEditorUserWidget>(TEXT("ParameterEditorView"));
 }

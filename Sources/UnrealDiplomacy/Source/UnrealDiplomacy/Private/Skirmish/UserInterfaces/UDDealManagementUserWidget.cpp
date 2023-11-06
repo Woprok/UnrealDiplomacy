@@ -4,7 +4,6 @@
 #include "Skirmish/UserInterfaces/UDDealManagementViewModel.h"
 #include "Skirmish/UserInterfaces/Deals/UDDealItemUserWidget.h"
 #include "Skirmish/UserInterfaces/Deals/UDDealItemViewModel.h"
-#include "Components/TextBlock.h"
 #include "Components/Button.h"
 
 void UUDDealManagementUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
@@ -32,17 +31,6 @@ void UUDDealManagementUserWidget::BindDelegates()
 
 void UUDDealManagementUserWidget::BindWidgets()
 {
-	DealManagementTitleTextWidget = GetWidget<UTextBlock>(TEXT("DealManagementTitleText"));
-	DealCountTextWidget = GetWidget<UTextBlock>(TEXT("DealCountText"));
-	CloseTextWidget = GetWidget<UTextBlock>(TEXT("CloseText"));
-	FirstTextWidget = GetWidget<UTextBlock>(TEXT("FirstText"));
-	PreviousTextWidget = GetWidget<UTextBlock>(TEXT("PreviousText"));
-	NextTextWidget = GetWidget<UTextBlock>(TEXT("NextText"));
-	LastTextWidget = GetWidget<UTextBlock>(TEXT("LastText"));
-	CreateTextWidget = GetWidget<UTextBlock>(TEXT("CreateText"));
-	LastTextWidget = GetWidget<UTextBlock>(TEXT("ActiveText"));
-	LastTextWidget = GetWidget<UTextBlock>(TEXT("HistoryText"));
-
 	CreateButtonWidget = GetWidget<UButton>(TEXT("CreateButton"));
 	ActiveButtonWidget = GetWidget<UButton>(TEXT("ActiveButton"));
 	HistoryButtonWidget = GetWidget<UButton>(TEXT("HistoryButton"));

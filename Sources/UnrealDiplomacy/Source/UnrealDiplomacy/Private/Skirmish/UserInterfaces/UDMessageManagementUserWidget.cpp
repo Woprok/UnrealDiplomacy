@@ -4,7 +4,6 @@
 #include "Skirmish/UserInterfaces/UDMessageManagementViewModel.h"
 #include "Skirmish/UserInterfaces/UDMessageItemUserWidget.h"
 #include "Skirmish/UserInterfaces/UDMessageItemViewModel.h"
-#include "Components/TextBlock.h"
 #include "Components/Button.h"
 
 void UUDMessageManagementUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
@@ -28,13 +27,6 @@ void UUDMessageManagementUserWidget::BindDelegates()
 
 void UUDMessageManagementUserWidget::BindWidgets()
 {
-	MessageManagementTitleTextWidget = GetWidget<UTextBlock>(TEXT("MessageManagementTitleText"));
-	MessageCountTextWidget = GetWidget<UTextBlock>(TEXT("MessageCountText"));
-	CloseTextWidget = GetWidget<UTextBlock>(TEXT("CloseText"));
-	FirstTextWidget = GetWidget<UTextBlock>(TEXT("FirstText"));
-	PreviousTextWidget = GetWidget<UTextBlock>(TEXT("PreviousText"));
-	NextTextWidget = GetWidget<UTextBlock>(TEXT("NextText"));
-	LastTextWidget = GetWidget<UTextBlock>(TEXT("LastText"));
 	CloseButtonWidget = GetWidget<UButton>(TEXT("CloseButton"));
 	FirstButtonWidget = GetWidget<UButton>(TEXT("FirstButton"));
 	PreviousButtonWidget = GetWidget<UButton>(TEXT("PreviousButton"));

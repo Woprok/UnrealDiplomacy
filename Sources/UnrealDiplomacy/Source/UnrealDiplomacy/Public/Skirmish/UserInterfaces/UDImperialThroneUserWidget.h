@@ -9,7 +9,6 @@
 // Forward Declarations
 
 class UButton;
-class UTextBlock;
 class UUDImperialThroneViewModel;
 
 /**
@@ -40,13 +39,6 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> DealCountTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> MessageCountTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> ThroneTextWidget;
-
 	UPROPERTY()
 	TWeakObjectPtr<UButton> ThroneButtonWidget;
 	UPROPERTY()

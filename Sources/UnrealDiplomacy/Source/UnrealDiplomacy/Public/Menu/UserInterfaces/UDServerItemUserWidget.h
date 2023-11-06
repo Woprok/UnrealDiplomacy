@@ -9,7 +9,6 @@
 
 // Forward Declarations
 
-class UTextBlock;
 class UButton;
 class UUDServerItemViewModel;
 
@@ -47,10 +46,6 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> NameTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> PingTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> ItemButtonWidget;
 	// ViewModel

@@ -5,7 +5,6 @@
 #include "Skirmish/UserInterfaces/UDParameterEditorViewModel.h"
 #include "Skirmish/UserInterfaces/UDParameterEditorUserWidget.h"
 #include "Components/Button.h"
-#include "Components/TextBlock.h"
 
 void UUDActionItemUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
@@ -35,14 +34,6 @@ void UUDActionItemUserWidget::BindDelegates()
 
 void UUDActionItemUserWidget::BindWidgets()
 {
-	ActionTextWidget = GetWidget<UTextBlock>(TEXT("ActionText"));
-	ActionTitleTextWidget = GetWidget<UTextBlock>(TEXT("ActionTitleText"));
-	AcceptTextWidget = GetWidget<UTextBlock>(TEXT("AcceptText"));
-	ChangeTextWidget = GetWidget<UTextBlock>(TEXT("ChangeText"));
-	DenyTextWidget = GetWidget<UTextBlock>(TEXT("DenyText"));
-	SabotageTextWidget = GetWidget<UTextBlock>(TEXT("SabotageText"));
-	EditorTextWidget = GetWidget<UTextBlock>(TEXT("EditorText"));
-
 	AcceptButtonWidget = GetWidget<UButton>(TEXT("AcceptButton"));
 	ChangeButtonWidget = GetWidget<UButton>(TEXT("ChangeButton"));
 	DenyButtonWidget = GetWidget<UButton>(TEXT("DenyButton"));

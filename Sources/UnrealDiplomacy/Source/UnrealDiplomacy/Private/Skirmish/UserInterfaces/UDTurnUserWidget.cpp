@@ -20,10 +20,5 @@ void UUDTurnUserWidget::BindDelegates()
 
 void UUDTurnUserWidget::BindWidgets()
 {
-	RegentTitleTextWidget = GetWidget<UTextBlock>(TEXT("RegentTitleText"));
-	RegentTextWidget = GetWidget<UTextBlock>(TEXT("RegentText"));
-	RemainingTextWidget = GetWidget<UTextBlock>(TEXT("RemainingText"));
-	FinishTurnTextWidget = GetWidget<UTextBlock>(TEXT("FinishTurnText"));
-	TurnTextWidget = GetWidget<UTextBlock>(TEXT("TurnText"));
 	FinishTurnButtonWidget = GetWidget<UButton>(TEXT("FinishTurnButton"));
 }

@@ -2,7 +2,6 @@
 
 #include "Skirmish/UserInterfaces/Parameters/UDTextParameterUserWidget.h"
 #include "Skirmish/UserInterfaces/Parameters/UDTextParameterViewModel.h"
-#include "Components/TextBlock.h"
 #include "Components/EditableTextBox.h"
 
 void UUDTextParameterUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
@@ -21,6 +20,5 @@ void UUDTextParameterUserWidget::BindDelegates()
 
 void UUDTextParameterUserWidget::BindWidgets()
 {
-	TextTitleTextWidget = GetWidget<UTextBlock>(TEXT("TextTitleText"));
 	TextEditableTextWidget = GetWidget<UEditableTextBox>(TEXT("TextEditableText"));
 }

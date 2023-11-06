@@ -8,7 +8,6 @@
 
 // Forward Declarations
 
-class UTextBlock;
 class UButton;
 class UUDMessageManagementViewModel;
 class UUDMessageItemViewModel;
@@ -46,21 +45,6 @@ protected:
 	void SetMessageItemSourceInstance(const TObjectPtr<UUDMessageItemViewModel>& messageItemViewModel);
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> MessageManagementTitleTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> MessageCountTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> CloseTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> FirstTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> PreviousTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> NextTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> LastTextWidget;
-
 	UPROPERTY()
 	TWeakObjectPtr<UButton> CloseButtonWidget;
 	UPROPERTY()

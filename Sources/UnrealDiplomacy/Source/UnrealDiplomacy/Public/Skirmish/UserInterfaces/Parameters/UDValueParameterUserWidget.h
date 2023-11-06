@@ -8,7 +8,6 @@
 
 // Forward Declarations
 
-class UTextBlock;
 class USpinBox;
 class UUDValueParameterViewModel;
 
@@ -40,8 +39,6 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> ValueTitleTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<USpinBox> ValueBoxWidget;
 	// ViewModel

@@ -8,7 +8,6 @@
 
 // Forward Declarations
 
-class UTextBlock;
 class UEditableTextBox;
 class UUDTextParameterViewModel;
 
@@ -40,8 +39,6 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> TextTitleTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UEditableTextBox> TextEditableTextWidget;
 	UPROPERTY()

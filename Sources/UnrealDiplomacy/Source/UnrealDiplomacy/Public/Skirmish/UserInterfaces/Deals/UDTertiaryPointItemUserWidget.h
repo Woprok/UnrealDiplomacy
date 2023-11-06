@@ -9,7 +9,6 @@
 
 // Forward Declarations
 
-class UTextBlock;
 class UButton;
 class UUDTertiaryPointItemViewModel;
 class UUDPointContentUserWidget;
@@ -52,8 +51,6 @@ protected:
 	void SetPointContentSourceCollection(const TObjectPtr<UUDPointContentViewModel>& itemViewModel);
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> CreateTertiaryPointTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> CreateTertiaryPointButtonWidget;
 	UPROPERTY()

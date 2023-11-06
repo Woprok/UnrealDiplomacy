@@ -2,8 +2,6 @@
 
 #include "Skirmish/UserInterfaces/Deals/UDParticipantItemUserWidget.h"
 #include "Skirmish/UserInterfaces/Deals/UDParticipantItemViewModel.h"
-#include "Components/Button.h"
-#include "Components/TextBlock.h"
 
 void UUDParticipantItemUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
@@ -18,16 +16,4 @@ void UUDParticipantItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewMo
 	UUDParticipantItemViewModel* actionItemViewModel = CastChecked<UUDParticipantItemViewModel>(viewModel.Get());
 	ViewModel = actionItemViewModel;
 	SetBlueprintViewModel(ViewModel.Get());
-}
-
-void UUDParticipantItemUserWidget::BindDelegates()
-{
-	// Bind viewmodel to widgets.
-}
-
-void UUDParticipantItemUserWidget::BindWidgets()
-{
-	FactionNameTextWidget = GetWidget<UTextBlock>(TEXT("FactionNameText"));
-	ReadyStateTextWidget = GetWidget<UTextBlock>(TEXT("ReadyStateText"));
-	VoteStateTextWidget = GetWidget<UTextBlock>(TEXT("VoteStateText"));
 }

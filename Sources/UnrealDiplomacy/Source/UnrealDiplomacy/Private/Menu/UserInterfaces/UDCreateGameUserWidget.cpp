@@ -4,7 +4,6 @@
 #include "Menu/UserInterfaces/UDCreateGameViewModel.h"
 #include "Components/CheckBox.h"
 #include "Components/EditableTextBox.h"
-#include "Components/TextBlock.h"
 #include "Components/Button.h"
 
 void UUDCreateGameUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
@@ -23,11 +22,6 @@ void UUDCreateGameUserWidget::BindDelegates()
 
 void UUDCreateGameUserWidget::BindWidgets()
 {
-	CreateGameTitleTextWidget = GetWidget<UTextBlock>(TEXT("CreateGameTitleText"));
-	BackTextWidget = GetWidget<UTextBlock>(TEXT("BackText"));
-	NewGameTextWidget = GetWidget<UTextBlock>(TEXT("NewGameText"));
-	SessionNameTextWidget = GetWidget<UTextBlock>(TEXT("SessionNameText"));
-	IsLANTextWidget = GetWidget<UTextBlock>(TEXT("IsLANText"));
 	IsLANCheckBoxWidget = GetWidget<UCheckBox>(TEXT("IsLANCheckBox"));
 	SessionNameEditableTextWidget = GetWidget<UEditableTextBox>(TEXT("SessionNameEditableText"));
 	BackButtonWidget = GetWidget<UButton>(TEXT("BackButton"));

@@ -2,7 +2,6 @@
 
 #include "Skirmish/UserInterfaces/Parameters/UDActionParameterUserWidget.h"
 #include "Skirmish/UserInterfaces/Parameters/UDActionParameterViewModel.h"
-#include "Components/TextBlock.h"
 #include "Components/Button.h"
 
 void UUDActionParameterUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
@@ -21,10 +20,6 @@ void UUDActionParameterUserWidget::BindDelegates()
 
 void UUDActionParameterUserWidget::BindWidgets()
 {
-	ActionTitleTextWidget = GetWidget<UTextBlock>(TEXT("ActionTitleText"));
-	PreviousTextWidget = GetWidget<UTextBlock>(TEXT("PreviousText"));
-	NextTextWidget = GetWidget<UTextBlock>(TEXT("NextText"));
-	NameTextWidget = GetWidget<UTextBlock>(TEXT("NameText"));
 	PreviousButtonWidget = GetWidget<UButton>(TEXT("PreviousButton"));
 	NextButtonWidget = GetWidget<UButton>(TEXT("NextButton"));
 }

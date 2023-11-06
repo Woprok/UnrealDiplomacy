@@ -5,7 +5,6 @@
 #include "Skirmish/UserInterfaces/UDParameterEditorViewModel.h"
 #include "Skirmish/UserInterfaces/UDParameterEditorUserWidget.h"
 #include "Components/Button.h"
-#include "Components/TextBlock.h"
 
 void UUDPointContentUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
@@ -23,9 +22,6 @@ void UUDPointContentUserWidget::BindDelegates()
 
 void UUDPointContentUserWidget::BindWidgets()
 {
-	PointTitleTextWidget = GetWidget<UTextBlock>(TEXT("PointTitleText"));
-	PointTextWidget = GetWidget<UTextBlock>(TEXT("PointText"));
-	EditorTextWidget = GetWidget<UTextBlock>(TEXT("EditorText"));
 	ParameterEditorViewWidget = GetWidget<UUDParameterEditorUserWidget>(TEXT("ParameterEditorView"));
 }
 

@@ -2,7 +2,6 @@
 
 #include "Menu/UserInterfaces/UDServerItemUserWidget.h"
 #include "Menu/UserInterfaces/UDServerItemViewModel.h"
-#include "Components/TextBlock.h"
 #include "Components/Button.h"
 
 void UUDServerItemUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
@@ -28,7 +27,5 @@ void UUDServerItemUserWidget::BindDelegates()
 
 void UUDServerItemUserWidget::BindWidgets()
 {
-	NameTextWidget = GetWidget<UTextBlock>(TEXT("NameText"));
-	PingTextWidget = GetWidget<UTextBlock>(TEXT("PingText"));
 	ItemButtonWidget = GetWidget<UButton>(TEXT("ItemButton"));
 }

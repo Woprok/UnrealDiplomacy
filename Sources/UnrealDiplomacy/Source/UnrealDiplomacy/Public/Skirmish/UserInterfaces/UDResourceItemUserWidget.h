@@ -9,7 +9,6 @@
 
 // Forward Declarations
 
-class UTextBlock;
 class UImage;
 class UUDResourceItemViewModel;
 
@@ -46,8 +45,6 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> AmountTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UImage> IconImageWidget;
 	// ViewModel

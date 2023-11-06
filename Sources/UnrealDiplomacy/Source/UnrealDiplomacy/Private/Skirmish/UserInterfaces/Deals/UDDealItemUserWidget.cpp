@@ -8,7 +8,6 @@
 #include "Skirmish/UserInterfaces/Deals/UDDealEditationTabViewModel.h"
 #include "Skirmish/UserInterfaces/Deals/UDDealExecutionTabUserWidget.h"
 #include "Skirmish/UserInterfaces/Deals/UDDealExecutionTabViewModel.h"
-#include "Components/TextBlock.h"
 #include "Components/Button.h"
 
 void UUDDealItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
@@ -32,11 +31,6 @@ void UUDDealItemUserWidget::BindDelegates()
 
 void UUDDealItemUserWidget::BindWidgets()
 {
-	DealNameTextWidget = GetWidget<UTextBlock>(TEXT("DealNameText"));
-	GeneralTextWidget = GetWidget<UTextBlock>(TEXT("GeneralText"));
-	EditationTextWidget = GetWidget<UTextBlock>(TEXT("EditationText"));
-	ExecutionTextWidget = GetWidget<UTextBlock>(TEXT("ExecutionText"));
-
 	GeneralButtonWidget = GetWidget<UButton>(TEXT("GeneralButton"));
 	EditationButtonWidget = GetWidget<UButton>(TEXT("EditationButton"));
 	ExecutionButtonWidget = GetWidget<UButton>(TEXT("ExecutionButton"));

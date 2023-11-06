@@ -8,7 +8,6 @@
 
 // Forward Declarations
 
-class UTextBlock;
 class UUDLoadingViewModel;
 
 /**
@@ -26,13 +25,7 @@ public:
 	void SetBlueprintViewModel(UUDLoadingViewModel* model);
 protected:
 	virtual void BindViewModel(TObjectPtr<UUDViewModel> viewModel) override;
-	virtual void BindWidgets() override;
 protected:
-	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> LoadingTitleTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> GameplayHintTextWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDLoadingViewModel> ViewModel;

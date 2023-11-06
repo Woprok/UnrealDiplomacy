@@ -2,7 +2,6 @@
 
 #include "Menu/UserInterfaces/UDCreditsUserWidget.h"
 #include "Menu/UserInterfaces/UDCreditsViewModel.h"
-#include "Components/TextBlock.h"
 #include "Components/Button.h"
 
 void UUDCreditsUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
@@ -20,8 +19,5 @@ void UUDCreditsUserWidget::BindDelegates()
 void UUDCreditsUserWidget::BindWidgets()
 {
 	// Bind viewmodel to widgets.
-	CreditsTitleTextWidget = GetWidget<UTextBlock>(TEXT("CreditsTitleText"));
-	ContentTextWidget = GetWidget<UTextBlock>(TEXT("ContentText"));
-	BackTextWidget = GetWidget<UTextBlock>(TEXT("BackText"));
 	BackButtonWidget = GetWidget<UButton>(TEXT("BackButton"));
 }

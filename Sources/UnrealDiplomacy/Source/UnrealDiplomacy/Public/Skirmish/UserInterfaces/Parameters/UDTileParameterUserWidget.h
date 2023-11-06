@@ -8,7 +8,6 @@
 
 // Forward Declarations
 
-class UTextBlock;
 class UButton;
 class UUDTileParameterViewModel;
 
@@ -40,14 +39,6 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> TileTitleTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> NameTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> PreviousTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> NextTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> PreviousButtonWidget;
 	UPROPERTY()

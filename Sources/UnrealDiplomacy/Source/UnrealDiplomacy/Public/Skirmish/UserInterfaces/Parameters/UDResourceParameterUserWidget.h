@@ -8,7 +8,6 @@
 
 // Forward Declarations
 
-class UTextBlock;
 class UButton;
 class UUDResourceParameterViewModel;
 
@@ -40,14 +39,6 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> ResourceTitleTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> NameTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> PreviousTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> NextTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> PreviousButtonWidget;
 	UPROPERTY()

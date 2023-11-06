@@ -3,7 +3,6 @@
 #include "Skirmish/UserInterfaces/UDResourceItemUserWidget.h"
 #include "Skirmish/UserInterfaces/UDResourceItemViewModel.h"
 #include "Components/Image.h"
-#include "Components/TextBlock.h"
 
 void UUDResourceItemUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
@@ -27,6 +26,5 @@ void UUDResourceItemUserWidget::BindDelegates()
 
 void UUDResourceItemUserWidget::BindWidgets()
 {
-	AmountTextWidget = GetWidget<UTextBlock>(TEXT("AmountText"));
 	IconImageWidget = GetWidget<UImage>(TEXT("IconImage"));
 }

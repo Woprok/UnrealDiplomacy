@@ -9,7 +9,6 @@
 
 // Forward Declarations
 
-class UTextBlock;
 class UUDChatItemViewModel;
 
 /**
@@ -35,20 +34,7 @@ protected:
 	 * Enables to define view model used by this widet for delegates.
 	 */
 	virtual void BindViewModel(TObjectPtr<UUDViewModel> viewModel) override;
-	/**
-	 * Automatically invoked by native on initialized.
-	 */
-	virtual void BindDelegates() override;
-	/**
-	 * Automatically invoked by native on initialized.
-	 */
-	virtual void BindWidgets() override;
 protected:
-	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> FactionTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> MessageTextWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDChatItemViewModel> ViewModel;

@@ -9,7 +9,6 @@
 
 // Forward Declarations
 
-class UTextBlock;
 class UImage;
 class UUDModifierItemViewModel;
 
@@ -46,10 +45,6 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> NameTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> DescriptionTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UImage> IconImageWidget;
 	// ViewModel

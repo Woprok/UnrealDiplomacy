@@ -10,7 +10,6 @@
 
 class UCheckBox;
 class UEditableTextBox;
-class UTextBlock;
 class UButton;
 class UUDCreateGameViewModel;
 
@@ -42,16 +41,6 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> CreateGameTitleTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> BackTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> NewGameTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> SessionNameTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> IsLANTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UCheckBox> IsLANCheckBoxWidget;
 	UPROPERTY()

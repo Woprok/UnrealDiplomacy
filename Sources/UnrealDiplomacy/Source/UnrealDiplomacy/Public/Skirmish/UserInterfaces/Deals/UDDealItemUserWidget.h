@@ -8,7 +8,6 @@
 
 // Forward Declarations
 
-class UTextBlock;
 class UButton;
 class UUDDealItemViewModel;
 class UUDDealGeneralTabUserWidget;
@@ -58,15 +57,6 @@ protected:
 	void SetExecutionTabSourceInstance(const TObjectPtr<UUDDealExecutionTabViewModel>& tabViewModel);
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> DealNameTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> GeneralTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> EditationTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> ExecutionTextWidget;
-
 	UPROPERTY()
 	TWeakObjectPtr<UButton> GeneralButtonWidget;
 	UPROPERTY()

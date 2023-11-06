@@ -2,8 +2,6 @@
 
 #include "Skirmish/UserInterfaces/Deals/UDPreviewItemUserWidget.h"
 #include "Skirmish/UserInterfaces/Deals/UDPreviewItemViewModel.h"
-#include "Components/Button.h"
-#include "Components/TextBlock.h"
 
 void UUDPreviewItemUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
@@ -18,13 +16,4 @@ void UUDPreviewItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 	UUDPreviewItemViewModel* actionItemViewModel = CastChecked<UUDPreviewItemViewModel>(viewModel.Get());
 	ViewModel = actionItemViewModel;
 	SetBlueprintViewModel(ViewModel.Get());
-}
-
-void UUDPreviewItemUserWidget::BindDelegates()
-{
-	// Bind viewmodel to widgets.
-}
-
-void UUDPreviewItemUserWidget::BindWidgets()
-{
 }

@@ -9,7 +9,6 @@
 
 // Forward Declarations
 
-class UTextBlock;
 class UButton;
 class UUDFactionItemViewModel;
 
@@ -46,10 +45,6 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> NameTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> ControllerTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> InteractionButtonWidget;
 	// ViewModel

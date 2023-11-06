@@ -8,7 +8,6 @@
 
 // Forward Declaratiosn
 
-class UTextBlock;
 class UButton;
 class UUDCreditsViewModel;
 
@@ -31,12 +30,6 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> CreditsTitleTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> ContentTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> BackTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> BackButtonWidget;
 	// ViewModel

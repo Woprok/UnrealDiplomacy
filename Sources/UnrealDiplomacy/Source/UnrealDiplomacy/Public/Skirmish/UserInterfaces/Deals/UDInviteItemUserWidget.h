@@ -9,7 +9,6 @@
 
 // Forward Declarations
 
-class UTextBlock;
 class UButton;
 class UUDInviteItemViewModel;
 
@@ -46,10 +45,6 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> FactionNameTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> InviteTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> InviteButtonWidget;
 	// ViewModel
