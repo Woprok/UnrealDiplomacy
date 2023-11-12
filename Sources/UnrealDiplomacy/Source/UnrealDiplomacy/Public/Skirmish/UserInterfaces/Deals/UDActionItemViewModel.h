@@ -13,8 +13,6 @@ struct FUDDealActionMinimalInfo;
 struct FUDActionInteractionInfo;
 class UUDParameterEditorViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDParameterEditorChanged, const TObjectPtr<UUDParameterEditorViewModel>& editorViewModel);
-
 /**
  * Single faction in a list.
  */
@@ -60,8 +58,8 @@ public:
 	bool CanDenyValue;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool CanSabotageValue;
-	// Events
-	FUDParameterEditorChanged ParameterEditorChangedEvent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent ParameterEditorContent;
 protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
@@ -97,6 +95,8 @@ private:
 	bool GetCanDenyValue() const;
 	void SetCanSabotageValue(bool newCanSabotageValue);
 	bool GetCanSabotageValue() const;
+	void SetParameterEditorContent(FUDViewModelContent newParameterEditorContent);
+	FUDViewModelContent GetParameterEditorContent() const;
 private:
 	// Fields
 	FUDActionInteractionInfo Content;

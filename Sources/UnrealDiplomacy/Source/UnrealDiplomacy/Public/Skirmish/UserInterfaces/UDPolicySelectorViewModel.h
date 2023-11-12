@@ -29,7 +29,6 @@ public:
 	FText PolicyTitleText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FUDViewModelList PolicyItemList;
-	// Events
 protected:
 	virtual void Initialize() override;
 	UFUNCTION()

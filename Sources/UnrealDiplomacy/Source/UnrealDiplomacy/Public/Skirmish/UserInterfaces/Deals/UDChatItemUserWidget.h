@@ -20,19 +20,12 @@ class UNREALDIPLOMACY_API UUDChatItemUserWidget : public UUDUserWidget, public I
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Enables blueprint to bind view model.
-	 */
+	/** Enables blueprint to bind view model. */
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetBlueprintViewModel(UUDChatItemViewModel* model);
 protected:
-	/**
-	 * Allows List View to define context.
-	 */
+	 /** /Allows List View to define context. */
 	virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
-	/**
-	 * Enables to define view model used by this widet for delegates.
-	 */
 	virtual void BindViewModel(TObjectPtr<UUDViewModel> viewModel) override;
 protected:
 	// ViewModel

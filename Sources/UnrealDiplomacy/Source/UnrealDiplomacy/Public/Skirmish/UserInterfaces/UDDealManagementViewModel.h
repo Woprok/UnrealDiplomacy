@@ -13,8 +13,6 @@ struct FUDDealMinimalInfo;
 struct FUDDealListInfo;
 class UUDDealItemViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDDealItemChanged, const TObjectPtr<UUDDealItemViewModel>& dealItemViewModel);
-
 /**
  * Window for showing and editing deals.
  */
@@ -69,9 +67,10 @@ public:
 	int32 ActiveTabValue = 0;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Getter)
 	int32 HistoryTabValue = 1;
-	// Events
-	FUDDealItemChanged ActiveDealItemChangedEvent;
-	FUDDealItemChanged HistoryDealItemChangedEvent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Getter)
+	FUDViewModelContent ActiveDealItemContent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Getter)
+	FUDViewModelContent HistoryDealItemContent;
 protected:
 	virtual void Initialize() override;
 	UFUNCTION()
@@ -127,6 +126,10 @@ private:
 	int32 GetSelectedTabValue() const;
 	int32 GetActiveTabValue() const;
 	int32 GetHistoryTabValue() const;
+	void SetActiveDealItemContent(FUDViewModelContent newActiveDealItemContent);
+	FUDViewModelContent GetActiveDealItemContent() const;
+	void SetHistoryDealItemContent(FUDViewModelContent newHistoryDealItemContent);
+	FUDViewModelContent GetHistoryDealItemContent() const;
 private:
 	// Fields
 	int32 SelectedActiveIndex;

@@ -44,7 +44,7 @@ void UUDFactionManagementViewModel::Initialize()
 	TObjectPtr<UUDViewModel> policySelectorModel = hud->GetViewModelCollection(PolicySelectorInstanceName, PolicySelectorType);
 	PolicySelectorInstance = Cast<UUDPolicySelectorViewModel>(policySelectorModel);
 	// Announce them to widget for additional binding.
-	PolicySelectorChangedEvent.Broadcast(PolicySelectorInstance);
+	SetPolicySelectorContent(FUDViewModelContent(PolicySelectorInstance));
 
 	Update();
 }
@@ -324,4 +324,14 @@ void UUDFactionManagementViewModel::SetModifierItemList(FUDViewModelList newModi
 FUDViewModelList UUDFactionManagementViewModel::GetModifierItemList() const
 {
 	return ModifierItemList;
+}
+
+void UUDFactionManagementViewModel::SetPolicySelectorContent(FUDViewModelContent newPolicySelectorContent)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(PolicySelectorContent, newPolicySelectorContent);
+}
+
+FUDViewModelContent UUDFactionManagementViewModel::GetPolicySelectorContent() const
+{
+	return PolicySelectorContent;
 }

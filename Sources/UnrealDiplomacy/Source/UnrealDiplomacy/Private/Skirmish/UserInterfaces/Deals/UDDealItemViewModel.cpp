@@ -36,9 +36,9 @@ void UUDDealItemViewModel::Initialize()
 	EditationTabViewModelInstance = Cast<UUDDealEditationTabViewModel>(editationModel);
 	ExecutionTabViewModelInstance = Cast<UUDDealExecutionTabViewModel>(executionModel);
 	// Announce them to widget for additional binding.
-	GeneralSourceUpdatedEvent.Broadcast(GeneralTabViewModelInstance);
-	EditationSourceUpdatedEvent.Broadcast(EditationTabViewModelInstance);
-	ExecutionSourceUpdatedEvent.Broadcast(ExecutionTabViewModelInstance);
+	SetGeneralTabContent(FUDViewModelContent(GeneralTabViewModelInstance));
+	SetEditationTabContent(FUDViewModelContent(EditationTabViewModelInstance));
+	SetExecutionTabContent(FUDViewModelContent(ExecutionTabViewModelInstance));
 	// Call initialize so each Instance is ready to use, once it receives data in runtime.
 	GeneralTabViewModelInstance->FullUpdate();
 	EditationTabViewModelInstance->FullUpdate();
@@ -180,4 +180,33 @@ void UUDDealItemViewModel::SetIsValidContentValue(bool newIsValidContentValue)
 bool UUDDealItemViewModel::GetIsValidContentValue() const
 {
 	return IsValidContentValue;
+}
+
+void UUDDealItemViewModel::SetGeneralTabContent(FUDViewModelContent newGeneralTabContent)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(GeneralTabContent, newGeneralTabContent);
+
+}
+FUDViewModelContent UUDDealItemViewModel::GetGeneralTabContent() const
+{
+	return GeneralTabContent;
+
+}
+void UUDDealItemViewModel::SetEditationTabContent(FUDViewModelContent newEditationTabContent)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(EditationTabContent, newEditationTabContent);
+
+}
+FUDViewModelContent UUDDealItemViewModel::GetEditationTabContent() const
+{
+	return EditationTabContent;
+}
+void UUDDealItemViewModel::SetExecutionTabContent(FUDViewModelContent newExecutionTabContent)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ExecutionTabContent, newExecutionTabContent);
+
+}
+FUDViewModelContent UUDDealItemViewModel::GetExecutionTabContent() const
+{
+	return ExecutionTabContent;
 }

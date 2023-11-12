@@ -1,6 +1,7 @@
 // Copyright Miroslav Valach
 
 #include "Core/UserInterfaces/UDUserWidget.h"
+#include "Core/UserInterfaces/UDViewModel.h"
 
 void UUDUserWidget::SetViewModel(TObjectPtr<UUDViewModel> viewModel) 
 {

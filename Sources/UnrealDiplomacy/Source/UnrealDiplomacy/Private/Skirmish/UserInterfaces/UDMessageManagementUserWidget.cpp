@@ -2,8 +2,6 @@
 
 #include "Skirmish/UserInterfaces/UDMessageManagementUserWidget.h"
 #include "Skirmish/UserInterfaces/UDMessageManagementViewModel.h"
-#include "Skirmish/UserInterfaces/UDMessageItemUserWidget.h"
-#include "Skirmish/UserInterfaces/UDMessageItemViewModel.h"
 #include "Components/Button.h"
 
 void UUDMessageManagementUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
@@ -15,8 +13,6 @@ void UUDMessageManagementUserWidget::BindViewModel(TObjectPtr<UUDViewModel> view
 
 void UUDMessageManagementUserWidget::BindDelegates()
 {
-	// Bind view to updates.
-	ViewModel->MessageItemChangedEvent.AddUObject(this, &UUDMessageManagementUserWidget::SetMessageItemSourceInstance);
 	// Bind viewmodel to widgets.
 	CloseButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMessageManagementViewModel::Close);
 	FirstButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMessageManagementViewModel::First);
@@ -32,10 +28,4 @@ void UUDMessageManagementUserWidget::BindWidgets()
 	PreviousButtonWidget = GetWidget<UButton>(TEXT("PreviousButton"));
 	NextButtonWidget = GetWidget<UButton>(TEXT("NextButton"));
 	LastButtonWidget = GetWidget<UButton>(TEXT("LastButton"));
-	MessageItemViewWidget = GetWidget<UUDMessageItemUserWidget>(TEXT("MessageItemView"));
-}
-
-void UUDMessageManagementUserWidget::SetMessageItemSourceInstance(const TObjectPtr<UUDMessageItemViewModel>& messageItemViewModel)
-{
-	MessageItemViewWidget->SetViewModel(messageItemViewModel);
 }

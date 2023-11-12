@@ -33,7 +33,6 @@ public:
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FUDViewModelList PointItemList;
-	// Events
 protected:
 	virtual void Initialize() override;
 	UFUNCTION()

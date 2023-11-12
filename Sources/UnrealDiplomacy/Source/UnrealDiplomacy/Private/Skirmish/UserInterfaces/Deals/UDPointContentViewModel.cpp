@@ -102,7 +102,7 @@ void UUDPointContentViewModel::UpdateEditor()
 	ParameterEditorInstance->TextUpdated.AddUObject(this, &UUDPointContentViewModel::SaveTextChange);
 
 	ParameterEditorInstance->FullUpdate();
-	ParameterEditorChangedEvent.Broadcast(ParameterEditorInstance);
+	SetParameterEditorContent(FUDViewModelContent(ParameterEditorInstance));
 }
 
 void UUDPointContentViewModel::DefineInstances()
@@ -151,4 +151,14 @@ void UUDPointContentViewModel::SetIsValidContentValue(bool newIsValidContentValu
 bool UUDPointContentViewModel::GetIsValidContentValue() const
 {
 	return IsValidContentValue;
+}
+
+void UUDPointContentViewModel::SetParameterEditorContent(FUDViewModelContent newParameterEditorContent)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ParameterEditorContent, newParameterEditorContent);
+}
+
+FUDViewModelContent UUDPointContentViewModel::GetParameterEditorContent() const
+{
+	return ParameterEditorContent;
 }

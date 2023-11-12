@@ -12,8 +12,6 @@
 struct FUDTileInteractionInfo;
 class UUDParameterEditorViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDParameterEditorChanged, const TObjectPtr<UUDParameterEditorViewModel>& editorViewModel);
-
 /**
  * Single interactable action.
  */
@@ -36,8 +34,8 @@ public:
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText InteractText;
-	// Events
-	FUDParameterEditorChanged ParameterEditorChangedEvent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent ParameterEditorContent;
 protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
@@ -50,6 +48,8 @@ private:
 	// MVVM Setters & Getters
 	void SetInteractText(FText newInteractText);
 	FText GetInteractText() const;
+	void SetParameterEditorContent(FUDViewModelContent newParameterEditorContent);
+	FUDViewModelContent GetParameterEditorContent() const;
 private:
 	// Fields
 	FIntPoint SelectedTile;

@@ -45,8 +45,8 @@ void UUDLobbyViewModel::Initialize()
 	TObjectPtr<UUDViewModel> memberModel = hud->GetViewModelCollection(MemberViewModelInstanceName, MemberViewModelType);
 	MemberViewModelInstance = Cast<UUDLobbyMemberViewModel>(memberModel);
 	// Announce them to widget for additional binding.
-	LobbyHostSourceChangedEvent.Broadcast(HostViewModelInstance);
-	LobbyMemberSourceChangedEvent.Broadcast(MemberViewModelInstance);
+	SetLobbyHostContent(FUDViewModelContent(HostViewModelInstance));
+	SetLobbyMemberContent(FUDViewModelContent(MemberViewModelInstance));
 	// Call initialize so each Instance is ready to use, once it receives data in runtime.
 	HostViewModelInstance->FullUpdate();
 	MemberViewModelInstance->FullUpdate();
@@ -218,4 +218,24 @@ void UUDLobbyViewModel::SetClientItemList(FUDViewModelList newClientItemList)
 FUDViewModelList UUDLobbyViewModel::GetClientItemList() const
 {
 	return ClientItemList;
+}
+
+void UUDLobbyViewModel::SetLobbyHostContent(FUDViewModelContent newLobbyHostContent)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(LobbyHostContent, newLobbyHostContent);
+}
+
+FUDViewModelContent UUDLobbyViewModel::GetLobbyHostContent() const
+{
+	return LobbyHostContent;
+}
+
+void UUDLobbyViewModel::SetLobbyMemberContent(FUDViewModelContent newLobbyMemberContent)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(LobbyMemberContent, newLobbyMemberContent);
+}
+
+FUDViewModelContent UUDLobbyViewModel::GetLobbyMemberContent() const
+{
+	return LobbyMemberContent;
 }

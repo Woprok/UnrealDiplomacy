@@ -55,7 +55,7 @@ void UUDTertiaryPointItemViewModel::UpdatePointContent()
 	PointContentViewModelInstance = Cast<UUDPointContentViewModel>(viewModel);
 	PointContentViewModelInstance->SetContent(Content);
 	PointContentViewModelInstance->FullUpdate();
-	PointContentSourceUpdatedEvent.Broadcast(PointContentViewModelInstance);
+	SetPointContent(FUDViewModelContent(PointContentViewModelInstance));
 }
 
 void UUDTertiaryPointItemViewModel::CreateTertiaryPoint()
@@ -82,4 +82,14 @@ void UUDTertiaryPointItemViewModel::SetIsValidContentValue(bool newIsValidConten
 bool UUDTertiaryPointItemViewModel::GetIsValidContentValue() const
 {
 	return IsValidContentValue;
+}
+
+void UUDTertiaryPointItemViewModel::SetPointContent(FUDViewModelContent newPointContent)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(PointContent, newPointContent);
+}
+
+FUDViewModelContent UUDTertiaryPointItemViewModel::GetPointContent() const
+{
+	return PointContent;
 }

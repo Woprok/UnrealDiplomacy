@@ -4,7 +4,6 @@
 #include "Skirmish/UserInterfaces/UDPolicySelectItemViewModel.h"
 #include "Components/Button.h"
 
-
 void UUDPolicySelectItemUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
 	// Change it to original type.
@@ -22,7 +21,6 @@ void UUDPolicySelectItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewM
 
 void UUDPolicySelectItemUserWidget::BindDelegates()
 {
-	// Bind view to updates.
 	// Bind viewmodel to widgets.
 	SelectButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDPolicySelectItemViewModel::Select);
 }

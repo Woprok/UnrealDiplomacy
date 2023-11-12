@@ -56,8 +56,8 @@ public:
 	FUDViewModelList FactionDemandList;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FUDViewModelList ModifierItemList;
-	// Events
-	FUDPolicySelectorChanged PolicySelectorChangedEvent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent PolicySelectorContent;
 protected:
 	virtual void Initialize() override;
 	UFUNCTION()
@@ -115,6 +115,8 @@ private:
 	FUDViewModelList GetFactionDemandList() const;
 	void SetModifierItemList(FUDViewModelList newModifierItemList);
 	FUDViewModelList GetModifierItemList() const;
+	void SetPolicySelectorContent(FUDViewModelContent newPolicySelectorContent);
+	FUDViewModelContent GetPolicySelectorContent() const;
 private:
 	// Fields
 	FName FactionInteractionViewModelCollectionName = TEXT("FactionInteractionCollection");

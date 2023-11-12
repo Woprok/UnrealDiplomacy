@@ -26,7 +26,7 @@ void UUDTileInteractionViewModel::Initialize()
 	TObjectPtr<UUDViewModel> editorModel = hud->GetViewModelCollection(ParameterEditorInstanceName, ParameterEditorType);
 	ParameterEditorInstance = Cast<UUDParameterEditorViewModel>(editorModel);
 	// Announce them to widget for additional binding.
-	ParameterEditorChangedEvent.Broadcast(ParameterEditorInstance);
+	SetParameterEditorContent(FUDViewModelContent(ParameterEditorInstance));
 	// Call initialize so each Instance is ready to use, once it receives data in runtime.
 	ParameterEditorInstance->FullUpdate();
 }
@@ -90,4 +90,14 @@ void UUDTileInteractionViewModel::SetInteractText(FText newInteractText)
 FText UUDTileInteractionViewModel::GetInteractText() const
 {
 	return InteractText;
+}
+
+void UUDTileInteractionViewModel::SetParameterEditorContent(FUDViewModelContent newParameterEditorContent)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ParameterEditorContent, newParameterEditorContent);
+}
+
+FUDViewModelContent UUDTileInteractionViewModel::GetParameterEditorContent() const
+{
+	return ParameterEditorContent;
 }

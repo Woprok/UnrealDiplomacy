@@ -106,7 +106,7 @@ void UUDActionItemViewModel::UpdateEditor()
 	ParameterEditorInstance->TextUpdated.AddUObject(this, &UUDActionItemViewModel::SaveTextChange);
 
 	ParameterEditorInstance->FullUpdate();
-	ParameterEditorChangedEvent.Broadcast(ParameterEditorInstance);
+	SetParameterEditorContent(FUDViewModelContent(ParameterEditorInstance));
 }
 
 void UUDActionItemViewModel::DefineInstances()
@@ -225,4 +225,14 @@ void UUDActionItemViewModel::SetCanSabotageValue(bool newCanSabotageValue)
 bool UUDActionItemViewModel::GetCanSabotageValue() const
 {
 	return CanSabotageValue;
+}
+
+void UUDActionItemViewModel::SetParameterEditorContent(FUDViewModelContent newParameterEditorContent)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ParameterEditorContent, newParameterEditorContent);
+}
+
+FUDViewModelContent UUDActionItemViewModel::GetParameterEditorContent() const
+{
+	return ParameterEditorContent;
 }

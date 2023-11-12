@@ -72,7 +72,7 @@ void UUDSecondaryPointItemViewModel::UpdatePointContent()
 	PointContentViewModelInstance = Cast<UUDPointContentViewModel>(viewModel);
 	PointContentViewModelInstance->SetContent(Content);
 	PointContentViewModelInstance->FullUpdate();
-	PointContentSourceUpdatedEvent.Broadcast(PointContentViewModelInstance);
+	SetPointContent(FUDViewModelContent(PointContentViewModelInstance));
 }
 
 void UUDSecondaryPointItemViewModel::UpdatePointList()
@@ -139,4 +139,14 @@ void UUDSecondaryPointItemViewModel::SetPointItemList(FUDViewModelList newPointI
 FUDViewModelList UUDSecondaryPointItemViewModel::GetPointItemList() const
 {
 	return PointItemList;
+}
+
+void UUDSecondaryPointItemViewModel::SetPointContent(FUDViewModelContent newPointContent)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(PointContent, newPointContent);
+}
+
+FUDViewModelContent UUDSecondaryPointItemViewModel::GetPointContent() const
+{
+	return PointContent;
 }

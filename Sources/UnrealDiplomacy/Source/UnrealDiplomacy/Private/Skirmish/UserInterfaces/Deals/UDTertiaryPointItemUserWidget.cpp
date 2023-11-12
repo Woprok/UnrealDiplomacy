@@ -2,8 +2,6 @@
 
 #include "Skirmish/UserInterfaces/Deals/UDTertiaryPointItemUserWidget.h"
 #include "Skirmish/UserInterfaces/Deals/UDTertiaryPointItemViewModel.h"
-#include "Skirmish/UserInterfaces/Deals/UDPointContentUserWidget.h"
-#include "Skirmish/UserInterfaces/Deals/UDPointContentViewModel.h"
 #include "Components/Button.h"
 
 void UUDTertiaryPointItemUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
@@ -23,8 +21,6 @@ void UUDTertiaryPointItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> view
 
 void UUDTertiaryPointItemUserWidget::BindDelegates()
 {
-	// Bind view to updates.
-	ViewModel->PointContentSourceUpdatedEvent.AddUObject(this, &UUDTertiaryPointItemUserWidget::SetPointContentSourceCollection);
 	// Bind viewmodel to widgets.
 	CreateTertiaryPointButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDTertiaryPointItemViewModel::CreateTertiaryPoint);
 }
@@ -32,10 +28,4 @@ void UUDTertiaryPointItemUserWidget::BindDelegates()
 void UUDTertiaryPointItemUserWidget::BindWidgets()
 {
 	CreateTertiaryPointButtonWidget = GetWidget<UButton>(TEXT("CreateTertiaryPointButton"));
-	PointContentViewWidget = GetWidget<UUDPointContentUserWidget>(TEXT("PointContentView"));
-}
-
-void UUDTertiaryPointItemUserWidget::SetPointContentSourceCollection(const TObjectPtr<UUDPointContentViewModel>& itemViewModel)
-{
-	PointContentViewWidget->SetViewModel(itemViewModel);
 }

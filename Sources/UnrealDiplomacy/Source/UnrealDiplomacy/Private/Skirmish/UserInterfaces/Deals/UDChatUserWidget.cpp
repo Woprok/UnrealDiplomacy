@@ -4,8 +4,6 @@
 #include "Skirmish/UserInterfaces/Deals/UDChatViewModel.h"
 #include "Skirmish/UserInterfaces/Deals/UDChatItemViewModel.h"
 #include "Components/Button.h"
-#include "Components/TextBlock.h"
-#include "Core/UserInterfaces/Components/UDListView.h"
 #include "Components/MultiLineEditableTextBox.h"
 
 void UUDChatUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
@@ -26,9 +24,6 @@ void UUDChatUserWidget::BindDelegates()
 
 void UUDChatUserWidget::BindWidgets()
 {
-	ChatTitleTextWidget = GetWidget<UTextBlock>(TEXT("ChatTitleText"));
-	SendTextWidget = GetWidget<UTextBlock>(TEXT("SendText"));
 	EditableMessageTextBoxWidget = GetWidget<UMultiLineEditableTextBox>(TEXT("EditableMessageTextBox"));
 	SendButtonWidget = GetWidget<UButton>(TEXT("SendButton"));
-	ChatItemListWidget = GetWidget<UUDListView>(TEXT("ChatItemList"));
 }

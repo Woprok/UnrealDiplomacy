@@ -37,7 +37,6 @@ public:
 	FText FactionNameEditableText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FUDViewModelList StrategyOptionList;
-	// Events
 protected:
 	virtual void Initialize() override;
 	UFUNCTION()

@@ -2,7 +2,6 @@
 
 #include "Skirmish/UserInterfaces/UDResourceItemUserWidget.h"
 #include "Skirmish/UserInterfaces/UDResourceItemViewModel.h"
-#include "Components/Image.h"
 
 void UUDResourceItemUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
@@ -17,14 +16,4 @@ void UUDResourceItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel
 	UUDResourceItemViewModel* resourceItemViewModel = CastChecked<UUDResourceItemViewModel>(viewModel.Get());
 	ViewModel = resourceItemViewModel;
 	SetBlueprintViewModel(ViewModel.Get());
-}
-
-void UUDResourceItemUserWidget::BindDelegates()
-{
-	// Bind viewmodel to widgets.
-}
-
-void UUDResourceItemUserWidget::BindWidgets()
-{
-	IconImageWidget = GetWidget<UImage>(TEXT("IconImage"));
 }

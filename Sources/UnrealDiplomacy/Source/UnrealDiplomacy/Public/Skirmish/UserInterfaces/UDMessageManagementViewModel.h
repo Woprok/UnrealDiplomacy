@@ -13,8 +13,6 @@ struct FUDMessageInfo;
 struct FUDMessageInteractionInfo;
 class UUDMessageItemViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDMessageItemChanged, const TObjectPtr<UUDMessageItemViewModel>& messageItemViewModel);
-
 /**
  * Browsing of all interactable action.
  */
@@ -49,8 +47,8 @@ public:
 	FText NextText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText LastText;
-	// Events
-	FUDMessageItemChanged MessageItemChangedEvent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent MessageItemContent;
 protected:
 	virtual void Initialize() override;
 	UFUNCTION()
@@ -87,6 +85,8 @@ private:
 	FText GetNextText() const;
 	void SetLastText(FText newLastText);
 	FText GetLastText() const;
+	void SetMessageItemContent(FUDViewModelContent newMessageItemContent);
+	FUDViewModelContent GetMessageItemContent() const;
 private:
 	// Fields
 	int32 SelectedIndex;

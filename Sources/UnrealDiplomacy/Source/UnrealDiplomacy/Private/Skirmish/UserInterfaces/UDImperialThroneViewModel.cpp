@@ -6,6 +6,7 @@
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Core/Simulation/Actions/UDGameActionThroneUsurp.h"
 #include "Core/Simulation/Actions/UDGameActionThroneAbdicate.h"
+#include "Core/Simulation/UDActionData.h"
 
 #define LOCTEXT_NAMESPACE "ImperialThrone"
 

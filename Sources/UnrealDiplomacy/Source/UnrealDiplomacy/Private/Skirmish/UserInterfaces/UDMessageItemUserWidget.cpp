@@ -13,7 +13,6 @@ void UUDMessageItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 
 void UUDMessageItemUserWidget::BindDelegates()
 {
-	// Bind view to updates.
 	// Bind viewmodel to widgets.
 	AcceptButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMessageItemViewModel::Accept);
 	OkButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMessageItemViewModel::Ok);

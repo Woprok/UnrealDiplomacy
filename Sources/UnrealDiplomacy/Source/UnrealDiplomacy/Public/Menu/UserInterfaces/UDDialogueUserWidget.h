@@ -19,9 +19,7 @@ class UNREALDIPLOMACY_API UUDDialogueUserWidget : public UUDWindowUserWidget
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Enables blueprint to bind view model.
-	 */
+	/** Enables blueprint to bind view model. */
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetBlueprintViewModel(UUDDialogueViewModel* model);
 protected:

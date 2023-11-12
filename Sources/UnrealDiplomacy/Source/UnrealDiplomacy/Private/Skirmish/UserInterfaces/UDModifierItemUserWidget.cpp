@@ -19,13 +19,3 @@ void UUDModifierItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel
 	ViewModel = resourceItemViewModel;
 	SetBlueprintViewModel(ViewModel.Get());
 }
-
-void UUDModifierItemUserWidget::BindDelegates()
-{
-	// Bind viewmodel to widgets.
-}
-
-void UUDModifierItemUserWidget::BindWidgets()
-{
-	IconImageWidget = GetWidget<UImage>(TEXT("IconImage"));
-}

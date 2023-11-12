@@ -2,8 +2,6 @@
 
 #include "Skirmish/UserInterfaces/UDTileInteractionUserWidget.h"
 #include "Skirmish/UserInterfaces/UDTileInteractionViewModel.h"
-#include "Skirmish/UserInterfaces/UDParameterEditorViewModel.h"
-#include "Skirmish/UserInterfaces/UDParameterEditorUserWidget.h"
 #include "Components/Button.h"
 
 void UUDTileInteractionUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
@@ -23,8 +21,6 @@ void UUDTileInteractionUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewMo
 
 void UUDTileInteractionUserWidget::BindDelegates()
 {
-	// Bind view to updates.
-	ViewModel->ParameterEditorChangedEvent.AddUObject(this, &UUDTileInteractionUserWidget::SetParameterEditorSourceInstance);
 	// Bind viewmodel to widgets.
 	InteractButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDTileInteractionViewModel::Interact);
 }
@@ -32,10 +28,4 @@ void UUDTileInteractionUserWidget::BindDelegates()
 void UUDTileInteractionUserWidget::BindWidgets()
 {
 	InteractButtonWidget = GetWidget<UButton>(TEXT("InteractButton"));
-	ParameterEditorViewWidget = GetWidget<UUDParameterEditorUserWidget>(TEXT("ParameterEditorView"));
-}
-
-void UUDTileInteractionUserWidget::SetParameterEditorSourceInstance(const TObjectPtr<UUDParameterEditorViewModel>& parameterEditorViewModel)
-{
-	ParameterEditorViewWidget->SetViewModel(parameterEditorViewModel);
 }

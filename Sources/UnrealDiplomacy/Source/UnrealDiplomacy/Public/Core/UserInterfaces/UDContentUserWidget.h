@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDUserWidget.h"
+#include "Core/UserInterfaces/UDViewModel.h"
 #include "UDContentUserWidget.generated.h"
 
 // Forward Declarations
@@ -18,7 +19,6 @@ UCLASS(Abstract)
 class UNREALDIPLOMACY_API UUDContentUserWidget : public UUDUserWidget
 {
 	GENERATED_BODY()
-
 public:
 	/** Enables defining view models for list by binding. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, Category = "Bindings")

@@ -50,7 +50,6 @@ public:
 	FUDViewModelList TileInteractionList;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FUDViewModelList ModifierItemList;
-	// Events
 protected:
 	virtual void Initialize() override;
 	UFUNCTION()

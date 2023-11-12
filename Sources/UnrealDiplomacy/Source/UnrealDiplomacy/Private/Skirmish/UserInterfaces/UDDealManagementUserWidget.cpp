@@ -2,8 +2,6 @@
 
 #include "Skirmish/UserInterfaces/UDDealManagementUserWidget.h"
 #include "Skirmish/UserInterfaces/UDDealManagementViewModel.h"
-#include "Skirmish/UserInterfaces/Deals/UDDealItemUserWidget.h"
-#include "Skirmish/UserInterfaces/Deals/UDDealItemViewModel.h"
 #include "Components/Button.h"
 
 void UUDDealManagementUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
@@ -15,9 +13,6 @@ void UUDDealManagementUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewMod
 
 void UUDDealManagementUserWidget::BindDelegates()
 {
-	// Bind view to updates.
-	ViewModel->ActiveDealItemChangedEvent.AddUObject(this, &UUDDealManagementUserWidget::SetActiveItemInstance);
-	ViewModel->HistoryDealItemChangedEvent.AddUObject(this, &UUDDealManagementUserWidget::SetHistoryItemInstance);
 	// Bind viewmodel to widgets.
 	CreateButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDDealManagementViewModel::CreateDeal);
 	ActiveButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDDealManagementViewModel::SwitchActiveDeals);
@@ -40,17 +35,4 @@ void UUDDealManagementUserWidget::BindWidgets()
 	PreviousButtonWidget = GetWidget<UButton>(TEXT("PreviousButton"));
 	NextButtonWidget = GetWidget<UButton>(TEXT("NextButton"));
 	LastButtonWidget = GetWidget<UButton>(TEXT("LastButton"));
-
-	ActiveDealItemInstanceWidget = GetWidget<UUDDealItemUserWidget>(TEXT("ActiveDealItemInstance"));
-	HistoryDealItemInstanceWidget = GetWidget<UUDDealItemUserWidget>(TEXT("HistoryDealItemInstance"));
-}
-
-void UUDDealManagementUserWidget::SetActiveItemInstance(const TObjectPtr<UUDDealItemViewModel>& dealItemViewModel)
-{
-	ActiveDealItemInstanceWidget->SetViewModel(dealItemViewModel);
-}
-
-void UUDDealManagementUserWidget::SetHistoryItemInstance(const TObjectPtr<UUDDealItemViewModel>& dealItemViewModel)
-{
-	HistoryDealItemInstanceWidget->SetViewModel(dealItemViewModel);
 }

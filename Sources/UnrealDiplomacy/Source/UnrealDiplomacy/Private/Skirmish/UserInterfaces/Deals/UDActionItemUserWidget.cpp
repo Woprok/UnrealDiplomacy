@@ -2,8 +2,6 @@
 
 #include "Skirmish/UserInterfaces/Deals/UDActionItemUserWidget.h"
 #include "Skirmish/UserInterfaces/Deals/UDActionItemViewModel.h"
-#include "Skirmish/UserInterfaces/UDParameterEditorViewModel.h"
-#include "Skirmish/UserInterfaces/UDParameterEditorUserWidget.h"
 #include "Components/Button.h"
 
 void UUDActionItemUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
@@ -23,8 +21,6 @@ void UUDActionItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 
 void UUDActionItemUserWidget::BindDelegates()
 {
-	// Bind view to updates.
-	ViewModel->ParameterEditorChangedEvent.AddUObject(this, &UUDActionItemUserWidget::SetParameterEditorSourceInstance);
 	// Bind viewmodel to widgets.
 	AcceptButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDActionItemViewModel::Accept);
 	ChangeButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDActionItemViewModel::Change);
@@ -38,10 +34,4 @@ void UUDActionItemUserWidget::BindWidgets()
 	ChangeButtonWidget = GetWidget<UButton>(TEXT("ChangeButton"));
 	DenyButtonWidget = GetWidget<UButton>(TEXT("DenyButton"));
 	SabotageButtonWidget = GetWidget<UButton>(TEXT("SabotageButton"));
-	ParameterEditorViewWidget = GetWidget<UUDParameterEditorUserWidget>(TEXT("ParameterEditorView"));
-}
-
-void UUDActionItemUserWidget::SetParameterEditorSourceInstance(const TObjectPtr<UUDParameterEditorViewModel>& parameterEditorViewModel)
-{
-	ParameterEditorViewWidget->SetViewModel(parameterEditorViewModel);
 }

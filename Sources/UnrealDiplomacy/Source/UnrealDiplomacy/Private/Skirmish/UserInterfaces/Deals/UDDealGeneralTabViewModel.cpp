@@ -162,7 +162,7 @@ void UUDDealGeneralTabViewModel::UpdateChatInstance()
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
 	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(ChatViewModelInstanceName, ChatViewModelType);
 	ChatViewModelInstance = Cast<UUDChatViewModel>(viewModel);
-	ChatSourceUpdatedEvent.Broadcast(ChatViewModelInstance);
+	SetDealChatContent(FUDViewModelContent(ChatViewModelInstance));
 	ChatViewModelInstance->SetContent(Content);
 	ChatViewModelInstance->FullUpdate();
 }
@@ -359,4 +359,14 @@ void UUDDealGeneralTabViewModel::SetInviteItemList(FUDViewModelList newInviteIte
 FUDViewModelList UUDDealGeneralTabViewModel::GetInviteItemList() const
 {
 	return InviteItemList;
+}
+
+void UUDDealGeneralTabViewModel::SetDealChatContent(FUDViewModelContent newDealChatContent)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(DealChatContent, newDealChatContent);
+}
+
+FUDViewModelContent UUDDealGeneralTabViewModel::GetDealChatContent() const
+{
+	return DealChatContent;
 }

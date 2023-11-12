@@ -2,7 +2,6 @@
 
 #include "Skirmish/UserInterfaces/UDTurnUserWidget.h"
 #include "Skirmish/UserInterfaces/UDTurnViewModel.h"
-#include "Components/TextBlock.h"
 #include "Components/Button.h"
 
 void UUDTurnUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)

@@ -51,7 +51,7 @@ void UUDMessageManagementViewModel::Initialize()
 	TObjectPtr<UUDViewModel> messageItemModel = hud->GetViewModelCollection(MessageItemInstanceName, MessageItemType);
 	MessageItemInstance = Cast<UUDMessageItemViewModel>(messageItemModel);
 	// Announce them to widget for additional binding.
-	MessageItemChangedEvent.Broadcast(MessageItemInstance);
+	SetMessageItemContent(FUDViewModelContent(MessageItemInstance));
 	// Call initialize so instance is ready to use, once it receives data in runtime.
 	MessageItemInstance->FullUpdate();
 
@@ -239,4 +239,14 @@ void UUDMessageManagementViewModel::SetLastText(FText newLastText)
 FText UUDMessageManagementViewModel::GetLastText() const
 {
 	return LastText;
+}
+
+void UUDMessageManagementViewModel::SetMessageItemContent(FUDViewModelContent newMessageItemContent)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(MessageItemContent, newMessageItemContent);
+}
+
+FUDViewModelContent UUDMessageManagementViewModel::GetMessageItemContent() const
+{
+	return MessageItemContent;
 }

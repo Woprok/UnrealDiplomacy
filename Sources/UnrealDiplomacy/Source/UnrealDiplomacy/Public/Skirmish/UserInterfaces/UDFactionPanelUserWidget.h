@@ -18,15 +18,10 @@ class UNREALDIPLOMACY_API UUDFactionPanelUserWidget : public UUDUserWidget
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Enables blueprint to bind view model.
-	 */
+	/** Enables blueprint to bind view model. */
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetBlueprintViewModel(UUDFactionPanelViewModel* model);
 protected:
-	/**
-	 * Enables to define view model used by this widet for delegates.
-	 */
 	virtual void BindViewModel(TObjectPtr<UUDViewModel> viewModel) override;
 protected:
 	// ViewModel

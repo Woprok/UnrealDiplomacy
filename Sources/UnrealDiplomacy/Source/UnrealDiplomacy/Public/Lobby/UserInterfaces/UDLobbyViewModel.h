@@ -12,9 +12,6 @@ class UUDLobbyHostViewModel;
 class UUDLobbyMemberViewModel;
 class UUDClientItemViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDLobbyHostSourceChanged, const TObjectPtr<UUDLobbyHostViewModel>& hostViewModel);
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDLobbyMemberSourceChanged, const TObjectPtr<UUDLobbyMemberViewModel>& memberViewModel);
-
 /**
  * Lobby Widget
  */
@@ -45,9 +42,11 @@ public:
 	bool IsHostValue;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FUDViewModelList ClientItemList;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent LobbyHostContent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent LobbyMemberContent;
 	// Events
-	FUDLobbyHostSourceChanged LobbyHostSourceChangedEvent;
-	FUDLobbyMemberSourceChanged LobbyMemberSourceChangedEvent;
 protected:
 	virtual void Initialize() override;
 	UFUNCTION()
@@ -96,6 +95,10 @@ private:
 	bool GetIsHostValue() const;
 	void SetClientItemList(FUDViewModelList newClientItemList);
 	FUDViewModelList GetClientItemList() const;
+	void SetLobbyHostContent(FUDViewModelContent newLobbyHostContent);
+	FUDViewModelContent GetLobbyHostContent() const;
+	void SetLobbyMemberContent(FUDViewModelContent newLobbyMemberContent);
+	FUDViewModelContent GetLobbyMemberContent() const;
 private:
 	// Fields
 	FName HostViewModelInstanceName = TEXT("LobbyHostInstance");

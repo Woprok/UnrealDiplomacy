@@ -19,9 +19,7 @@ class UNREALDIPLOMACY_API UUDCreditsUserWidget : public UUDUserWidget
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Enables blueprint to bind view model.
-	 */
+	/** Enables blueprint to bind view model. */
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetBlueprintViewModel(UUDCreditsViewModel* model);
 protected:

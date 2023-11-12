@@ -24,13 +24,6 @@ class UUDTileParameterViewModel;
 class UUDValueParameterViewModel;
 class UUDResourceParameterViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FactionParameterUpdated, const TObjectPtr<UUDFactionParameterViewModel>& parameterViewModel);
-DECLARE_MULTICAST_DELEGATE_OneParam(ActionParameterUpdated, const TObjectPtr<UUDActionParameterViewModel>& parameterViewModel);
-DECLARE_MULTICAST_DELEGATE_OneParam(TileParameterUpdated, const TObjectPtr<UUDTileParameterViewModel>& parameterViewModel);
-DECLARE_MULTICAST_DELEGATE_OneParam(ValueParameterUpdated, const TObjectPtr<UUDValueParameterViewModel>& parameterViewModel);
-DECLARE_MULTICAST_DELEGATE_OneParam(TextParameterUpdated, const TObjectPtr<UUDTextParameterViewModel>& parameterViewModel);
-DECLARE_MULTICAST_DELEGATE_OneParam(ResourceParameterUpdated, const TObjectPtr<UUDResourceParameterViewModel>& parameterViewModel);
-
 DECLARE_MULTICAST_DELEGATE_OneParam(FUDDealActionUpdated, int32 parameter);
 DECLARE_MULTICAST_DELEGATE_OneParam(FUDInvokerUpdated, int32 parameter);
 DECLARE_MULTICAST_DELEGATE_OneParam(FUDValuesUpdated, TArray<int32> parameters);
@@ -75,15 +68,23 @@ public:
 	bool HasValueParameterValue;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool HasTextParameterValue;
-	// Events
-	ActionParameterUpdated DealActionParameterUpdatedEvent;
-	FactionParameterUpdated FactionInvokerParameterUpdatedEvent;
-	FactionParameterUpdated FactionTargetParameterUpdatedEvent;
-	TileParameterUpdated TileParameterUpdatedEvent;
-	ActionParameterUpdated ActionParameterUpdatedEvent;
-	ResourceParameterUpdated ResourceParameterUpdatedEvent;
-	ValueParameterUpdated ValueParameterUpdatedEvent;
-	TextParameterUpdated TextParameterUpdatedEvent;
+
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent DealActionParameterContent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent FactionInvokerParameterContent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent FactionTargetParameterContent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent TileParameterContent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent ActionParameterContent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent ResourceParameterContent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent ValueParameterContent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent TextParameterContent;
 
 	FUDDealActionUpdated DealActionUpdated;
 	FUDInvokerUpdated InvokerUpdated;
@@ -167,6 +168,23 @@ private:
 	bool GetHasValueParameterValue() const;
 	void SetHasTextParameterValue(bool newHasTextParameterValue);
 	bool GetHasTextParameterValue() const;
+
+	void SetDealActionParameterContent(FUDViewModelContent newContent);
+	FUDViewModelContent GetDealActionParameterContent() const;
+	void SetFactionInvokerParameterContent(FUDViewModelContent newContent);
+	FUDViewModelContent GetFactionInvokerParameterContent() const;
+	void SetFactionTargetParameterContent(FUDViewModelContent newContent);
+	FUDViewModelContent GetFactionTargetParameterContent() const;
+	void SetTileParameterContent(FUDViewModelContent newContent);
+	FUDViewModelContent GetTileParameterContent() const;
+	void SetActionParameterContent(FUDViewModelContent newContent);
+	FUDViewModelContent GetActionParameterContent() const;
+	void SetResourceParameterContent(FUDViewModelContent newContent);
+	FUDViewModelContent GetResourceParameterContent() const;
+	void SetValueParameterContent(FUDViewModelContent newContent);
+	FUDViewModelContent GetValueParameterContent() const;
+	void SetTextParameterContent(FUDViewModelContent newContent);
+	FUDViewModelContent GetTextParameterContent() const;
 private:
 	// Fields
 	FUDParameterListInfo Content;

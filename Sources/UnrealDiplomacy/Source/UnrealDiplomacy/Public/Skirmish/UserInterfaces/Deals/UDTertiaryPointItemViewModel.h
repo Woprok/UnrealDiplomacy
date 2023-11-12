@@ -12,8 +12,6 @@
 struct FUDDealPointMinimalInfo;
 class UUDPointContentViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDPointContentSourceUpdated, const TObjectPtr<UUDPointContentViewModel>& itemViewModel);
-
 /**
  * Single faction in a list.
  */
@@ -35,8 +33,8 @@ public:
 	FText CreateTertiaryPointText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsValidContentValue;
-	// Events
-	FUDPointContentSourceUpdated PointContentSourceUpdatedEvent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent PointContent;
 protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
@@ -51,6 +49,8 @@ private:
 	FText GetCreateTertiaryPointText() const;
 	void SetIsValidContentValue(bool newIsValidContentValue);
 	bool GetIsValidContentValue() const;
+	void SetPointContent(FUDViewModelContent newPointContent);
+	FUDViewModelContent GetPointContent() const;
 private:
 	// Fields
 	FUDDealPointMinimalInfo Content;

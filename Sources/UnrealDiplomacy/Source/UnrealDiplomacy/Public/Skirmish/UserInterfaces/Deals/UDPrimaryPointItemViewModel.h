@@ -38,8 +38,8 @@ public:
 	bool IsValidContentValue;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FUDViewModelList PointItemList;
-	// Events
-	FUDPointContentSourceUpdated PointContentSourceUpdatedEvent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent PointContent;
 protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
@@ -60,6 +60,8 @@ private:
 	bool GetIsValidContentValue() const;
 	void SetPointItemList(FUDViewModelList newPointItemList);
 	FUDViewModelList GetPointItemList() const;
+	void SetPointContent(FUDViewModelContent newPointContent);
+	FUDViewModelContent GetPointContent() const;
 private:
 	// Fields
 	FUDDealPointMinimalInfo Content;

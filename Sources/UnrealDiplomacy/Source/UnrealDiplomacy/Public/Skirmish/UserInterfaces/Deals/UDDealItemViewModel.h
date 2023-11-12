@@ -14,10 +14,6 @@ class UUDDealGeneralTabViewModel;
 class UUDDealEditationTabViewModel;
 class UUDDealExecutionTabViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDGeneralSourceUpdated, const TObjectPtr<UUDDealGeneralTabViewModel>& tabViewModel);
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDEditationSourceUpdated, const TObjectPtr<UUDDealEditationTabViewModel>& tabViewModel);
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDExecutionSourceUpdated, const TObjectPtr<UUDDealExecutionTabViewModel>& tabViewModel);
-
 /**
  * Window for showing and editing deals.
  */
@@ -61,10 +57,12 @@ public:
 	int32 ExecutionTabValue = 2;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Getter)
 	bool IsValidContentValue = false;
-	// Events
-	FUDGeneralSourceUpdated GeneralSourceUpdatedEvent;
-	FUDEditationSourceUpdated EditationSourceUpdatedEvent;
-	FUDExecutionSourceUpdated ExecutionSourceUpdatedEvent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Getter)
+	FUDViewModelContent GeneralTabContent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Getter)
+	FUDViewModelContent EditationTabContent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Getter)
+	FUDViewModelContent ExecutionTabContent;
 protected:
 	virtual void Initialize() override;
 	UFUNCTION()
@@ -107,6 +105,12 @@ private:
 	int32 GetExecutionTabValue() const;
 	void SetIsValidContentValue(bool newIsValidContentValue);
 	bool GetIsValidContentValue() const;
+	void SetGeneralTabContent(FUDViewModelContent newGeneralTabContent);
+	FUDViewModelContent GetGeneralTabContent() const;
+	void SetEditationTabContent(FUDViewModelContent newEditationTabContent);
+	FUDViewModelContent GetEditationTabContent() const;
+	void SetExecutionTabContent(FUDViewModelContent newExecutionTabContent);
+	FUDViewModelContent GetExecutionTabContent() const;
 private:
 	// Fields
 	FUDDealMinimalInfo Content;

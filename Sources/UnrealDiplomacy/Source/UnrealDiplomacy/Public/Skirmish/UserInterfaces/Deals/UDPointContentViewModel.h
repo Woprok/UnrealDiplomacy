@@ -13,8 +13,6 @@ struct FUDDealPointMinimalInfo;
 struct FUDPointInteractionInfo;
 class UUDParameterEditorViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDParameterEditorChanged, const TObjectPtr<UUDParameterEditorViewModel>& editorViewModel);
-
 /**
  * Single faction in a list.
  */
@@ -38,8 +36,8 @@ public:
 	FText EditorText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsValidContentValue;
-	// Events
-	FUDParameterEditorChanged ParameterEditorChangedEvent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Getter)
+	FUDViewModelContent ParameterEditorContent;
 protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
@@ -63,6 +61,8 @@ private:
 	FText GetEditorText() const;
 	void SetIsValidContentValue(bool newIsValidContentValue);
 	bool GetIsValidContentValue() const;
+	void SetParameterEditorContent(FUDViewModelContent newParameterEditorContent);
+	FUDViewModelContent GetParameterEditorContent() const;
 private:
 	// Fields
 	FUDPointInteractionInfo Content;

@@ -14,8 +14,6 @@ class UUDParticipantItemViewModel;
 class UUDInviteItemViewModel;
 class UUDChatViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDChatSourceUpdated, const TObjectPtr<UUDChatViewModel>& chatViewModel);
-
 /**
  * Window for showing and editing deals.
  */
@@ -77,8 +75,8 @@ public:
 	FUDViewModelList ParticipantItemList;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FUDViewModelList InviteItemList;
-	// Events
-	FUDChatSourceUpdated ChatSourceUpdatedEvent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent DealChatContent;
 protected:
 	virtual void Initialize() override;
 	UFUNCTION()
@@ -130,6 +128,8 @@ private:
 	FUDViewModelList GetParticipantItemList() const;
 	void SetInviteItemList(FUDViewModelList newInviteItemList);
 	FUDViewModelList GetInviteItemList() const;
+	void SetDealChatContent(FUDViewModelContent newDealChatContent);
+	FUDViewModelContent GetDealChatContent() const;
 private:
 	// Fields
 	FUDDealMinimalInfo Content;

@@ -26,13 +26,8 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetBlueprintViewModel(UUDPreviewItemViewModel* model);
 protected:
-	/**
-	 * Allows List View to define context.
-	 */
+	/** Enables blueprint to bind view model. */
 	virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
-	/**
-	 * Enables to define view model used by this widet for delegates.
-	 */
 	virtual void BindViewModel(TObjectPtr<UUDViewModel> viewModel) override;
 protected:
 	// ViewModel

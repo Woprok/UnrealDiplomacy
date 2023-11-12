@@ -67,8 +67,8 @@ void UUDDealManagementViewModel::Initialize()
 	TObjectPtr<UUDViewModel> historyDealItemModel = hud->GetViewModelCollection(ActiveDealItemInstanceName, DealItemType);
 	HistoryDealItemInstance = Cast<UUDDealItemViewModel>(historyDealItemModel);
 	// Announce them to widget for additional binding.
-	ActiveDealItemChangedEvent.Broadcast(ActiveDealItemInstance);
-	HistoryDealItemChangedEvent.Broadcast(HistoryDealItemInstance);
+	SetActiveDealItemContent(FUDViewModelContent(ActiveDealItemInstance));
+	SetHistoryDealItemContent(FUDViewModelContent(HistoryDealItemInstance));
 	// Call initialize so instance is ready to use, once it receives data in runtime.
 	ActiveDealItemInstance->FullUpdate();
 	HistoryDealItemInstance->FullUpdate();
@@ -400,4 +400,24 @@ int32 UUDDealManagementViewModel::GetActiveTabValue() const
 int32 UUDDealManagementViewModel::GetHistoryTabValue() const
 {
 	return HistoryTabValue;
+}
+
+void UUDDealManagementViewModel::SetActiveDealItemContent(FUDViewModelContent newActiveDealItemContent)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ActiveDealItemContent, newActiveDealItemContent);
+}
+
+FUDViewModelContent UUDDealManagementViewModel::GetActiveDealItemContent() const
+{
+	return ActiveDealItemContent;
+}
+
+void UUDDealManagementViewModel::SetHistoryDealItemContent(FUDViewModelContent newHistoryDealItemContent)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(HistoryDealItemContent, newHistoryDealItemContent);
+}
+
+FUDViewModelContent UUDDealManagementViewModel::GetHistoryDealItemContent() const
+{
+	return HistoryDealItemContent;
 }
