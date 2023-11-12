@@ -101,6 +101,7 @@ void UUDFactionInteractionViewModel::UpdateEditor()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDFactionInteractionViewModel: UpdateEditor."));
 	ParameterEditorInstance->SetContent(Content.Parameters);
+	ParameterEditorInstance->FullUpdate();
 }
 
 void UUDFactionInteractionViewModel::DefineInstances()
