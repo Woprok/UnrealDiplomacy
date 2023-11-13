@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelList.h"
 #include "UDPolicySelectorViewModel.generated.h"
 
 // Forward Declarations

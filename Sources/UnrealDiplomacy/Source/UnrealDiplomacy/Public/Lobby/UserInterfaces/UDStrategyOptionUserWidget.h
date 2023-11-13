@@ -3,8 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Core/UserInterfaces/UDUserWidget.h"
-#include "Blueprint/IUserObjectListEntry.h"
+#include "Core/UserInterfaces/UDListEntryUserWidget.h"
 #include "UDStrategyOptionUserWidget.generated.h"
 
 // Forward Declarations
@@ -17,7 +16,7 @@ class UUDStrategyOptionViewModel;
  * Supports IUserObjectListEntry for tile view initializations.
  */
 UCLASS(Abstract)
-class UNREALDIPLOMACY_API UUDStrategyOptionUserWidget : public UUDUserWidget, public IUserObjectListEntry
+class UNREALDIPLOMACY_API UUDStrategyOptionUserWidget : public UUDListEntryUserWidget
 {
 	GENERATED_BODY()
 public:
@@ -25,7 +24,6 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetBlueprintViewModel(UUDStrategyOptionViewModel* model);
 protected:
-	virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
 	virtual void BindViewModel(TObjectPtr<UUDViewModel> viewModel) override;
 	virtual void BindDelegates() override;
 	virtual void BindWidgets() override;

@@ -1,7 +1,7 @@
 // Copyright Miroslav Valach
 
 #include "Core/UserInterfaces/Components/UDListView.h"
-#include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelList.h"
 
 FUDViewModelList UUDListView::GetViewModelList() const
 {

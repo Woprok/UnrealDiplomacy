@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/TileView.h"
+#include "Core/UserInterfaces/UDViewModelList.h"
 #include "UDTileView.generated.h"
-
 
 // Forward Declarations
 

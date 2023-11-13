@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelContent.h"
 #include "Core/Simulation/UDModelStructs.h"
 #include "UDTileInteractionViewModel.generated.h"
 

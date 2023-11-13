@@ -3,8 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Core/UserInterfaces/UDUserWidget.h"
-#include "Blueprint/IUserObjectListEntry.h"
+#include "Core/UserInterfaces/UDListEntryUserWidget.h"
 #include "UDPolicySelectItemUserWidget.generated.h"
 
 // Forward Declarations
@@ -17,7 +16,7 @@ class UUDPolicySelectItemViewModel;
  * Supports IUserObjectListEntry for list view initializations.
  */
 UCLASS()
-class UNREALDIPLOMACY_API UUDPolicySelectItemUserWidget : public UUDUserWidget, public IUserObjectListEntry
+class UNREALDIPLOMACY_API UUDPolicySelectItemUserWidget : public UUDListEntryUserWidget
 {
 	GENERATED_BODY()
 public:
@@ -25,8 +24,6 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetBlueprintViewModel(UUDPolicySelectItemViewModel* model);
 protected:
-	/** Allows List View to define context. */
-	virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
 	virtual void BindViewModel(TObjectPtr<UUDViewModel> viewModel) override;
 	virtual void BindDelegates() override;
 	virtual void BindWidgets() override;

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ListView.h"
+#include "Core/UserInterfaces/UDViewModelList.h"
 #include "UDListView.generated.h"
 
 // Forward Declarations

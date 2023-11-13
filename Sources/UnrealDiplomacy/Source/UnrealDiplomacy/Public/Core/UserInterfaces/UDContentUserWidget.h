@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDUserWidget.h"
-#include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelContent.h"
 #include "UDContentUserWidget.generated.h"
 
 // Forward Declarations

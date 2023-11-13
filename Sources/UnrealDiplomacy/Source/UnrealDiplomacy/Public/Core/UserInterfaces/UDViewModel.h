@@ -15,56 +15,6 @@ class UUDViewModel;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDViewModelUpdate);
 
 /**
- * Wrapper around pointer to list of view models.
- * Note: this is required as UE macros can't be used with templates.
- */
-USTRUCT(BlueprintType)
-struct FUDViewModelList
-{
-	GENERATED_BODY()
-public:
-	FUDViewModelList() { };
-	FUDViewModelList(TArray<TObjectPtr<UUDViewModel>> viewModels) : ViewModels(viewModels) { };
-	TArray<TObjectPtr<UUDViewModel>> ViewModels;
-public:
-	/** Equality over UniqueId field. */
-	inline bool operator!=(const FUDViewModelList& rhs) const
-	{
-		return !(*this == rhs);
-	}
-	/** Equality over UniqueId field. */
-	inline bool operator==(const FUDViewModelList& rhs) const
-	{
-		return ViewModels == rhs.ViewModels;
-	}
-};
-
-/**
- * Wrapper around pointer to single view model.
- * Note: this is required as UE macros can't be used with templates.
- */
-USTRUCT(BlueprintType)
-struct FUDViewModelContent
-{
-	GENERATED_BODY()
-public:
-	FUDViewModelContent() { };
-	FUDViewModelContent(TObjectPtr<UUDViewModel> viewModel) : ViewModel(viewModel) { };
-	TObjectPtr<UUDViewModel> ViewModel;
-public:
-	/** Equality over UniqueId field. */
-	inline bool operator!=(const FUDViewModelContent& rhs) const
-	{
-		return !(*this == rhs);
-	}
-	/** Equality over UniqueId field. */
-	inline bool operator==(const FUDViewModelContent& rhs) const
-	{
-		return ViewModel == rhs.ViewModel;
-	}
-};
-
-/**
  * Base ancestor for all shared behaviour.
  * Refer to https://docs.unrealengine.com/5.1/en-US/umg-viewmodel/ for full description.
  */

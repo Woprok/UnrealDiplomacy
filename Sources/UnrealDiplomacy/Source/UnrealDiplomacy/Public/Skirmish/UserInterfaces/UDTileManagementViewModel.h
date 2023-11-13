@@ -5,6 +5,7 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelList.h"
 #include "UDTileManagementViewModel.generated.h"
 
 // Forward Declarations

@@ -1,7 +1,7 @@
 // Copyright Miroslav Valach
 
 #include "Core/UserInterfaces/UDContentUserWidget.h"
-#include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelContent.h"
 
 FUDViewModelContent UUDContentUserWidget::GetViewModelContent() const
 {

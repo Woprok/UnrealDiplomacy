@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelList.h"
+#include "Core/UserInterfaces/UDViewModelContent.h"
 #include "UDFactionManagementViewModel.generated.h"
 
 // Forward Declarations

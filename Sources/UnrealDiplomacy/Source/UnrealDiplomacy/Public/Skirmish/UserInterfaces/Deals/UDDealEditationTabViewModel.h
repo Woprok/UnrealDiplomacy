@@ -4,11 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelList.h"
 #include "Core/Simulation/UDModelStructs.h"
 #include "UDDealEditationTabViewModel.generated.h"
 
 // Forward Declarations
 
+struct FUDViewModelList;
 struct FUDDealMinimalInfo;
 class UUDPrimaryPointItemViewModel;
 

@@ -4,14 +4,6 @@
 #include "Skirmish/UserInterfaces/Deals/UDSecondaryPointItemViewModel.h"
 #include "Components/Button.h"
 
-void UUDSecondaryPointItemUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
-{
-	// Change it to original type.
-	UUDSecondaryPointItemViewModel* itemViewModel = Cast<UUDSecondaryPointItemViewModel>(ListItemObject);
-	// Invoke bindings related to view model being set.
-	SetViewModel(itemViewModel);
-}
-
 void UUDSecondaryPointItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
 	UUDSecondaryPointItemViewModel* actionItemViewModel = CastChecked<UUDSecondaryPointItemViewModel>(viewModel.Get());

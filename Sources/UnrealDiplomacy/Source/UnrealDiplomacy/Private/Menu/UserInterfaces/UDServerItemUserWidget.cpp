@@ -4,14 +4,6 @@
 #include "Menu/UserInterfaces/UDServerItemViewModel.h"
 #include "Components/Button.h"
 
-void UUDServerItemUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
-{
-	// Change it to original type.
-	UUDServerItemViewModel* itemViewModel = Cast<UUDServerItemViewModel>(ListItemObject);
-	// Invoke bindings related to view model being set.
-	SetViewModel(itemViewModel);
-}
-
 void UUDServerItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
 	UUDServerItemViewModel* serverItemViewModel = CastChecked<UUDServerItemViewModel>(viewModel.Get());

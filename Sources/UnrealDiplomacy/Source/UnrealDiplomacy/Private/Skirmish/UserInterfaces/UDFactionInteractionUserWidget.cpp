@@ -4,14 +4,6 @@
 #include "Skirmish/UserInterfaces/UDFactionInteractionViewModel.h"
 #include "Components/Button.h"
 
-void UUDFactionInteractionUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
-{
-	// Change it to original type.
-	UUDFactionInteractionViewModel* itemViewModel = Cast<UUDFactionInteractionViewModel>(ListItemObject);
-	// Invoke bindings related to view model being set.
-	SetViewModel(itemViewModel);
-}
-
 void UUDFactionInteractionUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
 	UUDFactionInteractionViewModel* factionInteractionViewModel = CastChecked<UUDFactionInteractionViewModel>(viewModel.Get());

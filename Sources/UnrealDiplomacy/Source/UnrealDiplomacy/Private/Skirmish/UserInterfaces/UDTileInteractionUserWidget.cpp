@@ -4,14 +4,6 @@
 #include "Skirmish/UserInterfaces/UDTileInteractionViewModel.h"
 #include "Components/Button.h"
 
-void UUDTileInteractionUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
-{
-	// Change it to original type.
-	UUDTileInteractionViewModel* itemViewModel = Cast<UUDTileInteractionViewModel>(ListItemObject);
-	// Invoke bindings related to view model being set.
-	SetViewModel(itemViewModel);
-}
-
 void UUDTileInteractionUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
 	UUDTileInteractionViewModel* tileInteractionViewModel = CastChecked<UUDTileInteractionViewModel>(viewModel.Get());
