@@ -27,8 +27,9 @@ FText SessionCountToText(int32 sessionCount)
 	}
 }
 
-void UUDJoinGameViewModel::Initialize()
+void UUDJoinGameViewModel::Setup()
 {
+	Super::Setup();
 	ViewModelType = UUDServerItemViewModel::StaticClass();
 
 	FText joinGameTitle = FText(LOCTEXT("JoinGame", "Join Game"));
@@ -48,9 +49,10 @@ void UUDJoinGameViewModel::Initialize()
 	sessions->OnJoinGameSessionCompleteEvent.AddUObject(this, &UUDJoinGameViewModel::OnSessionJoined);
 }
 
-void UUDJoinGameViewModel::Update()
+void UUDJoinGameViewModel::Refresh()
 {
-	Refresh();
+	Super::Refresh();
+	RefreshList();
 }
 
 FUDDialogueData GetSessionJoinFailed(EOnJoinSessionCompleteResult::Type result)

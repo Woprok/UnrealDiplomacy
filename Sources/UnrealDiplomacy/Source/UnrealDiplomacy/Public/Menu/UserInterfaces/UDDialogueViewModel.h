@@ -27,7 +27,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText CloseText;
 protected:
-	virtual void Initialize() override;
+	virtual void Setup() override;
 private:
 	// MVVM Setters & Getters
 	void SetDialogueTitleText(FText newDialogueTitleText);

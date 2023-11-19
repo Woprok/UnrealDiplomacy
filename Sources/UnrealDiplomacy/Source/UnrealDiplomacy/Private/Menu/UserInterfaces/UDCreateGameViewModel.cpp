@@ -10,8 +10,10 @@
 
 #define LOCTEXT_NAMESPACE "CreateGame"
 
-void UUDCreateGameViewModel::Initialize()
+void UUDCreateGameViewModel::Setup()
 {
+	Super::Setup();
+
 	FText createGameTitle = FText(LOCTEXT("CreateGame", "Create Game"));
 	SetCreateGameTitleText(createGameTitle);
 	FText back = FText(LOCTEXT("CreateGame", "Back"));
@@ -29,8 +31,9 @@ void UUDCreateGameViewModel::Initialize()
 	sessions->OnCreateSessionCompleteEvent.AddUniqueDynamic(this, &UUDCreateGameViewModel::OnSessionCreated);
 }
 
-void UUDCreateGameViewModel::Update()
+void UUDCreateGameViewModel::Refresh()
 {
+	Super::Refresh();
 	SetOptions();
 }
 
@@ -64,6 +67,7 @@ void UUDCreateGameViewModel::NewGame()
 
 void UUDCreateGameViewModel::SetOptions()
 {
+	// This is called at later stage as session might not be initialized when the game is started.
 	const FOnlineSessionSettings settings = UUDSessionSubsystem::Get(GetWorld())->GetDefaultSettings();
 	SetIsLANValue(UUDApplicationConverters::ToCheckBoxState(settings.bIsLANMatch));
 }

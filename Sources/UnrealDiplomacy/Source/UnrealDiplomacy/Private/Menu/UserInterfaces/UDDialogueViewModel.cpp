@@ -14,8 +14,9 @@ FText ConstructContent()
 	return FText::FromString(content.ToString());
 }
 
-void UUDDialogueViewModel::Initialize()
+void UUDDialogueViewModel::Setup()
 {
+	Super::Setup();
 	FText dialogueTitle = FText(LOCTEXT("Dialogue", "Error"));
 	SetDialogueTitleText(dialogueTitle);
 	FText content = ConstructContent();

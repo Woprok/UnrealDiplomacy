@@ -10,7 +10,7 @@
 
 enum class EUDWindowModeType : uint8;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDViewModelUpdate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDSettingsLoaded);
 
 /**
  * Wrapper around items that will be in view.
@@ -106,10 +106,10 @@ public:
 	 * Useful for views to update their data to fit current view model.
 	 */
 	UPROPERTY(BlueprintAssignable)
-	FUDViewModelUpdate OnUpdateFinishing;
+	FUDSettingsLoaded OnSettingsLoaded;
 protected:
-	virtual void Initialize() override;
-	virtual void Update() override;
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
 	/**
 	 * Applies changes that are present in the view model to the settings in game instance.

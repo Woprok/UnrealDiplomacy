@@ -17,7 +17,6 @@ void UUDViewModel::Setup()
 void UUDViewModel::Refresh()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDViewModel: Refresh started."));
-	Update();
 }
 
 void UUDViewModel::Update()

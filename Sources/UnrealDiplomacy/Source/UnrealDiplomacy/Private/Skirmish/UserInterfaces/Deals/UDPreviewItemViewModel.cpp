@@ -7,16 +7,4 @@
 
 #define LOCTEXT_NAMESPACE "PreviewItem"
 
-void UUDPreviewItemViewModel::Initialize()
-{
-}
-
-void UUDPreviewItemViewModel::Update()
-{
-}
-
 #undef LOCTEXT_NAMESPACE
-
-void UUDPreviewItemViewModel::SetContent()
-{
-}

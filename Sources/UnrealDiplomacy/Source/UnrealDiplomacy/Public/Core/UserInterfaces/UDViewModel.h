@@ -47,8 +47,9 @@ public:
 	virtual void Setup();
 	/**
 	 * Starts refresh on the viewmodel, potentially updating current content.
+	 * This is supposed to be called after Setup and after view is initialized.
 	 */
-	void Refresh();
+	virtual void Refresh();
 protected:
 	/**
 	 * Invoked for each update.

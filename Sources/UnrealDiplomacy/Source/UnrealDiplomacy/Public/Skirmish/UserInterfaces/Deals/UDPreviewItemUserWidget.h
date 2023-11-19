@@ -1,4 +1,5 @@
 // Copyright Miroslav Valach
+// TODO remove, this is no longer relevant as the preview for deal item is merged with execution.
 
 #pragma once
 
