@@ -30,6 +30,8 @@ void UUDSettingsViewModel::Update()
 {
 	// Load all settings.
 	RetrieveSettings();
+	// Originally part of full update
+	OnUpdateFinishing.Broadcast();
 }
 
 void UUDSettingsViewModel::CreateWindowModeOptions()

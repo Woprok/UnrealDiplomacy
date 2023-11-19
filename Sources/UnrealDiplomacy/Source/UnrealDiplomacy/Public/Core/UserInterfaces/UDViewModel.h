@@ -12,8 +12,6 @@
 class UUDActionAdministrator;
 class UUDViewModel;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDViewModelUpdate);
-
 /**
  * Base ancestor for all shared behaviour.
  * Refer to https://docs.unrealengine.com/5.1/en-US/umg-viewmodel/ for full description.
@@ -45,28 +43,15 @@ public:
 	 */
 	void SetModel(TObjectPtr<UUDActionAdministrator> model);	
 	/**
-	 * Run initialize without update.
+	 * Run initialize without update. Preparing widget for being observed by user.
 	 */
-	void FullInitialize();
+	void InitializeDefault();
 	/**
-	 * Notifies subscribers about incoming update.
-	 * Executes update and notifies again about the end of the update.
+	 * Executes update and notifies about the end of the update.
 	 * This updates is used for complete setup and full change.
 	 */
 	void FullUpdate();
 public:
-	/**
-	 * Subscribeable event that is invoked before the update.
-	 * Allows view to be aware of impending update.
-	 */
-	UPROPERTY(BlueprintAssignable)
-	FUDViewModelUpdate OnUpdateStarting;
-	/**
-	 * Subscribeable event that is invoked after the update.
-	 * Useful for views to update their data to fit current view model.
-	 */
-	UPROPERTY(BlueprintAssignable)
-	FUDViewModelUpdate OnUpdateFinishing;
 protected:
 	/**
 	 * Invoked for first update and for reloads.
@@ -78,10 +63,6 @@ protected:
 	 * Should react to any possible data change.
 	 */
 	virtual void Update();
-	/**
-	 * Invoked after each set model call.
-	 */
-	virtual void OnModelChanged();
 protected:
 	/**
 	 * Model is used to communicate with the game logic.

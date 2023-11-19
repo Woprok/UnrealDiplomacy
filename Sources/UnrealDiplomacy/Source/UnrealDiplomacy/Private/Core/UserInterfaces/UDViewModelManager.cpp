@@ -13,7 +13,7 @@ void UUDViewModelManager::ForceInitialize()
 {
 	for (auto viewModel : ViewModels)
 	{
-		viewModel.Value->FullInitialize();
+		viewModel.Value->InitializeDefault();
 	}
 }
 

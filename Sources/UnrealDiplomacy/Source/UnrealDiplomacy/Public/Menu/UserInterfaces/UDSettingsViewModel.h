@@ -10,6 +10,8 @@
 
 enum class EUDWindowModeType : uint8;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDViewModelUpdate);
+
 /**
  * Wrapper around items that will be in view.
  */
@@ -99,6 +101,12 @@ public:
 	 */
 	UFUNCTION()
 	void SetSelectedResolution(FString SelectedItem, ESelectInfo::Type SelectionType);
+	/**
+	 * Subscribeable event that is invoked after the update.
+	 * Useful for views to update their data to fit current view model.
+	 */
+	UPROPERTY(BlueprintAssignable)
+	FUDViewModelUpdate OnUpdateFinishing;
 protected:
 	virtual void Initialize() override;
 	virtual void Update() override;
