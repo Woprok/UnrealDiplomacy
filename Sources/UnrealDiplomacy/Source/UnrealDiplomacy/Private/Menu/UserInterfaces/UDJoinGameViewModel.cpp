@@ -92,9 +92,9 @@ void UUDJoinGameViewModel::Back()
 	hud->SwitchScreen(hud->MenuScreen);
 }
 
-void UUDJoinGameViewModel::Refresh()
+void UUDJoinGameViewModel::RefreshList()
 {
-	UE_LOG(LogTemp, Log, TEXT("UUDJoinGameViewModel: Refresh."));
+	UE_LOG(LogTemp, Log, TEXT("UUDJoinGameViewModel: RefreshList."));
 	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
 	sessions->CreateSearchSettings();
 	SetSearchText(SessionCountToText(SearchIndicator));
@@ -113,7 +113,7 @@ void UUDJoinGameViewModel::OnSessionSearched(const TArray<FOnlineSessionSearchRe
 	{
 		TObjectPtr<UUDServerItemViewModel> newViewModel = Cast<UUDServerItemViewModel>(viewModels[i]);
 		newViewModel->SetContent(SessionResults[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		InUseViewModelCollection.Add(newViewModel);
 	}
 

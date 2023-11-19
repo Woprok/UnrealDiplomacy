@@ -84,7 +84,7 @@ void UUDDealEditationTabViewModel::UpdatePointList()
 	{
 		if (PointItemViewModelCollection[i])
 		{
-			PointItemViewModelCollection[i]->FullUpdate();
+			PointItemViewModelCollection[i]->Refresh();
 		}
 	}
 

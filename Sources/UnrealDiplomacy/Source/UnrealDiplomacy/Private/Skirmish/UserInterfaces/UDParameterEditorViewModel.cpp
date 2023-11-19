@@ -261,7 +261,7 @@ void UUDParameterEditorViewModel::DefineDealActionParameter(int32 id)
 	SetDealActionParameterContent(FUDViewModelContent(DealActionParameterInstance));
 	DealActionParameterInstance->OnChangeEvent.Clear();
 	DealActionParameterInstance->OnChangeEvent.AddUObject(this, &UUDParameterEditorViewModel::OnDealActionParameterChanged);
-	DealActionParameterInstance->FullUpdate();
+	DealActionParameterInstance->Refresh();
 }
 
 void UUDParameterEditorViewModel::DefineFactionInvokerParameter(int32 id)
@@ -275,7 +275,7 @@ void UUDParameterEditorViewModel::DefineFactionInvokerParameter(int32 id)
 	SetFactionInvokerParameterContent(FUDViewModelContent(FactionInvokerParameterInstance));
 	FactionInvokerParameterInstance->OnChangeEvent.Clear();
 	FactionInvokerParameterInstance->OnChangeEvent.AddUObject(this, &UUDParameterEditorViewModel::OnFactionInvokerParameterChanged);
-	FactionInvokerParameterInstance->FullUpdate();
+	FactionInvokerParameterInstance->Refresh();
 }
 
 void UUDParameterEditorViewModel::DefineFactionTargetParameter(int32 id)
@@ -289,7 +289,7 @@ void UUDParameterEditorViewModel::DefineFactionTargetParameter(int32 id)
 	SetFactionTargetParameterContent(FUDViewModelContent(FactionTargetParameterInstance));
 	FactionTargetParameterInstance->OnChangeEvent.Clear();
 	FactionTargetParameterInstance->OnChangeEvent.AddUObject(this, &UUDParameterEditorViewModel::OnFactionTargetParameterChanged);
-	FactionTargetParameterInstance->FullUpdate();
+	FactionTargetParameterInstance->Refresh();
 }
 
 void UUDParameterEditorViewModel::DefineTileParameter(int32 id)
@@ -303,7 +303,7 @@ void UUDParameterEditorViewModel::DefineTileParameter(int32 id)
 	SetTileParameterContent(FUDViewModelContent(TileParameterInstance));
 	TileParameterInstance->OnChangeEvent.Clear();
 	TileParameterInstance->OnChangeEvent.AddUObject(this, &UUDParameterEditorViewModel::OnTileParameterChanged);
-	TileParameterInstance->FullUpdate();
+	TileParameterInstance->Refresh();
 }
 
 void UUDParameterEditorViewModel::DefineActionParameter(int32 id)
@@ -317,7 +317,7 @@ void UUDParameterEditorViewModel::DefineActionParameter(int32 id)
 	SetActionParameterContent(FUDViewModelContent(ActionParameterInstance));
 	ActionParameterInstance->OnChangeEvent.Clear();
 	ActionParameterInstance->OnChangeEvent.AddUObject(this, &UUDParameterEditorViewModel::OnActionParameterChanged);
-	ActionParameterInstance->FullUpdate();
+	ActionParameterInstance->Refresh();
 }
 
 void UUDParameterEditorViewModel::DefineResourceParameter(int32 id)
@@ -331,7 +331,7 @@ void UUDParameterEditorViewModel::DefineResourceParameter(int32 id)
 	SetResourceParameterContent(FUDViewModelContent(ResourceParameterInstance));
 	ResourceParameterInstance->OnChangeEvent.Clear();
 	ResourceParameterInstance->OnChangeEvent.AddUObject(this, &UUDParameterEditorViewModel::OnResourceParameterChanged);
-	ResourceParameterInstance->FullUpdate();
+	ResourceParameterInstance->Refresh();
 }
 
 void UUDParameterEditorViewModel::DefineValueParameter(int32 id)
@@ -345,7 +345,7 @@ void UUDParameterEditorViewModel::DefineValueParameter(int32 id)
 	SetValueParameterContent(FUDViewModelContent(ValueParameterInstance));
 	ValueParameterInstance->OnChangeEvent.Clear();
 	ValueParameterInstance->OnChangeEvent.AddUObject(this, &UUDParameterEditorViewModel::OnValueParameterChanged);
-	ValueParameterInstance->FullUpdate();
+	ValueParameterInstance->Refresh();
 }
 
 void UUDParameterEditorViewModel::DefineTextParameter(int32 id)
@@ -359,7 +359,7 @@ void UUDParameterEditorViewModel::DefineTextParameter(int32 id)
 	SetTextParameterContent(FUDViewModelContent(TextParameterInstance));
 	TextParameterInstance->OnChangeEvent.Clear();
 	TextParameterInstance->OnChangeEvent.AddUObject(this, &UUDParameterEditorViewModel::OnTextParameterChanged);
-	TextParameterInstance->FullUpdate();
+	TextParameterInstance->Refresh();
 }
 
 void UUDParameterEditorViewModel::UpdateDealActionParameter(const FUDActionParameter& parameter)
@@ -367,7 +367,7 @@ void UUDParameterEditorViewModel::UpdateDealActionParameter(const FUDActionParam
 	DealActionParameterInstance->SetContent(parameter);
 	SetHasDealActionParameterValue(true);
 	SetDealActionParameterContent(FUDViewModelContent(DealActionParameterInstance));
-	DealActionParameterInstance->FullUpdate();
+	DealActionParameterInstance->Refresh();
 }
 
 void UUDParameterEditorViewModel::UpdateFactionInvokerParameter(const FUDFactionParameter& parameter)
@@ -375,7 +375,7 @@ void UUDParameterEditorViewModel::UpdateFactionInvokerParameter(const FUDFaction
 	FactionInvokerParameterInstance->SetContent(parameter);
 	SetHasFactionInvokerParameterValue(true);
 	SetFactionInvokerParameterContent(FUDViewModelContent(FactionInvokerParameterInstance));
-	FactionInvokerParameterInstance->FullUpdate();
+	FactionInvokerParameterInstance->Refresh();
 }
 
 void UUDParameterEditorViewModel::UpdateFactionTargetParameter(const FUDFactionParameter& parameter)
@@ -383,7 +383,7 @@ void UUDParameterEditorViewModel::UpdateFactionTargetParameter(const FUDFactionP
 	FactionTargetParameterInstance->SetContent(parameter);
 	SetHasFactionTargetParameterValue(true);
 	SetFactionTargetParameterContent(FUDViewModelContent(FactionTargetParameterInstance));
-	FactionTargetParameterInstance->FullUpdate();
+	FactionTargetParameterInstance->Refresh();
 }
 
 void UUDParameterEditorViewModel::UpdateTileParameter(const FUDTileParameter& parameter)
@@ -391,7 +391,7 @@ void UUDParameterEditorViewModel::UpdateTileParameter(const FUDTileParameter& pa
 	TileParameterInstance->SetContent(parameter);
 	SetHasTileParameterValue(true);
 	SetTileParameterContent(FUDViewModelContent(TileParameterInstance));
-	TileParameterInstance->FullUpdate();
+	TileParameterInstance->Refresh();
 }
 
 void UUDParameterEditorViewModel::UpdateActionParameter(const FUDActionParameter& parameter)
@@ -399,7 +399,7 @@ void UUDParameterEditorViewModel::UpdateActionParameter(const FUDActionParameter
 	ActionParameterInstance->SetContent(parameter);
 	SetHasActionParameterValue(true);
 	SetActionParameterContent(FUDViewModelContent(ActionParameterInstance));
-	ActionParameterInstance->FullUpdate();
+	ActionParameterInstance->Refresh();
 }
 
 void UUDParameterEditorViewModel::UpdateResourceParameter(const FUDResourceParameter& parameter)
@@ -407,7 +407,7 @@ void UUDParameterEditorViewModel::UpdateResourceParameter(const FUDResourceParam
 	ResourceParameterInstance->SetContent(parameter);
 	SetHasResourceParameterValue(true);
 	SetResourceParameterContent(FUDViewModelContent(ResourceParameterInstance));
-	ResourceParameterInstance->FullUpdate();
+	ResourceParameterInstance->Refresh();
 }
 
 void UUDParameterEditorViewModel::UpdateValueParameter(const FUDValueParameter& parameter)
@@ -415,7 +415,7 @@ void UUDParameterEditorViewModel::UpdateValueParameter(const FUDValueParameter& 
 	ValueParameterInstance->SetContent(parameter);
 	SetHasValueParameterValue(true);
 	SetValueParameterContent(FUDViewModelContent(ValueParameterInstance));
-	ValueParameterInstance->FullUpdate();
+	ValueParameterInstance->Refresh();
 }
 
 void UUDParameterEditorViewModel::UpdateTextParameter(const FUDTextParameter& parameter)
@@ -423,7 +423,7 @@ void UUDParameterEditorViewModel::UpdateTextParameter(const FUDTextParameter& pa
 	TextParameterInstance->SetContent(parameter);
 	SetHasTextParameterValue(true);
 	SetTextParameterContent(FUDViewModelContent(TextParameterInstance));
-	TextParameterInstance->FullUpdate();
+	TextParameterInstance->Refresh();
 }
 
 void UUDParameterEditorViewModel::SetHasDealActionParameterValue(bool newHasDealActionParameterValue)

@@ -70,8 +70,8 @@ void UUDDealManagementViewModel::Initialize()
 	SetActiveDealItemContent(FUDViewModelContent(ActiveDealItemInstance));
 	SetHistoryDealItemContent(FUDViewModelContent(HistoryDealItemInstance));
 	// Call initialize so instance is ready to use, once it receives data in runtime.
-	ActiveDealItemInstance->FullUpdate();
-	HistoryDealItemInstance->FullUpdate();
+	ActiveDealItemInstance->Refresh();
+	HistoryDealItemInstance->Refresh();
 
 	Update();
 }

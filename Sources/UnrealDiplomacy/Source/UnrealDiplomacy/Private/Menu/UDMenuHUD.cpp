@@ -18,7 +18,7 @@ void AUDMenuHUD::BeginPlay()
 	Super::BeginPlay();
 	Initialize();
 	SwitchScreen(MenuScreen);
-	ForceUpdate();
+	ExecuteUpdate();
 	ShowDialoguePostInitialization();
 }
 

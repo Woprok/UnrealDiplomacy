@@ -101,7 +101,7 @@ void UUDPointContentViewModel::UpdateEditor()
 	ParameterEditorInstance->ValuesUpdated.AddUObject(this, &UUDPointContentViewModel::SaveValuesChange);
 	ParameterEditorInstance->TextUpdated.AddUObject(this, &UUDPointContentViewModel::SaveTextChange);
 
-	ParameterEditorInstance->FullUpdate();
+	ParameterEditorInstance->Refresh();
 	SetParameterEditorContent(FUDViewModelContent(ParameterEditorInstance));
 }
 

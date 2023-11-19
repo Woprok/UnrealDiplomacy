@@ -22,10 +22,6 @@ class UNREALDIPLOMACY_API UUDViewModel : public UMVVMViewModelBase
 	GENERATED_BODY()
 public:
 	/**
-	 * Initialize all necessary elements to prevent undefined behaviour.
-	 */
-	//void Initialize();
-	/**
 	 * Define content for this and all child elements to be used in updates.
 	 */
 	virtual void DefineContent() {};
@@ -43,21 +39,17 @@ public:
 	 */
 	void SetModel(TObjectPtr<UUDActionAdministrator> model);	
 	/**
-	 * Run initialize without update. Preparing widget for being observed by user.
+	 * Prepares UI for being displayed.
+	 * Initializes dependencies (e.g. for content widgets, empty list..., default strings ).
+	 * Thus it's using generic application settings over any game specific data (avoid accessing these).
+	 * Primarily defines everything to prevent any undefined behaviour on all other viewmodel calls.
 	 */
-	void InitializeDefault();
+	virtual void Setup();
 	/**
-	 * Executes update and notifies about the end of the update.
-	 * This updates is used for complete setup and full change.
+	 * Starts refresh on the viewmodel, potentially updating current content.
 	 */
-	void FullUpdate();
-public:
+	void Refresh();
 protected:
-	/**
-	 * Invoked for first update and for reloads.
-	 * Used for creating defaults such as these that are based on application settings.
-	 */
-	virtual void Initialize();
 	/**
 	 * Invoked for each update.
 	 * Should react to any possible data change.

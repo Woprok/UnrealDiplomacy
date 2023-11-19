@@ -54,7 +54,7 @@ void UUDTertiaryPointItemViewModel::UpdatePointContent()
 	// Get rid of all models
 	PointContentViewModelInstance = Cast<UUDPointContentViewModel>(viewModel);
 	PointContentViewModelInstance->SetContent(Content);
-	PointContentViewModelInstance->FullUpdate();
+	PointContentViewModelInstance->Refresh();
 	SetPointContent(FUDViewModelContent(PointContentViewModelInstance));
 }
 

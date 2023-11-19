@@ -40,9 +40,9 @@ void UUDDealItemViewModel::Initialize()
 	SetEditationTabContent(FUDViewModelContent(EditationTabViewModelInstance));
 	SetExecutionTabContent(FUDViewModelContent(ExecutionTabViewModelInstance));
 	// Call initialize so each Instance is ready to use, once it receives data in runtime.
-	GeneralTabViewModelInstance->FullUpdate();
-	EditationTabViewModelInstance->FullUpdate();
-	ExecutionTabViewModelInstance->FullUpdate();
+	GeneralTabViewModelInstance->Refresh();
+	EditationTabViewModelInstance->Refresh();
+	ExecutionTabViewModelInstance->Refresh();
 
 	Update();
 }
@@ -66,9 +66,9 @@ void UUDDealItemViewModel::Update()
 	GeneralTabViewModelInstance->SetContent(Content);
 	EditationTabViewModelInstance->SetContent(Content);
 	ExecutionTabViewModelInstance->SetContent(Content);
-	GeneralTabViewModelInstance->FullUpdate();
-	EditationTabViewModelInstance->FullUpdate();
-	ExecutionTabViewModelInstance->FullUpdate();
+	GeneralTabViewModelInstance->Refresh();
+	EditationTabViewModelInstance->Refresh();
+	ExecutionTabViewModelInstance->Refresh();
 }
 
 #undef LOCTEXT_NAMESPACE

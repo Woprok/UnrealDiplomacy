@@ -48,8 +48,8 @@ void UUDLobbyViewModel::Initialize()
 	SetLobbyHostContent(FUDViewModelContent(HostViewModelInstance));
 	SetLobbyMemberContent(FUDViewModelContent(MemberViewModelInstance));
 	// Call initialize so each Instance is ready to use, once it receives data in runtime.
-	HostViewModelInstance->FullUpdate();
-	MemberViewModelInstance->FullUpdate();
+	HostViewModelInstance->Refresh();
+	MemberViewModelInstance->Refresh();
 
 	Update();
 }
@@ -90,7 +90,7 @@ void UUDLobbyViewModel::UpdateClientList()
 	{
 		TObjectPtr<UUDClientItemViewModel> newViewModel = Cast<UUDClientItemViewModel>(viewModels[i]);
 		newViewModel->SetContent(factions[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		ClientViewModelCollection.Add(newViewModel);
 	}
 

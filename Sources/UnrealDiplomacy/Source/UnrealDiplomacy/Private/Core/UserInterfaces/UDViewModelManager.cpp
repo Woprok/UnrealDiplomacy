@@ -9,19 +9,11 @@ void UUDViewModelManager::SetModelManager(TObjectPtr<UUDActionAdministrator> mod
 	Model = model;
 }
 
-void UUDViewModelManager::ForceInitialize()
+void UUDViewModelManager::RefreshAll()
 {
 	for (auto viewModel : ViewModels)
 	{
-		viewModel.Value->InitializeDefault();
-	}
-}
-
-void UUDViewModelManager::ForceUpdate()
-{
-	for (auto viewModel : ViewModels)
-	{
-		viewModel.Value->FullUpdate();
+		viewModel.Value->Refresh();
 	}
 }
 
@@ -54,6 +46,8 @@ TObjectPtr<UUDViewModel> UUDViewModelManager::Create(TSubclassOf<UUDViewModel> v
 	{
 		UE_LOG(LogTemp, Log, TEXT("UDViewModelManager: ViewModel created without model reference."));
 	}
+	UE_LOG(LogTemp, Log, TEXT("UDViewModelManager: Performing ViewModel setup."));
+	newViewModel->Setup();
 	return newViewModel;
 }
 

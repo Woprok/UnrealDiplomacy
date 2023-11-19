@@ -69,7 +69,7 @@ void UUDFactionManagementViewModel::Update()
 
 	// Call initialize so each Instance is ready to use, once it receives data in runtime.
 	PolicySelectorInstance->SetContent();
-	PolicySelectorInstance->FullUpdate();
+	PolicySelectorInstance->Refresh();
 
 	UpdateFactionLists();
 	UpdateModifierItemList();
@@ -118,7 +118,7 @@ void UUDFactionManagementViewModel::UpdateFactionInteractionList()
 	{
 		TObjectPtr<UUDFactionInteractionViewModel> newViewModel = Cast<UUDFactionInteractionViewModel>(viewModels[i]);
 		newViewModel->SetContent(SelectedFactionId, EUDDecisionType::Gift, interactions[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		FactionInteractionViewModelCollection.Add(newViewModel);
 	}
 
@@ -138,7 +138,7 @@ void UUDFactionManagementViewModel::UpdateFactionOfferList()
 	{
 		TObjectPtr<UUDFactionInteractionViewModel> newViewModel = Cast<UUDFactionInteractionViewModel>(viewModels[i]);
 		newViewModel->SetContent(SelectedFactionId, EUDDecisionType::Offer, interactions[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		FactionOfferViewModelCollection.Add(newViewModel);
 	}
 
@@ -158,7 +158,7 @@ void UUDFactionManagementViewModel::UpdateFactionRequestList()
 	{
 		TObjectPtr<UUDFactionInteractionViewModel> newViewModel = Cast<UUDFactionInteractionViewModel>(viewModels[i]);
 		newViewModel->SetContent(SelectedFactionId, EUDDecisionType::Request, interactions[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		FactionRequestViewModelCollection.Add(newViewModel);
 	}
 
@@ -178,7 +178,7 @@ void UUDFactionManagementViewModel::UpdateFactionDemandList()
 	{
 		TObjectPtr<UUDFactionInteractionViewModel> newViewModel = Cast<UUDFactionInteractionViewModel>(viewModels[i]);
 		newViewModel->SetContent(SelectedFactionId, EUDDecisionType::Demand, interactions[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		FactionDemandViewModelCollection.Add(newViewModel);
 	}
 
@@ -199,7 +199,7 @@ void UUDFactionManagementViewModel::UpdateModifierItemList()
 	{
 		TObjectPtr<UUDModifierItemViewModel> newViewModel = Cast<UUDModifierItemViewModel>(viewModels[i]);
 		newViewModel->SetContent(modifiers[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		ModifierItemViewModelCollection.Add(newViewModel);
 	}
 

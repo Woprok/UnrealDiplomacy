@@ -50,7 +50,7 @@ void UUDResourcePanelViewModel::UpdateResourceList()
 	{
 		TObjectPtr<UUDResourceItemViewModel> newViewModel = Cast<UUDResourceItemViewModel>(viewModels[i]);
 		newViewModel->SetContent(resources[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		ResourceViewModelCollection.Add(newViewModel);
 	}
 

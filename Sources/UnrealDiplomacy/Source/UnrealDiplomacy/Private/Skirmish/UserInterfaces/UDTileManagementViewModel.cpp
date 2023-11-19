@@ -99,7 +99,7 @@ void UUDTileManagementViewModel::UpdateTileInteractionList()
 	{
 		TObjectPtr<UUDTileInteractionViewModel> newViewModel = Cast<UUDTileInteractionViewModel>(viewModels[i]);
 		newViewModel->SetContent(SelectedTile, interactions[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		TileInteractionViewModelCollection.Add(newViewModel);
 	}
 
@@ -120,7 +120,7 @@ void UUDTileManagementViewModel::UpdateModifierItemList()
 	{
 		TObjectPtr<UUDModifierItemViewModel> newViewModel = Cast<UUDModifierItemViewModel>(viewModels[i]);
 		newViewModel->SetContent(modifiers[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		ModifierItemViewModelCollection.Add(newViewModel);
 	}
 

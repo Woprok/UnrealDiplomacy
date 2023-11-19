@@ -55,7 +55,7 @@ void UUDFactionPanelViewModel::UpdateFactionList()
 	{
 		TObjectPtr<UUDFactionItemViewModel> newViewModel = Cast<UUDFactionItemViewModel>(viewModels[i]);
 		newViewModel->SetContent(factions[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		FactionViewModelCollection.Add(newViewModel);
 	}
 

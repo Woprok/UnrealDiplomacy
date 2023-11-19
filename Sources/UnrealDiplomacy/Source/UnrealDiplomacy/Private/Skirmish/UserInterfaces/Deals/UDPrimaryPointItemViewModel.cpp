@@ -71,7 +71,7 @@ void UUDPrimaryPointItemViewModel::UpdatePointContent()
 	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(PointContentViewModelInstanceName, PointContentViewModelType);
 	PointContentViewModelInstance = Cast<UUDPointContentViewModel>(viewModel);
 	PointContentViewModelInstance->SetContent(Content);
-	PointContentViewModelInstance->FullUpdate();
+	PointContentViewModelInstance->Refresh();
 	SetPointContent(FUDViewModelContent(PointContentViewModelInstance));
 }
 
@@ -93,13 +93,13 @@ void UUDPrimaryPointItemViewModel::UpdatePointList()
 	{
 		TObjectPtr<UUDSecondaryPointItemViewModel> newViewModel = Cast<UUDSecondaryPointItemViewModel>(viewModels[i]);
 		newViewModel->SetContent(points[i], true);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		PointItemViewModelCollection.Add(newViewModel);
 	}
 	// Finally add invalid node.
 	TObjectPtr<UUDSecondaryPointItemViewModel> newViewModel = Cast<UUDSecondaryPointItemViewModel>(viewModels[desiredPointIndex]);
 	newViewModel->SetContent(GetInvalidSecondaryPoint(Content.DealId, Content.PointId), false);
-	newViewModel->FullUpdate();
+	newViewModel->Refresh();
 	PointItemViewModelCollection.Add(newViewModel);
 
 	SetPointItemList(FUDViewModelList(viewModels));

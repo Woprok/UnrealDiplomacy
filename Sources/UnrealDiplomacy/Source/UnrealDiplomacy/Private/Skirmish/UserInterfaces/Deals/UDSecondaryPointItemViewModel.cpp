@@ -71,7 +71,7 @@ void UUDSecondaryPointItemViewModel::UpdatePointContent()
 	// Get rid of all models
 	PointContentViewModelInstance = Cast<UUDPointContentViewModel>(viewModel);
 	PointContentViewModelInstance->SetContent(Content);
-	PointContentViewModelInstance->FullUpdate();
+	PointContentViewModelInstance->Refresh();
 	SetPointContent(FUDViewModelContent(PointContentViewModelInstance));
 }
 
@@ -93,13 +93,13 @@ void UUDSecondaryPointItemViewModel::UpdatePointList()
 	{
 		TObjectPtr<UUDTertiaryPointItemViewModel> newViewModel = Cast<UUDTertiaryPointItemViewModel>(viewModels[i]);
 		newViewModel->SetContent(points[i], true);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		PointItemViewModelCollection.Add(newViewModel);
 	}
 	// Finally add invalid node.
 	TObjectPtr<UUDTertiaryPointItemViewModel> newViewModel = Cast<UUDTertiaryPointItemViewModel>(viewModels[desiredPointIndex]);
 	newViewModel->SetContent(GetInvalidTertiaryPoint(Content.DealId, Content.PointId), false);
-	newViewModel->FullUpdate();
+	newViewModel->Refresh();
 	PointItemViewModelCollection.Add(newViewModel);
 
 	SetPointItemList(FUDViewModelList(viewModels));

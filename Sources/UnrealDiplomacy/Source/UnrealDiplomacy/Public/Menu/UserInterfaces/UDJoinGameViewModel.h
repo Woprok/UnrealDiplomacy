@@ -28,7 +28,7 @@ public:
 	UFUNCTION()
 	void Back();
 	UFUNCTION()
-	void Refresh();
+	void RefreshList();
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText JoinGameTitleText;

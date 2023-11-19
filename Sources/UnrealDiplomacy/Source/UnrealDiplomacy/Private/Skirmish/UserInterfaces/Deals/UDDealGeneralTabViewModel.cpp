@@ -164,7 +164,7 @@ void UUDDealGeneralTabViewModel::UpdateChatInstance()
 	ChatViewModelInstance = Cast<UUDChatViewModel>(viewModel);
 	SetDealChatContent(FUDViewModelContent(ChatViewModelInstance));
 	ChatViewModelInstance->SetContent(Content);
-	ChatViewModelInstance->FullUpdate();
+	ChatViewModelInstance->Refresh();
 }
 
 void UUDDealGeneralTabViewModel::UpdateParticipantItemList()
@@ -182,7 +182,7 @@ void UUDDealGeneralTabViewModel::UpdateParticipantItemList()
 	{
 		TObjectPtr<UUDParticipantItemViewModel> newViewModel = Cast<UUDParticipantItemViewModel>(viewModels[i]);
 		newViewModel->SetContent(messages[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		ParticipantItemViewModelCollection.Add(newViewModel);
 	}
 
@@ -204,7 +204,7 @@ void UUDDealGeneralTabViewModel::UpdateInviteItemList()
 	{
 		TObjectPtr<UUDInviteItemViewModel> newViewModel = Cast<UUDInviteItemViewModel>(viewModels[i]);
 		newViewModel->SetContent(messages[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		InviteItemViewModelCollection.Add(newViewModel);
 	}
 

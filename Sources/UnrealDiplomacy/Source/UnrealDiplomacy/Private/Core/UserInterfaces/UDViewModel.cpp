@@ -9,22 +9,15 @@ void UUDViewModel::SetModel(TObjectPtr<UUDActionAdministrator> model)
 	Model = model;
 }
 
-void UUDViewModel::InitializeDefault()
+void UUDViewModel::Setup()
 {
-	UE_LOG(LogTemp, Log, TEXT("UUDViewModel: Full Initialize."));
-	Initialize();
+	UE_LOG(LogTemp, Log, TEXT("UUDViewModel: Setup started."));
 }
 
-void UUDViewModel::FullUpdate()
+void UUDViewModel::Refresh()
 {
-	UE_LOG(LogTemp, Log, TEXT("UUDViewModel: Full Update."));
-	Initialize();
+	UE_LOG(LogTemp, Log, TEXT("UUDViewModel: Refresh started."));
 	Update();
-}
-
-void UUDViewModel::Initialize()
-{
-	return;
 }
 
 void UUDViewModel::Update()

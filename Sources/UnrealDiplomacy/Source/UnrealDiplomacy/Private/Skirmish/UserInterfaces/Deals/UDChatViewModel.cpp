@@ -63,7 +63,7 @@ void UUDChatViewModel::UpdateChatItemList()
 	{
 		TObjectPtr<UUDChatItemViewModel> newViewModel = Cast<UUDChatItemViewModel>(viewModels[i]);
 		newViewModel->SetContent(messages[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		ChatItemViewModelCollection.Add(newViewModel);
 	}
 

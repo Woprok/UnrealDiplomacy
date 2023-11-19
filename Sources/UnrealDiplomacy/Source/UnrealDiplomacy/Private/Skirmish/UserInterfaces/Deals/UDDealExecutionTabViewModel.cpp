@@ -62,7 +62,7 @@ void UUDDealExecutionTabViewModel::UpdateActionList()
 	{
 		TObjectPtr<UUDActionItemViewModel> newViewModel = Cast<UUDActionItemViewModel>(viewModels[i]);
 		newViewModel->SetContent(actions[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		ActionItemViewModelCollection.Add(newViewModel);
 	}
 	SetActionItemList(FUDViewModelList(viewModels));

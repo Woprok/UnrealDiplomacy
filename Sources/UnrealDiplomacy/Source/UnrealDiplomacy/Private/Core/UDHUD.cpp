@@ -16,14 +16,9 @@ TObjectPtr<AUDHUD> AUDHUD::Get(TObjectPtr<UWorld> world)
 	return CastChecked<AUDHUD>(hud);
 }
 
-void AUDHUD::ForceInitialize()
+void AUDHUD::ExecuteUpdate()
 {
-	ViewModelManager->ForceInitialize();
-}
-
-void AUDHUD::ForceUpdate()
-{
-	ViewModelManager->ForceUpdate();
+	ViewModelManager->RefreshAll();
 }
 
 void AUDHUD::SwitchScreen(const FName& screenName)

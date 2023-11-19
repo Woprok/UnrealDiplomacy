@@ -22,7 +22,6 @@ void AUDSkirmishHUD::BeginPlay()
 	Initialize();
 	CurrentScreen = LobbyScreen;
 	SwitchScreen(LobbyScreen);
-	ForceInitialize();
 }
 
 void AUDSkirmishHUD::RequestNotifyOnTileSelected(FIntPoint tile)

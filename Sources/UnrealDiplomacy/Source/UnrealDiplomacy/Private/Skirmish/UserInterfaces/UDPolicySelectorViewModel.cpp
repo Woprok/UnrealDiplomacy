@@ -58,7 +58,7 @@ void UUDPolicySelectorViewModel::UpdatePolicyItemList()
 	{
 		TObjectPtr<UUDPolicySelectItemViewModel> newViewModel = Cast<UUDPolicySelectItemViewModel>(viewModels[i]);
 		newViewModel->SetContent(policies[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		PolicySelectItemViewModelCollection.Add(newViewModel);
 	}
 

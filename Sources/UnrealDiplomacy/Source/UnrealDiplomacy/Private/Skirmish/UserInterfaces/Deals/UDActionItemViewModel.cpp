@@ -105,7 +105,7 @@ void UUDActionItemViewModel::UpdateEditor()
 	ParameterEditorInstance->ValuesUpdated.AddUObject(this, &UUDActionItemViewModel::SaveValuesChange);
 	ParameterEditorInstance->TextUpdated.AddUObject(this, &UUDActionItemViewModel::SaveTextChange);
 
-	ParameterEditorInstance->FullUpdate();
+	ParameterEditorInstance->Refresh();
 	SetParameterEditorContent(FUDViewModelContent(ParameterEditorInstance));
 }
 

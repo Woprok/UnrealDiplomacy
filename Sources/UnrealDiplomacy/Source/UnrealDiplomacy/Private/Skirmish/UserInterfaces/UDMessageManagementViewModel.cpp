@@ -53,7 +53,7 @@ void UUDMessageManagementViewModel::Initialize()
 	// Announce them to widget for additional binding.
 	SetMessageItemContent(FUDViewModelContent(MessageItemInstance));
 	// Call initialize so instance is ready to use, once it receives data in runtime.
-	MessageItemInstance->FullUpdate();
+	MessageItemInstance->Refresh();
 
 	Update();
 }

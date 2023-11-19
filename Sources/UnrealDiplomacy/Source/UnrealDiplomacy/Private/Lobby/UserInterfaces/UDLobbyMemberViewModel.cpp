@@ -89,7 +89,7 @@ void UUDLobbyMemberViewModel::UpdateStratagemsList()
 	{
 		TObjectPtr<UUDStrategyOptionViewModel> newViewModel = Cast<UUDStrategyOptionViewModel>(viewModels[i]);
 		newViewModel->SetContent(stratagems[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		StratagemViewModelCollection.Add(newViewModel);
 	}
 

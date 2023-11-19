@@ -28,7 +28,7 @@ void UUDTileInteractionViewModel::Initialize()
 	// Announce them to widget for additional binding.
 	SetParameterEditorContent(FUDViewModelContent(ParameterEditorInstance));
 	// Call initialize so each Instance is ready to use, once it receives data in runtime.
-	ParameterEditorInstance->FullUpdate();
+	ParameterEditorInstance->Refresh();
 }
 
 void UUDTileInteractionViewModel::Update()

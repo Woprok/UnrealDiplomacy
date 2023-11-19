@@ -30,7 +30,7 @@ void UUDFactionInteractionViewModel::Initialize()
 	// Announce them to widget for additional binding.
 	SetParameterEditorContent(FUDViewModelContent(ParameterEditorInstance));
 	// Call initialize so each Instance is ready to use, once it receives data in runtime.
-	ParameterEditorInstance->FullUpdate();
+	ParameterEditorInstance->Refresh();
 }
 
 void UUDFactionInteractionViewModel::Update()
@@ -101,7 +101,7 @@ void UUDFactionInteractionViewModel::UpdateEditor()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDFactionInteractionViewModel: UpdateEditor."));
 	ParameterEditorInstance->SetContent(Content.Parameters);
-	ParameterEditorInstance->FullUpdate();
+	ParameterEditorInstance->Refresh();
 }
 
 void UUDFactionInteractionViewModel::DefineInstances()
