@@ -32,7 +32,7 @@ FText ConstructThroneToolTip()
 	return FText::FromString(content.ToString());
 }
 
-void UUDImperialThroneViewModel::Initialize()
+void UUDImperialThroneViewModel::Setup()
 {
 	FText dealCount = FText::Format(LOCTEXT("ImperialThrone", "{0}"), 0);
 	SetDealCountText(dealCount);
@@ -47,18 +47,14 @@ void UUDImperialThroneViewModel::Initialize()
 	SetCanInteractValue(false);
 	SetThroneStateValue(EUDThroneState::Undefined);
 
-	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDImperialThroneViewModel::Reload);
-	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDImperialThroneViewModel::Update);
+	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDImperialThroneViewModel::Refresh);
+	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDImperialThroneViewModel::Refresh);
 
-	Update();
+	// TODO delete this comment if it works as expected...
+	//Update();
 }
 
-void UUDImperialThroneViewModel::Reload()
-{
-	Update();
-}
-
-void UUDImperialThroneViewModel::Update()
+void UUDImperialThroneViewModel::Refresh()
 {
 	if (!Model->IsOverseeingStatePresent())
 		return;
