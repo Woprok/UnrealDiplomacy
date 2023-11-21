@@ -64,7 +64,7 @@ public:
 	FUDViewModelContent EditationTabContent;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Getter)
 	FUDViewModelContent ExecutionTabContent;
-protected:
+public:
 	virtual void Initialize() override;
 	UFUNCTION()
 	virtual void Update() override;

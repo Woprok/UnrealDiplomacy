@@ -7,7 +7,7 @@
 
 #define LOCTEXT_NAMESPACE "ResourceItem"
 
-void UUDResourceItemViewModel::Initialize()
+void UUDResourceItemViewModel::Setup()
 {
 	FText name = FText(LOCTEXT("ResourceItem", "Resource"));
 	SetNameText(name);
@@ -15,7 +15,7 @@ void UUDResourceItemViewModel::Initialize()
 	SetIdValue(0);
 }
 
-void UUDResourceItemViewModel::Update()
+void UUDResourceItemViewModel::Refresh()
 {
 	FText name = FText::FromString(Content.Name);
 	SetNameText(name);

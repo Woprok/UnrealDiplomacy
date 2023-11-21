@@ -60,7 +60,7 @@ public:
 	FUDViewModelList ModifierItemList;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FUDViewModelContent PolicySelectorContent;
-protected:
+public:
 	virtual void Initialize() override;
 	UFUNCTION()
 	virtual void Update() override;

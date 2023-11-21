@@ -58,12 +58,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsHostValue;
-protected:
-	virtual void Initialize() override;
-	UFUNCTION()
-	virtual void Update() override;
-	UFUNCTION()
-	void Reload();
+public:
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
 	// MVVM Setters & Getters
 	void SetHostSettingsTitleText(FText newHostSettingsTitleText);

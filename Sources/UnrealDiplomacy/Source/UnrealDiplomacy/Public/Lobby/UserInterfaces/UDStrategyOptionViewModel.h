@@ -19,15 +19,11 @@ class UNREALDIPLOMACY_API UUDStrategyOptionViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Set content of the strategy option.
-	 */
+	/** Set content of the strategy option. */
 	void SetContent(FUDStratagemPickableInfo content);
 public:	
 	// Button Functions
-	/**
-	 * Attempts to join the new session, hides UI until the end of join operation.
-	 */
+	/** Attempts to join the new session, hides UI until the end of join operation. */
 	UFUNCTION()
 	void Selected();
 	// MVVM Fields
@@ -35,9 +31,9 @@ public:
 	FText OptionToolTipText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsSelectedValue;
-protected:
-	virtual void Initialize() override;
-	virtual void Update() override;
+public:
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
 	// MVVM Setters & Getters
 	void SetOptionToolTipText(FText newOptionToolTipText);

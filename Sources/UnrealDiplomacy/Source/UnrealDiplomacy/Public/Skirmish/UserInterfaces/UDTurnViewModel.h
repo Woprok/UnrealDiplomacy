@@ -38,7 +38,7 @@ public:
 	bool IsRegent;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsFinished;
-protected:
+public:
 	virtual void Initialize() override;
 	UFUNCTION()
 	virtual void Update() override;

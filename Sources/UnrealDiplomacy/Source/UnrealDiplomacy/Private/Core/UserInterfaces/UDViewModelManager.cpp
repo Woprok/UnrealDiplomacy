@@ -9,12 +9,17 @@ void UUDViewModelManager::SetModelManager(TObjectPtr<UUDActionAdministrator> mod
 	Model = model;
 }
 
-void UUDViewModelManager::RefreshAll()
+bool UUDViewModelManager::RefreshViewModel(const FName& name)
 {
-	for (auto viewModel : ViewModels)
+	if (!ViewModels.Contains(name))
 	{
-		viewModel.Value->Refresh();
+		UE_LOG(LogTemp, Log, TEXT("UUDViewModelManager: ViewModel(%s) is not registered."), *name.ToString());
+		return false;
 	}
+	TObjectPtr<UUDViewModel> viewModel = ViewModels[name];
+	viewModel->Refresh();
+	UE_LOG(LogTemp, Log, TEXT("UUDViewModelManager: ViewModel(%s) is now refreshed."), *name.ToString());
+	return true;
 }
 
 TObjectPtr<UUDViewModel> UUDViewModelManager::Get(const FName& name)

@@ -44,7 +44,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FUDViewModelList ChatItemList;
 	// Events
-protected:
+public:
 	virtual void Initialize() override;
 	virtual void Update() override;
 private:

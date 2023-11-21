@@ -11,15 +11,10 @@ void UUDViewModel::SetModel(TObjectPtr<UUDActionAdministrator> model)
 
 void UUDViewModel::Setup()
 {
-	UE_LOG(LogTemp, Log, TEXT("UUDViewModel: Setup started."));
+	UE_LOG(LogTemp, Log, TEXT("UUDViewModel: Used Default Setup."));
 }
 
 void UUDViewModel::Refresh()
 {
-	UE_LOG(LogTemp, Log, TEXT("UUDViewModel: Refresh started."));
-}
-
-void UUDViewModel::Update()
-{
-	return;
+	UE_LOG(LogTemp, Log, TEXT("UUDViewModel: Used Default Refresh."));
 }

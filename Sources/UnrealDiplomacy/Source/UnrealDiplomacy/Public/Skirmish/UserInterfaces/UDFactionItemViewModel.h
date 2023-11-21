@@ -37,7 +37,7 @@ public:
 	FText ControllerText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsHumanValue;
-protected:
+public:
 	virtual void Initialize() override;
 	virtual void Update() override;
 private:

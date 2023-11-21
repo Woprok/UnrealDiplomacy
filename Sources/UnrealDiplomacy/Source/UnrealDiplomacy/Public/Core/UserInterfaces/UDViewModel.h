@@ -22,19 +22,6 @@ class UNREALDIPLOMACY_API UUDViewModel : public UMVVMViewModelBase
 	GENERATED_BODY()
 public:
 	/**
-	 * Define content for this and all child elements to be used in updates.
-	 */
-	virtual void DefineContent() {};
-	/**
-	 * Use current content defined in DefineContent and update it, if changes deems it necessary.
-	 */
-	virtual void UpdateContent() {};
-	/**
-	 * Remove content references and disable update.
-	 */
-	virtual void ClearContent() {};
-public:
-	/**
 	 * Model is required for all view models that are using world state.
 	 */
 	void SetModel(TObjectPtr<UUDActionAdministrator> model);	
@@ -48,14 +35,11 @@ public:
 	/**
 	 * Starts refresh on the viewmodel, potentially updating current content.
 	 * This is supposed to be called after Setup and after view is initialized.
+	 * Thus this might be called before specific content was passed to it and should always check it has content.
+	 * Menu ViewModels might self SetContent in this.
+	 * Most Game ViewModels receive SetContent from events or other ViewModels.
 	 */
 	virtual void Refresh();
-protected:
-	/**
-	 * Invoked for each update.
-	 * Should react to any possible data change.
-	 */
-	virtual void Update();
 protected:
 	/**
 	 * Model is used to communicate with the game logic.

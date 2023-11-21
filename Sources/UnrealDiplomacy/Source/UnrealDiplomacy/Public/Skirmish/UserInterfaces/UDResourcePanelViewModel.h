@@ -23,12 +23,10 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FUDViewModelList ResourceList;
 	// Events
-protected:
-	virtual void Initialize() override;
+public:
+	virtual void Setup() override;
 	UFUNCTION()
-	virtual void Update() override;
-	UFUNCTION()
-	void Reload();
+	virtual void Refresh() override;
 private:
 	/**
 	 * Updates resource list.

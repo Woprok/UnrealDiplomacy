@@ -72,7 +72,7 @@ public:
 	FUDViewModelContent ActiveDealItemContent;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Getter)
 	FUDViewModelContent HistoryDealItemContent;
-protected:
+public:
 	virtual void Initialize() override;
 	UFUNCTION()
 	virtual void Update() override;

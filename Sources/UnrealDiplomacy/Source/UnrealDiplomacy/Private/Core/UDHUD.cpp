@@ -16,11 +16,6 @@ TObjectPtr<AUDHUD> AUDHUD::Get(TObjectPtr<UWorld> world)
 	return CastChecked<AUDHUD>(hud);
 }
 
-void AUDHUD::ExecuteUpdate()
-{
-	ViewModelManager->RefreshAll();
-}
-
 void AUDHUD::SwitchScreen(const FName& screenName)
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDHUD: Switching to Screen(%s)."), *screenName.ToString());
@@ -90,7 +85,9 @@ bool AUDHUD::ShowScreen(const FName& screenName)
 
 	for (const auto& widget : screen.Widgets)
 	{
+		// Both should exists, otherwise initialization failed for both.
 		ViewManager->ShowWidget(widget.Name);
+		ViewModelManager->RefreshViewModel(widget.Name);
 	}
 	return true;
 }

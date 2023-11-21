@@ -67,7 +67,7 @@ public:
 	bool HasContentValue;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool HasChoicesValue;
-protected:
+public:
 	virtual void Initialize() override;
 	virtual void Update() override;
 private:

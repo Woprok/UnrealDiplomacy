@@ -59,11 +59,6 @@ public:
 	 */
 	static TObjectPtr<AUDHUD> Get(TObjectPtr<UWorld> world);
 	/**
-	 * Refreshes UI for the current content defined for it.
-	 */
-	UFUNCTION(BlueprintCallable)
-	void ExecuteUpdate();
-	/**
 	 * Switches from current screen to desired screen.
 	 * Useful for reloading and static models.
 	 */

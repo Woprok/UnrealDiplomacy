@@ -55,7 +55,7 @@ void UUDExceptionManagerSubsystem::ShowDialogue(FUDDialogueData data)
 		unimplemented();
 		break;
 	case EUDDialogueContentType::Error:
-		CastChecked<UUDDialogueViewModel>(dialogueViewModel)->SetErrorDialogueContent(data.TitleText, data.ContentText);
+		CastChecked<UUDDialogueViewModel>(dialogueViewModel)->SetContent(data.TitleText, data.ContentText);
 		break;
 	default:
 		unimplemented();

@@ -16,7 +16,6 @@ FText ConstructCredits()
 
 void UUDCreditsViewModel::Setup()
 {
-	Super::Setup();
 	FText creditsTitle = FText(LOCTEXT("Credits", "Credits"));
 	SetCreditsTitleText(creditsTitle);
 	FText content = ConstructCredits();

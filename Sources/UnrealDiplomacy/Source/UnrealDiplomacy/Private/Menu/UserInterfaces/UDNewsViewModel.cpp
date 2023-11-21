@@ -16,7 +16,6 @@ FText ConstructNews()
 
 void UUDNewsViewModel::Setup()
 {
-	Super::Setup();
 	FText newsTitle = FText(LOCTEXT("News", "Welcome!"));
 	SetNewsTitleText(newsTitle);
 	FText message = ConstructNews();

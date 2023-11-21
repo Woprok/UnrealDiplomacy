@@ -38,21 +38,14 @@ public:
 	FText FactionNameEditableText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FUDViewModelList StrategyOptionList;
-protected:
-	virtual void Initialize() override;
-	UFUNCTION()
-	virtual void Update() override;
-	UFUNCTION()
-	void Reload();
+public:
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
-	/**
-	 * Generates list for pickable options.
-	 */
+	/** Generates list for pickable options. */
 	UFUNCTION()
 	void UpdateStratagemsList();
-	/**
-	 * Recalculates and updates displayed string based on local player faction stratagems.
-	 */
+	/** Recalculates and updates displayed string based on local player faction stratagems. */
 	void UpdateStratagemPoints();
 private:
 	// MVVM Setters & Getters

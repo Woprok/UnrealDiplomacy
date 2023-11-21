@@ -8,7 +8,6 @@
 
 void UUDMenuViewModel::Setup()
 {
-	Super::Setup();
 	FText gameTitle = FText(LOCTEXT("Menu", "Koruna"));
 	SetGameTitleText(gameTitle);
 	FText createGame = FText(LOCTEXT("Menu", "Create Game"));

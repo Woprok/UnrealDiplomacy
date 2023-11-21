@@ -45,7 +45,7 @@ public:
 	/**
 	 * Starts update on all view models, so they are up to date on desired content.
 	 */
-	void RefreshAll();
+	bool RefreshViewModel(const FName& name);
 	/**
 	 * Retrieve global view model based on name.
 	 */

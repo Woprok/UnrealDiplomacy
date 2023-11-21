@@ -32,7 +32,7 @@ public:
 	FText ReadyStateText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText VoteStateText;
-protected:
+public:
 	virtual void Initialize() override;
 	virtual void Update() override;
 private:

@@ -34,7 +34,7 @@ public:
 	FText SettingsText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText QuitText;
-protected:
+public:
 	virtual void Setup() override;
 private:
 	// MVVM Setters & Getters

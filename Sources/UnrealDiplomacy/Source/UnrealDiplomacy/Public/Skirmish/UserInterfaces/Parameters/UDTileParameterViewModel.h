@@ -47,7 +47,7 @@ public:
 	FText NextText;
 	// Events
 	FUDParameterChanged OnChangeEvent;
-protected:
+public:
 	virtual void Initialize() override;
 	virtual void Update() override;
 private:

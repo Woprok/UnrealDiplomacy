@@ -79,7 +79,7 @@ public:
 	FUDViewModelList InviteItemList;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FUDViewModelContent DealChatContent;
-protected:
+public:
 	virtual void Initialize() override;
 	UFUNCTION()
 	virtual void Update() override;

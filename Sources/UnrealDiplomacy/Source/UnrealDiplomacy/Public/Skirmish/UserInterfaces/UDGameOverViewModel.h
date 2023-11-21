@@ -32,12 +32,10 @@ public:
 	bool IsPlayerValue;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsWinnerValue;
-protected:
-	virtual void Initialize() override;
+public:
+	virtual void Setup() override;
 	UFUNCTION()
-	virtual void Update() override;
-	UFUNCTION()
-	void Reload();
+	virtual void Refresh() override;
 private:
 	/**
 	 * Returns to menu by calling quit session.

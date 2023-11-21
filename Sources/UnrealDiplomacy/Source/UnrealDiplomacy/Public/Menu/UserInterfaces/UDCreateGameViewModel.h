@@ -41,14 +41,12 @@ public:
 	FText IsLANText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	ECheckBoxState IsLANValue;
-protected:
+public:
 	virtual void Setup() override;
 	virtual void Refresh() override;
+	/** Loads current settings from game session. */
+	void SetDefaultContent();
 private:
-	/**
-	 * Invoked after each update.
-	 */
-	void SetOptions();
 	/**
 	 * Proceeds to create new game.
 	 */

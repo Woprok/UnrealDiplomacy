@@ -35,7 +35,7 @@ public:
 	FText SelectItemText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool CanSelectItemValue;
-protected:
+public:
 	virtual void Initialize() override;
 	virtual void Update() override;
 private:

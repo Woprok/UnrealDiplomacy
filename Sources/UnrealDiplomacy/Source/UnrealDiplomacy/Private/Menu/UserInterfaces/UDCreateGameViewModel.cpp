@@ -12,8 +12,6 @@
 
 void UUDCreateGameViewModel::Setup()
 {
-	Super::Setup();
-
 	FText createGameTitle = FText(LOCTEXT("CreateGame", "Create Game"));
 	SetCreateGameTitleText(createGameTitle);
 	FText back = FText(LOCTEXT("CreateGame", "Back"));
@@ -33,8 +31,7 @@ void UUDCreateGameViewModel::Setup()
 
 void UUDCreateGameViewModel::Refresh()
 {
-	Super::Refresh();
-	SetOptions();
+	SetDefaultContent();
 }
 
 FUDDialogueData GetSessionCreationFailed()
@@ -65,7 +62,7 @@ void UUDCreateGameViewModel::NewGame()
 	CreateNewGame();
 }
 
-void UUDCreateGameViewModel::SetOptions()
+void UUDCreateGameViewModel::SetDefaultContent()
 {
 	// This is called at later stage as session might not be initialized when the game is started.
 	const FOnlineSessionSettings settings = UUDSessionSubsystem::Get(GetWorld())->GetDefaultSettings();

@@ -44,8 +44,7 @@ public:
 	FText SearchText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FUDViewModelList ServerItemList;
-	// Events
-protected:
+public:
 	virtual void Setup() override;
 	virtual void Refresh() override;
 private:

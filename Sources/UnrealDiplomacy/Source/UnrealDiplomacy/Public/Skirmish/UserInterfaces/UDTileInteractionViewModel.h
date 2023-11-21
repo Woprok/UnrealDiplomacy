@@ -37,7 +37,7 @@ public:
 	FText InteractText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FUDViewModelContent ParameterEditorContent;
-protected:
+public:
 	virtual void Initialize() override;
 	virtual void Update() override;
 private:

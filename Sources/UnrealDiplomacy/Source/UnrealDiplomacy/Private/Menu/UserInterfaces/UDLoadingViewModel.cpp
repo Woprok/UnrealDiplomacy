@@ -13,7 +13,6 @@ FText ConstructGameplayHint()
 
 void UUDLoadingViewModel::Setup()
 {
-	Super::Setup();
 	FText loadingTitle = FText(LOCTEXT("Loading", "Loading..."));
 	SetLoadingTitleText(loadingTitle);
 	FText gameplayHint = ConstructGameplayHint();

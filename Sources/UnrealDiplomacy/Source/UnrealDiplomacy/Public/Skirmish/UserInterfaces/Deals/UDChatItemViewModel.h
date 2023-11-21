@@ -30,7 +30,7 @@ public:
 	FText FactionText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText MessageText;
-protected:
+public:
 	virtual void Initialize() override;
 	virtual void Update() override;
 private:

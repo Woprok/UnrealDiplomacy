@@ -29,7 +29,6 @@ FText SessionCountToText(int32 sessionCount)
 
 void UUDJoinGameViewModel::Setup()
 {
-	Super::Setup();
 	ViewModelType = UUDServerItemViewModel::StaticClass();
 
 	FText joinGameTitle = FText(LOCTEXT("JoinGame", "Join Game"));
@@ -51,7 +50,6 @@ void UUDJoinGameViewModel::Setup()
 
 void UUDJoinGameViewModel::Refresh()
 {
-	Super::Refresh();
 	RefreshList();
 }
 

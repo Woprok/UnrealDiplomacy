@@ -14,7 +14,6 @@
 
 void UUDSettingsViewModel::Setup()
 {
-	Super::Setup();
 	FText settingsTitle = FText(LOCTEXT("Settings", "Settings"));
 	SetSettingsTitleText(settingsTitle);
 	FText windowMode = FText(LOCTEXT("Settings", "Window Mode"));
@@ -33,10 +32,9 @@ void UUDSettingsViewModel::Setup()
 
 void UUDSettingsViewModel::Refresh()
 {
-	Super::Refresh();
 	// Load all settings.
-	RetrieveSettings();
-	// Originally part of full update
+	SetContent();
+	// Propagate to UI, see TODO
 	OnSettingsLoaded.Broadcast();
 }
 
@@ -80,7 +78,7 @@ TArray<FString> UUDSettingsViewModel::GetResolutionOptions() const
 
 #undef LOCTEXT_NAMESPACE
 
-void UUDSettingsViewModel::RetrieveSettings()
+void UUDSettingsViewModel::SetDefaultContent()
 {
 	FUDApplicationSettings settings = UUDGameInstance::Get(GetWorld())->LoadSettings();
 	SelectedWindowMode = FindInWindowModes(settings.WindowMode, WindowModes);

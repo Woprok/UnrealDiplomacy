@@ -19,17 +19,15 @@ class UNREALDIPLOMACY_API UUDClientItemViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Set content of the strategy option.
-	 */
+	/** Set content of the strategy option. */
 	void SetContent(FUDFactionMinimalInfo content);
 public:
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText NameText;
-protected:
-	virtual void Initialize() override;
-	virtual void Update() override;
+public:
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
 	// MVVM Setters & Getters
 	void SetNameText(FText newNameText);

@@ -39,7 +39,7 @@ public:
 	bool IsValidContentValue;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Getter)
 	FUDViewModelContent ParameterEditorContent;
-protected:
+public:
 	virtual void Initialize() override;
 	virtual void Update() override;
 private:

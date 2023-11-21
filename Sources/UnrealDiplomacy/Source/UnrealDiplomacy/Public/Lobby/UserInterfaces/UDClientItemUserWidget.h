@@ -19,9 +19,7 @@ class UNREALDIPLOMACY_API UUDClientItemUserWidget : public UUDListEntryUserWidge
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Enables blueprint to bind view model.
-	 */
+	/** Enables blueprint to bind view model. */
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetBlueprintViewModel(UUDClientItemViewModel* model);
 protected:

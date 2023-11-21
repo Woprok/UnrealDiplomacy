@@ -31,7 +31,7 @@ public:
 	FText DescriptionText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	int32 IdValue;
-protected:
+public:
 	virtual void Initialize() override;
 	virtual void Update() override;
 private:
