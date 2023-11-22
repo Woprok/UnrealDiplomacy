@@ -7,7 +7,7 @@
 
 #define LOCTEXT_NAMESPACE "ParticipantItem"
 
-void UUDParticipantItemViewModel::Initialize()
+void UUDParticipantItemViewModel::Setup()
 {
 	FText factionName = FText(LOCTEXT("ParticipantItem", "Faction"));
 	SetFactionNameText(factionName);
@@ -17,7 +17,7 @@ void UUDParticipantItemViewModel::Initialize()
 	SetVoteStateText(voteState);
 }
 
-void UUDParticipantItemViewModel::Update()
+void UUDParticipantItemViewModel::Refresh()
 {
 	SetFactionNameText(FText::FromString(Content.FactionName));
 	if (Content.IsReady)

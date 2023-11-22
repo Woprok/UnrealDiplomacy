@@ -19,9 +19,7 @@ class UNREALDIPLOMACY_API UUDChatItemViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Set content of the strategy option.
-	 */
+	/** Set content of the strategy option. */
 	void SetContent(FUDChatMessageInfo content);
 public:
 	// Button Functions
@@ -31,8 +29,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText MessageText;
 public:
-	virtual void Initialize() override;
-	virtual void Update() override;
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
 	// MVVM Setters & Getters
 	void SetFactionText(FText newFactionText);

@@ -25,9 +25,7 @@ public:
 	void SetContent(FUDPolicySelectItemInfo content);
 public:
 	// Button Functions
-	/**
-	 * Interacting with this item.
-	 */
+	/** Interacting with this item. */
 	UFUNCTION()
 	void Select();
 	// MVVM Fields
@@ -36,8 +34,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool CanSelectItemValue;
 public:
-	virtual void Initialize() override;
-	virtual void Update() override;
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
 	// MVVM Setters & Getters
 	void SetSelectItemText(FText newSelectItemText);

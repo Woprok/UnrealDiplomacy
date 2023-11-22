@@ -6,10 +6,11 @@
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Skirmish/UDSkirmishHUD.h"
 #include "Core/Simulation/Actions/UDDealActionMessageSend.h"
+#include "Core/Simulation/UDActionData.h"
 
 #define LOCTEXT_NAMESPACE "Chat"
 
-void UUDChatViewModel::Initialize()
+void UUDChatViewModel::Setup()
 {
 	ChatItemViewModelType = UUDChatItemViewModel::StaticClass();
 
@@ -19,7 +20,7 @@ void UUDChatViewModel::Initialize()
 	SetSendText(send);
 }
 
-void UUDChatViewModel::Update()
+void UUDChatViewModel::Refresh()
 {
 	if (!Model->IsOverseeingStatePresent())
 		return;

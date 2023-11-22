@@ -23,15 +23,11 @@ class UNREALDIPLOMACY_API UUDFactionInteractionViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Set content of the interaction option.
-	 */
+	/** Set content of the interaction option. */
 	void SetContent(int32 selectedFaction, EUDDecisionType interactionType, FUDFactionInteractionInfo content);
 public:
 	// Button Functions
-	/**
-	 * Execution of the interaction.
-	 */
+	/** Execution of the interaction. */
 	UFUNCTION()
 	void Interact();
 	// MVVM Fields
@@ -40,8 +36,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FUDViewModelContent ParameterEditorContent;
 public:
-	virtual void Initialize() override;
-	virtual void Update() override;
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
 	/** Interacts based on current InteractionType */
 	void DecisionRequest(FUDActionData data);

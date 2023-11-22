@@ -11,7 +11,7 @@
 
 int32 UUDTileInteractionViewModel::UniqueNameDefinition = 0;
 
-void UUDTileInteractionViewModel::Initialize()
+void UUDTileInteractionViewModel::Setup()
 {
 	if (!IsUniqueNameDefined) 
 	{
@@ -28,10 +28,11 @@ void UUDTileInteractionViewModel::Initialize()
 	// Announce them to widget for additional binding.
 	SetParameterEditorContent(FUDViewModelContent(ParameterEditorInstance));
 	// Call initialize so each Instance is ready to use, once it receives data in runtime.
-	ParameterEditorInstance->Refresh();
+	//ParameterEditorInstance->Refresh();
+	// TODO remove this commented code, if it works properly
 }
 
-void UUDTileInteractionViewModel::Update()
+void UUDTileInteractionViewModel::Refresh()
 {
 	if (!Model->IsOverseeingStatePresent())
 		return;
@@ -72,6 +73,7 @@ void UUDTileInteractionViewModel::UpdateEditor()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDTileInteractionViewModel: UpdateEditor."));
 	ParameterEditorInstance->SetContent(Content.Parameters);
+	ParameterEditorInstance->Refresh();
 }
 
 void UUDTileInteractionViewModel::DefineInstances()

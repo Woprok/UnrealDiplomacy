@@ -21,9 +21,7 @@ class UNREALDIPLOMACY_API UUDTileManagementViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Self handle for faction selection event.
-	 */
+	/** Self handle for faction selection event. */
 	UFUNCTION()
 	void OnTileSelected(FIntPoint selectedTile);
 public:
@@ -52,19 +50,13 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FUDViewModelList ModifierItemList;
 public:
-	virtual void Initialize() override;
+	virtual void Setup() override;
 	UFUNCTION()
-	virtual void Update() override;
-	UFUNCTION()
-	void Reload();
+	virtual void Refresh() override;
 private:
-	/**
-	 * Updates available interaction with the tile.
-	 */
+	/** Updates available interaction with the tile. */
 	void UpdateTileInteractionList();
-	/**
-	 * Updates available modifiers with the tile.
-	 */
+	/** Updates available modifiers with the tile. */
 	void UpdateModifierItemList();
 private:
 	// MVVM Setters & Getters

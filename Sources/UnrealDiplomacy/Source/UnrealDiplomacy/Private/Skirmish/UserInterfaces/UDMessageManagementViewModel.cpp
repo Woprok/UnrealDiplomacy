@@ -20,7 +20,7 @@ FUDMessageInfo GetInvalidMessage()
 	return info;
 }
 
-void UUDMessageManagementViewModel::Initialize()
+void UUDMessageManagementViewModel::Setup()
 {
 	MessageItemType = UUDMessageItemViewModel::StaticClass();
 
@@ -43,8 +43,8 @@ void UUDMessageManagementViewModel::Initialize()
 	SelectedIndex = UUDGlobalData::InvalidArrayIndex;
 	SelectedMessageItem = GetInvalidMessage();
 
-	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDMessageManagementViewModel::Reload);
-	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDMessageManagementViewModel::Update);
+	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDMessageManagementViewModel::Refresh);
+	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDMessageManagementViewModel::Refresh);
 
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
 	// Retrieve view model for sub content control
@@ -52,24 +52,18 @@ void UUDMessageManagementViewModel::Initialize()
 	MessageItemInstance = Cast<UUDMessageItemViewModel>(messageItemModel);
 	// Announce them to widget for additional binding.
 	SetMessageItemContent(FUDViewModelContent(MessageItemInstance));
-	// Call initialize so instance is ready to use, once it receives data in runtime.
-	MessageItemInstance->Refresh();
 
-	Update();
+	// TODO delete this comment if it works as expected...
+	//Update();
 }
 
-void UUDMessageManagementViewModel::Reload()
-{
-	Update();
-}
-
-void UUDMessageManagementViewModel::Update()
+void UUDMessageManagementViewModel::Refresh()
 {
 	if (!Model->IsOverseeingStatePresent())
 		return;
 	if (!Model->IsGamePlayed())
 		return;
-	// Following updates require model.
+	// Following updates required model with set content or invalidate content.
 	UpdateMessageItems();
 }
 
@@ -85,6 +79,8 @@ void UUDMessageManagementViewModel::UpdateSelectedMessageItem()
 	{
 		MessageItemInstance->SetContent(SelectedMessageItem);
 	}
+	// After that we can call refresh, so we follow the convention of SetContent->Refresh
+	MessageItemInstance->Refresh();
 }
 
 #undef LOCTEXT_NAMESPACE

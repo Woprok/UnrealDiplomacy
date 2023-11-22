@@ -22,7 +22,7 @@ FUDDealPointMinimalInfo GetInvalidSecondaryPoint(int32 dealId, int32 pointId)
 	return info;
 }
 
-void UUDPrimaryPointItemViewModel::Initialize()
+void UUDPrimaryPointItemViewModel::Setup()
 {
 	if (!IsUniqueNameDefined)
 	{
@@ -38,9 +38,15 @@ void UUDPrimaryPointItemViewModel::Initialize()
 	}
 	FText createPoint = FText(LOCTEXT("PrimaryPointItem", "+ Point"));
 	SetCreatePointText(createPoint);
+
+	// Retrieve model
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(PointContentViewModelInstanceName, PointContentViewModelType);
+	PointContentViewModelInstance = Cast<UUDPointContentViewModel>(viewModel);
+	SetPointContent(FUDViewModelContent(PointContentViewModelInstance));
 }
 
-void UUDPrimaryPointItemViewModel::Update()
+void UUDPrimaryPointItemViewModel::Refresh()
 {
 	if (GetIsValidContentValue())
 	{
@@ -66,13 +72,9 @@ void UUDPrimaryPointItemViewModel::SetContent(FUDDealPointMinimalInfo content, b
 void UUDPrimaryPointItemViewModel::UpdatePointContent()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDPrimaryPointItemViewModel: UpdatePointContent."));
-	// Retrieve model
-	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(PointContentViewModelInstanceName, PointContentViewModelType);
-	PointContentViewModelInstance = Cast<UUDPointContentViewModel>(viewModel);
+	// Get update on content
 	PointContentViewModelInstance->SetContent(Content);
 	PointContentViewModelInstance->Refresh();
-	SetPointContent(FUDViewModelContent(PointContentViewModelInstance));
 }
 
 void UUDPrimaryPointItemViewModel::UpdatePointList()

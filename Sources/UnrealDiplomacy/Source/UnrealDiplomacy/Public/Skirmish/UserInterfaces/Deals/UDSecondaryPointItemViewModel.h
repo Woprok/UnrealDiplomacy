@@ -23,9 +23,7 @@ class UNREALDIPLOMACY_API UUDSecondaryPointItemViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Set content of the strategy option.
-	 */
+	/** Set content of the deal point content. */
 	void SetContent(FUDDealPointMinimalInfo content, bool isValid);
 public:
 	// Button Functions
@@ -41,16 +39,12 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FUDViewModelContent PointContent;
 public:
-	virtual void Initialize() override;
-	virtual void Update() override;
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
-	/**
-	 * Fill with current deal points.
-	 */
+	/** Fill with current deal points. */
 	void UpdatePointList();
-	/**
-	 * Fill current point with data.
-	 */
+	/** Fill current point with data. */
 	void UpdatePointContent();
 private:
 	// MVVM Setters & Getters

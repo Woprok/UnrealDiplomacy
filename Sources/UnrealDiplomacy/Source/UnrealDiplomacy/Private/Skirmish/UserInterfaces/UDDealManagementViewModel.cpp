@@ -24,7 +24,7 @@ FUDDealMinimalInfo GetInvalidDeal(bool getActive)
 	return info;
 }
 
-void UUDDealManagementViewModel::Initialize()
+void UUDDealManagementViewModel::Setup()
 {
 	DealItemType = UUDDealItemViewModel::StaticClass();
 
@@ -57,8 +57,8 @@ void UUDDealManagementViewModel::Initialize()
 	SelectedActiveDealItem = GetInvalidDeal(true);
 	SelectedHistoryDealItem = GetInvalidDeal(false);
 
-	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDDealManagementViewModel::Reload);
-	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDDealManagementViewModel::Update);
+	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDDealManagementViewModel::Refresh);
+	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDDealManagementViewModel::Refresh);
 
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
 	// Retrieve view model for sub content control
@@ -70,18 +70,13 @@ void UUDDealManagementViewModel::Initialize()
 	SetActiveDealItemContent(FUDViewModelContent(ActiveDealItemInstance));
 	SetHistoryDealItemContent(FUDViewModelContent(HistoryDealItemInstance));
 	// Call initialize so instance is ready to use, once it receives data in runtime.
-	ActiveDealItemInstance->Refresh();
-	HistoryDealItemInstance->Refresh();
-
-	Update();
+	// TODO remove this commented code, if it works properly
+	//ActiveDealItemInstance->Refresh();
+	//HistoryDealItemInstance->Refresh();
+	//Update();
 }
 
-void UUDDealManagementViewModel::Reload()
-{
-	Update();
-}
-
-void UUDDealManagementViewModel::Update()
+void UUDDealManagementViewModel::Refresh()
 {
 	if (!Model->IsOverseeingStatePresent())
 		return;
@@ -105,6 +100,7 @@ void UUDDealManagementViewModel::UpdateSelectedDealItem()
 		{
 			ActiveDealItemInstance->SetContent(SelectedActiveDealItem);
 		}
+		ActiveDealItemInstance->Refresh();
 	}
 	if (IsHistory())
 	{
@@ -118,6 +114,7 @@ void UUDDealManagementViewModel::UpdateSelectedDealItem()
 		{
 			HistoryDealItemInstance->SetContent(SelectedHistoryDealItem);
 		}
+		HistoryDealItemInstance->Refresh();
 	}
 }
 

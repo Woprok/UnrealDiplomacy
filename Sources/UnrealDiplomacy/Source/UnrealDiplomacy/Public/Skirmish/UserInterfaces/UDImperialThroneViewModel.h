@@ -51,9 +51,7 @@ private:
 	void AbdicateThrone();
 	UFUNCTION()
 	void ContestThrone();
-	/**
-	 * Updates all parts of throne presentation to latest change.
-	 */
+	/** Updates all parts of throne presentation to latest change. */
 	void UpdateThronePresentation();
 private:
 	// MVVM Setters & Getters

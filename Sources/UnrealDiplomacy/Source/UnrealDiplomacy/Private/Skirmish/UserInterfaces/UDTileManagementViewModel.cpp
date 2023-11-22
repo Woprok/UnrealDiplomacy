@@ -9,7 +9,7 @@
 
 #define LOCTEXT_NAMESPACE "TileManagement"
 
-void UUDTileManagementViewModel::Initialize()
+void UUDTileManagementViewModel::Setup()
 {
 	TileInteractionViewModelType = UUDTileInteractionViewModel::StaticClass();
 	ModifierItemViewModelType = UUDModifierItemViewModel::StaticClass();
@@ -35,24 +35,21 @@ void UUDTileManagementViewModel::Initialize()
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
 	hud->OnTileSelectedEvent.AddUniqueDynamic(this, &UUDTileManagementViewModel::OnTileSelected);
 
-	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDTileManagementViewModel::Reload);
-	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDTileManagementViewModel::Update);
+	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDTileManagementViewModel::Refresh);
+	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDTileManagementViewModel::Refresh);
 
-	Update();
+	// TODO delete this comment if it works as expected...
+	//Update();
 }
 
-void UUDTileManagementViewModel::Reload()
-{
-	Update();
-}
-
-void UUDTileManagementViewModel::Update()
+void UUDTileManagementViewModel::Refresh()
 {
 	if (!Model->IsOverseeingStatePresent())
 		return;
 	if (!Model->IsGamePlayed())
 		return;
 	// Following updates require model.
+	// TODO check that tile was selected...
 	FUDTileInfo tile = Model->GetTileInfo(SelectedTile);
 	SetTileNameText(FText::FromString(tile.Name));
 	SetFactionNameText(FText::FromString(tile.FactionName));
@@ -79,9 +76,14 @@ void UUDTileManagementViewModel::OnTileSelected(FIntPoint selectedTile)
 	hud->ShowWidget(hud->TileManagementWidget);
 
 	//if (SelectedTile != selectedTile)
+	// This has to update the content, the if might be possible to uncomment if other bugs are fixed
+	// As this is change by other interaction, this has to get immediate update to update current content
+	// TODO verify validity of this comment.
 	{
+		// This is basically SetContent by user
 		SelectedTile = selectedTile;
-		Update();
+		// Thus it is followed by Refresh
+		Refresh();
 	}
 }
 

@@ -18,18 +18,12 @@ FUDDealPointMinimalInfo GetInvalidPrimaryPoint(int32 dealId)
 	return info;
 }
 
-void UUDDealEditationTabViewModel::Initialize()
+void UUDDealEditationTabViewModel::Setup()
 {
 	PointItemViewModelType = UUDPrimaryPointItemViewModel::StaticClass();
-	Update();
 }
 
-void UUDDealEditationTabViewModel::Reload()
-{
-	Update();
-}
-
-void UUDDealEditationTabViewModel::Update()
+void UUDDealEditationTabViewModel::Refresh()
 {
 	if (!Model->IsOverseeingStatePresent())
 		return;
@@ -80,6 +74,7 @@ void UUDDealEditationTabViewModel::UpdatePointList()
 	newViewModel->SetContent(GetInvalidPrimaryPoint(Content.DealId), false);
 	PointItemViewModelCollection.Add(newViewModel);
 	// HACK TODO redo the update cycle
+	// TODO verify if this hack is still required or even better then calling refresh immediately.
 	for (int32 i = 0; i < PointItemViewModelCollection.Num(); i++)
 	{
 		if (PointItemViewModelCollection[i])

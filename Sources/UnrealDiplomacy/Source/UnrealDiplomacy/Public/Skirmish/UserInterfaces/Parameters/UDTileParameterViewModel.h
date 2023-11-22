@@ -48,8 +48,8 @@ public:
 	// Events
 	FUDParameterChanged OnChangeEvent;
 public:
-	virtual void Initialize() override;
-	virtual void Update() override;
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
 	/** 
 	 * Tries to retrieve desired selected item, on fail returns first element.

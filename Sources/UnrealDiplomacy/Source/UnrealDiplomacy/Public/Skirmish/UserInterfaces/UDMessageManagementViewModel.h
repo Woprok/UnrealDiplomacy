@@ -51,19 +51,13 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FUDViewModelContent MessageItemContent;
 public:
-	virtual void Initialize() override;
+	virtual void Setup() override;
 	UFUNCTION()
-	virtual void Update() override;
-	UFUNCTION()
-	void Reload();
+	virtual void Refresh() override;
 private:
-	/**
-	 * Updates message item to latest.
-	 */
+	/** Updates message item to latest. */
 	void UpdateMessageItems();
-	/**
-	 * Updates message item to latest.
-	 */
+	/** Updates message item to latest. */
 	void UpdateSelectedMessageItem();
 	/**
 	 * Tries to retrieve desired selected item, on fail returns first element.

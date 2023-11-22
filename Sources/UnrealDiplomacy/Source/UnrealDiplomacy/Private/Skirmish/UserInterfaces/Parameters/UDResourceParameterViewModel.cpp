@@ -16,7 +16,7 @@ FUDResourceMinimalInfo GetInvalidResource()
 	return invalid;
 }
 
-void UUDResourceParameterViewModel::Initialize()
+void UUDResourceParameterViewModel::Setup()
 {
 	FText tileTitle = FText(LOCTEXT("ResourceParameter", "Resource"));
 	SetResourceTitleText(tileTitle);
@@ -29,7 +29,7 @@ void UUDResourceParameterViewModel::Initialize()
 	SelectedResourceIndex = UUDGlobalData::InvalidParameterArrayIndex;
 }
 
-void UUDResourceParameterViewModel::Update()
+void UUDResourceParameterViewModel::Refresh()
 {
 	SetResourceTitleText(FText::FromString(Content.Name));
 	SetToolTipText(FText::FromString(Content.ToolTip));

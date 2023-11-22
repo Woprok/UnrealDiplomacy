@@ -40,8 +40,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Getter)
 	FUDViewModelContent ParameterEditorContent;
 public:
-	virtual void Initialize() override;
-	virtual void Update() override;
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
 	/** Updates all parameter lists. */
 	void UpdateEditor();

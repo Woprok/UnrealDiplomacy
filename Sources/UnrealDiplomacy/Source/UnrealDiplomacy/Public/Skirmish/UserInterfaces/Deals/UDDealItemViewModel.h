@@ -23,13 +23,9 @@ class UNREALDIPLOMACY_API UUDDealItemViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Set content of the parameter editor.
-	 */
+	/** Set content of the parameter editor. */
 	void InvalidateContent(FUDDealMinimalInfo content);
-	/**
-	 * Set content of the parameter editor.
-	 */
+	/** Set content of the parameter editor. */
 	void SetContent(FUDDealMinimalInfo content);
 public:
 	// Button Functions
@@ -65,23 +61,15 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Getter)
 	FUDViewModelContent ExecutionTabContent;
 public:
-	virtual void Initialize() override;
+	virtual void Setup() override;
 	UFUNCTION()
-	virtual void Update() override;
-	UFUNCTION()
-	void Reload();
+	virtual void Refresh() override;
 private:
-	/**
-	 * Updates general.
-	 */
+	/** Updates general. */
 	void UpdateGeneralInstance();
-	/**
-	 * Updates editation.
-	 */
+	/** Updates editation. */
 	void UpdateEditationInstance();
-	/**
-	 * Updates execution.
-	 */
+	/** Updates execution. */
 	void UpdateExecutionInstance();
 	/** Swift check to which of the tab is selected. */
 	bool IsGeneral() { return SelectedTabValue == GeneralTabValue; };

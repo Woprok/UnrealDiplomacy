@@ -73,27 +73,17 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Getter)
 	FUDViewModelContent HistoryDealItemContent;
 public:
-	virtual void Initialize() override;
+	virtual void Setup() override;
 	UFUNCTION()
-	virtual void Update() override;
-	UFUNCTION()
-	void Reload();
+	virtual void Refresh() override;
 private:
-	/**
-	 * Updates items.
-	 */
+	/** Updates items. */
 	void UpdateDealItems();
-	/**
-	 * Updates selection.
-	 */
+	/** Updates selection. */
 	void UpdateSelectedDealItem();
-	/**
-	 * Attempts to select specified item.
-	 */
+	/** Attempts to select specified item. */
 	FUDDealMinimalInfo GetSelectedOrDefaultActive(int32 desiredSelectedItem);
-	/**
-	 * Attempts to select specified item.
-	 */
+	/** Attempts to select specified item. */
 	FUDDealMinimalInfo GetSelectedOrDefaultHistory(int32 desiredSelectedItem);
 	/** Swift check to which of the tab is selected. */
 	bool IsActive() { return SelectedTabValue == ActiveTabValue; };

@@ -24,9 +24,7 @@ class UNREALDIPLOMACY_API UUDFactionManagementViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Self handle for faction selection event.
-	 */
+	/** Self handle for faction selection event. */
 	UFUNCTION()
 	void OnFactionSelected(int32 selectedFactionId);
 public:
@@ -61,35 +59,21 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FUDViewModelContent PolicySelectorContent;
 public:
-	virtual void Initialize() override;
+	virtual void Setup() override;
 	UFUNCTION()
-	virtual void Update() override;
-	UFUNCTION()
-	void Reload();
+	virtual void Refresh() override;
 private:
-	/**
-	 * Updates interactions with the faction.
-	 */
+	/** Updates interactions with the faction. */
 	void UpdateFactionLists();
-	/**
-	 * Updates available direct interaction with the faction.
-	 */
+	/** Updates available direct interaction with the faction. */
 	void UpdateFactionInteractionList();
-	/**
-	 * Updates available offer interaction with the faction.
-	 */
+	/** Updates available offer interaction with the faction. */
 	void UpdateFactionOfferList();
-	/**
-	 * Updates available request interaction with the faction.
-	 */
+	/** Updates available request interaction with the faction. */
 	void UpdateFactionRequestList();
-	/**
-	 * Updates available demand interaction with the faction.
-	 */
+	/** Updates available demand interaction with the faction. */
 	void UpdateFactionDemandList();
-	/**
-	 * Updates available modifiers with the faction.
-	 */
+	/** Updates available modifiers with the faction. */
 	void UpdateModifierItemList();
 private:
 	// MVVM Setters & Getters

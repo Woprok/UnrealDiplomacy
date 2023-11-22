@@ -24,13 +24,9 @@ class UNREALDIPLOMACY_API UUDDealGeneralTabViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Set content of the parameter editor.
-	 */
+	/** Set content of main the deal view tab. */
 	void InvalidateContent(FUDDealMinimalInfo content);
-	/**
-	 * Set content of the parameter editor.
-	 */
+	/** Set content of main the deal view tab. */
 	void SetContent(FUDDealMinimalInfo content);
 public:
 	// Button Functions
@@ -80,23 +76,15 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FUDViewModelContent DealChatContent;
 public:
-	virtual void Initialize() override;
+	virtual void Setup() override;
 	UFUNCTION()
-	virtual void Update() override;
-	UFUNCTION()
-	void Reload();
+	virtual void Refresh() override;
 private:
-	/**
-	 * Updates chat.
-	 */
+	/** Updates chat. */
 	void UpdateChatInstance();
-	/**
-	 * Updates participant list.
-	 */
+	/** Updates participant list. */
 	void UpdateParticipantItemList();
-	/**
-	 * Updates invite list.
-	 */
+	/** Updates invite list. */
 	void UpdateInviteItemList();
 private:
 	// MVVM Setters & Getters

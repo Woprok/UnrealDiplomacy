@@ -22,9 +22,7 @@ class UNREALDIPLOMACY_API UUDActionItemViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Set content of the strategy option.
-	 */
+	/** Set content of the strategy option. */
 	void SetContent(FUDDealActionMinimalInfo content);
 public:
 	// Button Functions
@@ -62,8 +60,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FUDViewModelContent ParameterEditorContent;
 public:
-	virtual void Initialize() override;
-	virtual void Update() override;
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
 	/** Updates all parameter lists. */
 	void UpdateEditor();

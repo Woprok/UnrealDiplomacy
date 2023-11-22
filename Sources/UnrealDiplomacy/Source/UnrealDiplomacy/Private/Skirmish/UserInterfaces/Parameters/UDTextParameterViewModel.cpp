@@ -6,12 +6,12 @@
 
 #define LOCTEXT_NAMESPACE "TextParameter"
 
-void UUDTextParameterViewModel::Initialize()
+void UUDTextParameterViewModel::Setup()
 {
 
 }
 
-void UUDTextParameterViewModel::Update()
+void UUDTextParameterViewModel::Refresh()
 {
 	SetTextTitleText(FText::FromString(Content.Name));
 	SetToolTipText(FText::FromString(Content.ToolTip));

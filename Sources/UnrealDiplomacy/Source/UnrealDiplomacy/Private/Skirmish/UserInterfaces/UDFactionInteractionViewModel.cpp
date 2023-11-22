@@ -13,7 +13,7 @@
 
 int32 UUDFactionInteractionViewModel::UniqueNameDefinition = 0;
 
-void UUDFactionInteractionViewModel::Initialize()
+void UUDFactionInteractionViewModel::Setup()
 {
 	if (!IsUniqueNameDefined) 
 	{
@@ -30,10 +30,11 @@ void UUDFactionInteractionViewModel::Initialize()
 	// Announce them to widget for additional binding.
 	SetParameterEditorContent(FUDViewModelContent(ParameterEditorInstance));
 	// Call initialize so each Instance is ready to use, once it receives data in runtime.
-	ParameterEditorInstance->Refresh();
+	//ParameterEditorInstance->Refresh();
+	// TODO remove this commented code, if it works properly
 }
 
-void UUDFactionInteractionViewModel::Update()
+void UUDFactionInteractionViewModel::Refresh()
 {
 	if (!Model->IsOverseeingStatePresent())
 		return;

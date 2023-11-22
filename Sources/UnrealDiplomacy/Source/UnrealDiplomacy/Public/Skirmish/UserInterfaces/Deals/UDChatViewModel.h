@@ -22,9 +22,7 @@ class UNREALDIPLOMACY_API UUDChatViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Set content of the chat.
-	 */
+	/** Set content of the chat. */
 	void SetContent(FUDDealMinimalInfo content);
 public:
 	// Button Functions
@@ -45,12 +43,10 @@ public:
 	FUDViewModelList ChatItemList;
 	// Events
 public:
-	virtual void Initialize() override;
-	virtual void Update() override;
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
-	/**
-	 * Updates chat history list.
-	 */
+	/** Updates chat history list. */
 	void UpdateChatItemList();
 private:
 	// MVVM Setters & Getters

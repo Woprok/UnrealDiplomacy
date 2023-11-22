@@ -33,7 +33,7 @@ void UUDSettingsViewModel::Setup()
 void UUDSettingsViewModel::Refresh()
 {
 	// Load all settings.
-	SetContent();
+	SetDefaultContent();
 	// Propagate to UI, see TODO
 	OnSettingsLoaded.Broadcast();
 }

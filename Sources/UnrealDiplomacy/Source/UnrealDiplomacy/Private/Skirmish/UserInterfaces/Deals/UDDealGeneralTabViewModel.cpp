@@ -17,10 +17,11 @@
 #include "Core/Simulation/Actions/UDDealActionContractCreate.h"
 #include "Core/Simulation/Actions/UDDealActionContractExecute.h"
 #include "Core/UDGlobalData.h"
+#include "Core/Simulation/UDActionData.h"
 
 #define LOCTEXT_NAMESPACE "DealGeneralTab"
 
-void UUDDealGeneralTabViewModel::Initialize()
+void UUDDealGeneralTabViewModel::Setup()
 {
 	ParticipantItemViewModelType = UUDParticipantItemViewModel::StaticClass();
 	InviteItemViewModelType = UUDInviteItemViewModel::StaticClass();
@@ -48,15 +49,15 @@ void UUDDealGeneralTabViewModel::Initialize()
 	FText executeContract = FText(LOCTEXT("DealGeneralTab", "Execute Contract"));
 	SetExecuteContractText(executeContract);
 
-	Update();
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	TObjectPtr<UUDViewModel> chatViewModel = hud->GetViewModelCollection(ChatViewModelInstanceName, ChatViewModelType);
+	ChatViewModelInstance = Cast<UUDChatViewModel>(chatViewModel);
+	SetDealChatContent(FUDViewModelContent(ChatViewModelInstance));
+	// TODO remove this commented code, if it works properly
+	// Update();
 }
 
-void UUDDealGeneralTabViewModel::Reload()
-{
-	Update();
-}
-
-void UUDDealGeneralTabViewModel::Update()
+void UUDDealGeneralTabViewModel::Refresh()
 {
 	if (!Model->IsOverseeingStatePresent())
 		return;
@@ -159,10 +160,6 @@ void UUDDealGeneralTabViewModel::SetContent(FUDDealMinimalInfo content)
 
 void UUDDealGeneralTabViewModel::UpdateChatInstance()
 {
-	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(ChatViewModelInstanceName, ChatViewModelType);
-	ChatViewModelInstance = Cast<UUDChatViewModel>(viewModel);
-	SetDealChatContent(FUDViewModelContent(ChatViewModelInstance));
 	ChatViewModelInstance->SetContent(Content);
 	ChatViewModelInstance->Refresh();
 }
@@ -181,9 +178,9 @@ void UUDDealGeneralTabViewModel::UpdateParticipantItemList()
 	for (int32 i = 0; i < messages.Num(); i++)
 	{
 		TObjectPtr<UUDParticipantItemViewModel> newViewModel = Cast<UUDParticipantItemViewModel>(viewModels[i]);
+		ParticipantItemViewModelCollection.Add(newViewModel);
 		newViewModel->SetContent(messages[i]);
 		newViewModel->Refresh();
-		ParticipantItemViewModelCollection.Add(newViewModel);
 	}
 
 	SetParticipantItemList(FUDViewModelList(viewModels));
@@ -203,9 +200,9 @@ void UUDDealGeneralTabViewModel::UpdateInviteItemList()
 	for (int32 i = 0; i < messages.Num(); i++)
 	{
 		TObjectPtr<UUDInviteItemViewModel> newViewModel = Cast<UUDInviteItemViewModel>(viewModels[i]);
+		InviteItemViewModelCollection.Add(newViewModel);
 		newViewModel->SetContent(messages[i]);
 		newViewModel->Refresh();
-		InviteItemViewModelCollection.Add(newViewModel);
 	}
 
 	SetInviteItemList(FUDViewModelList(viewModels));

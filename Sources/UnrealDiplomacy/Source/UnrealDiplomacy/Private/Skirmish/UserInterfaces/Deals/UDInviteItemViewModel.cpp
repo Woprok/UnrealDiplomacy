@@ -9,7 +9,7 @@
 
 #define LOCTEXT_NAMESPACE "InviteItem"
 
-void UUDInviteItemViewModel::Initialize()
+void UUDInviteItemViewModel::Setup()
 {
 	FText factionName = FText(LOCTEXT("ParticipantItem", "Faction"));
 	SetFactionNameText(factionName);
@@ -17,7 +17,7 @@ void UUDInviteItemViewModel::Initialize()
 	SetInviteText(invite);
 }
 
-void UUDInviteItemViewModel::Update()
+void UUDInviteItemViewModel::Refresh()
 {
 	SetFactionNameText(FText::FromString(Content.FactionName));
 }

@@ -12,7 +12,7 @@
 
 #define LOCTEXT_NAMESPACE "DealItem"
 
-void UUDDealItemViewModel::Initialize()
+void UUDDealItemViewModel::Setup()
 {
 	GeneralTabViewModelType = UUDDealGeneralTabViewModel::StaticClass();
 	EditationTabViewModelType = UUDDealEditationTabViewModel::StaticClass();
@@ -40,19 +40,14 @@ void UUDDealItemViewModel::Initialize()
 	SetEditationTabContent(FUDViewModelContent(EditationTabViewModelInstance));
 	SetExecutionTabContent(FUDViewModelContent(ExecutionTabViewModelInstance));
 	// Call initialize so each Instance is ready to use, once it receives data in runtime.
-	GeneralTabViewModelInstance->Refresh();
-	EditationTabViewModelInstance->Refresh();
-	ExecutionTabViewModelInstance->Refresh();
-
-	Update();
+	// TODO remove this commented code, if it works properly
+	//GeneralTabViewModelInstance->Refresh();
+	//EditationTabViewModelInstance->Refresh();
+	//ExecutionTabViewModelInstance->Refresh();
+	//Update();
 }
 
-void UUDDealItemViewModel::Reload()
-{
-	Update();
-}
-
-void UUDDealItemViewModel::Update()
+void UUDDealItemViewModel::Refresh()
 {
 	SetDealNameText(FText::FromString(Content.Name));
 
@@ -96,7 +91,6 @@ void UUDDealItemViewModel::InvalidateContent(FUDDealMinimalInfo content)
 	UE_LOG(LogTemp, Log, TEXT("UUDDealItemViewModel: InvalidateContent."));
 	Content = content;
 	SetIsValidContentValue(false);
-	Update();
 }
 
 void UUDDealItemViewModel::SetContent(FUDDealMinimalInfo content)
@@ -104,7 +98,6 @@ void UUDDealItemViewModel::SetContent(FUDDealMinimalInfo content)
 	UE_LOG(LogTemp, Log, TEXT("UUDDealItemViewModel: SetContent."));
 	Content = content;
 	SetIsValidContentValue(true);
-	Update();
 }
 
 void UUDDealItemViewModel::SetDealNameText(FText newDealNameText)

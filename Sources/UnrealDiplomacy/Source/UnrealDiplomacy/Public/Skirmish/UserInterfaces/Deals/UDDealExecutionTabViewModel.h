@@ -21,13 +21,9 @@ class UNREALDIPLOMACY_API UUDDealExecutionTabViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Set content of the parameter editor.
-	 */
+	/** Set content of the action list. */
 	void InvalidateContent(FUDDealMinimalInfo content);
-	/**
-	 * Set content of the parameter editor.
-	 */
+	/** Unset content of the action list. */
 	void SetContent(FUDDealMinimalInfo content);
 public:
 	// Button Functions
@@ -36,15 +32,11 @@ public:
 	FUDViewModelList ActionItemList;
 	// Events
 public:
-	virtual void Initialize() override;
+	virtual void Setup() override;
 	UFUNCTION()
-	virtual void Update() override;
-	UFUNCTION()
-	void Reload();
+	virtual void Refresh() override;
 private:
-	/**
-	 * Fill with current deal points.
-	 */
+	/** Fill with current deal points. */
 	void UpdateActionList();
 private:
 	// MVVM Setters & Getters

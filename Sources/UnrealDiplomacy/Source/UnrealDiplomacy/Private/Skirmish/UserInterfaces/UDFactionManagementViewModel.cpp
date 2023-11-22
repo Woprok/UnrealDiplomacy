@@ -11,7 +11,7 @@
 
 #define LOCTEXT_NAMESPACE "FactionManagement"
 
-void UUDFactionManagementViewModel::Initialize()
+void UUDFactionManagementViewModel::Setup()
 {
 	FactionInteractionViewModelType = UUDFactionInteractionViewModel::StaticClass();
 	ModifierItemViewModelType = UUDModifierItemViewModel::StaticClass();
@@ -36,8 +36,8 @@ void UUDFactionManagementViewModel::Initialize()
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
 	hud->OnFactionSelectedEvent.AddUniqueDynamic(this, &UUDFactionManagementViewModel::OnFactionSelected);
 
-	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDFactionManagementViewModel::Reload);
-	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDFactionManagementViewModel::Update);
+	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDFactionManagementViewModel::Refresh);
+	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDFactionManagementViewModel::Refresh);
 
 
 	// Retrieve view models for sub content controls
@@ -46,15 +46,11 @@ void UUDFactionManagementViewModel::Initialize()
 	// Announce them to widget for additional binding.
 	SetPolicySelectorContent(FUDViewModelContent(PolicySelectorInstance));
 
-	Update();
+	// TODO delete this comment if it works as expected...
+	//Update();
 }
 
-void UUDFactionManagementViewModel::Reload()
-{
-	Update();
-}
-
-void UUDFactionManagementViewModel::Update()
+void UUDFactionManagementViewModel::Refresh()
 {
 	if (!Model->IsOverseeingStatePresent())
 		return;
@@ -68,7 +64,7 @@ void UUDFactionManagementViewModel::Update()
 	SetFactionNameText(FText::FromString(faction.Name));
 
 	// Call initialize so each Instance is ready to use, once it receives data in runtime.
-	PolicySelectorInstance->SetContent();
+	// Policy needs to be refreshed after update, in case the user change the selected option.
 	PolicySelectorInstance->Refresh();
 
 	UpdateFactionLists();
@@ -90,9 +86,14 @@ void UUDFactionManagementViewModel::OnFactionSelected(int32 selectedFactionId)
 	hud->ShowWidget(hud->FactionManagementWidget);
 
 	//if (SelectedFactionId != selectedFactionId)
+	// This has to update the content, the if might be possible to uncomment if other bugs are fixed
+	// As this is change by other interaction, this has to get immediate update to update current content
+	// TODO verify validity of this comment.
 	{
+		// This is basically SetContent by user
 		SelectedFactionId = selectedFactionId;
-		Update();
+		// Thus it is followed by Refresh
+		Refresh();
 	}
 }
 

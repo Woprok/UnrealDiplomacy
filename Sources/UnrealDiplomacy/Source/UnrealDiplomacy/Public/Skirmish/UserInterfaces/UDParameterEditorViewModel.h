@@ -38,20 +38,13 @@ class UNREALDIPLOMACY_API UUDParameterEditorViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Set content of the parameter editor.
-	 */
+	/** Set content of the parameter editor. */
 	void SetContent(FUDParameterListInfo content);
-	/**
-	 * Retrieves all value parameters from the editor items.
-	 */
+	/** Retrieves all value parameters from the editor items. */
 	TArray<int32> GetValueParameters();
-	/**
-	 * Retrieves text parameter from the editor items.
-	 */
+	/** Retrieves text parameter from the editor items. */
 	FString GetTextParameter();
 public:
-	// Button Functions
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool HasDealActionParameterValue;
@@ -92,8 +85,8 @@ public:
 	FUDValuesUpdated ValuesUpdated;
 	FUDTextUpdated TextUpdated;
 public:
-	virtual void Initialize() override;
-	virtual void Update() override;
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
 	/** Hide all parameter. */
 	void HideParameters();

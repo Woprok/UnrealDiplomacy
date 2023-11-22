@@ -12,7 +12,7 @@
 
 int32 UUDTertiaryPointItemViewModel::UniqueNameDefinition = 0;
 
-void UUDTertiaryPointItemViewModel::Initialize()
+void UUDTertiaryPointItemViewModel::Setup()
 {
 	if (!IsUniqueNameDefined)
 	{
@@ -26,9 +26,15 @@ void UUDTertiaryPointItemViewModel::Initialize()
 	}
 	FText createPoint = FText(LOCTEXT("TertiaryPointItem", "+++ Point"));
 	SetCreateTertiaryPointText(createPoint);
+
+	// Retrieve model
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(PointContentViewModelInstanceName, PointContentViewModelType);
+	PointContentViewModelInstance = Cast<UUDPointContentViewModel>(viewModel);
+	SetPointContent(FUDViewModelContent(PointContentViewModelInstance));
 }
 
-void UUDTertiaryPointItemViewModel::Update()
+void UUDTertiaryPointItemViewModel::Refresh()
 {
 	if (GetIsValidContentValue())
 	{
@@ -48,14 +54,9 @@ void UUDTertiaryPointItemViewModel::SetContent(FUDDealPointMinimalInfo content, 
 void UUDTertiaryPointItemViewModel::UpdatePointContent()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDTertiaryPointItemViewModel: UpdatePointContent."));
-	// Retrieve model
-	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(PointContentViewModelInstanceName, PointContentViewModelType);
-	// Get rid of all models
-	PointContentViewModelInstance = Cast<UUDPointContentViewModel>(viewModel);
+	// Get update on content
 	PointContentViewModelInstance->SetContent(Content);
 	PointContentViewModelInstance->Refresh();
-	SetPointContent(FUDViewModelContent(PointContentViewModelInstance));
 }
 
 void UUDTertiaryPointItemViewModel::CreateTertiaryPoint()

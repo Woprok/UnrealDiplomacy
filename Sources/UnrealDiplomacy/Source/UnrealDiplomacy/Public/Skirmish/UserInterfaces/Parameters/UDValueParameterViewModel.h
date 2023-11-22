@@ -47,8 +47,8 @@ public:
 	// Events
 	FUDParameterChanged OnChangeEvent;
 public:
-	virtual void Initialize() override;
-	virtual void Update() override;
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
 	void ChangeAttempted();
 private:

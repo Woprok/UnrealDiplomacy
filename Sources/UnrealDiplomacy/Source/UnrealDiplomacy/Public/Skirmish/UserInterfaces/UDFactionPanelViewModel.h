@@ -28,15 +28,11 @@ public:
 	FUDViewModelList FactionItemList;
 	// Events
 public:
-	virtual void Initialize() override;
+	virtual void Setup() override;
 	UFUNCTION()
-	virtual void Update() override;
-	UFUNCTION()
-	void Reload();
+	virtual void Refresh() override;
 private:
-	/**
-	 * Updates faction list.
-	 */
+	/** Updates faction list. */
 	void UpdateFactionList();
 private:
 	// MVVM Setters & Getters
