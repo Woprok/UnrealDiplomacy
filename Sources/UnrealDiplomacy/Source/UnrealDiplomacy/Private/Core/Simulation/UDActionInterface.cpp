@@ -6,6 +6,7 @@
 #include "Core/Simulation/UDWorldState.h"
 #include "Core/Simulation/UDWorldGenerator.h"
 #include "Core/Simulation/UDModifierManager.h"
+#include "Core/Simulation/UDResourceManager.h"
 
 bool IUDActionInterface::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
@@ -69,6 +70,11 @@ void IUDActionInterface::SetWorldGenerator(TObjectPtr<UUDWorldGenerator> generat
 }
 
 void IUDActionInterface::SetModifierManager(TObjectPtr<UUDModifierManager> manager)
+{
+	return;
+}
+
+void IUDActionInterface::SetResourceManager(TObjectPtr<UUDResourceManager> manager)
 {
 	return;
 }

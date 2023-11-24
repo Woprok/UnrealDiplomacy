@@ -11,6 +11,7 @@ struct FUDActionPresentation;
 class IUDActionInterface;
 class UUDWorldGenerator;
 class UUDModifierManager;
+class UUDResourceManager;
 
 /**
  * Manages all actions that are allowed to execute.
@@ -26,6 +27,8 @@ class UNREALDIPLOMACY_API UUDActionManager : public UObject
 public:
 	/** Retrieves inner instance of modifier manager */
 	TObjectPtr<UUDModifierManager> GetModifierManager();
+	/** Retrieves inner instance of resource manager */
+	TObjectPtr<UUDResourceManager> GetResourceManager();
 public:
 	/**
 	 * Returns Action associated with the supplied Id.
@@ -104,16 +107,15 @@ protected:
 	 */
 	UPROPERTY()
 	TMap<int32, TScriptInterface<IUDActionInterface>> Actions;
-	/**
-	 * World Generator shared by actions.
-	 */
+	/** World Generator shared by actions. */
 	UPROPERTY()
 	TObjectPtr<UUDWorldGenerator> WorldGenerator = nullptr;
-	/**
-	 * Modifier Manager shared by actions.
-	 */
+	/** Modifier Manager shared by actions. */
 	UPROPERTY()
 	TObjectPtr<UUDModifierManager> ModifierManager = nullptr;
+	/** Resource Manager shared by actions. */
+	UPROPERTY()
+	TObjectPtr<UUDResourceManager> ResourceManager = nullptr;
 private:
 	/**
 	 * Determines if this was initialized and can be used.

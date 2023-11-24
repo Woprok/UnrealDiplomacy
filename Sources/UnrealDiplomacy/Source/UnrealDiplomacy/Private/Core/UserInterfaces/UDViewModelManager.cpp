@@ -36,6 +36,8 @@ void UUDViewModelManager::Register(FName name, TSubclassOf<UUDViewModel> viewMod
 	}
 
 	ViewModels.Add(name, Create(viewModelType));
+	UE_LOG(LogTemp, Log, TEXT("UDViewModelManager: Performing ViewModel(%s) setup."), *name.ToString());
+	ViewModels[name]->Setup();
 	UE_LOG(LogTemp, Log, TEXT("UDViewModelManager: ViewModel(%s) successfully registered."), *name.ToString());
 }
 
@@ -51,8 +53,6 @@ TObjectPtr<UUDViewModel> UUDViewModelManager::Create(TSubclassOf<UUDViewModel> v
 	{
 		UE_LOG(LogTemp, Log, TEXT("UDViewModelManager: ViewModel created without model reference."));
 	}
-	UE_LOG(LogTemp, Log, TEXT("UDViewModelManager: Performing ViewModel setup."));
-	newViewModel->Setup();
 	return newViewModel;
 }
 
@@ -70,11 +70,18 @@ void UUDViewModelManager::RegisterCollection(FName name, TSubclassOf<UUDViewMode
 	}
 
 	UE_LOG(LogTemp, Log, TEXT("UDViewModelManager: CollectionViewModel(%s) is being expanded."), *name.ToString());
-	FUDViewModelCollection& existingCollectionViewModels = ViewModelCollections[name];
-	for (int32 i = existingCollectionViewModels.Collection.Num(); i < desiredTotalCount; i++)
+	for (int32 i = ViewModelCollections[name].Collection.Num(); i < desiredTotalCount; i++)
 	{
-		existingCollectionViewModels.Collection.Add(Create(viewModelType));
+		TObjectPtr<UUDViewModel> newViewModel = Create(viewModelType);
+		ViewModelCollections[name].Collection.Add(newViewModel);
+		// Modifying collections by Setup is possible, thus this must be called after we have created the member and placed it in.
+		UE_LOG(LogTemp, Log, TEXT("UDViewModelManager: Performing ViewModel(%s) setup."), *name.ToString());
+		newViewModel->Setup();
 	}
+	// Basically if we ever end up with 0 after we had to create one, something is wrong and this project should fail as fast as possible.
+
+	if (desiredTotalCount > 0)
+		ensureMsgf(ViewModelCollections[name].Collection.Num() > 0, TEXT("UDViewModelManager: '%s' missing memebrs!"), *name.ToString());
 
 	UE_LOG(LogTemp, Log, TEXT("UDViewModelManager: CollectionViewModel(%s) reached total %d."), *name.ToString(), desiredTotalCount);
 }

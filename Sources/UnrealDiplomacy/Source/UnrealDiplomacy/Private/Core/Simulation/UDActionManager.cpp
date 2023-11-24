@@ -4,6 +4,7 @@
 #include "Core/Simulation/UDActionInterface.h"
 #include "Core/Simulation/UDWorldGenerator.h"
 #include "Core/Simulation/UDModifierManager.h"
+#include "Core/Simulation/UDResourceManager.h"
 #include "Core/UDGlobalData.h"
 // Actions
 #include "Core/Simulation/Actions/UDActionDatabase.h"
@@ -11,6 +12,11 @@
 TObjectPtr<UUDModifierManager> UUDActionManager::GetModifierManager()
 {
 	return ModifierManager;
+}
+
+TObjectPtr<UUDResourceManager> UUDActionManager::GetResourceManager()
+{
+	return ResourceManager;
 }
 
 TScriptInterface<IUDActionInterface> UUDActionManager::GetAction(int32 actionTypeId)
@@ -51,6 +57,7 @@ void UUDActionManager::Initialize()
 
 	WorldGenerator = NewObject<UUDWorldGenerator>(this);
 	ModifierManager = NewObject<UUDModifierManager>(this);
+	ResourceManager = NewObject<UUDResourceManager>(this);
 	ModifierManager->Initialize();
 
 	RegisterCoreActions();
@@ -97,6 +104,7 @@ void UUDActionManager::BindSharedToAction(TScriptInterface<IUDActionInterface> n
 {
 	newAction->SetWorldGenerator(WorldGenerator);
 	newAction->SetModifierManager(ModifierManager);
+	newAction->SetResourceManager(ResourceManager);
 }
 
 #pragma region Action Filter API

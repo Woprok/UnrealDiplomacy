@@ -20,6 +20,12 @@ public:
 	virtual int32 GetId() const override { return ActionTypeId; };
 	virtual int32 GetParameterCount() const override { return FUDGameDataTile::ParameterCount; };
 	virtual FUDActionPresentation GetPresentation() const override;
+	virtual void SetResourceManager(TObjectPtr<UUDResourceManager> resourceManager) override;
 public:
 	static const int32 ActionTypeId = 2010;
+protected:
+	UPROPERTY()
+	TWeakObjectPtr<UUDResourceManager> ResourceManager = nullptr;
+	UPROPERTY()
+	int32 BaseGain = 50;
 };

@@ -24,10 +24,8 @@ void UUDFactionInteractionViewModel::Setup()
 	SetInteractText(interact);
 
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	// Retrieve view models for sub content controls
 	TObjectPtr<UUDViewModel> editorModel = hud->GetViewModelCollection(ParameterEditorInstanceName, ParameterEditorType);
 	ParameterEditorInstance = Cast<UUDParameterEditorViewModel>(editorModel);
-	// Announce them to widget for additional binding.
 	SetParameterEditorContent(FUDViewModelContent(ParameterEditorInstance));
 	// Call initialize so each Instance is ready to use, once it receives data in runtime.
 	//ParameterEditorInstance->Refresh();

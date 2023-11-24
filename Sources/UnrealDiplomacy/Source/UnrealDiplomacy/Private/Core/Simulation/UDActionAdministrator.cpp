@@ -10,6 +10,7 @@
 #include "Core/Simulation/UDModifierInterface.h"
 #include "Core/Simulation/UDModifierManager.h"
 #include "Core/Simulation/UDActionInterface.h"
+#include "Core/Simulation/UDResourceManager.h"
 
 #pragma region Core
 void UUDActionAdministrator::OnDataChanged(const FUDActionData& action)
@@ -369,6 +370,11 @@ TArray<FUDResourceInfo> UUDActionAdministrator::GetLocalFactionResourceList()
 	TArray<FUDResourceInfo> resources = { };
 
 	TObjectPtr<UUDFactionState> faction = State->Factions[State->FactionPerspective];
+
+	for (const auto& res : ActionManager->GetResourceManager()->FilterPrimaryResources())
+	{
+
+	}
 
 	resources.Add(FUDResourceInfo::GetReputation(faction->Resources[UD_RESOURCE_REPUTATION_ID]));
 	resources.Add(FUDResourceInfo::GetGold(faction->Resources[UD_RESOURCE_GOLD_ID]));

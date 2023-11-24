@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "Core/Simulation/UDResourceInterface.h"
-#include "UDDefaultResource.generated.h"
+#include "UDGameResource.generated.h"
 
 /**
- * Default resource that serves as fallback.
+ * Generic ancestor for all game resources.
  */
 UCLASS(Blueprintable, BlueprintType)
-class UNREALDIPLOMACY_API UUDDefaultResource : public UObject, public IUDResourceInterface
+class UNREALDIPLOMACY_API UUDGameResource : public UObject, public IUDResourceInterface
 {
 	GENERATED_BODY()
 public:
 	virtual int32 GetId() const override { return ResourceTypeId; };
 public:
-	static const int32 ResourceTypeId = 0;
+	static const int32 ResourceTypeId = 1000;
 };

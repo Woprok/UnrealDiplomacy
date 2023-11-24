@@ -14,7 +14,7 @@ TObjectPtr<UUDTileState> UUDTileState::CreateState(int32 x, int32 y)
 	newState->Name = FString::Format(TEXT("Province X:{0} Y:{1}"), 
 		{ FString::Printf(TEXT("%*d"), 2, x), FString::Printf(TEXT("%*d"), 2, y) }
 	);
-	newState->ResourceType = UD_RESOURCE_FOOD_ID;
+	newState->ResourceType = UUDGlobalData::InvalidResourceId;
 	newState->ResourceStored = 0;
 	return newState;
 }

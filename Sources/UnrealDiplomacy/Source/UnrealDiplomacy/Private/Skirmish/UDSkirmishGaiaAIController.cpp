@@ -9,7 +9,7 @@
 
 void AUDSkirmishGaiaAIController::ProcessIntermezzoPlay()
 {
-	MakeAction(UUDGaiaActionResourcesAllAdd::ActionTypeId, { 100 } );
+	MakeAction(UUDGaiaActionResourcesAllAdd::ActionTypeId);
 
 	// Finish this by executing regent change and ending the intermezzo.
 	MakeAction(UUDSystemActionRegentChange::ActionTypeId);
