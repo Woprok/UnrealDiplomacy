@@ -26,6 +26,9 @@ void AUDWorldSimulation::Initialize()
 
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering Actions."));
 	ActionManager->Initialize();
+
+	Arbiter->SetModifierManager(ActionManager->GetModifierManager());
+	Arbiter->SetResourceManager(ActionManager->GetResourceManager());
 }
 
 #pragma region Assigns of controllers to specific state.

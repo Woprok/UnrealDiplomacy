@@ -54,6 +54,10 @@ public:
 	 * See FUDModifierData::IsTypeTargetEqual
 	 */
 	bool HasFactionModifier(const TObjectPtr<UUDFactionState>& faction, FUDModifierData searchedModifier) const;
+	/**
+	 * Get all modifiers with the specified Id that are currently present on the specified faction.
+	 */
+	TArray<FUDModifierData> GetAllFactionModifiers(const TObjectPtr<UUDFactionState>& faction, int32 modifierId);
 #pragma endregion
 public:
 	/**

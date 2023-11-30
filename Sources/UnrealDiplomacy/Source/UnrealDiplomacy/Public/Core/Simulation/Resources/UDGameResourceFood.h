@@ -17,6 +17,12 @@ class UNREALDIPLOMACY_API UUDGameResourceFood : public UUDGameResource
 public:
 	virtual int32 GetId() const override { return ResourceId; };
 	virtual FUDResourcePresentation GetPresentation() const override;
+	virtual int32 GetFactionStartingAmount() const override { return FactionStartingAmount; };
+	virtual int32 GetTileStartingAmount() const override { return TileStartingAmount; };
 public:
 	static const int32 ResourceId = 1003;
+	UPROPERTY()
+	int32 FactionStartingAmount = 200;
+	UPROPERTY()
+	int32 TileStartingAmount = 0;
 };

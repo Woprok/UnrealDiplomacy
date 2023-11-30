@@ -17,6 +17,10 @@ public:
 	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual int32 GetId() const override { return ActionTypeId; };
+	virtual void SetResourceManager(TObjectPtr<UUDResourceManager> resourceManager) override;
 public:
 	static const int32 ActionTypeId = 12;
+protected:
+	UPROPERTY()
+	TWeakObjectPtr<UUDResourceManager> ResourceManager = nullptr;
 };

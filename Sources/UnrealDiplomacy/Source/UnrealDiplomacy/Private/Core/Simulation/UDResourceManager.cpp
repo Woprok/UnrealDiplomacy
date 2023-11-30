@@ -7,6 +7,64 @@
 #include "Core/Simulation/Resources/UDResourceDatabase.h"
 #include "Core/UDGlobalData.h"
 
+#pragma region Resource Creation API
+void UUDResourceManager::SetupFactionStartingResources(TObjectPtr<UUDFactionState> faction)
+{
+	for (auto& resource : FilterStartpoint)
+	{
+		if (resource.Tags.Contains(UD_RESOURCE_TAG_FACTION_STARTING))
+			faction->Resources[resource.ResourceId] = Resources[resource.ResourceId]->GetFactionStartingAmount();
+	}
+}
+
+void UUDResourceManager::GenerateTileStartingResources(TObjectPtr<UUDTileState> tile)
+{
+	for (auto& resource : FilterStartpoint)
+	{
+		if (resource.Tags.Contains(UD_RESOURCE_TAG_TILE_STARTING))
+		{
+			// TODO choose one from all valid
+		}
+	}
+
+	tile->ResourceType = resource.ResourceId;
+	tile->ResourceStored = Resources[resource.ResourceId]->GetTileStartingAmount();
+}
+
+int32 UUDResourceManager::GetCurrent(TObjectPtr<UUDFactionState> faction, int32 resourceId)
+{
+	return faction->Resources[resourceId];
+}
+
+#pragma endregion
+
+#pragma region Resource Use API
+void UUDResourceManager::Gain(TObjectPtr<UUDFactionState> faction, int32 resourceId, int32 amount)
+{
+	faction->Resources[resourceId] += amount;
+}
+
+void UUDResourceManager::Lose(TObjectPtr<UUDFactionState> faction, int32 resourceId, int32 amount)
+{
+	faction->Resources[resourceId] -= amount;
+}
+
+bool UUDResourceManager::CanSpend(TObjectPtr<UUDFactionState> faction, int32 resourceId, int32 amount)
+{
+	return faction->Resources[resourceId] >= amount;
+}
+
+void UUDResourceManager::Add(TObjectPtr<UUDFactionState> faction, int32 resourceId, int32 amount)
+{
+	faction->Resources[resourceId] += amount;
+}
+
+void UUDResourceManager::Substract(TObjectPtr<UUDFactionState> faction, int32 resourceId, int32 amount)
+{
+	faction->Resources[resourceId] -= amount;
+}
+#pragma endregion
+
 TScriptInterface<IUDResourceInterface> UUDResourceManager::GetResource(int32 resourceTypeId)
 {
 	check(IsInitialized);
@@ -78,6 +136,11 @@ void UUDResourceManager::RegisterResourceList(TArray<TScriptInterface<IUDResourc
 
 #pragma region Resource Filter API
 
+TArray<FUDResourcePresentation> UUDResourceManager::FilterResources()
+{
+	return FilterByTag(FilterStartpoint, UD_RESOURCE_TAG_VALID);
+}
+
 TArray<FUDResourcePresentation> UUDResourceManager::FilterPrimaryResources()
 {
 	return FilterByTag(FilterStartpoint, UD_RESOURCE_TAG_TYPE_PRIMARY);
@@ -106,9 +169,5 @@ TArray<FUDResourcePresentation> UUDResourceManager::FilterByTag(const TArray<FUD
 
 	return filtered;
 }
-
-#pragma endregion
-
-#pragma region Resource Creation API
 
 #pragma endregion

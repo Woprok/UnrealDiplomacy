@@ -11,6 +11,7 @@ struct FUDResourceData;
 struct FUDResourcePresentation;
 class IUDResourceInterface;
 class UUDFactionState;
+class UUDTileState;
 
 /**
  * Manages all resources that are allowed to exist.
@@ -23,9 +24,19 @@ UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDResourceManager : public UObject
 {
 	GENERATED_BODY()
+
+#pragma region Resource Creation API
+public:
+	/** Updates faction state to contain all starting resources and their correct amount. */
+	void SetupFactionStartingResources(TObjectPtr<UUDFactionState> faction);
+	/** Updates tile state to contain starting resources and correct starting amount. */
+	void GenerateTileStartingResources(TObjectPtr<UUDTileState> tile);
+#pragma endregion
 #pragma region Resource Use API
 public:
-	/** Applies all modifiers and increses amount of resource for specified faction. Negates Lose*/
+	/** Returns current amount of the specified resource. */
+	int32 GetCurrent(TObjectPtr<UUDFactionState> faction, int32 resourceId);
+	/** Applies all modifiers and increses amount of resource for specified faction. Negates Lose. */
 	void Gain(TObjectPtr<UUDFactionState> faction, int32 resourceId, int32 amount);
 	/** Applies all modifiers and decresases amount of resource for specified faction. Negates Gain. */
 	void Lose(TObjectPtr<UUDFactionState> faction, int32 resourceId, int32 amount);
@@ -51,6 +62,8 @@ public:
 	void Initialize();
 #pragma region Resource Type Filter API
 public:
+	/** Retrieves all resources that are tagged as valid, ignores tag such as primary... */
+	TArray<FUDResourcePresentation> FilterResources();
 	/** Retrieves all resources that are tagged as primary. */
 	TArray<FUDResourcePresentation> FilterPrimaryResources();
 	/** Retrieves all resources that are tagged as secondary. */

@@ -33,3 +33,13 @@ FString IUDResourceInterface::ToString() const
 
 	return formatted;
 }
+
+int32 IUDResourceInterface::GetFactionStartingAmount() const
+{
+	return 0;
+}
+
+int32 IUDResourceInterface::GetTileStartingAmount() const
+{
+	return 0;
+}

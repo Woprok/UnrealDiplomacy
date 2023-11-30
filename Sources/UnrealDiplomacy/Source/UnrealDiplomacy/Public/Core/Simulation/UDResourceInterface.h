@@ -15,9 +15,11 @@ struct FUDResourcePresentation;
 #define UD_RESOURCE_TAG_INVALID 0
 // Useable for external purposes as well.
 #define UD_RESOURCE_TAG_VALID 1
+#define UD_RESOURCE_TAG_FACTION_STARTING 2
+#define UD_RESOURCE_TAG_TILE_STARTING 3
 // Specific details about resources.
-#define UD_RESOURCE_TAG_TYPE_PRIMARY 2
-#define UD_RESOURCE_TAG_TYPE_SECONDARY 3
+#define UD_RESOURCE_TAG_TYPE_PRIMARY 10
+#define UD_RESOURCE_TAG_TYPE_SECONDARY 11
 // Resources used by the game.
 // TODO move this to resource manager. IN PROGRESS
 //#define UD_RESOURCE_REPUTATION_ID 0
@@ -68,9 +70,9 @@ class UNREALDIPLOMACY_API IUDResourceInterface
 	GENERATED_BODY()
 public:
 	/**
-	 * Modifiers are identified by their unique Id.
+	 * Resources are identified by their unique Id.
 	 * Valid values are 0 - int32.MAX.
-	 * Only UUDSystemActionInvalid and interface are allowed to return -1;
+	 * Only UUDResourceInvalid and interface are allowed to return -1;
 	 */
 	virtual int32 GetId() const;
 	/**
@@ -81,4 +83,17 @@ public:
 	 * Contains definition for filtering and displaying modifier.
 	 */
 	virtual FUDResourcePresentation GetPresentation() const;
+	/**
+	 * Resources are assignable to faction state.
+	 * Thus they might have default starting amount.
+	 * This is unique value for faction. Default is 0;
+	 */
+	virtual int32 GetFactionStartingAmount() const;
+	/**
+	 * Resources are assignable to tile state.
+	 * Thus they might have default starting amount.
+	 * This is unique value for tile. Default is 0;
+	 */
+	virtual int32 GetTileStartingAmount() const;
+
 };

@@ -59,6 +59,7 @@ void UUDActionManager::Initialize()
 	ModifierManager = NewObject<UUDModifierManager>(this);
 	ResourceManager = NewObject<UUDResourceManager>(this);
 	ModifierManager->Initialize();
+	ResourceManager->Initialize();
 
 	RegisterCoreActions();
 	RegisterAdditionalActions();

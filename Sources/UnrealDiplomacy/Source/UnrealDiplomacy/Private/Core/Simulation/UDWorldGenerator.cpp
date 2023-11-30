@@ -64,32 +64,22 @@ void UUDWorldGenerator::GenerateProperties(int32 mapSeed)
 			if (InRange(next, 0, 40))
 			{
 				Map[xy]->Type = 69;
-				Map[xy]->ResourceType = UD_RESOURCE_FOOD_ID;
-				Map[xy]->ResourceStored = 1000;
 			}
 			else if (InRange(next, 41, 70))
 			{
 				Map[xy]->Type = 69;
-				Map[xy]->ResourceType = UD_RESOURCE_MATERIALS_ID;
-				Map[xy]->ResourceStored = 500;
 			}
 			else if (InRange(next, 71, 90))
 			{
 				Map[xy]->Type = 42;
-				Map[xy]->ResourceType = UD_RESOURCE_GOLD_ID;
-				Map[xy]->ResourceStored = 250;
 			}
 			else if (InRange(next, 91, 100))
 			{
 				Map[xy]->Type = 42;
-				Map[xy]->ResourceType = UD_RESOURCE_LUXURIES_ID;
-				Map[xy]->ResourceStored = 100;
 			}
 			else
 			{
 				Map[xy]->Type = 42;
-				Map[xy]->ResourceType = UD_RESOURCE_REPUTATION_ID;
-				Map[xy]->ResourceStored = 100;
 			}
 		}
 	}

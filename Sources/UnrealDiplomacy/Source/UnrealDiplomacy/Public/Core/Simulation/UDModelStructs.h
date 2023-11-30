@@ -236,22 +236,13 @@ struct FUDResourceInfo
 	GENERATED_BODY()
 public:
 	FUDResourceInfo();
+	FUDResourceInfo(int32 resourceId, FString name, int32 amount);
 	UPROPERTY(BlueprintReadOnly)
 	int32 Id = 0;
 	UPROPERTY(BlueprintReadOnly)
 	FString Name = TEXT("");
 	UPROPERTY(BlueprintReadOnly)
 	int32 Amount = 0;
-	/** Reputation emplaced in wrapper */
-	static FUDResourceInfo GetReputation(int32 amount);
-	/** Gold emplaced in wrapper */
-	static FUDResourceInfo GetGold(int32 amount);
-	/** Food emplaced in wrapper */
-	static FUDResourceInfo GetFood(int32 amount);
-	/** Materials emplaced in wrapper */
-	static FUDResourceInfo GetMaterials(int32 amount);
-	/** Luxuries emplaced in wrapper */
-	static FUDResourceInfo GetLuxuries(int32 amount);
 };
 USTRUCT(BlueprintType)
 

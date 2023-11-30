@@ -68,12 +68,8 @@ TObjectPtr<UUDFactionState> UUDFactionState::CreateState(int32 factionId)
 	newState->Name = FString::Format(TEXT("Faction {0}"), { factionId });
 	newState->Controller = EUDFactionController::Error;
 	newState->Resources.Empty();
-	// TODO replace this with resource manager initialization.
-	newState->Resources.Add(UD_RESOURCE_REPUTATION_ID, 0);
-	newState->Resources.Add(UD_RESOURCE_GOLD_ID, 50);
-	newState->Resources.Add(UD_RESOURCE_FOOD_ID, 200);
-	newState->Resources.Add(UD_RESOURCE_MATERIALS_ID, 100);
-	newState->Resources.Add(UD_RESOURCE_LUXURIES_ID, 0);
+	// Resource initialization was moved to action.
+	// Thus see SystemActionPlayerAdd for the resource initialization.
 	
 	return newState;
 }

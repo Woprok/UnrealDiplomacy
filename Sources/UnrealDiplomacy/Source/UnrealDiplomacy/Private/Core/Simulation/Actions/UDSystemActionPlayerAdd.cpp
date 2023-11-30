@@ -4,6 +4,7 @@
 #include "Core/UDGlobalData.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDWorldState.h"
+#include "Core/Simulation/UDResourceManager.h"
 
 void UUDSystemActionPlayerAdd::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
@@ -16,6 +17,7 @@ void UUDSystemActionPlayerAdd::Execute(const FUDActionData& action, TObjectPtr<U
 	}
 	// Faction is added to the state.
 	world->Factions.Add(action.InvokerFactionId, UUDFactionState::CreateState(action.InvokerFactionId));
+	ResourceManager->SetupFactionStartingResources(world->Factions[action.InvokerFactionId]);
 }
 
 void UUDSystemActionPlayerAdd::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)

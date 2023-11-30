@@ -174,4 +174,18 @@ bool UUDModifierManager::HasFactionModifier(const TObjectPtr<UUDFactionState>& f
 	return false;
 }
 
+TArray<FUDModifierData> UUDModifierManager::GetAllFactionModifiers(const TObjectPtr<UUDFactionState>& faction, int32 modifierId)
+{
+	TArray<FUDModifierData> list = { };
+
+	for (const auto& modifier : faction->Modifiers)
+	{
+		if (modifier.ModifierTypeId == modifierId) 
+		{
+			list.Add(modifier);
+		}
+	}
+	return list;
+}
+
 #pragma endregion
