@@ -1,4 +1,8 @@
 // Copyright Miroslav Valach
+// TODO Part of this should be simplified with properly binding comboboxes.
+// Consequently the runtime update dependency is required to show saved value.
+// This would be removed by properly applying binding for list of options and selected option.
+// And finally it would be best if view did not depend that much on this view model.
 
 #include "Menu/UserInterfaces/UDSettingsViewModel.h"
 #include "GameFramework/GameUserSettings.h"
@@ -8,7 +12,7 @@
 
 #define LOCTEXT_NAMESPACE "Settings"
 
-void UUDSettingsViewModel::Initialize()
+void UUDSettingsViewModel::Setup()
 {
 	FText settingsTitle = FText(LOCTEXT("Settings", "Settings"));
 	SetSettingsTitleText(settingsTitle);
@@ -26,10 +30,12 @@ void UUDSettingsViewModel::Initialize()
 	CreateResolutionOptions();
 }
 
-void UUDSettingsViewModel::Update()
+void UUDSettingsViewModel::Refresh()
 {
 	// Load all settings.
-	RetrieveSettings();
+	SetDefaultContent();
+	// Propagate to UI, see TODO
+	OnSettingsLoaded.Broadcast();
 }
 
 void UUDSettingsViewModel::CreateWindowModeOptions()
@@ -71,6 +77,13 @@ TArray<FString> UUDSettingsViewModel::GetResolutionOptions() const
 }
 
 #undef LOCTEXT_NAMESPACE
+
+void UUDSettingsViewModel::SetDefaultContent()
+{
+	FUDApplicationSettings settings = UUDGameInstance::Get(GetWorld())->LoadSettings();
+	SelectedWindowMode = FindInWindowModes(settings.WindowMode, WindowModes);
+	SelectedResolution = FindInResolutions(settings.Resolution, Resolutions);
+}
 
 void UUDSettingsViewModel::Back()
 {
@@ -153,13 +166,6 @@ FUDResolutionItem UUDSettingsViewModel::FindInResolutions(FString searchedItem, 
 		[&searchedItem](const FUDResolutionItem& item) { return item.ItemText == searchedItem; }
 	);
 	return selected;
-}
-
-void UUDSettingsViewModel::RetrieveSettings()
-{
-	FUDApplicationSettings settings = UUDGameInstance::Get(GetWorld())->LoadSettings();
-	SelectedWindowMode = FindInWindowModes(settings.WindowMode, WindowModes);
-	SelectedResolution = FindInResolutions(settings.Resolution, Resolutions);
 }
 
 void UUDSettingsViewModel::SetWindowModeText(FText newWindowModeText)

@@ -8,24 +8,18 @@
 
 #define LOCTEXT_NAMESPACE "ResourcePanel"
 
-void UUDResourcePanelViewModel::Initialize()
+void UUDResourcePanelViewModel::Setup()
 {
 	ResourceViewModelType = UUDResourceItemViewModel::StaticClass();
 
-	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDResourcePanelViewModel::Reload);
-	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDResourcePanelViewModel::Update);
+	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDResourcePanelViewModel::Refresh);
+	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDResourcePanelViewModel::Refresh);
 
-	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-
-	Update();
+	// TODO delete this comment if it works as expected...
+	//Update();
 }
 
-void UUDResourcePanelViewModel::Reload()
-{
-	Update();
-}
-
-void UUDResourcePanelViewModel::Update()
+void UUDResourcePanelViewModel::Refresh()
 {
 	if (!Model->IsOverseeingStatePresent())
 		return;
@@ -50,9 +44,19 @@ void UUDResourcePanelViewModel::UpdateResourceList()
 	{
 		TObjectPtr<UUDResourceItemViewModel> newViewModel = Cast<UUDResourceItemViewModel>(viewModels[i]);
 		newViewModel->SetContent(resources[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		ResourceViewModelCollection.Add(newViewModel);
 	}
 
-	ResourceSourceUpdatedEvent.Broadcast(ResourceViewModelCollection);
+	SetResourceList(FUDViewModelList(viewModels));
+}
+
+void UUDResourcePanelViewModel::SetResourceList(FUDViewModelList newResourceList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ResourceList, newResourceList);
+}
+
+FUDViewModelList UUDResourcePanelViewModel::GetResourceList() const
+{
+	return ResourceList;
 }

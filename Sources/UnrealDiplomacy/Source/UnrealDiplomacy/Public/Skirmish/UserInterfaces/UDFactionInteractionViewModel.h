@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelContent.h"
 #include "Core/Simulation/UDModelStructs.h"
 #include "UDFactionInteractionViewModel.generated.h"
 
@@ -14,8 +15,6 @@ struct FUDFactionInteractionInfo;
 struct FUDActionData;
 class UUDParameterEditorViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDParameterEditorChanged, const TObjectPtr<UUDParameterEditorViewModel>& editorViewModel);
-
 /**
  * Single interactable action.
  */
@@ -24,25 +23,21 @@ class UNREALDIPLOMACY_API UUDFactionInteractionViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Set content of the interaction option.
-	 */
+	/** Set content of the interaction option. */
 	void SetContent(int32 selectedFaction, EUDDecisionType interactionType, FUDFactionInteractionInfo content);
 public:
 	// Button Functions
-	/**
-	 * Execution of the interaction.
-	 */
+	/** Execution of the interaction. */
 	UFUNCTION()
 	void Interact();
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText InteractText;
-	// Events
-	FUDParameterEditorChanged ParameterEditorChangedEvent;
-protected:
-	virtual void Initialize() override;
-	virtual void Update() override;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent ParameterEditorContent;
+public:
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
 	/** Interacts based on current InteractionType */
 	void DecisionRequest(FUDActionData data);
@@ -54,6 +49,8 @@ private:
 	// MVVM Setters & Getters
 	void SetInteractText(FText newInteractText);
 	FText GetInteractText() const;
+	void SetParameterEditorContent(FUDViewModelContent newParameterEditorContent);
+	FUDViewModelContent GetParameterEditorContent() const;
 private:
 	// Fields
 	int32 SelectedFaction;

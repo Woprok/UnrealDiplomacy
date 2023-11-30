@@ -16,7 +16,7 @@ FUDActionMinimalInfo GetInvalidAction()
 	return invalid;
 }
 
-void UUDActionParameterViewModel::Initialize()
+void UUDActionParameterViewModel::Setup()
 {
 	FText tileTitle = FText(LOCTEXT("ActionParameter", "Action"));
 	SetActionTitleText(tileTitle);
@@ -29,7 +29,7 @@ void UUDActionParameterViewModel::Initialize()
 	SelectedActionIndex = UUDGlobalData::InvalidParameterArrayIndex;
 }
 
-void UUDActionParameterViewModel::Update()
+void UUDActionParameterViewModel::Refresh()
 {
 	SetActionTitleText(FText::FromString(Content.Name));
 	SetToolTipText(FText::FromString(Content.ToolTip));

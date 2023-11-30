@@ -8,10 +8,11 @@
 #include "Core/Simulation/Actions/UDSettingActionMapHeightChange.h"
 #include "Core/Simulation/Actions/UDSettingActionStratagemPointsChange.h"
 #include "Core/UDSessionSubsystem.h"
+#include "Core/Simulation/UDActionData.h"
 
 #define LOCTEXT_NAMESPACE "LobbyHost"
 
-void UUDLobbyHostViewModel::Initialize()
+void UUDLobbyHostViewModel::Setup()
 {
 	FText hostSettingsTitle = FText(LOCTEXT("LobbyHost", "Game Settings"));
 	SetHostSettingsTitleText(hostSettingsTitle);
@@ -25,17 +26,9 @@ void UUDLobbyHostViewModel::Initialize()
 	SetMapHeightText(mapHeight);
 	FText stratagemPoints = FText(LOCTEXT("LobbyHost", "Stratagem Points"));
 	SetStratagemPointsText(stratagemPoints);
-
-	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDLobbyHostViewModel::Reload);
-	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDLobbyHostViewModel::Update);
 }
 
-void UUDLobbyHostViewModel::Reload()
-{
-	Update();
-}
-
-void UUDLobbyHostViewModel::Update()
+void UUDLobbyHostViewModel::Refresh()
 {
 	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
 	SetIsHostValue(sessions->IsLocalPlayerHost(sessions->GetSessionName()));

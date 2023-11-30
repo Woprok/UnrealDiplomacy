@@ -11,7 +11,7 @@
 
 #define LOCTEXT_NAMESPACE "FactionManagement"
 
-void UUDFactionManagementViewModel::Initialize()
+void UUDFactionManagementViewModel::Setup()
 {
 	FactionInteractionViewModelType = UUDFactionInteractionViewModel::StaticClass();
 	ModifierItemViewModelType = UUDModifierItemViewModel::StaticClass();
@@ -36,25 +36,21 @@ void UUDFactionManagementViewModel::Initialize()
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
 	hud->OnFactionSelectedEvent.AddUniqueDynamic(this, &UUDFactionManagementViewModel::OnFactionSelected);
 
-	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDFactionManagementViewModel::Reload);
-	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDFactionManagementViewModel::Update);
+	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDFactionManagementViewModel::Refresh);
+	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDFactionManagementViewModel::Refresh);
 
 
 	// Retrieve view models for sub content controls
 	TObjectPtr<UUDViewModel> policySelectorModel = hud->GetViewModelCollection(PolicySelectorInstanceName, PolicySelectorType);
 	PolicySelectorInstance = Cast<UUDPolicySelectorViewModel>(policySelectorModel);
 	// Announce them to widget for additional binding.
-	PolicySelectorChangedEvent.Broadcast(PolicySelectorInstance);
+	SetPolicySelectorContent(FUDViewModelContent(PolicySelectorInstance));
 
-	Update();
+	// TODO delete this comment if it works as expected...
+	//Update();
 }
 
-void UUDFactionManagementViewModel::Reload()
-{
-	Update();
-}
-
-void UUDFactionManagementViewModel::Update()
+void UUDFactionManagementViewModel::Refresh()
 {
 	if (!Model->IsOverseeingStatePresent())
 		return;
@@ -68,8 +64,8 @@ void UUDFactionManagementViewModel::Update()
 	SetFactionNameText(FText::FromString(faction.Name));
 
 	// Call initialize so each Instance is ready to use, once it receives data in runtime.
-	PolicySelectorInstance->SetContent();
-	PolicySelectorInstance->FullUpdate();
+	// Policy needs to be refreshed after update, in case the user change the selected option.
+	PolicySelectorInstance->Refresh();
 
 	UpdateFactionLists();
 	UpdateModifierItemList();
@@ -90,9 +86,14 @@ void UUDFactionManagementViewModel::OnFactionSelected(int32 selectedFactionId)
 	hud->ShowWidget(hud->FactionManagementWidget);
 
 	//if (SelectedFactionId != selectedFactionId)
+	// This has to update the content, the if might be possible to uncomment if other bugs are fixed
+	// As this is change by other interaction, this has to get immediate update to update current content
+	// TODO verify validity of this comment.
 	{
+		// This is basically SetContent by user
 		SelectedFactionId = selectedFactionId;
-		Update();
+		// Thus it is followed by Refresh
+		Refresh();
 	}
 }
 
@@ -118,11 +119,11 @@ void UUDFactionManagementViewModel::UpdateFactionInteractionList()
 	{
 		TObjectPtr<UUDFactionInteractionViewModel> newViewModel = Cast<UUDFactionInteractionViewModel>(viewModels[i]);
 		newViewModel->SetContent(SelectedFactionId, EUDDecisionType::Gift, interactions[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		FactionInteractionViewModelCollection.Add(newViewModel);
 	}
 
-	FactionInteractionSourceUpdatedEvent.Broadcast(FactionInteractionViewModelCollection);
+	SetFactionInteractionList(FUDViewModelList(viewModels));
 }
 
 void UUDFactionManagementViewModel::UpdateFactionOfferList()
@@ -138,11 +139,11 @@ void UUDFactionManagementViewModel::UpdateFactionOfferList()
 	{
 		TObjectPtr<UUDFactionInteractionViewModel> newViewModel = Cast<UUDFactionInteractionViewModel>(viewModels[i]);
 		newViewModel->SetContent(SelectedFactionId, EUDDecisionType::Offer, interactions[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		FactionOfferViewModelCollection.Add(newViewModel);
 	}
 
-	FactionOfferSourceUpdatedEvent.Broadcast(FactionOfferViewModelCollection);
+	SetFactionOfferList(FUDViewModelList(viewModels));
 }
 
 void UUDFactionManagementViewModel::UpdateFactionRequestList()
@@ -158,11 +159,11 @@ void UUDFactionManagementViewModel::UpdateFactionRequestList()
 	{
 		TObjectPtr<UUDFactionInteractionViewModel> newViewModel = Cast<UUDFactionInteractionViewModel>(viewModels[i]);
 		newViewModel->SetContent(SelectedFactionId, EUDDecisionType::Request, interactions[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		FactionRequestViewModelCollection.Add(newViewModel);
 	}
 
-	FactionRequestSourceUpdatedEvent.Broadcast(FactionRequestViewModelCollection);
+	SetFactionRequestList(FUDViewModelList(viewModels));
 }
 
 void UUDFactionManagementViewModel::UpdateFactionDemandList()
@@ -178,11 +179,11 @@ void UUDFactionManagementViewModel::UpdateFactionDemandList()
 	{
 		TObjectPtr<UUDFactionInteractionViewModel> newViewModel = Cast<UUDFactionInteractionViewModel>(viewModels[i]);
 		newViewModel->SetContent(SelectedFactionId, EUDDecisionType::Demand, interactions[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		FactionDemandViewModelCollection.Add(newViewModel);
 	}
 
-	FactionDemandSourceUpdatedEvent.Broadcast(FactionDemandViewModelCollection);
+	SetFactionDemandList(FUDViewModelList(viewModels));
 }
 
 void UUDFactionManagementViewModel::UpdateModifierItemList()
@@ -199,11 +200,11 @@ void UUDFactionManagementViewModel::UpdateModifierItemList()
 	{
 		TObjectPtr<UUDModifierItemViewModel> newViewModel = Cast<UUDModifierItemViewModel>(viewModels[i]);
 		newViewModel->SetContent(modifiers[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		ModifierItemViewModelCollection.Add(newViewModel);
 	}
 
-	ModifierItemSourceUpdatedEvent.Broadcast(ModifierItemViewModelCollection);
+	SetModifierItemList(FUDViewModelList(viewModels));
 }
 
 void UUDFactionManagementViewModel::SetFactionManagementTitleText(FText newFactionManagementTitleText)
@@ -274,4 +275,64 @@ void UUDFactionManagementViewModel::SetDemandTitleText(FText newDemandTitleText)
 FText UUDFactionManagementViewModel::GetDemandTitleText() const
 {
 	return DemandTitleText;
+}
+
+void UUDFactionManagementViewModel::SetFactionInteractionList(FUDViewModelList newFactionInteractionList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(FactionInteractionList, newFactionInteractionList);
+}
+
+FUDViewModelList UUDFactionManagementViewModel::GetFactionInteractionList() const
+{
+	return FactionInteractionList;
+}
+
+void UUDFactionManagementViewModel::SetFactionOfferList(FUDViewModelList newFactionOfferList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(FactionOfferList, newFactionOfferList);
+}
+
+FUDViewModelList UUDFactionManagementViewModel::GetFactionOfferList() const
+{
+	return FactionOfferList;
+}
+
+void UUDFactionManagementViewModel::SetFactionRequestList(FUDViewModelList newFactionRequestList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(FactionRequestList, newFactionRequestList);
+}
+
+FUDViewModelList UUDFactionManagementViewModel::GetFactionRequestList() const
+{
+	return FactionRequestList;
+}
+
+void UUDFactionManagementViewModel::SetFactionDemandList(FUDViewModelList newFactionDemandList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(FactionDemandList, newFactionDemandList);
+}
+
+FUDViewModelList UUDFactionManagementViewModel::GetFactionDemandList() const
+{
+	return FactionDemandList;
+}
+
+void UUDFactionManagementViewModel::SetModifierItemList(FUDViewModelList newModifierItemList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ModifierItemList, newModifierItemList);
+}
+
+FUDViewModelList UUDFactionManagementViewModel::GetModifierItemList() const
+{
+	return ModifierItemList;
+}
+
+void UUDFactionManagementViewModel::SetPolicySelectorContent(FUDViewModelContent newPolicySelectorContent)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(PolicySelectorContent, newPolicySelectorContent);
+}
+
+FUDViewModelContent UUDFactionManagementViewModel::GetPolicySelectorContent() const
+{
+	return PolicySelectorContent;
 }

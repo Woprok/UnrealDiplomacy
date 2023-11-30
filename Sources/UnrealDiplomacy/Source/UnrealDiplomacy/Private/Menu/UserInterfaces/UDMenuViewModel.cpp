@@ -6,7 +6,7 @@
 
 #define LOCTEXT_NAMESPACE "Menu"
 
-void UUDMenuViewModel::Initialize()
+void UUDMenuViewModel::Setup()
 {
 	FText gameTitle = FText(LOCTEXT("Menu", "Koruna"));
 	SetGameTitleText(gameTitle);

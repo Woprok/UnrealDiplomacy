@@ -27,7 +27,7 @@ FText SessionCountToText(int32 sessionCount)
 	}
 }
 
-void UUDJoinGameViewModel::Initialize()
+void UUDJoinGameViewModel::Setup()
 {
 	ViewModelType = UUDServerItemViewModel::StaticClass();
 
@@ -48,9 +48,9 @@ void UUDJoinGameViewModel::Initialize()
 	sessions->OnJoinGameSessionCompleteEvent.AddUObject(this, &UUDJoinGameViewModel::OnSessionJoined);
 }
 
-void UUDJoinGameViewModel::Update()
+void UUDJoinGameViewModel::Refresh()
 {
-	Refresh();
+	RefreshList();
 }
 
 FUDDialogueData GetSessionJoinFailed(EOnJoinSessionCompleteResult::Type result)
@@ -92,9 +92,9 @@ void UUDJoinGameViewModel::Back()
 	hud->SwitchScreen(hud->MenuScreen);
 }
 
-void UUDJoinGameViewModel::Refresh()
+void UUDJoinGameViewModel::RefreshList()
 {
-	UE_LOG(LogTemp, Log, TEXT("UUDJoinGameViewModel: Refresh."));
+	UE_LOG(LogTemp, Log, TEXT("UUDJoinGameViewModel: RefreshList."));
 	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
 	sessions->CreateSearchSettings();
 	SetSearchText(SessionCountToText(SearchIndicator));
@@ -113,13 +113,13 @@ void UUDJoinGameViewModel::OnSessionSearched(const TArray<FOnlineSessionSearchRe
 	{
 		TObjectPtr<UUDServerItemViewModel> newViewModel = Cast<UUDServerItemViewModel>(viewModels[i]);
 		newViewModel->SetContent(SessionResults[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		InUseViewModelCollection.Add(newViewModel);
 	}
 
 	SetSearchText(SessionCountToText(InUseViewModelCollection.Num()));
 
-	OnSessionSearchSourceUpdated.Broadcast(InUseViewModelCollection);
+	SetServerItemList(FUDViewModelList(viewModels));
 }
 
 void UUDJoinGameViewModel::OnSessionJoined(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
@@ -199,4 +199,14 @@ void UUDJoinGameViewModel::SetSearchText(FText newSearchText)
 FText UUDJoinGameViewModel::GetSearchText() const
 {
 	return SearchText;
+}
+
+void UUDJoinGameViewModel::SetServerItemList(FUDViewModelList newServerItemList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ServerItemList, newServerItemList);
+}
+
+FUDViewModelList UUDJoinGameViewModel::GetServerItemList() const
+{
+	return ServerItemList;
 }

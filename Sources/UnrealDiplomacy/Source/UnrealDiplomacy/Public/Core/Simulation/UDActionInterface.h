@@ -12,6 +12,7 @@ struct FUDActionPresentation;
 class UUDWorldState;
 class UUDWorldGenerator;
 class UUDModifierManager;
+class UUDResourceManager;
 
 // TODO Define proper order for parameters in ValueParameters ?
 // SPECIALS:
@@ -193,6 +194,10 @@ public:
 	 * Shared modifier manager that can be used by action.
 	 */
 	virtual void SetModifierManager(TObjectPtr<UUDModifierManager> manager);
+	/**
+	 * Shared resource manager that can be used by action.
+	 */
+	virtual void SetResourceManager(TObjectPtr<UUDResourceManager> manager);
 	/**
 	 * Formatted version of the action.
 	 */

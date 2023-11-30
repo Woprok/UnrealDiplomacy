@@ -8,7 +8,6 @@
 
 // Forward Declaratiosn
 
-class UTextBlock;
 class UButton;
 class UUDNewsViewModel;
 
@@ -20,9 +19,7 @@ class UNREALDIPLOMACY_API UUDNewsWidget : public UUDWindowUserWidget
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Enables blueprint to bind view model.
-	 */
+	/** Enables blueprint to bind view model. */
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetBlueprintViewModel(UUDNewsViewModel* model);
 protected:
@@ -31,12 +28,6 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> NewsTitleTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> MessageTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> CloseTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> CloseButtonWidget;
 	// ViewModel

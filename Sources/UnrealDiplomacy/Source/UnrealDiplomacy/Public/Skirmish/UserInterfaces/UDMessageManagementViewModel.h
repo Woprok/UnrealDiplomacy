@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelContent.h"
 #include "Core/Simulation/UDModelStructs.h"
 #include "UDMessageManagementViewModel.generated.h"
 
@@ -12,8 +13,6 @@
 struct FUDMessageInfo;
 struct FUDMessageInteractionInfo;
 class UUDMessageItemViewModel;
-
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDMessageItemChanged, const TObjectPtr<UUDMessageItemViewModel>& messageItemViewModel);
 
 /**
  * Browsing of all interactable action.
@@ -49,22 +48,16 @@ public:
 	FText NextText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText LastText;
-	// Events
-	FUDMessageItemChanged MessageItemChangedEvent;
-protected:
-	virtual void Initialize() override;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent MessageItemContent;
+public:
+	virtual void Setup() override;
 	UFUNCTION()
-	virtual void Update() override;
-	UFUNCTION()
-	void Reload();
+	virtual void Refresh() override;
 private:
-	/**
-	 * Updates message item to latest.
-	 */
+	/** Updates message item to latest. */
 	void UpdateMessageItems();
-	/**
-	 * Updates message item to latest.
-	 */
+	/** Updates message item to latest. */
 	void UpdateSelectedMessageItem();
 	/**
 	 * Tries to retrieve desired selected item, on fail returns first element.
@@ -87,6 +80,8 @@ private:
 	FText GetNextText() const;
 	void SetLastText(FText newLastText);
 	FText GetLastText() const;
+	void SetMessageItemContent(FUDViewModelContent newMessageItemContent);
+	FUDViewModelContent GetMessageItemContent() const;
 private:
 	// Fields
 	int32 SelectedIndex;

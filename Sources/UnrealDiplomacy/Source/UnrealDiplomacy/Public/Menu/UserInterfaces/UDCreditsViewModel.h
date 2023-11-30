@@ -24,8 +24,8 @@ public:
 	FText ContentText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText BackText;
-protected:
-	virtual void Initialize() override;
+public:
+	virtual void Setup() override;
 private:
 	// MVVM Setters & Getters
 	void SetCreditsTitleText(FText newCreditsTitleText);

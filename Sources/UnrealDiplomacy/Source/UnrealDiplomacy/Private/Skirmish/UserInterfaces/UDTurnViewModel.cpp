@@ -4,6 +4,7 @@
 #include "Core/Simulation/UDModelStructs.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Core/Simulation/Actions/UDSystemActionTurnFinish.h"
+#include "Core/Simulation/UDActionData.h"
 
 #define LOCTEXT_NAMESPACE "Turn"
 
@@ -25,7 +26,7 @@ FText ConstructFinishTurnToolTip()
 	return FText::FromString(content.ToString());
 }
 
-void UUDTurnViewModel::Initialize()
+void UUDTurnViewModel::Setup()
 {
 	FText regentTitle = FText(LOCTEXT("Turn", "Current Regent"));
 	SetRegentTitleText(regentTitle);
@@ -44,18 +45,14 @@ void UUDTurnViewModel::Initialize()
 	SetIsRegent(false);
 	SetIsFinished(true);
 
-	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDTurnViewModel::Reload);
-	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDTurnViewModel::Update);
+	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDTurnViewModel::Refresh);
+	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDTurnViewModel::Refresh);
 
-	Update();
+	// TODO delete this comment if it works as expected...
+	//Update();
 }
 
-void UUDTurnViewModel::Reload()
-{
-	Update();
-}
-
-void UUDTurnViewModel::Update()
+void UUDTurnViewModel::Refresh()
 {
 	if (!Model->IsOverseeingStatePresent())
 		return;

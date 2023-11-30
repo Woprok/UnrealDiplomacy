@@ -6,7 +6,7 @@
 
 #define LOCTEXT_NAMESPACE "ModifierItem"
 
-void UUDModifierItemViewModel::Initialize()
+void UUDModifierItemViewModel::Setup()
 {
 	FText name = FText(LOCTEXT("ModifierItem", "Modifier"));
 	SetNameText(name);
@@ -15,7 +15,7 @@ void UUDModifierItemViewModel::Initialize()
 	SetIdValue(0);
 }
 
-void UUDModifierItemViewModel::Update()
+void UUDModifierItemViewModel::Refresh()
 {
 	SetNameText(FText::FromString(Content.Name));
 	SetDescriptionText(FText::FromString(Content.Description));

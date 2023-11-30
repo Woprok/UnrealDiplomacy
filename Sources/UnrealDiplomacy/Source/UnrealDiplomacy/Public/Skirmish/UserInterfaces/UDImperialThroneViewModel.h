@@ -40,12 +40,10 @@ public:
 	bool CanInteractValue;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	EUDThroneState ThroneStateValue;
-protected:
-	virtual void Initialize() override;
+public:
+	virtual void Setup() override;
 	UFUNCTION()
-	virtual void Update() override;
-	UFUNCTION()
-	void Reload();
+	virtual void Refresh() override;
 private:
 	UFUNCTION()
 	void ClaimThrone();
@@ -53,9 +51,7 @@ private:
 	void AbdicateThrone();
 	UFUNCTION()
 	void ContestThrone();
-	/**
-	 * Updates all parts of throne presentation to latest change.
-	 */
+	/** Updates all parts of throne presentation to latest change. */
 	void UpdateThronePresentation();
 private:
 	// MVVM Setters & Getters

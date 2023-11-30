@@ -2,18 +2,7 @@
 
 #include "Skirmish/UserInterfaces/Deals/UDActionItemUserWidget.h"
 #include "Skirmish/UserInterfaces/Deals/UDActionItemViewModel.h"
-#include "Skirmish/UserInterfaces/UDParameterEditorViewModel.h"
-#include "Skirmish/UserInterfaces/UDParameterEditorUserWidget.h"
 #include "Components/Button.h"
-#include "Components/TextBlock.h"
-
-void UUDActionItemUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
-{
-	// Change it to original type.
-	UUDActionItemViewModel* itemViewModel = Cast<UUDActionItemViewModel>(ListItemObject);
-	// Invoke bindings related to view model being set.
-	SetViewModel(itemViewModel);
-}
 
 void UUDActionItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
@@ -24,8 +13,6 @@ void UUDActionItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 
 void UUDActionItemUserWidget::BindDelegates()
 {
-	// Bind view to updates.
-	ViewModel->ParameterEditorChangedEvent.AddUObject(this, &UUDActionItemUserWidget::SetParameterEditorSourceInstance);
 	// Bind viewmodel to widgets.
 	AcceptButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDActionItemViewModel::Accept);
 	ChangeButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDActionItemViewModel::Change);
@@ -35,22 +22,8 @@ void UUDActionItemUserWidget::BindDelegates()
 
 void UUDActionItemUserWidget::BindWidgets()
 {
-	ActionTextWidget = GetWidget<UTextBlock>(TEXT("ActionText"));
-	ActionTitleTextWidget = GetWidget<UTextBlock>(TEXT("ActionTitleText"));
-	AcceptTextWidget = GetWidget<UTextBlock>(TEXT("AcceptText"));
-	ChangeTextWidget = GetWidget<UTextBlock>(TEXT("ChangeText"));
-	DenyTextWidget = GetWidget<UTextBlock>(TEXT("DenyText"));
-	SabotageTextWidget = GetWidget<UTextBlock>(TEXT("SabotageText"));
-	EditorTextWidget = GetWidget<UTextBlock>(TEXT("EditorText"));
-
 	AcceptButtonWidget = GetWidget<UButton>(TEXT("AcceptButton"));
 	ChangeButtonWidget = GetWidget<UButton>(TEXT("ChangeButton"));
 	DenyButtonWidget = GetWidget<UButton>(TEXT("DenyButton"));
 	SabotageButtonWidget = GetWidget<UButton>(TEXT("SabotageButton"));
-	ParameterEditorViewWidget = GetWidget<UUDParameterEditorUserWidget>(TEXT("ParameterEditorView"));
-}
-
-void UUDActionItemUserWidget::SetParameterEditorSourceInstance(const TObjectPtr<UUDParameterEditorViewModel>& parameterEditorViewModel)
-{
-	ParameterEditorViewWidget->SetViewModel(parameterEditorViewModel);
 }

@@ -8,6 +8,8 @@
 // Forward Declarations
 struct FUDActionData;
 class UUDWorldState;
+class UUDModifierManager;
+class UUDResourceManager;
 
 USTRUCT(BlueprintType)
 struct UNREALDIPLOMACY_API FUDArbiterRuleset
@@ -33,13 +35,20 @@ public:
 	 */
 	bool OnActionExecutionFinished(int32 actionType, const TObjectPtr<UUDWorldState>& gaiaWorldState);
 	TArray<FUDActionData> EndGame();
+	void SetModifierManager(TObjectPtr<UUDModifierManager> modifierManager);
+	void SetResourceManager(TObjectPtr<UUDResourceManager> resourceManager);
 protected:
 	void EvaluateTurnGameOverState(const TObjectPtr<UUDWorldState>& gaiaWorldState);
 	FUDActionData DetermineNewRuler();
 	FUDActionData CreateEndGame();
+	UPROPERTY()
+	TWeakObjectPtr<UUDModifierManager> ModifierManager = nullptr;
+	UPROPERTY()
+	TWeakObjectPtr<UUDResourceManager> ResourceManager = nullptr;
 private:
 	bool GameReachedEnd = false;
 	bool CrownIsEmpty = false;
 	int32 CrownableRuler = 0;
 	FUDArbiterRuleset CurrentRuleSet = FUDArbiterRuleset();
+	int32 GetTotalSupport(const TObjectPtr<UUDWorldState>& state, int32 factionId);
 };

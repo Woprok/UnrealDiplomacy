@@ -8,7 +8,7 @@
 
 #define LOCTEXT_NAMESPACE "FactionPanel"
 
-void UUDFactionPanelViewModel::Initialize()
+void UUDFactionPanelViewModel::Setup()
 {
 	FactionViewModelType = UUDFactionItemViewModel::StaticClass();
 
@@ -17,20 +17,16 @@ void UUDFactionPanelViewModel::Initialize()
 	FText controllerHeader = FText(LOCTEXT("FactionPanel", "[PC|AI]"));
 	SetControllerHeaderText(controllerHeader);
 
-	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDFactionPanelViewModel::Reload);
-	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDFactionPanelViewModel::Update);
+	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDFactionPanelViewModel::Refresh);
+	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDFactionPanelViewModel::Refresh);
 
-	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	//TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
 
-	Update();
+	// TODO delete this comment if it works as expected...
+	//Update();
 }
 
-void UUDFactionPanelViewModel::Reload()
-{
-	Update();
-}
-
-void UUDFactionPanelViewModel::Update()
+void UUDFactionPanelViewModel::Refresh()
 {
 	if (!Model->IsOverseeingStatePresent())
 		return;
@@ -55,11 +51,11 @@ void UUDFactionPanelViewModel::UpdateFactionList()
 	{
 		TObjectPtr<UUDFactionItemViewModel> newViewModel = Cast<UUDFactionItemViewModel>(viewModels[i]);
 		newViewModel->SetContent(factions[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		FactionViewModelCollection.Add(newViewModel);
 	}
 
-	FactionSourceUpdatedEvent.Broadcast(FactionViewModelCollection);
+	SetFactionItemList(FUDViewModelList(viewModels));
 }
 
 void UUDFactionPanelViewModel::SetNameHeaderText(FText newNameHeaderText)
@@ -80,4 +76,14 @@ void UUDFactionPanelViewModel::SetControllerHeaderText(FText newControllerHeader
 FText UUDFactionPanelViewModel::GetControllerHeaderText() const
 {
 	return ControllerHeaderText;
+}
+
+void UUDFactionPanelViewModel::SetFactionItemList(FUDViewModelList newFactionItemList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(FactionItemList, newFactionItemList);
+}
+
+FUDViewModelList UUDFactionPanelViewModel::GetFactionItemList() const
+{
+	return FactionItemList;
 }

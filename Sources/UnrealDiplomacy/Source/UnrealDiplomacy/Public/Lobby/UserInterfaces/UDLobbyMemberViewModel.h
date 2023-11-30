@@ -4,14 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelList.h"
 #include "UDLobbyMemberViewModel.generated.h"
 
 // Forward Declarations
 
 enum ETextCommit::Type : int;
 class UUDStrategyOptionViewModel;
-
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDStratagemSourceUpdated, const TArray<TObjectPtr<UUDStrategyOptionViewModel>>& stratagemViewModels);
 
 /**
  * ViewModel for defining player settings.
@@ -37,23 +36,16 @@ public:
 	FText StrategyPointsText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText FactionNameEditableText;
-	// Events
-	FUDStratagemSourceUpdated StratagemSourceUpdatedEvent;
-protected:
-	virtual void Initialize() override;
-	UFUNCTION()
-	virtual void Update() override;
-	UFUNCTION()
-	void Reload();
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList StrategyOptionList;
+public:
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
-	/**
-	 * Generates list for pickable options.
-	 */
+	/** Generates list for pickable options. */
 	UFUNCTION()
 	void UpdateStratagemsList();
-	/**
-	 * Recalculates and updates displayed string based on local player faction stratagems.
-	 */
+	/** Recalculates and updates displayed string based on local player faction stratagems. */
 	void UpdateStratagemPoints();
 private:
 	// MVVM Setters & Getters
@@ -67,6 +59,8 @@ private:
 	FText GetStrategyPointsText() const;
 	void SetFactionNameEditableText(FText newFactionNameEditableText);
 	FText GetFactionNameEditableText() const;
+	void SetStrategyOptionList(FUDViewModelList newStrategyOptionList);
+	FUDViewModelList GetStrategyOptionList() const;
 private:
 	// Fields
 	bool IsNameEditing = false;

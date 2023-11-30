@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelList.h"
 #include "UDJoinGameViewModel.generated.h"
 
 // Forward Declarations
@@ -14,8 +15,6 @@ namespace EOnJoinSessionCompleteResult
 }
 class FOnlineSessionSearchResult;
 class UUDServerItemViewModel;
-
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDSearchSourceUpdated, const TArray<TObjectPtr<UUDServerItemViewModel>>& serverItemViewModels);
 
 /**
  * ViewModel for joining game.
@@ -29,7 +28,7 @@ public:
 	UFUNCTION()
 	void Back();
 	UFUNCTION()
-	void Refresh();
+	void RefreshList();
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText JoinGameTitleText;
@@ -43,11 +42,11 @@ public:
 	FText PingHeaderText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText SearchText;
-	// Events
-	FUDSearchSourceUpdated OnSessionSearchSourceUpdated;
-protected:
-	virtual void Initialize() override;
-	virtual void Update() override;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList ServerItemList;
+public:
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
 	/**
 	 * Callback for session search attempt.
@@ -73,6 +72,8 @@ private:
 	FText GetPingHeaderText() const;
 	void SetSearchText(FText newSearchText);
 	FText GetSearchText() const;
+	void SetServerItemList(FUDViewModelList newServerItemList);
+	FUDViewModelList GetServerItemList() const;
 private:
 	// Fields
 	FName ViewModelCollectionName = TEXT("JoinServerItemCollection");

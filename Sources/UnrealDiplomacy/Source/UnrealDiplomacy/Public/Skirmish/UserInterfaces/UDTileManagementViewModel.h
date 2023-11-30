@@ -5,15 +5,13 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelList.h"
 #include "UDTileManagementViewModel.generated.h"
 
 // Forward Declarations
 
 class UUDTileInteractionViewModel;
 class UUDModifierItemViewModel;
-
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDTileInteractionSourceUpdated, const TArray<TObjectPtr<UUDTileInteractionViewModel>>& tileInteractionViewModels);
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDTileModifierItemSourceUpdated, const TArray<TObjectPtr<UUDModifierItemViewModel>>& modifierItemViewModels);
 
 /**
  * Window that allows interacting with faction and view informations.
@@ -23,9 +21,7 @@ class UNREALDIPLOMACY_API UUDTileManagementViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Self handle for faction selection event.
-	 */
+	/** Self handle for faction selection event. */
 	UFUNCTION()
 	void OnTileSelected(FIntPoint selectedTile);
 public:
@@ -49,23 +45,18 @@ public:
 	FText ResourceTypeText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText CloseText;
-	// Events
-	FUDTileInteractionSourceUpdated TileInteractionSourceUpdatedEvent;
-	FUDTileModifierItemSourceUpdated ModifierItemSourceUpdatedEvent;
-protected:
-	virtual void Initialize() override;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList TileInteractionList;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList ModifierItemList;
+public:
+	virtual void Setup() override;
 	UFUNCTION()
-	virtual void Update() override;
-	UFUNCTION()
-	void Reload();
+	virtual void Refresh() override;
 private:
-	/**
-	 * Updates available interaction with the tile.
-	 */
+	/** Updates available interaction with the tile. */
 	void UpdateTileInteractionList();
-	/**
-	 * Updates available modifiers with the tile.
-	 */
+	/** Updates available modifiers with the tile. */
 	void UpdateModifierItemList();
 private:
 	// MVVM Setters & Getters
@@ -85,6 +76,10 @@ private:
 	FText GetResourceValueText() const;
 	void SetCloseText(FText newCloseText);
 	FText GetCloseText() const;
+	void SetTileInteractionList(FUDViewModelList newTileInteractionList);
+	FUDViewModelList GetTileInteractionList() const;
+	void SetModifierItemList(FUDViewModelList newModifierItemList);
+	FUDViewModelList GetModifierItemList() const;
 private:
 	// Fields
 	FName TileInteractionViewModelCollectionName = TEXT("TileInteractionCollection");

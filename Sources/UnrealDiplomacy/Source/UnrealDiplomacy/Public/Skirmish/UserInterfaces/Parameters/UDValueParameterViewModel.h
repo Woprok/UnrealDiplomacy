@@ -46,9 +46,9 @@ public:
 	float SelectedValue;
 	// Events
 	FUDParameterChanged OnChangeEvent;
-protected:
-	virtual void Initialize() override;
-	virtual void Update() override;
+public:
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
 	void ChangeAttempted();
 private:

@@ -142,14 +142,6 @@ enum class EUDFactionController : uint8
 	AI = 4,
 };
 
-// Resources used by the game.
-// TODO move this to resource manager.
-#define UD_RESOURCE_REPUTATION_ID 0
-#define UD_RESOURCE_GOLD_ID 1
-#define UD_RESOURCE_FOOD_ID 2
-#define UD_RESOURCE_MATERIALS_ID 3
-#define UD_RESOURCE_LUXURIES_ID 4
-
 /**
  * Represents current type of the decision.
  */

@@ -6,28 +6,23 @@
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Core/Simulation/UDModelStructs.h"
 
-
 #define LOCTEXT_NAMESPACE "PolicySelector"
 
-void UUDPolicySelectorViewModel::Initialize()
+void UUDPolicySelectorViewModel::Setup()
 {
 	PolicySelectItemViewModelType = UUDPolicySelectItemViewModel::StaticClass();
 
 	FText policyTitle = FText(LOCTEXT("PolicySelector", "Demand Policy"));
 	SetPolicyTitleText(policyTitle);
 
-	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDPolicySelectorViewModel::Reload);
-	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDPolicySelectorViewModel::Update);
-
-	Update();
+	// TODO This is not undependent, check and remove the commented part later.
+	//Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDPolicySelectorViewModel::Reload);
+	//Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDPolicySelectorViewModel::Update);
+	//
+	//Update();
 }
 
-void UUDPolicySelectorViewModel::Reload()
-{
-	Update();
-}
-
-void UUDPolicySelectorViewModel::Update()
+void UUDPolicySelectorViewModel::Refresh()
 {
 	if (!Model->IsOverseeingStatePresent())
 		return;
@@ -39,11 +34,6 @@ void UUDPolicySelectorViewModel::Update()
 }
 
 #undef LOCTEXT_NAMESPACE
-
-void UUDPolicySelectorViewModel::SetContent()
-{
-	// TODO create generic version (independent on collectionName and sourceCollection)
-}
 
 void UUDPolicySelectorViewModel::UpdatePolicyItemList()
 {
@@ -58,11 +48,11 @@ void UUDPolicySelectorViewModel::UpdatePolicyItemList()
 	{
 		TObjectPtr<UUDPolicySelectItemViewModel> newViewModel = Cast<UUDPolicySelectItemViewModel>(viewModels[i]);
 		newViewModel->SetContent(policies[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		PolicySelectItemViewModelCollection.Add(newViewModel);
 	}
 
-	PolicySelectItemSourceUpdatedEvent.Broadcast(PolicySelectItemViewModelCollection);
+	SetPolicyItemList(FUDViewModelList(viewModels));
 }
 
 void UUDPolicySelectorViewModel::SetPolicyTitleText(FText newPolicyTitleText)
@@ -73,4 +63,14 @@ void UUDPolicySelectorViewModel::SetPolicyTitleText(FText newPolicyTitleText)
 FText UUDPolicySelectorViewModel::GetPolicyTitleText() const
 {
 	return PolicyTitleText;
+}
+
+void UUDPolicySelectorViewModel::SetPolicyItemList(FUDViewModelList newPolicyItemList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(PolicyItemList, newPolicyItemList);
+}
+
+FUDViewModelList UUDPolicySelectorViewModel::GetPolicyItemList() const
+{
+	return PolicyItemList;
 }

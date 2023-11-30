@@ -16,10 +16,12 @@
 #include "Core/Simulation/Actions/UDDealActionVoteNo.h"
 #include "Core/Simulation/Actions/UDDealActionContractCreate.h"
 #include "Core/Simulation/Actions/UDDealActionContractExecute.h"
+#include "Core/UDGlobalData.h"
+#include "Core/Simulation/UDActionData.h"
 
 #define LOCTEXT_NAMESPACE "DealGeneralTab"
 
-void UUDDealGeneralTabViewModel::Initialize()
+void UUDDealGeneralTabViewModel::Setup()
 {
 	ParticipantItemViewModelType = UUDParticipantItemViewModel::StaticClass();
 	InviteItemViewModelType = UUDInviteItemViewModel::StaticClass();
@@ -47,15 +49,15 @@ void UUDDealGeneralTabViewModel::Initialize()
 	FText executeContract = FText(LOCTEXT("DealGeneralTab", "Execute Contract"));
 	SetExecuteContractText(executeContract);
 
-	Update();
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	TObjectPtr<UUDViewModel> chatViewModel = hud->GetViewModelCollection(ChatViewModelInstanceName, ChatViewModelType);
+	ChatViewModelInstance = Cast<UUDChatViewModel>(chatViewModel);
+	SetDealChatContent(FUDViewModelContent(ChatViewModelInstance));
+	// TODO remove this commented code, if it works properly
+	// Update();
 }
 
-void UUDDealGeneralTabViewModel::Reload()
-{
-	Update();
-}
-
-void UUDDealGeneralTabViewModel::Update()
+void UUDDealGeneralTabViewModel::Refresh()
 {
 	if (!Model->IsOverseeingStatePresent())
 		return;
@@ -158,12 +160,8 @@ void UUDDealGeneralTabViewModel::SetContent(FUDDealMinimalInfo content)
 
 void UUDDealGeneralTabViewModel::UpdateChatInstance()
 {
-	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(ChatViewModelInstanceName, ChatViewModelType);
-	ChatViewModelInstance = Cast<UUDChatViewModel>(viewModel);
-	ChatSourceUpdatedEvent.Broadcast(ChatViewModelInstance);
 	ChatViewModelInstance->SetContent(Content);
-	ChatViewModelInstance->FullUpdate();
+	ChatViewModelInstance->Refresh();
 }
 
 void UUDDealGeneralTabViewModel::UpdateParticipantItemList()
@@ -180,12 +178,12 @@ void UUDDealGeneralTabViewModel::UpdateParticipantItemList()
 	for (int32 i = 0; i < messages.Num(); i++)
 	{
 		TObjectPtr<UUDParticipantItemViewModel> newViewModel = Cast<UUDParticipantItemViewModel>(viewModels[i]);
-		newViewModel->SetContent(messages[i]);
-		newViewModel->FullUpdate();
 		ParticipantItemViewModelCollection.Add(newViewModel);
+		newViewModel->SetContent(messages[i]);
+		newViewModel->Refresh();
 	}
 
-	ParticipantItemSourceUpdatedEvent.Broadcast(ParticipantItemViewModelCollection);
+	SetParticipantItemList(FUDViewModelList(viewModels));
 }
 
 void UUDDealGeneralTabViewModel::UpdateInviteItemList()
@@ -202,12 +200,12 @@ void UUDDealGeneralTabViewModel::UpdateInviteItemList()
 	for (int32 i = 0; i < messages.Num(); i++)
 	{
 		TObjectPtr<UUDInviteItemViewModel> newViewModel = Cast<UUDInviteItemViewModel>(viewModels[i]);
-		newViewModel->SetContent(messages[i]);
-		newViewModel->FullUpdate();
 		InviteItemViewModelCollection.Add(newViewModel);
+		newViewModel->SetContent(messages[i]);
+		newViewModel->Refresh();
 	}
 
-	InviteItemSourceUpdatedEvent.Broadcast(InviteItemViewModelCollection);
+	SetInviteItemList(FUDViewModelList(viewModels));
 }
 
 void UUDDealGeneralTabViewModel::SetIsModeratorValue(bool newIsModeratorValue)
@@ -338,4 +336,34 @@ void UUDDealGeneralTabViewModel::SetCreateContractText(FText newCreateContractTe
 FText UUDDealGeneralTabViewModel::GetCreateContractText() const
 {
 	return CreateContractText;
+}
+
+void UUDDealGeneralTabViewModel::SetParticipantItemList(FUDViewModelList newParticipantItemList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ParticipantItemList, newParticipantItemList);
+}
+
+FUDViewModelList UUDDealGeneralTabViewModel::GetParticipantItemList() const
+{
+	return ParticipantItemList;
+}
+
+void UUDDealGeneralTabViewModel::SetInviteItemList(FUDViewModelList newInviteItemList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(InviteItemList, newInviteItemList);
+}
+
+FUDViewModelList UUDDealGeneralTabViewModel::GetInviteItemList() const
+{
+	return InviteItemList;
+}
+
+void UUDDealGeneralTabViewModel::SetDealChatContent(FUDViewModelContent newDealChatContent)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(DealChatContent, newDealChatContent);
+}
+
+FUDViewModelContent UUDDealGeneralTabViewModel::GetDealChatContent() const
+{
+	return DealChatContent;
 }

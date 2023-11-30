@@ -2,7 +2,6 @@
 
 #include "Skirmish/UserInterfaces/UDGameOverUserWidget.h"
 #include "Skirmish/UserInterfaces/UDGameOverViewModel.h"
-#include "Components/TextBlock.h"
 #include "Components/Button.h"
 
 void UUDGameOverUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
@@ -20,8 +19,5 @@ void UUDGameOverUserWidget::BindDelegates()
 
 void UUDGameOverUserWidget::BindWidgets()
 {
-	GameOverTitleTextWidget = GetWidget<UTextBlock>(TEXT("GameOverTitleText"));
-	WinnerFactionTextWidget = GetWidget<UTextBlock>(TEXT("WinnerFactionText"));
-	ReturnToMenuTextWidget = GetWidget<UTextBlock>(TEXT("ReturnToMenuText"));
 	ReturnButtonWidget = GetWidget<UButton>(TEXT("ReturnButton"));
 }

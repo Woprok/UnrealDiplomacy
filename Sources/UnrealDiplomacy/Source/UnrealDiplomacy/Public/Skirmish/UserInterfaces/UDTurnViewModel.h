@@ -38,12 +38,10 @@ public:
 	bool IsRegent;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsFinished;
-protected:
-	virtual void Initialize() override;
+public:
+	virtual void Setup() override;
 	UFUNCTION()
-	virtual void Update() override;
-	UFUNCTION()
-	void Reload();
+	virtual void Refresh() override;
 private:
 	/**
 	 * Updates all parts of turn presentation to latest change.

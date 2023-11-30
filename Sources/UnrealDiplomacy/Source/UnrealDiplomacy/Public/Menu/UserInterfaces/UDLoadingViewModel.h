@@ -19,8 +19,8 @@ public:
 	FText LoadingTitleText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText GameplayHintText;
-protected:
-	virtual void Initialize() override;
+public:
+	virtual void Setup() override;
 private:
 	// MVVM Setters & Getters
 	void SetLoadingTitleText(FText newLoadingTitleText);

@@ -1,10 +1,12 @@
 // Copyright Miroslav Valach
 // TODO proper mechanic for raid that is actually correct mathematically as /2 *2 might not work as intended
+// TODO add backup for revert
 
 #include "Core/Simulation/Actions/UDGameActionTileRaid.h"
 #include "Core/UDGlobalData.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDWorldState.h"
+#include "Core/Simulation/UDResourceManager.h"
 
 bool UUDGameActionTileRaid::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
@@ -25,7 +27,8 @@ void UUDGameActionTileRaid::Execute(const FUDActionData& action, TObjectPtr<UUDW
 
 	int32 resourceType = editedTile->ResourceType;
 	editedTile->ResourceStored /= 2;
-	world->Factions[action.InvokerFactionId]->Resources[resourceType] += 50;
+
+	ResourceManager->Add(world->Factions[action.InvokerFactionId], resourceType, BaseGain);
 }
 
 void UUDGameActionTileRaid::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -39,7 +42,8 @@ void UUDGameActionTileRaid::Revert(const FUDActionData& action, TObjectPtr<UUDWo
 
 	int32 resourceType = editedTile->ResourceType;
 	editedTile->ResourceStored *= 2;
-	world->Factions[action.InvokerFactionId]->Resources[resourceType] -= 50;
+
+	ResourceManager->Substract(world->Factions[action.InvokerFactionId], resourceType, BaseGain);
 }
 
 #define LOCTEXT_NAMESPACE "TileRaid"
@@ -71,3 +75,8 @@ FUDActionPresentation UUDGameActionTileRaid::GetPresentation() const
 	return presentation;
 }
 #undef LOCTEXT_NAMESPACE
+
+void UUDGameActionTileRaid::SetResourceManager(TObjectPtr<UUDResourceManager> resourceManager)
+{
+	ResourceManager = resourceManager;
+}

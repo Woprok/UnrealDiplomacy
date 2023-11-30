@@ -5,17 +5,18 @@
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Core/Simulation/Actions/UDSettingActionStratagemOptionSelect.h"
 #include "Core/Simulation/Actions/UDSettingActionStratagemOptionDeselect.h"
+#include "Core/Simulation/UDActionData.h"
 
 #define LOCTEXT_NAMESPACE "StrategyOption"
 
-void UUDStrategyOptionViewModel::Initialize()
+void UUDStrategyOptionViewModel::Setup()
 {
 	FText optionToolTip = FText(LOCTEXT("StrategyOption", "ToolTip"));
 	SetOptionToolTipText(optionToolTip);
 	SetIsSelectedValue(false);
 }
 
-void UUDStrategyOptionViewModel::Update()
+void UUDStrategyOptionViewModel::Refresh()
 {
 	FText optionTooltip = FText::Format(LOCTEXT("StrategyOption", "{0}\nCost: [{1}]"), FText::FromString(Content.Name), Content.Cost);
 	SetOptionToolTipText(optionTooltip);

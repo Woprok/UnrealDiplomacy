@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelContent.h"
 #include "Core/Simulation/UDModelStructs.h"
 #include "UDTertiaryPointItemViewModel.generated.h"
 
@@ -11,8 +12,6 @@
 
 struct FUDDealPointMinimalInfo;
 class UUDPointContentViewModel;
-
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDPointContentSourceUpdated, const TObjectPtr<UUDPointContentViewModel>& itemViewModel);
 
 /**
  * Single faction in a list.
@@ -22,9 +21,7 @@ class UNREALDIPLOMACY_API UUDTertiaryPointItemViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Set content of the strategy option.
-	 */
+	/** Set content of the deal point content. */
 	void SetContent(FUDDealPointMinimalInfo content, bool isValid);
 public:
 	// Button Functions
@@ -35,15 +32,13 @@ public:
 	FText CreateTertiaryPointText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsValidContentValue;
-	// Events
-	FUDPointContentSourceUpdated PointContentSourceUpdatedEvent;
-protected:
-	virtual void Initialize() override;
-	virtual void Update() override;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent PointContent;
+public:
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
-	/**
-	 * Fill current point with data.
-	 */
+	/** Fill current point with data. */
 	void UpdatePointContent();
 private:
 	// MVVM Setters & Getters
@@ -51,6 +46,8 @@ private:
 	FText GetCreateTertiaryPointText() const;
 	void SetIsValidContentValue(bool newIsValidContentValue);
 	bool GetIsValidContentValue() const;
+	void SetPointContent(FUDViewModelContent newPointContent);
+	FUDViewModelContent GetPointContent() const;
 private:
 	// Fields
 	FUDDealPointMinimalInfo Content;

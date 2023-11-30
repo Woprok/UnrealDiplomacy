@@ -9,12 +9,13 @@
 #include "Core/Simulation/Actions/UDDealActionContractPointReject.h"
 #include "Core/Simulation/Actions/UDDealActionContractPointSabotage.h"
 #include "Core/Simulation/Actions/UDDealActionContractPointTamper.h"
+#include "Core/Simulation/UDActionData.h"
 
 #define LOCTEXT_NAMESPACE "ActionItem"
 
 int32 UUDActionItemViewModel::UniqueNameDefinition = 0;
 
-void UUDActionItemViewModel::Initialize()
+void UUDActionItemViewModel::Setup()
 {
 	if (!IsUniqueNameDefined)
 	{
@@ -31,9 +32,20 @@ void UUDActionItemViewModel::Initialize()
 	SetSabotageText(sabotage);
 	FText change = FText(LOCTEXT("PointContent", "Change"));
 	SetChangeText(change);
+
+	// Retrieve model
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	TObjectPtr<UUDViewModel> editorModel = hud->GetViewModelCollection(ParameterEditorInstanceName, ParameterEditorType);
+	ParameterEditorInstance = Cast<UUDParameterEditorViewModel>(editorModel);
+	SetParameterEditorContent(FUDViewModelContent(ParameterEditorInstance));
+	// TODO if this is equal to previous version that called it each update. If yes, remove the clear part.
+	ParameterEditorInstance->ValuesUpdated.Clear();
+	ParameterEditorInstance->TextUpdated.Clear();
+	ParameterEditorInstance->ValuesUpdated.AddUObject(this, &UUDActionItemViewModel::SaveValuesChange);
+	ParameterEditorInstance->TextUpdated.AddUObject(this, &UUDActionItemViewModel::SaveTextChange);
 }
 
-void UUDActionItemViewModel::Update()
+void UUDActionItemViewModel::Refresh()
 {
 	SetActionTitleText(FText::FromString(Content.ActionTitle));
 	SetActionText(FText::FromString(Content.ActionContent));
@@ -94,19 +106,8 @@ void UUDActionItemViewModel::Sabotage()
 void UUDActionItemViewModel::UpdateEditor()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDActionItemViewModel: UpdateEditor."));
-	// Retrieve model
-	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(ParameterEditorInstanceName, ParameterEditorType);
-	ParameterEditorInstance = Cast<UUDParameterEditorViewModel>(viewModel);
 	ParameterEditorInstance->SetContent(Content.Parameters);
-	
-	ParameterEditorInstance->ValuesUpdated.Clear();
-	ParameterEditorInstance->TextUpdated.Clear();
-	ParameterEditorInstance->ValuesUpdated.AddUObject(this, &UUDActionItemViewModel::SaveValuesChange);
-	ParameterEditorInstance->TextUpdated.AddUObject(this, &UUDActionItemViewModel::SaveTextChange);
-
-	ParameterEditorInstance->FullUpdate();
-	ParameterEditorChangedEvent.Broadcast(ParameterEditorInstance);
+	ParameterEditorInstance->Refresh();
 }
 
 void UUDActionItemViewModel::DefineInstances()
@@ -225,4 +226,14 @@ void UUDActionItemViewModel::SetCanSabotageValue(bool newCanSabotageValue)
 bool UUDActionItemViewModel::GetCanSabotageValue() const
 {
 	return CanSabotageValue;
+}
+
+void UUDActionItemViewModel::SetParameterEditorContent(FUDViewModelContent newParameterEditorContent)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ParameterEditorContent, newParameterEditorContent);
+}
+
+FUDViewModelContent UUDActionItemViewModel::GetParameterEditorContent() const
+{
+	return ParameterEditorContent;
 }

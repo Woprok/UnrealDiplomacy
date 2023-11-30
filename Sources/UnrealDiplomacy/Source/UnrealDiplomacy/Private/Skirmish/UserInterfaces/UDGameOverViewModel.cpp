@@ -7,7 +7,7 @@
 
 #define LOCTEXT_NAMESPACE "GameOver"
 
-void UUDGameOverViewModel::Initialize()
+void UUDGameOverViewModel::Setup()
 {
 	FText gameOver = FText(LOCTEXT("GameOver", "Game Over!"));
 	SetGameOverTitleText(gameOver);
@@ -20,18 +20,14 @@ void UUDGameOverViewModel::Initialize()
 	SetIsPlayerValue(false);
 	SetIsWinnerValue(false);
 
-	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDGameOverViewModel::Reload);
-	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDGameOverViewModel::Update);
+	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDGameOverViewModel::Refresh);
+	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDGameOverViewModel::Refresh);
 
-	Update();
+	// TODO delete this comment if it works as expected...
+	//Update();
 }
 
-void UUDGameOverViewModel::Reload()
-{
-	Update();
-}
-
-void UUDGameOverViewModel::Update()
+void UUDGameOverViewModel::Refresh()
 {
 	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
 	SetIsHostValue(sessions->IsLocalPlayerHost(sessions->GetSessionName()));

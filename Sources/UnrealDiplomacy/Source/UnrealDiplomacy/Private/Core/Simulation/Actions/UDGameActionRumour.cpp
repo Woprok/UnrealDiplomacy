@@ -4,10 +4,15 @@
 #include "Core/UDGlobalData.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDWorldState.h"
+#include "Core/Simulation/UDResourceManager.h"
+#include "Core/Simulation/Resources/UDGameResourceGold.h"
+#include "Core/Simulation/Resources/UDGameResourceReputation.h"
 
 bool UUDGameActionRumour::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	return IUDActionInterface::CanExecute(action, world);
+	TObjectPtr<UUDFactionState> spender = world->Factions[action.InvokerFactionId];
+	bool canSpent = ResourceManager->CanSpend(spender, UUDGameResourceGold::ResourceId, InvokerGoldCost);
+	return IUDActionInterface::CanExecute(action, world) && canSpent;
 }
 
 void UUDGameActionRumour::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -15,8 +20,9 @@ void UUDGameActionRumour::Execute(const FUDActionData& action, TObjectPtr<UUDWor
 	IUDActionInterface::Execute(action, world);
 	// Reduce target reputation and invoker finances.
 	FUDGameDataTarget data(action.ValueParameters);
-	world->Factions[data.TargetId]->Resources[UD_RESOURCE_REPUTATION_ID] -= 25;
-	world->Factions[action.InvokerFactionId]->Resources[UD_RESOURCE_GOLD_ID] -= 75;
+
+	ResourceManager->Substract(world->Factions[data.TargetId], UUDGameResourceReputation::ResourceId, TargetReputationPenalty);
+	ResourceManager->Substract(world->Factions[action.InvokerFactionId], UUDGameResourceGold::ResourceId, InvokerGoldCost);
 }
 
 void UUDGameActionRumour::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -24,8 +30,9 @@ void UUDGameActionRumour::Revert(const FUDActionData& action, TObjectPtr<UUDWorl
 	IUDActionInterface::Revert(action, world);
 	// Increase target reputation and invoker finances.
 	FUDGameDataTarget data(action.ValueParameters);
-	world->Factions[data.TargetId]->Resources[UD_RESOURCE_REPUTATION_ID] += 25;
-	world->Factions[action.InvokerFactionId]->Resources[UD_RESOURCE_GOLD_ID] += 75;
+
+	ResourceManager->Add(world->Factions[data.TargetId], UUDGameResourceReputation::ResourceId, TargetReputationPenalty);
+	ResourceManager->Add(world->Factions[action.InvokerFactionId], UUDGameResourceGold::ResourceId, InvokerGoldCost);
 }
 
 #define LOCTEXT_NAMESPACE "Rumour"
@@ -58,3 +65,8 @@ FUDActionPresentation UUDGameActionRumour::GetPresentation() const
 	return presentation;
 }
 #undef LOCTEXT_NAMESPACE
+
+void UUDGameActionRumour::SetResourceManager(TObjectPtr<UUDResourceManager> resourceManager)
+{
+	ResourceManager = resourceManager;
+}

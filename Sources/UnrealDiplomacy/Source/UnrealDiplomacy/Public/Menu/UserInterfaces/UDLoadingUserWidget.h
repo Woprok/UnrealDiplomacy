@@ -8,7 +8,6 @@
 
 // Forward Declarations
 
-class UTextBlock;
 class UUDLoadingViewModel;
 
 /**
@@ -19,20 +18,12 @@ class UNREALDIPLOMACY_API UUDLoadingUserWidget : public UUDUserWidget
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Enables blueprint to bind view model.
-	 */
+	/** Enables blueprint to bind view model. */
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetBlueprintViewModel(UUDLoadingViewModel* model);
 protected:
 	virtual void BindViewModel(TObjectPtr<UUDViewModel> viewModel) override;
-	virtual void BindWidgets() override;
 protected:
-	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> LoadingTitleTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> GameplayHintTextWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDLoadingViewModel> ViewModel;

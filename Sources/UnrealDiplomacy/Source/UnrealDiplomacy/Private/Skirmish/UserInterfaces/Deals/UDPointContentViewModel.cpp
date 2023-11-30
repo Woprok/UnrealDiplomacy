@@ -10,12 +10,13 @@
 #include "Core/Simulation/Actions/UDDealActionPointModifyAction.h"
 #include "Core/Simulation/Actions/UDDealActionPointModifyTextParameter.h"
 #include "Core/Simulation/Actions/UDDealActionPointModifyValueParameters.h"
+#include "Core/Simulation/UDActionData.h"
 
 #define LOCTEXT_NAMESPACE "PointContent"
 
 int32 UUDPointContentViewModel::UniqueNameDefinition = 0;
 
-void UUDPointContentViewModel::Initialize()
+void UUDPointContentViewModel::Setup()
 {
 	if (!IsUniqueNameDefined)
 	{
@@ -26,9 +27,24 @@ void UUDPointContentViewModel::Initialize()
 	SetPointText(point);
 	FText editor = FText(LOCTEXT("PointContent", "Edit"));
 	SetEditorText(editor);
+
+	// Retrieve model
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	TObjectPtr<UUDViewModel> editorModel = hud->GetViewModelCollection(ParameterEditorInstanceName, ParameterEditorType);
+	ParameterEditorInstance = Cast<UUDParameterEditorViewModel>(editorModel);
+	SetParameterEditorContent(FUDViewModelContent(ParameterEditorInstance));
+	// TODO if this is equal to previous version that called it each update. If yes, remove the clear part.
+	ParameterEditorInstance->DealActionUpdated.Clear();
+	ParameterEditorInstance->InvokerUpdated.Clear();
+	ParameterEditorInstance->ValuesUpdated.Clear();
+	ParameterEditorInstance->TextUpdated.Clear();
+	ParameterEditorInstance->DealActionUpdated.AddUObject(this, &UUDPointContentViewModel::SaveDealActionChange);
+	ParameterEditorInstance->InvokerUpdated.AddUObject(this, &UUDPointContentViewModel::SaveInvokerChange);
+	ParameterEditorInstance->ValuesUpdated.AddUObject(this, &UUDPointContentViewModel::SaveValuesChange);
+	ParameterEditorInstance->TextUpdated.AddUObject(this, &UUDPointContentViewModel::SaveTextChange);
 }
 
-void UUDPointContentViewModel::Update()
+void UUDPointContentViewModel::Refresh()
 {
 	FFormatOrderedArguments args;
 	args.Add(FFormatArgumentValue(Content.PointId));
@@ -86,22 +102,8 @@ void UUDPointContentViewModel::SaveTextChange(FString text)
 void UUDPointContentViewModel::UpdateEditor()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDPointContentViewModel: UpdateEditor."));
-	// Retrieve model
-	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(ParameterEditorInstanceName, ParameterEditorType);
-	ParameterEditorInstance = Cast<UUDParameterEditorViewModel>(viewModel);
 	ParameterEditorInstance->SetContent(Content.Parameters);
-	ParameterEditorInstance->DealActionUpdated.Clear();
-	ParameterEditorInstance->InvokerUpdated.Clear();
-	ParameterEditorInstance->ValuesUpdated.Clear();
-	ParameterEditorInstance->TextUpdated.Clear();
-	ParameterEditorInstance->DealActionUpdated.AddUObject(this, &UUDPointContentViewModel::SaveDealActionChange);
-	ParameterEditorInstance->InvokerUpdated.AddUObject(this, &UUDPointContentViewModel::SaveInvokerChange);
-	ParameterEditorInstance->ValuesUpdated.AddUObject(this, &UUDPointContentViewModel::SaveValuesChange);
-	ParameterEditorInstance->TextUpdated.AddUObject(this, &UUDPointContentViewModel::SaveTextChange);
-
-	ParameterEditorInstance->FullUpdate();
-	ParameterEditorChangedEvent.Broadcast(ParameterEditorInstance);
+	ParameterEditorInstance->Refresh();
 }
 
 void UUDPointContentViewModel::DefineInstances()
@@ -150,4 +152,14 @@ void UUDPointContentViewModel::SetIsValidContentValue(bool newIsValidContentValu
 bool UUDPointContentViewModel::GetIsValidContentValue() const
 {
 	return IsValidContentValue;
+}
+
+void UUDPointContentViewModel::SetParameterEditorContent(FUDViewModelContent newParameterEditorContent)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ParameterEditorContent, newParameterEditorContent);
+}
+
+FUDViewModelContent UUDPointContentViewModel::GetParameterEditorContent() const
+{
+	return ParameterEditorContent;
 }

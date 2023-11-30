@@ -19,15 +19,11 @@ class UNREALDIPLOMACY_API UUDFactionItemViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Set content of the strategy option.
-	 */
+	/** Set content of the strategy option. */
 	void SetContent(FUDFactionInfo content);
 public:
 	// Button Functions
-	/**
-	 * Notifies the UI about nation being selected.
-	 */
+	/** Notifies the UI about nation being selected. */
 	UFUNCTION()
 	void Interact();
 	// MVVM Fields
@@ -37,9 +33,9 @@ public:
 	FText ControllerText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsHumanValue;
-protected:
-	virtual void Initialize() override;
-	virtual void Update() override;
+public:
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
 	// MVVM Setters & Getters
 	void SetNameText(FText newNameText);

@@ -1,10 +1,10 @@
 // Copyright Miroslav Valach
+// TODO remove, this is no longer relevant as the preview for deal item is merged with execution.
 
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Core/UserInterfaces/UDUserWidget.h"
-#include "Blueprint/IUserObjectListEntry.h"
+#include "Core/UserInterfaces/UDListEntryUserWidget.h"
 #include "UDPreviewItemUserWidget.generated.h"
 
 // Forward Declarations
@@ -16,7 +16,7 @@ class UUDPreviewItemViewModel;
  * Supports IUserObjectListEntry for list view initializations.
  */
 UCLASS(Abstract)
-class UNREALDIPLOMACY_API UUDPreviewItemUserWidget : public UUDUserWidget, public IUserObjectListEntry
+class UNREALDIPLOMACY_API UUDPreviewItemUserWidget : public UUDListEntryUserWidget
 {
 	GENERATED_BODY()
 public:
@@ -26,24 +26,8 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetBlueprintViewModel(UUDPreviewItemViewModel* model);
 protected:
-	/**
-	 * Allows List View to define context.
-	 */
-	virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
-	/**
-	 * Enables to define view model used by this widet for delegates.
-	 */
 	virtual void BindViewModel(TObjectPtr<UUDViewModel> viewModel) override;
-	/**
-	 * Automatically invoked by native on initialized.
-	 */
-	virtual void BindDelegates() override;
-	/**
-	 * Automatically invoked by native on initialized.
-	 */
-	virtual void BindWidgets() override;
 protected:
-	// Bindings
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDPreviewItemViewModel> ViewModel;

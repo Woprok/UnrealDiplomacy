@@ -4,6 +4,7 @@
 #include "Core/UDGlobalData.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDWorldState.h"
+#include "Core/Simulation/UDResourceManager.h"
 
 bool UUDGameActionGift::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
@@ -18,8 +19,9 @@ void UUDGameActionGift::Execute(const FUDActionData& action, TObjectPtr<UUDWorld
 	IUDActionInterface::Execute(action, world);
 	// Execute change based on data. Invoker transfers to target.
 	FUDGameDataTargetResourceAmount data(action.ValueParameters);
-	world->Factions[action.InvokerFactionId]->Resources[data.Resource] -= data.Amount;
-	world->Factions[data.TargetId]->Resources[data.Resource] += data.Amount;
+
+	ResourceManager->Substract(world->Factions[action.InvokerFactionId], data.Resource, data.Amount);
+	ResourceManager->Add(world->Factions[data.TargetId], data.Resource, data.Amount);
 }
 
 void UUDGameActionGift::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -27,8 +29,9 @@ void UUDGameActionGift::Revert(const FUDActionData& action, TObjectPtr<UUDWorldS
 	IUDActionInterface::Revert(action, world);
 	// Revert change based on data. Invoker was one that gave away the resources.
 	FUDGameDataTargetResourceAmount data(action.ValueParameters);
-	world->Factions[action.InvokerFactionId]->Resources[data.Resource] += data.Amount;
-	world->Factions[data.TargetId]->Resources[data.Resource] -= data.Amount;
+
+	ResourceManager->Add(world->Factions[action.InvokerFactionId], data.Resource, data.Amount);
+	ResourceManager->Substract(world->Factions[data.TargetId], data.Resource, data.Amount);
 }
 
 #define LOCTEXT_NAMESPACE "Gift"
@@ -65,3 +68,8 @@ FUDActionPresentation UUDGameActionGift::GetPresentation() const
 	return presentation;
 }
 #undef LOCTEXT_NAMESPACE
+
+void UUDGameActionGift::SetResourceManager(TObjectPtr<UUDResourceManager> resourceManager)
+{
+	ResourceManager = resourceManager;
+}

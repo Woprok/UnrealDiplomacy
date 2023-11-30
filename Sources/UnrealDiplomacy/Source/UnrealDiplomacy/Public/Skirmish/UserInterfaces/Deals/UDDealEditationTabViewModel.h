@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelList.h"
 #include "Core/Simulation/UDModelStructs.h"
 #include "UDDealEditationTabViewModel.generated.h"
 
 // Forward Declarations
 
+struct FUDViewModelList;
 struct FUDDealMinimalInfo;
 class UUDPrimaryPointItemViewModel;
-
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDPrimaryPointItemSourceUpdated, const TArray<TObjectPtr<UUDPrimaryPointItemViewModel>>& itemViewModels);
 
 /**
  * Tab for showing and editing points that are part of deal.
@@ -22,32 +22,26 @@ class UNREALDIPLOMACY_API UUDDealEditationTabViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Set content of the parameter editor.
-	 */
+	/** Set content of the parameter editor. */
 	void InvalidateContent(FUDDealMinimalInfo content);
-	/**
-	 * Set content of the parameter editor.
-	 */
+	/** Set content of the parameter editor. */
 	void SetContent(FUDDealMinimalInfo content);
 public:
 	// Button Functions
 	// MVVM Fields
-	// Events
-	FUDPrimaryPointItemSourceUpdated PointItemSourceUpdatedEvent;
-protected:
-	virtual void Initialize() override;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList PointItemList;
+public:
+	virtual void Setup() override;
 	UFUNCTION()
-	virtual void Update() override;
-	UFUNCTION()
-	void Reload();
+	virtual void Refresh() override;
 private:
-	/**
-	 * Fill with current deal points.
-	 */
+	/** Fill with current deal points. */
 	void UpdatePointList();
 private:
 	// MVVM Setters & Getters
+	void SetPointItemList(FUDViewModelList newPointItemList);
+	FUDViewModelList GetPointItemList() const;
 private:
 	// Fields
 	FUDDealMinimalInfo Content;

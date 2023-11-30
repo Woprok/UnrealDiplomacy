@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelContent.h"
 #include "Core/Simulation/UDModelStructs.h"
 #include "UDActionItemViewModel.generated.h"
 
@@ -13,8 +14,6 @@ struct FUDDealActionMinimalInfo;
 struct FUDActionInteractionInfo;
 class UUDParameterEditorViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDParameterEditorChanged, const TObjectPtr<UUDParameterEditorViewModel>& editorViewModel);
-
 /**
  * Single faction in a list.
  */
@@ -23,9 +22,7 @@ class UNREALDIPLOMACY_API UUDActionItemViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Set content of the strategy option.
-	 */
+	/** Set content of the strategy option. */
 	void SetContent(FUDDealActionMinimalInfo content);
 public:
 	// Button Functions
@@ -60,11 +57,11 @@ public:
 	bool CanDenyValue;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool CanSabotageValue;
-	// Events
-	FUDParameterEditorChanged ParameterEditorChangedEvent;
-protected:
-	virtual void Initialize() override;
-	virtual void Update() override;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent ParameterEditorContent;
+public:
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
 	/** Updates all parameter lists. */
 	void UpdateEditor();
@@ -97,6 +94,8 @@ private:
 	bool GetCanDenyValue() const;
 	void SetCanSabotageValue(bool newCanSabotageValue);
 	bool GetCanSabotageValue() const;
+	void SetParameterEditorContent(FUDViewModelContent newParameterEditorContent);
+	FUDViewModelContent GetParameterEditorContent() const;
 private:
 	// Fields
 	FUDActionInteractionInfo Content;

@@ -16,16 +16,6 @@ TObjectPtr<AUDHUD> AUDHUD::Get(TObjectPtr<UWorld> world)
 	return CastChecked<AUDHUD>(hud);
 }
 
-void AUDHUD::ForceInitialize()
-{
-	ViewModelManager->ForceInitialize();
-}
-
-void AUDHUD::ForceUpdate()
-{
-	ViewModelManager->ForceUpdate();
-}
-
 void AUDHUD::SwitchScreen(const FName& screenName)
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDHUD: Switching to Screen(%s)."), *screenName.ToString());
@@ -81,7 +71,8 @@ TArray<TObjectPtr<UUDViewModel>>& AUDHUD::GetViewModelCollection(const FName& na
 
 TObjectPtr<UUDViewModel> AUDHUD::GetViewModelCollection(const FName& name, TSubclassOf<UUDViewModel> viewModelType)
 {
-	return GetViewModelCollection(name, viewModelType, 1)[0];
+	TArray<TObjectPtr<UUDViewModel>>& ref = GetViewModelCollection(name, viewModelType, 1);
+	return ref[0];
 }
 
 bool AUDHUD::ShowScreen(const FName& screenName)
@@ -95,7 +86,9 @@ bool AUDHUD::ShowScreen(const FName& screenName)
 
 	for (const auto& widget : screen.Widgets)
 	{
+		// Both should exists, otherwise initialization failed for both.
 		ViewManager->ShowWidget(widget.Name);
+		ViewModelManager->RefreshViewModel(widget.Name);
 	}
 	return true;
 }

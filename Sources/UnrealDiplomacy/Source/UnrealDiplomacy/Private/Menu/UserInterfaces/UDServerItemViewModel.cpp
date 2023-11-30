@@ -8,7 +8,7 @@
 
 #define LOCTEXT_NAMESPACE "ServerItem"
 
-void UUDServerItemViewModel::Initialize()
+void UUDServerItemViewModel::Setup()
 {
 	FText name = FText(LOCTEXT("ServerItem", "Session Name"));
 	SetNameText(name);
@@ -16,7 +16,7 @@ void UUDServerItemViewModel::Initialize()
 	SetPingValue(ping);
 }
 
-void UUDServerItemViewModel::Update()
+void UUDServerItemViewModel::Refresh()
 {
 	if (Content == nullptr)
 		return;

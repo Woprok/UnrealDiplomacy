@@ -8,7 +8,6 @@
 
 // Fordward Declarations
 
-class UTextBlock;
 class UButton;
 class UUDMenuViewModel;
 
@@ -20,9 +19,7 @@ class UNREALDIPLOMACY_API UUDMenuUserWidget : public UUDUserWidget
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Enables blueprint to bind view model.
-	 */
+	/** Enables blueprint to bind view model. */
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetBlueprintViewModel(UUDMenuViewModel* model);
 protected:
@@ -31,16 +28,6 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> GameTitleTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> CreateGameTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> JoinGameTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> SettingsTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> QuitTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> CreateGameButtonWidget;
 	UPROPERTY()

@@ -5,13 +5,13 @@
 
 #define LOCTEXT_NAMESPACE "ClientItem"
 
-void UUDClientItemViewModel::Initialize()
+void UUDClientItemViewModel::Setup()
 {
 	FText name = FText(LOCTEXT("ClientItem", "Client"));
 	SetNameText(name);
 }
 
-void UUDClientItemViewModel::Update()
+void UUDClientItemViewModel::Refresh()
 {
 	SetNameText(FText::FromString(Content.Name));
 }

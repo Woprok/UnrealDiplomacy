@@ -6,10 +6,11 @@
 #include "Core/Simulation/Actions/UDSettingActionFactionRename.h"
 #include "Skirmish/UDSkirmishHUD.h"
 #include "Core/Simulation/UDModelStructs.h"
+#include "Core/Simulation/UDActionData.h"
 
 #define LOCTEXT_NAMESPACE "LobbyMember"
 
-void UUDLobbyMemberViewModel::Initialize()
+void UUDLobbyMemberViewModel::Setup()
 {
 	StratagemViewModelType = UUDStrategyOptionViewModel::StaticClass();
 
@@ -21,19 +22,9 @@ void UUDLobbyMemberViewModel::Initialize()
 	SetStrategyText(strategy);
 	FText strategyPoints = FText(LOCTEXT("LobbyMember", "Stratagem Points left 0"));
 	SetStrategyPointsText(strategyPoints);
-	//FText nationNameEditable = FText(LOCTEXT("LobbyMember", "Generic Nation Name"));
-	//SetFactionNameEditableText(nationNameEditable);
-
-	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDLobbyMemberViewModel::Reload);
-	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDLobbyMemberViewModel::Update);
 }
 
-void UUDLobbyMemberViewModel::Reload()
-{
-	Update();
-}
-
-void UUDLobbyMemberViewModel::Update()
+void UUDLobbyMemberViewModel::Refresh()
 {
 	if (!Model->IsOverseeingStatePresent())
 		return;
@@ -89,11 +80,11 @@ void UUDLobbyMemberViewModel::UpdateStratagemsList()
 	{
 		TObjectPtr<UUDStrategyOptionViewModel> newViewModel = Cast<UUDStrategyOptionViewModel>(viewModels[i]);
 		newViewModel->SetContent(stratagems[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		StratagemViewModelCollection.Add(newViewModel);
 	}
 
-	StratagemSourceUpdatedEvent.Broadcast(StratagemViewModelCollection);
+	SetStrategyOptionList(FUDViewModelList(viewModels));
 }
 
 void UUDLobbyMemberViewModel::SetMemberSettingsTitleText(FText newMemberSettingsTitleText)
@@ -144,4 +135,14 @@ void UUDLobbyMemberViewModel::SetFactionNameEditableText(FText newFactionNameEdi
 FText UUDLobbyMemberViewModel::GetFactionNameEditableText() const
 {
 	return FactionNameEditableText;
+}
+
+void UUDLobbyMemberViewModel::SetStrategyOptionList(FUDViewModelList newStrategyOptionList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(StrategyOptionList, newStrategyOptionList);
+}
+
+FUDViewModelList UUDLobbyMemberViewModel::GetStrategyOptionList() const
+{
+	return StrategyOptionList;
 }

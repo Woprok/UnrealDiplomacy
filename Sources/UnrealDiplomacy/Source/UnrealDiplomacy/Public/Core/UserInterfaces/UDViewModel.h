@@ -10,8 +10,7 @@
 // Forward Declarations
 
 class UUDActionAdministrator;
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDViewModelUpdate);
+class UUDViewModel;
 
 /**
  * Base ancestor for all shared behaviour.
@@ -27,43 +26,20 @@ public:
 	 */
 	void SetModel(TObjectPtr<UUDActionAdministrator> model);	
 	/**
-	 * Run initialize without update.
+	 * Prepares UI for being displayed.
+	 * Initializes dependencies (e.g. for content widgets, empty list..., default strings ).
+	 * Thus it's using generic application settings over any game specific data (avoid accessing these).
+	 * Primarily defines everything to prevent any undefined behaviour on all other viewmodel calls.
 	 */
-	void FullInitialize();
+	virtual void Setup();
 	/**
-	 * Notifies subscribers about incoming update.
-	 * Executes update and notifies again about the end of the update.
-	 * This updates is used for complete setup and full change.
+	 * Starts refresh on the viewmodel, potentially updating current content.
+	 * This is supposed to be called after Setup and after view is initialized.
+	 * Thus this might be called before specific content was passed to it and should always check it has content.
+	 * Menu ViewModels might self SetContent in this.
+	 * Most Game ViewModels receive SetContent from events or other ViewModels.
 	 */
-	void FullUpdate();
-public:
-	/**
-	 * Subscribeable event that is invoked before the update.
-	 * Allows view to be aware of impending update.
-	 */
-	UPROPERTY(BlueprintAssignable)
-	FUDViewModelUpdate OnUpdateStarting;
-	/**
-	 * Subscribeable event that is invoked after the update.
-	 * Useful for views to update their data to fit current view model.
-	 */
-	UPROPERTY(BlueprintAssignable)
-	FUDViewModelUpdate OnUpdateFinishing;
-protected:
-	/**
-	 * Invoked for first update and for reloads.
-	 * Used for creating defaults such as these that are based on application settings.
-	 */
-	virtual void Initialize();
-	/**
-	 * Invoked for each update.
-	 * Should react to any possible data change.
-	 */
-	virtual void Update();
-	/**
-	 * Invoked after each set model call.
-	 */
-	virtual void OnModelChanged();
+	virtual void Refresh();
 protected:
 	/**
 	 * Model is used to communicate with the game logic.

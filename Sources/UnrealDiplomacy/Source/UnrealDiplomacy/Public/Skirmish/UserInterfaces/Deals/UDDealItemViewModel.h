@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelContent.h"
 #include "Core/Simulation/UDModelStructs.h"
 #include "UDDealItemViewModel.generated.h"
 
@@ -14,10 +15,6 @@ class UUDDealGeneralTabViewModel;
 class UUDDealEditationTabViewModel;
 class UUDDealExecutionTabViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDGeneralSourceUpdated, const TObjectPtr<UUDDealGeneralTabViewModel>& tabViewModel);
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDEditationSourceUpdated, const TObjectPtr<UUDDealEditationTabViewModel>& tabViewModel);
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDExecutionSourceUpdated, const TObjectPtr<UUDDealExecutionTabViewModel>& tabViewModel);
-
 /**
  * Window for showing and editing deals.
  */
@@ -26,13 +23,9 @@ class UNREALDIPLOMACY_API UUDDealItemViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Set content of the parameter editor.
-	 */
+	/** Set content of the parameter editor. */
 	void InvalidateContent(FUDDealMinimalInfo content);
-	/**
-	 * Set content of the parameter editor.
-	 */
+	/** Set content of the parameter editor. */
 	void SetContent(FUDDealMinimalInfo content);
 public:
 	// Button Functions
@@ -61,28 +54,22 @@ public:
 	int32 ExecutionTabValue = 2;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Getter)
 	bool IsValidContentValue = false;
-	// Events
-	FUDGeneralSourceUpdated GeneralSourceUpdatedEvent;
-	FUDEditationSourceUpdated EditationSourceUpdatedEvent;
-	FUDExecutionSourceUpdated ExecutionSourceUpdatedEvent;
-protected:
-	virtual void Initialize() override;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Getter)
+	FUDViewModelContent GeneralTabContent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Getter)
+	FUDViewModelContent EditationTabContent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Getter)
+	FUDViewModelContent ExecutionTabContent;
+public:
+	virtual void Setup() override;
 	UFUNCTION()
-	virtual void Update() override;
-	UFUNCTION()
-	void Reload();
+	virtual void Refresh() override;
 private:
-	/**
-	 * Updates general.
-	 */
+	/** Updates general. */
 	void UpdateGeneralInstance();
-	/**
-	 * Updates editation.
-	 */
+	/** Updates editation. */
 	void UpdateEditationInstance();
-	/**
-	 * Updates execution.
-	 */
+	/** Updates execution. */
 	void UpdateExecutionInstance();
 	/** Swift check to which of the tab is selected. */
 	bool IsGeneral() { return SelectedTabValue == GeneralTabValue; };
@@ -107,6 +94,12 @@ private:
 	int32 GetExecutionTabValue() const;
 	void SetIsValidContentValue(bool newIsValidContentValue);
 	bool GetIsValidContentValue() const;
+	void SetGeneralTabContent(FUDViewModelContent newGeneralTabContent);
+	FUDViewModelContent GetGeneralTabContent() const;
+	void SetEditationTabContent(FUDViewModelContent newEditationTabContent);
+	FUDViewModelContent GetEditationTabContent() const;
+	void SetExecutionTabContent(FUDViewModelContent newExecutionTabContent);
+	FUDViewModelContent GetExecutionTabContent() const;
 private:
 	// Fields
 	FUDDealMinimalInfo Content;

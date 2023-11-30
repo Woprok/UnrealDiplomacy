@@ -16,7 +16,7 @@ FUDFactionMinimalInfo GetInvalidFaction()
 	return invalid;
 }
 
-void UUDFactionParameterViewModel::Initialize()
+void UUDFactionParameterViewModel::Setup()
 {
 	FText tileTitle = FText(LOCTEXT("FactionParameter", "Faction"));
 	SetFactionTitleText(tileTitle);
@@ -29,7 +29,7 @@ void UUDFactionParameterViewModel::Initialize()
 	SelectedFactionIndex = UUDGlobalData::InvalidParameterArrayIndex;
 }
 
-void UUDFactionParameterViewModel::Update()
+void UUDFactionParameterViewModel::Refresh()
 {
 	SetFactionTitleText(FText::FromString(Content.Name));
 	SetToolTipText(FText::FromString(Content.ToolTip));

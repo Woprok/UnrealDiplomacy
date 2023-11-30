@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelList.h"
+#include "Core/UserInterfaces/UDViewModelContent.h"
 #include "Core/Simulation/UDModelStructs.h"
 #include "UDDealGeneralTabViewModel.generated.h"
 
@@ -14,10 +16,6 @@ class UUDParticipantItemViewModel;
 class UUDInviteItemViewModel;
 class UUDChatViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDParticipantItemSourceUpdated, const TArray<TObjectPtr<UUDParticipantItemViewModel>>& itemViewModels);
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDInviteItemSourceUpdated, const TArray<TObjectPtr<UUDInviteItemViewModel>>& itemViewModels);
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDChatSourceUpdated, const TObjectPtr<UUDChatViewModel>& chatViewModel);
-
 /**
  * Window for showing and editing deals.
  */
@@ -26,13 +24,9 @@ class UNREALDIPLOMACY_API UUDDealGeneralTabViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Set content of the parameter editor.
-	 */
+	/** Set content of main the deal view tab. */
 	void InvalidateContent(FUDDealMinimalInfo content);
-	/**
-	 * Set content of the parameter editor.
-	 */
+	/** Set content of main the deal view tab. */
 	void SetContent(FUDDealMinimalInfo content);
 public:
 	// Button Functions
@@ -75,28 +69,22 @@ public:
 	FText CreateContractText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText ExecuteContractText;
-	// Events
-	FUDParticipantItemSourceUpdated ParticipantItemSourceUpdatedEvent;
-	FUDInviteItemSourceUpdated InviteItemSourceUpdatedEvent;
-	FUDChatSourceUpdated ChatSourceUpdatedEvent;
-protected:
-	virtual void Initialize() override;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList ParticipantItemList;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList InviteItemList;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent DealChatContent;
+public:
+	virtual void Setup() override;
 	UFUNCTION()
-	virtual void Update() override;
-	UFUNCTION()
-	void Reload();
+	virtual void Refresh() override;
 private:
-	/**
-	 * Updates chat.
-	 */
+	/** Updates chat. */
 	void UpdateChatInstance();
-	/**
-	 * Updates participant list.
-	 */
+	/** Updates participant list. */
 	void UpdateParticipantItemList();
-	/**
-	 * Updates invite list.
-	 */
+	/** Updates invite list. */
 	void UpdateInviteItemList();
 private:
 	// MVVM Setters & Getters
@@ -126,6 +114,12 @@ private:
 	FText GetExecuteContractText() const;
 	void SetCreateContractText(FText newCreateContractText);
 	FText GetCreateContractText() const;
+	void SetParticipantItemList(FUDViewModelList newParticipantItemList);
+	FUDViewModelList GetParticipantItemList() const;
+	void SetInviteItemList(FUDViewModelList newInviteItemList);
+	FUDViewModelList GetInviteItemList() const;
+	void SetDealChatContent(FUDViewModelContent newDealChatContent);
+	FUDViewModelContent GetDealChatContent() const;
 private:
 	// Fields
 	FUDDealMinimalInfo Content;

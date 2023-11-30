@@ -18,19 +18,13 @@ class UNREALDIPLOMACY_API UUDServerItemViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Set content of the session.
-	 */
+	/** Set content of the session. */
 	void SetContent(const FOnlineSessionSearchResult& content);
-	/**
-	 * Get content of the session.
-	 */
+	/** Get content of the session. */
 	const FOnlineSessionSearchResult& GetContent() const;
 public:
 	// Button Functions
-	/**
-	 * Attempts to join the new session, hides UI until the end of join operation.
-	 */
+	/** Attempts to join the new session, hides UI until the end of join operation. */
 	UFUNCTION()
 	void Join();
 	// MVVM Fields
@@ -40,13 +34,11 @@ public:
 	int32 PingValue;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsEnabled;
-protected:
-	virtual void Initialize() override;
-	virtual void Update() override;
+public:
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
-	/**
-	 * Starts join process.
-	 */
+	/** Starts join process. */
 	void StartJoiningGame();
 private:
 	// MVVM Setters & Getters

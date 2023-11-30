@@ -3,15 +3,6 @@
 #include "Skirmish/UserInterfaces/Deals/UDInviteItemUserWidget.h"
 #include "Skirmish/UserInterfaces/Deals/UDInviteItemViewModel.h"
 #include "Components/Button.h"
-#include "Components/TextBlock.h"
-
-void UUDInviteItemUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
-{
-	// Change it to original type.
-	UUDInviteItemViewModel* itemViewModel = Cast<UUDInviteItemViewModel>(ListItemObject);
-	// Invoke bindings related to view model being set.
-	SetViewModel(itemViewModel);
-}
 
 void UUDInviteItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
@@ -28,7 +19,5 @@ void UUDInviteItemUserWidget::BindDelegates()
 
 void UUDInviteItemUserWidget::BindWidgets()
 {
-	FactionNameTextWidget = GetWidget<UTextBlock>(TEXT("FactionNameText"));
-	InviteTextWidget = GetWidget<UTextBlock>(TEXT("InviteText"));
 	InviteButtonWidget = GetWidget<UButton>(TEXT("InviteButton"));
 }

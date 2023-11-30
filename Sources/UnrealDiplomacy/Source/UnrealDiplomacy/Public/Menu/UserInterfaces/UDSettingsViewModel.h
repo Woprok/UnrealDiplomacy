@@ -10,6 +10,8 @@
 
 enum class EUDWindowModeType : uint8;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUDSettingsLoaded);
+
 /**
  * Wrapper around items that will be in view.
  */
@@ -52,13 +54,9 @@ class UNREALDIPLOMACY_API UUDSettingsViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Gets new list from all supported window options.
-	 */
+	/** Gets new list from all supported window options. */
 	TArray<FString> GetWindowModeOptions() const;
-	/**
-	 * Gets new list from all supported resolution options.
-	 */
+	/** Gets new list from all supported resolution options. */
 	TArray<FString> GetResolutionOptions() const;
 public:
 	// Button Functions
@@ -81,43 +79,33 @@ public:
 	FText CreditsText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText SettingsTitleText;
-	/**
-	 * Binding for non-primitive invoked by widget.
-	 */
+	/** Binding for non-primitive invoked by widget. */
 	FString GetSelectedWindowMode() const;
-	/**
-	 * Binding for non-primitive invoked by widget.
-	 */
+	/** Binding for non-primitive invoked by widget. */
 	UFUNCTION()
 	void SetSelectedWindowMode(FString SelectedItem, ESelectInfo::Type SelectionType);
-	/**
-	 * Binding for non-primitive invoked by widget.
-	 */
+	/** Binding for non-primitive invoked by widget. */
 	FString GetSelectedResolution() const;
-	/**
-	 * Binding for non-primitive invoked by widget.
-	 */
+	/** Binding for non-primitive invoked by widget. */
 	UFUNCTION()
 	void SetSelectedResolution(FString SelectedItem, ESelectInfo::Type SelectionType);
-protected:
-	virtual void Initialize() override;
-	virtual void Update() override;
+	/**
+	 * Subscribeable event that is invoked after the update.
+	 * Useful for views to update their data to fit current view model.
+	 */
+	UPROPERTY(BlueprintAssignable)
+	FUDSettingsLoaded OnSettingsLoaded;
+public:
+	virtual void Setup() override;
+	virtual void Refresh() override;
+	/** Loads current settings from game instance. */
+	void SetDefaultContent();
 private:
-	/**
-	 * Applies changes that are present in the view model to the settings in game instance.
-	 */
+	/** Applies changes that are present in the view model to the settings in game instance. */
 	void SaveChanges();
-	/**
-	 * Loads current settings from game instance.
-	 */
-	void RetrieveSettings();
-	/**
-	 * Creates new list of all supported window options.
-	 */
+	/** Creates new list of all supported window options. */
 	void CreateWindowModeOptions();
-	/**
-	 * Creates new list of all supported resolution options.
-	 */
+	/** Creates new list of all supported resolution options. */
 	void CreateResolutionOptions();
 	FUDWindowModeItem FindInWindowModes(EUDWindowModeType searchedItem, const TArray<FUDWindowModeItem>& items) const;
 	FUDWindowModeItem FindInWindowModes(FString searchedItem, const TArray<FUDWindowModeItem>& items) const;

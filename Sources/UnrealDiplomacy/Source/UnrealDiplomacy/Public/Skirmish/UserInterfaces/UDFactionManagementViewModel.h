@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelList.h"
+#include "Core/UserInterfaces/UDViewModelContent.h"
 #include "UDFactionManagementViewModel.generated.h"
 
 // Forward Declarations
@@ -12,8 +14,6 @@ class UUDFactionInteractionViewModel;
 class UUDModifierItemViewModel;
 class UUDPolicySelectorViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDFactionInteractionSourceUpdated, const TArray<TObjectPtr<UUDFactionInteractionViewModel>>& factionInteractionViewModels);
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDFactionModifierItemSourceUpdated, const TArray<TObjectPtr<UUDModifierItemViewModel>>& modifierItemViewModels);
 DECLARE_MULTICAST_DELEGATE_OneParam(FUDPolicySelectorChanged, const TObjectPtr<UUDPolicySelectorViewModel>& policySelectorViewModel);
 
 /**
@@ -24,9 +24,7 @@ class UNREALDIPLOMACY_API UUDFactionManagementViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Self handle for faction selection event.
-	 */
+	/** Self handle for faction selection event. */
 	UFUNCTION()
 	void OnFactionSelected(int32 selectedFactionId);
 public:
@@ -48,43 +46,34 @@ public:
 	FText RequestTitleText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText DemandTitleText;
-	// Events
-	FUDFactionInteractionSourceUpdated FactionInteractionSourceUpdatedEvent;
-	FUDFactionInteractionSourceUpdated FactionOfferSourceUpdatedEvent;
-	FUDFactionInteractionSourceUpdated FactionRequestSourceUpdatedEvent;
-	FUDFactionInteractionSourceUpdated FactionDemandSourceUpdatedEvent;
-	FUDFactionModifierItemSourceUpdated ModifierItemSourceUpdatedEvent;
-	FUDPolicySelectorChanged PolicySelectorChangedEvent;
-protected:
-	virtual void Initialize() override;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList FactionInteractionList;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList FactionOfferList;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList FactionRequestList;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList FactionDemandList;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList ModifierItemList;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent PolicySelectorContent;
+public:
+	virtual void Setup() override;
 	UFUNCTION()
-	virtual void Update() override;
-	UFUNCTION()
-	void Reload();
+	virtual void Refresh() override;
 private:
-	/**
-	 * Updates interactions with the faction.
-	 */
+	/** Updates interactions with the faction. */
 	void UpdateFactionLists();
-	/**
-	 * Updates available direct interaction with the faction.
-	 */
+	/** Updates available direct interaction with the faction. */
 	void UpdateFactionInteractionList();
-	/**
-	 * Updates available offer interaction with the faction.
-	 */
+	/** Updates available offer interaction with the faction. */
 	void UpdateFactionOfferList();
-	/**
-	 * Updates available request interaction with the faction.
-	 */
+	/** Updates available request interaction with the faction. */
 	void UpdateFactionRequestList();
-	/**
-	 * Updates available demand interaction with the faction.
-	 */
+	/** Updates available demand interaction with the faction. */
 	void UpdateFactionDemandList();
-	/**
-	 * Updates available modifiers with the faction.
-	 */
+	/** Updates available modifiers with the faction. */
 	void UpdateModifierItemList();
 private:
 	// MVVM Setters & Getters
@@ -102,6 +91,18 @@ private:
 	FText GetRequestTitleText() const;
 	void SetDemandTitleText(FText newDemandTitleText);
 	FText GetDemandTitleText() const;
+	void SetFactionInteractionList(FUDViewModelList newFactionInteractionList);
+	FUDViewModelList GetFactionInteractionList() const;
+	void SetFactionOfferList(FUDViewModelList newFactionOfferList);
+	FUDViewModelList GetFactionOfferList() const;
+	void SetFactionRequestList(FUDViewModelList newFactionRequestList);
+	FUDViewModelList GetFactionRequestList() const;
+	void SetFactionDemandList(FUDViewModelList newFactionDemandList);
+	FUDViewModelList GetFactionDemandList() const;
+	void SetModifierItemList(FUDViewModelList newModifierItemList);
+	FUDViewModelList GetModifierItemList() const;
+	void SetPolicySelectorContent(FUDViewModelContent newPolicySelectorContent);
+	FUDViewModelContent GetPolicySelectorContent() const;
 private:
 	// Fields
 	FName FactionInteractionViewModelCollectionName = TEXT("FactionInteractionCollection");

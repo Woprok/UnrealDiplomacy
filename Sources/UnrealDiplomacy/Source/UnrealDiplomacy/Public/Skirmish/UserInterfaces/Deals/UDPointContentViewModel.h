@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelContent.h"
 #include "Core/Simulation/UDModelStructs.h"
 #include "UDPointContentViewModel.generated.h"
 
@@ -12,8 +13,6 @@
 struct FUDDealPointMinimalInfo;
 struct FUDPointInteractionInfo;
 class UUDParameterEditorViewModel;
-
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDParameterEditorChanged, const TObjectPtr<UUDParameterEditorViewModel>& editorViewModel);
 
 /**
  * Single faction in a list.
@@ -38,11 +37,11 @@ public:
 	FText EditorText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsValidContentValue;
-	// Events
-	FUDParameterEditorChanged ParameterEditorChangedEvent;
-protected:
-	virtual void Initialize() override;
-	virtual void Update() override;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Getter)
+	FUDViewModelContent ParameterEditorContent;
+public:
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
 	/** Updates all parameter lists. */
 	void UpdateEditor();
@@ -63,6 +62,8 @@ private:
 	FText GetEditorText() const;
 	void SetIsValidContentValue(bool newIsValidContentValue);
 	bool GetIsValidContentValue() const;
+	void SetParameterEditorContent(FUDViewModelContent newParameterEditorContent);
+	FUDViewModelContent GetParameterEditorContent() const;
 private:
 	// Fields
 	FUDPointInteractionInfo Content;

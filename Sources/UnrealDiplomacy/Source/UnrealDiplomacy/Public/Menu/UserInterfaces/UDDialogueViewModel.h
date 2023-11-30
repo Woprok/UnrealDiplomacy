@@ -14,7 +14,8 @@ class UNREALDIPLOMACY_API UUDDialogueViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	void SetErrorDialogueContent(FString title, FString content);
+	/** Defines new content that is shown in the dialogue. */
+	void SetContent(FString title, FString content);
 public:
 	// Button Functions
 	UFUNCTION()
@@ -26,8 +27,8 @@ public:
 	FText ContentText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText CloseText;
-protected:
-	virtual void Initialize() override;
+public:
+	virtual void Setup() override;
 private:
 	// MVVM Setters & Getters
 	void SetDialogueTitleText(FText newDialogueTitleText);

@@ -10,6 +10,8 @@
 #include "Core/Simulation/UDModifierInterface.h"
 #include "Core/Simulation/UDModifierManager.h"
 #include "Core/Simulation/UDActionInterface.h"
+#include "Core/Simulation/UDResourceManager.h"
+#include "Core/Simulation/UDResourceInterface.h"
 
 #pragma region Core
 void UUDActionAdministrator::OnDataChanged(const FUDActionData& action)
@@ -355,11 +357,10 @@ TArray<FUDResourceInfo> UUDActionAdministrator::GetResourceList()
 {
 	TArray<FUDResourceInfo> resources = { };
 
-	resources.Add(FUDResourceInfo::GetReputation(0));
-	resources.Add(FUDResourceInfo::GetGold(0));
-	resources.Add(FUDResourceInfo::GetFood(0));
-	resources.Add(FUDResourceInfo::GetMaterials(0));
-	resources.Add(FUDResourceInfo::GetLuxuries(0));
+	for (const auto& res : ActionManager->GetResourceManager()->FilterResources())
+	{
+		resources.Add(FUDResourceInfo(res.ResourceId, res.Name, 0));
+	}
 
 	return resources;
 }
@@ -370,11 +371,11 @@ TArray<FUDResourceInfo> UUDActionAdministrator::GetLocalFactionResourceList()
 
 	TObjectPtr<UUDFactionState> faction = State->Factions[State->FactionPerspective];
 
-	resources.Add(FUDResourceInfo::GetReputation(faction->Resources[UD_RESOURCE_REPUTATION_ID]));
-	resources.Add(FUDResourceInfo::GetGold(faction->Resources[UD_RESOURCE_GOLD_ID]));
-	resources.Add(FUDResourceInfo::GetFood(faction->Resources[UD_RESOURCE_FOOD_ID]));
-	resources.Add(FUDResourceInfo::GetMaterials(faction->Resources[UD_RESOURCE_MATERIALS_ID]));
-	resources.Add(FUDResourceInfo::GetLuxuries(faction->Resources[UD_RESOURCE_LUXURIES_ID]));
+	for (const auto& res : ActionManager->GetResourceManager()->FilterResources())
+	{
+		int32 amount = ActionManager->GetResourceManager()->GetCurrent(faction, res.ResourceId);
+		resources.Add(FUDResourceInfo(res.ResourceId, res.Name, amount));
+	}
 
 	return resources;
 }

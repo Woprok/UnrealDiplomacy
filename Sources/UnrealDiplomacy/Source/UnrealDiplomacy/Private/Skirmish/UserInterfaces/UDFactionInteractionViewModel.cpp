@@ -13,7 +13,7 @@
 
 int32 UUDFactionInteractionViewModel::UniqueNameDefinition = 0;
 
-void UUDFactionInteractionViewModel::Initialize()
+void UUDFactionInteractionViewModel::Setup()
 {
 	if (!IsUniqueNameDefined) 
 	{
@@ -24,16 +24,15 @@ void UUDFactionInteractionViewModel::Initialize()
 	SetInteractText(interact);
 
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	// Retrieve view models for sub content controls
 	TObjectPtr<UUDViewModel> editorModel = hud->GetViewModelCollection(ParameterEditorInstanceName, ParameterEditorType);
 	ParameterEditorInstance = Cast<UUDParameterEditorViewModel>(editorModel);
-	// Announce them to widget for additional binding.
-	ParameterEditorChangedEvent.Broadcast(ParameterEditorInstance);
+	SetParameterEditorContent(FUDViewModelContent(ParameterEditorInstance));
 	// Call initialize so each Instance is ready to use, once it receives data in runtime.
-	ParameterEditorInstance->FullUpdate();
+	//ParameterEditorInstance->Refresh();
+	// TODO remove this commented code, if it works properly
 }
 
-void UUDFactionInteractionViewModel::Update()
+void UUDFactionInteractionViewModel::Refresh()
 {
 	if (!Model->IsOverseeingStatePresent())
 		return;
@@ -101,6 +100,7 @@ void UUDFactionInteractionViewModel::UpdateEditor()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDFactionInteractionViewModel: UpdateEditor."));
 	ParameterEditorInstance->SetContent(Content.Parameters);
+	ParameterEditorInstance->Refresh();
 }
 
 void UUDFactionInteractionViewModel::DefineInstances()
@@ -119,4 +119,14 @@ void UUDFactionInteractionViewModel::SetInteractText(FText newInteractText)
 FText UUDFactionInteractionViewModel::GetInteractText() const
 {
 	return InteractText;
+}
+
+void UUDFactionInteractionViewModel::SetParameterEditorContent(FUDViewModelContent newParameterEditorContent)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ParameterEditorContent, newParameterEditorContent);
+}
+
+FUDViewModelContent UUDFactionInteractionViewModel::GetParameterEditorContent() const
+{
+	return ParameterEditorContent;
 }

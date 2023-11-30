@@ -16,7 +16,7 @@ FUDTileMinimalInfo GetInvalidTile()
 	return invalid;
 }
 
-void UUDTileParameterViewModel::Initialize()
+void UUDTileParameterViewModel::Setup()
 {
 	FText tileTitle = FText(LOCTEXT("TileParameter", "Tile"));
 	SetTileTitleText(tileTitle);
@@ -29,7 +29,7 @@ void UUDTileParameterViewModel::Initialize()
 	SelectedTileIndex = UUDGlobalData::InvalidParameterArrayIndex;
 }
 
-void UUDTileParameterViewModel::Update()
+void UUDTileParameterViewModel::Refresh()
 {
 	SetTileTitleText(FText::FromString(Content.Name));
 	SetToolTipText(FText::FromString(Content.ToolTip));

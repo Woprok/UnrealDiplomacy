@@ -14,7 +14,7 @@ FText ConstructContent()
 	return FText::FromString(content.ToString());
 }
 
-void UUDDialogueViewModel::Initialize()
+void UUDDialogueViewModel::Setup()
 {
 	FText dialogueTitle = FText(LOCTEXT("Dialogue", "Error"));
 	SetDialogueTitleText(dialogueTitle);
@@ -26,7 +26,7 @@ void UUDDialogueViewModel::Initialize()
 
 #undef LOCTEXT_NAMESPACE
 
-void UUDDialogueViewModel::SetErrorDialogueContent(FString title, FString content)
+void UUDDialogueViewModel::SetContent(FString title, FString content)
 {
 	SetDialogueTitleText(FText::FromString(title));
 	SetContentText(FText::FromString(content));

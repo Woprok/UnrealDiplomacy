@@ -31,9 +31,9 @@ public:
 	FText DescriptionText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	int32 IdValue;
-protected:
-	virtual void Initialize() override;
-	virtual void Update() override;
+public:
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
 	// MVVM Setters & Getters
 	void SetNameText(FText newNameText);

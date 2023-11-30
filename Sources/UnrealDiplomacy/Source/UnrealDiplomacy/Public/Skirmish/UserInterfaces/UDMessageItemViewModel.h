@@ -24,15 +24,11 @@ public:
 	 * Disabling interations.
 	 */
 	void InvalidateContent(FUDMessageInfo content);
-	/**
-	 * Set content of the interaction option.
-	 */
+	/** Set content of the interaction option. */
 	void SetContent(FUDMessageInfo content);
 public:
 	// Button Functions
-	/**
-	 * Confirmation of the interaction.
-	 */
+	/** Confirmation of the interaction. */
 	UFUNCTION()
 	void Accept();
 	UFUNCTION()
@@ -67,9 +63,9 @@ public:
 	bool HasContentValue;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool HasChoicesValue;
-protected:
-	virtual void Initialize() override;
-	virtual void Update() override;
+public:
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
 	// MVVM Setters & Getters
 	void SetMessageTypeText(FText newMessageTypeText);

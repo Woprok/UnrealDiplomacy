@@ -9,7 +9,6 @@
 // Forward Declarations
 
 class UButton;
-class UTextBlock;
 class UUDTurnViewModel;
 
 /**
@@ -20,37 +19,15 @@ class UNREALDIPLOMACY_API UUDTurnUserWidget : public UUDUserWidget
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Enables blueprint to bind view model.
-	 */
+	/** Enables blueprint to bind view model. */
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetBlueprintViewModel(UUDTurnViewModel* model);
 protected:
-	/**
-	 * Enables to define view model used by this widet for delegates.
-	 */
 	virtual void BindViewModel(TObjectPtr<UUDViewModel> viewModel) override;
-	/**
-	 * Automatically invoked by native on initialized.
-	 */
 	virtual void BindDelegates() override;
-	/**
-	 * Automatically invoked by native on initialized.
-	 */
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> RegentTitleTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> RegentTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> RemainingTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> FinishTurnTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> TurnTextWidget;
-
 	UPROPERTY()
 	TWeakObjectPtr<UButton> FinishTurnButtonWidget;
 	// ViewModel

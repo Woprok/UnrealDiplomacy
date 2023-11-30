@@ -3,15 +3,6 @@
 #include "Skirmish/UserInterfaces/UDFactionItemUserWidget.h"
 #include "Skirmish/UserInterfaces/UDFactionItemViewModel.h"
 #include "Components/Button.h"
-#include "Components/TextBlock.h"
-
-void UUDFactionItemUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
-{
-	// Change it to original type.
-	UUDFactionItemViewModel* itemViewModel = Cast<UUDFactionItemViewModel>(ListItemObject);
-	// Invoke bindings related to view model being set.
-	SetViewModel(itemViewModel);
-}
 
 void UUDFactionItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 {
@@ -28,7 +19,5 @@ void UUDFactionItemUserWidget::BindDelegates()
 
 void UUDFactionItemUserWidget::BindWidgets()
 {
-	NameTextWidget = GetWidget<UTextBlock>(TEXT("NameText"));
-	ControllerTextWidget = GetWidget<UTextBlock>(TEXT("NameText"));
 	InteractionButtonWidget = GetWidget<UButton>(TEXT("InteractionButton"));
 }

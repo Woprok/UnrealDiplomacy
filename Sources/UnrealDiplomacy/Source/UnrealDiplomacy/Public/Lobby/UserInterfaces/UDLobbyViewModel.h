@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelList.h"
+#include "Core/UserInterfaces/UDViewModelContent.h"
 #include "UDLobbyViewModel.generated.h"
 
 // Forward Declarations
@@ -11,10 +13,6 @@
 class UUDLobbyHostViewModel;
 class UUDLobbyMemberViewModel;
 class UUDClientItemViewModel;
-
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDLobbyHostSourceChanged, const TObjectPtr<UUDLobbyHostViewModel>& hostViewModel);
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDLobbyMemberSourceChanged, const TObjectPtr<UUDLobbyMemberViewModel>& memberViewModel);
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDLobbyClientSourceUpdated, const TArray<TObjectPtr<UUDClientItemViewModel>>& clientItemViewModels);
 
 /**
  * Lobby Widget
@@ -44,16 +42,17 @@ public:
 	FText StartText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsHostValue;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList ClientItemList;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent LobbyHostContent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent LobbyMemberContent;
 	// Events
-	FUDLobbyHostSourceChanged LobbyHostSourceChangedEvent;
-	FUDLobbyMemberSourceChanged LobbyMemberSourceChangedEvent;
-	FUDLobbyClientSourceUpdated LobbyClientSourceUpdatedEvent;
-protected:
-	virtual void Initialize() override;
+public:
+	virtual void Setup() override;
 	UFUNCTION()
-	virtual void Update() override;
-	UFUNCTION()
-	void Reload();
+	virtual void Refresh() override;
 private:
 	/**
 	 * Starts current session.
@@ -94,6 +93,12 @@ private:
 	FText GetStartText() const;
 	void SetIsHostValue(bool newIsHostValue);
 	bool GetIsHostValue() const;
+	void SetClientItemList(FUDViewModelList newClientItemList);
+	FUDViewModelList GetClientItemList() const;
+	void SetLobbyHostContent(FUDViewModelContent newLobbyHostContent);
+	FUDViewModelContent GetLobbyHostContent() const;
+	void SetLobbyMemberContent(FUDViewModelContent newLobbyMemberContent);
+	FUDViewModelContent GetLobbyMemberContent() const;
 private:
 	// Fields
 	FName HostViewModelInstanceName = TEXT("LobbyHostInstance");

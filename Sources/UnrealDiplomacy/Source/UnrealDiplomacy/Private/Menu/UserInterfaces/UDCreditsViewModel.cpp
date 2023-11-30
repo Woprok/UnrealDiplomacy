@@ -14,7 +14,7 @@ FText ConstructCredits()
 	return FText::FromString(content.ToString());
 }
 
-void UUDCreditsViewModel::Initialize()
+void UUDCreditsViewModel::Setup()
 {
 	FText creditsTitle = FText(LOCTEXT("Credits", "Credits"));
 	SetCreditsTitleText(creditsTitle);

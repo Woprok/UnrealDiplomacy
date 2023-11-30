@@ -7,7 +7,7 @@
 
 #define LOCTEXT_NAMESPACE "ChatItem"
 
-void UUDChatItemViewModel::Initialize()
+void UUDChatItemViewModel::Setup()
 {
 	FText faction = FText(LOCTEXT("ChatItem", "Faction"));
 	SetFactionText(faction);
@@ -15,7 +15,7 @@ void UUDChatItemViewModel::Initialize()
 	SetMessageText(message);
 }
 
-void UUDChatItemViewModel::Update()
+void UUDChatItemViewModel::Refresh()
 {
 	SetFactionText(FText::FromString(Content.FactionName));
 	SetMessageText(FText::FromString(Content.Message));

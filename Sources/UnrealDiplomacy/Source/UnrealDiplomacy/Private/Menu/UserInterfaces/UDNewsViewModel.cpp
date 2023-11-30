@@ -14,7 +14,7 @@ FText ConstructNews()
 	return FText::FromString(content.ToString());
 }
 
-void UUDNewsViewModel::Initialize()
+void UUDNewsViewModel::Setup()
 {
 	FText newsTitle = FText(LOCTEXT("News", "Welcome!"));
 	SetNewsTitleText(newsTitle);

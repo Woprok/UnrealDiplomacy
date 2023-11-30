@@ -2,7 +2,6 @@
 
 #include "Skirmish/UserInterfaces/Parameters/UDValueParameterUserWidget.h"
 #include "Skirmish/UserInterfaces/Parameters/UDValueParameterViewModel.h"
-#include "Components/TextBlock.h"
 #include "Components/SpinBox.h"
 
 void UUDValueParameterUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
@@ -21,6 +20,5 @@ void UUDValueParameterUserWidget::BindDelegates()
 
 void UUDValueParameterUserWidget::BindWidgets()
 {
-	ValueTitleTextWidget = GetWidget<UTextBlock>(TEXT("ValueTitleText"));
 	ValueBoxWidget = GetWidget<USpinBox>(TEXT("ValueBox"));
 }

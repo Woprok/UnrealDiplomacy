@@ -6,6 +6,7 @@
 #include "Skirmish/UDSkirmishPlayerController.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Core/Simulation/UDModelStructs.h"
+#include "Core/UDGlobalData.h"
 
 #define LOCTEXT_NAMESPACE "DealEditationTab"
 
@@ -17,18 +18,12 @@ FUDDealPointMinimalInfo GetInvalidPrimaryPoint(int32 dealId)
 	return info;
 }
 
-void UUDDealEditationTabViewModel::Initialize()
+void UUDDealEditationTabViewModel::Setup()
 {
 	PointItemViewModelType = UUDPrimaryPointItemViewModel::StaticClass();
-	Update();
 }
 
-void UUDDealEditationTabViewModel::Reload()
-{
-	Update();
-}
-
-void UUDDealEditationTabViewModel::Update()
+void UUDDealEditationTabViewModel::Refresh()
 {
 	if (!Model->IsOverseeingStatePresent())
 		return;
@@ -79,13 +74,24 @@ void UUDDealEditationTabViewModel::UpdatePointList()
 	newViewModel->SetContent(GetInvalidPrimaryPoint(Content.DealId), false);
 	PointItemViewModelCollection.Add(newViewModel);
 	// HACK TODO redo the update cycle
+	// TODO verify if this hack is still required or even better then calling refresh immediately.
 	for (int32 i = 0; i < PointItemViewModelCollection.Num(); i++)
 	{
 		if (PointItemViewModelCollection[i])
 		{
-			PointItemViewModelCollection[i]->FullUpdate();
+			PointItemViewModelCollection[i]->Refresh();
 		}
 	}
 
-	PointItemSourceUpdatedEvent.Broadcast(PointItemViewModelCollection);
+	SetPointItemList(FUDViewModelList(viewModels));
+}
+
+void UUDDealEditationTabViewModel::SetPointItemList(FUDViewModelList newPointItemList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(PointItemList, newPointItemList);
+}
+
+FUDViewModelList UUDDealEditationTabViewModel::GetPointItemList() const
+{
+	return PointItemList;
 }

@@ -8,10 +8,11 @@
 #include "Skirmish/UDSkirmishPlayerController.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Core/Simulation/UDModelStructs.h"
+#include "Core/UDGlobalData.h"
 
 #define LOCTEXT_NAMESPACE "DealItem"
 
-void UUDDealItemViewModel::Initialize()
+void UUDDealItemViewModel::Setup()
 {
 	GeneralTabViewModelType = UUDDealGeneralTabViewModel::StaticClass();
 	EditationTabViewModelType = UUDDealEditationTabViewModel::StaticClass();
@@ -35,23 +36,18 @@ void UUDDealItemViewModel::Initialize()
 	EditationTabViewModelInstance = Cast<UUDDealEditationTabViewModel>(editationModel);
 	ExecutionTabViewModelInstance = Cast<UUDDealExecutionTabViewModel>(executionModel);
 	// Announce them to widget for additional binding.
-	GeneralSourceUpdatedEvent.Broadcast(GeneralTabViewModelInstance);
-	EditationSourceUpdatedEvent.Broadcast(EditationTabViewModelInstance);
-	ExecutionSourceUpdatedEvent.Broadcast(ExecutionTabViewModelInstance);
+	SetGeneralTabContent(FUDViewModelContent(GeneralTabViewModelInstance));
+	SetEditationTabContent(FUDViewModelContent(EditationTabViewModelInstance));
+	SetExecutionTabContent(FUDViewModelContent(ExecutionTabViewModelInstance));
 	// Call initialize so each Instance is ready to use, once it receives data in runtime.
-	GeneralTabViewModelInstance->FullUpdate();
-	EditationTabViewModelInstance->FullUpdate();
-	ExecutionTabViewModelInstance->FullUpdate();
-
-	Update();
+	// TODO remove this commented code, if it works properly
+	//GeneralTabViewModelInstance->Refresh();
+	//EditationTabViewModelInstance->Refresh();
+	//ExecutionTabViewModelInstance->Refresh();
+	//Update();
 }
 
-void UUDDealItemViewModel::Reload()
-{
-	Update();
-}
-
-void UUDDealItemViewModel::Update()
+void UUDDealItemViewModel::Refresh()
 {
 	SetDealNameText(FText::FromString(Content.Name));
 
@@ -65,9 +61,9 @@ void UUDDealItemViewModel::Update()
 	GeneralTabViewModelInstance->SetContent(Content);
 	EditationTabViewModelInstance->SetContent(Content);
 	ExecutionTabViewModelInstance->SetContent(Content);
-	GeneralTabViewModelInstance->FullUpdate();
-	EditationTabViewModelInstance->FullUpdate();
-	ExecutionTabViewModelInstance->FullUpdate();
+	GeneralTabViewModelInstance->Refresh();
+	EditationTabViewModelInstance->Refresh();
+	ExecutionTabViewModelInstance->Refresh();
 }
 
 #undef LOCTEXT_NAMESPACE
@@ -95,7 +91,6 @@ void UUDDealItemViewModel::InvalidateContent(FUDDealMinimalInfo content)
 	UE_LOG(LogTemp, Log, TEXT("UUDDealItemViewModel: InvalidateContent."));
 	Content = content;
 	SetIsValidContentValue(false);
-	Update();
 }
 
 void UUDDealItemViewModel::SetContent(FUDDealMinimalInfo content)
@@ -103,7 +98,6 @@ void UUDDealItemViewModel::SetContent(FUDDealMinimalInfo content)
 	UE_LOG(LogTemp, Log, TEXT("UUDDealItemViewModel: SetContent."));
 	Content = content;
 	SetIsValidContentValue(true);
-	Update();
 }
 
 void UUDDealItemViewModel::SetDealNameText(FText newDealNameText)
@@ -179,4 +173,33 @@ void UUDDealItemViewModel::SetIsValidContentValue(bool newIsValidContentValue)
 bool UUDDealItemViewModel::GetIsValidContentValue() const
 {
 	return IsValidContentValue;
+}
+
+void UUDDealItemViewModel::SetGeneralTabContent(FUDViewModelContent newGeneralTabContent)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(GeneralTabContent, newGeneralTabContent);
+
+}
+FUDViewModelContent UUDDealItemViewModel::GetGeneralTabContent() const
+{
+	return GeneralTabContent;
+
+}
+void UUDDealItemViewModel::SetEditationTabContent(FUDViewModelContent newEditationTabContent)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(EditationTabContent, newEditationTabContent);
+
+}
+FUDViewModelContent UUDDealItemViewModel::GetEditationTabContent() const
+{
+	return EditationTabContent;
+}
+void UUDDealItemViewModel::SetExecutionTabContent(FUDViewModelContent newExecutionTabContent)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ExecutionTabContent, newExecutionTabContent);
+
+}
+FUDViewModelContent UUDDealItemViewModel::GetExecutionTabContent() const
+{
+	return ExecutionTabContent;
 }

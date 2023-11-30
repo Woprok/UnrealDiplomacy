@@ -4,8 +4,6 @@
 #include "Skirmish/UserInterfaces/Deals/UDChatViewModel.h"
 #include "Skirmish/UserInterfaces/Deals/UDChatItemViewModel.h"
 #include "Components/Button.h"
-#include "Components/TextBlock.h"
-#include "Components/ListView.h"
 #include "Components/MultiLineEditableTextBox.h"
 
 void UUDChatUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
@@ -18,7 +16,6 @@ void UUDChatUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 void UUDChatUserWidget::BindDelegates()
 {
 	// Bind view to updates.
-	ViewModel->ChatItemSourceUpdatedEvent.AddUObject(this, &UUDChatUserWidget::SetChatSourceCollection);
 	// Bind viewmodel to widgets.
 	EditableMessageTextBoxWidget->OnTextChanged.AddUniqueDynamic(ViewModel.Get(), &UUDChatViewModel::StartTextEditation);
 	EditableMessageTextBoxWidget->OnTextCommitted.AddUniqueDynamic(ViewModel.Get(), &UUDChatViewModel::StopTextEditation);
@@ -27,14 +24,6 @@ void UUDChatUserWidget::BindDelegates()
 
 void UUDChatUserWidget::BindWidgets()
 {
-	ChatTitleTextWidget = GetWidget<UTextBlock>(TEXT("ChatTitleText"));
-	SendTextWidget = GetWidget<UTextBlock>(TEXT("SendText"));
 	EditableMessageTextBoxWidget = GetWidget<UMultiLineEditableTextBox>(TEXT("EditableMessageTextBox"));
 	SendButtonWidget = GetWidget<UButton>(TEXT("SendButton"));
-	ChatItemListWidget = GetWidget<UListView>(TEXT("ChatItemList"));
-}
-
-void UUDChatUserWidget::SetChatSourceCollection(const TArray<TObjectPtr<UUDChatItemViewModel>>& chatItemViewModels)
-{
-	ChatItemListWidget->SetListItems(chatItemViewModels);
 }

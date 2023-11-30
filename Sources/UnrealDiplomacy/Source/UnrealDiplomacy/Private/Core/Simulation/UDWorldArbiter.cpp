@@ -14,6 +14,9 @@
 #include "Core/Simulation/Actions/UDGameActionThroneReceive.h"
 #include "Core/Simulation/Modifiers/UDFactionModifierThroneSupport.h"
 #include "Core/Simulation/UDModifierData.h"
+#include "Core/Simulation/UDResourceManager.h"
+#include "Core/Simulation/UDModifierManager.h"
+#include "Core/Simulation/Resources/UDGameResourceReputation.h"
 
 bool UUDWorldArbiter::OnActionExecutionFinished(int32 actionType, const TObjectPtr<UUDWorldState>& gaiaWorldState)
 {
@@ -54,16 +57,16 @@ TArray<FUDActionData> UUDWorldArbiter::EndGame()
 	return actions;
 }
 
-int32 GetTotalSupport(const TObjectPtr<UUDWorldState>& state, int32 factionId)
+int32 UUDWorldArbiter::GetTotalSupport(const TObjectPtr<UUDWorldState>& state, int32 factionId)
 {
-	int32 baseSupport = state->Factions[factionId]->Resources[UD_RESOURCE_REPUTATION_ID];
+	int32 baseSupport = ResourceManager->GetCurrent(state->Factions[factionId], UUDGameResourceReputation::ResourceId);
 	int32 additionalSupport = 0;
 
-	for (const auto& modifier : state->Factions[factionId]->Modifiers)
+	for (const auto& modifier : ModifierManager->GetAllFactionModifiers(
+		state->Factions[factionId], 
+		UUDFactionModifierThroneSupport::ModifierTypeId))
 	{
-		if (modifier.ModifierTypeId == UUDFactionModifierThroneSupport::ModifierTypeId) {
-			additionalSupport += state->Factions[modifier.InvokerId]->Resources[UD_RESOURCE_REPUTATION_ID];
-		}
+		additionalSupport += ResourceManager->GetCurrent(state->Factions[modifier.InvokerId], UUDGameResourceReputation::ResourceId);
 	}
 
 	return baseSupport + additionalSupport;
@@ -111,4 +114,14 @@ FUDActionData UUDWorldArbiter::DetermineNewRuler()
 FUDActionData UUDWorldArbiter::CreateEndGame()
 {
 	return FUDActionData(UUDSystemActionGameEnd::ActionTypeId, UUDGlobalData::GaiaFactionId);
+}
+
+void UUDWorldArbiter::SetModifierManager(TObjectPtr<UUDModifierManager> modifierManager)
+{
+	ModifierManager = modifierManager;
+}
+
+void UUDWorldArbiter::SetResourceManager(TObjectPtr<UUDResourceManager> resourceManager)
+{
+	ResourceManager = resourceManager;
 }

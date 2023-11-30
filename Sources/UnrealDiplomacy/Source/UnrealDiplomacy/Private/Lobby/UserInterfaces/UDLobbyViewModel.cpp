@@ -15,7 +15,7 @@
 
 #define LOCTEXT_NAMESPACE "Lobby"
 
-void UUDLobbyViewModel::Initialize()
+void UUDLobbyViewModel::Setup()
 {
 	HostViewModelType = UUDLobbyHostViewModel::StaticClass();
 	MemberViewModelType = UUDLobbyMemberViewModel::StaticClass();
@@ -35,8 +35,8 @@ void UUDLobbyViewModel::Initialize()
 	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
 	sessions->OnStartSessionCompleteEvent.AddUniqueDynamic(this, &UUDLobbyViewModel::OnSessionStarted);
 
-	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDLobbyViewModel::Reload);
-	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDLobbyViewModel::Update);
+	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDLobbyViewModel::Refresh);
+	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDLobbyViewModel::Refresh);
 
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
 	// Retrieve view models for sub content controls
@@ -45,21 +45,19 @@ void UUDLobbyViewModel::Initialize()
 	TObjectPtr<UUDViewModel> memberModel = hud->GetViewModelCollection(MemberViewModelInstanceName, MemberViewModelType);
 	MemberViewModelInstance = Cast<UUDLobbyMemberViewModel>(memberModel);
 	// Announce them to widget for additional binding.
-	LobbyHostSourceChangedEvent.Broadcast(HostViewModelInstance);
-	LobbyMemberSourceChangedEvent.Broadcast(MemberViewModelInstance);
+	SetLobbyHostContent(FUDViewModelContent(HostViewModelInstance));
+	SetLobbyMemberContent(FUDViewModelContent(MemberViewModelInstance));
+
+	// This is from change to refresh called also in the ViewModelManager.
+	// Thus this should no longer be needed for the main viewmodel as it will be called.
+	// Child model might still need this. But they lost their update callbacks, so its part of this refresh as well.
+	// This still needs to listen to change events for refresh...
 	// Call initialize so each Instance is ready to use, once it receives data in runtime.
-	HostViewModelInstance->FullUpdate();
-	MemberViewModelInstance->FullUpdate();
-
-	Update();
+	//Refresh();
+	// TODO delete this comment if it works as expected...
 }
 
-void UUDLobbyViewModel::Reload()
-{
-	Update();
-}
-
-void UUDLobbyViewModel::Update()
+void UUDLobbyViewModel::Refresh()
 {
 	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
 	SetIsHostValue(sessions->IsLocalPlayerHost(sessions->GetSessionName()));
@@ -71,6 +69,8 @@ void UUDLobbyViewModel::Update()
 		return;
 	// Following updates require model.
 	UpdateClientList();
+	HostViewModelInstance->Refresh();
+	MemberViewModelInstance->Refresh();
 }
 
 #undef LOCTEXT_NAMESPACE
@@ -90,11 +90,11 @@ void UUDLobbyViewModel::UpdateClientList()
 	{
 		TObjectPtr<UUDClientItemViewModel> newViewModel = Cast<UUDClientItemViewModel>(viewModels[i]);
 		newViewModel->SetContent(factions[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		ClientViewModelCollection.Add(newViewModel);
 	}
-	
-	LobbyClientSourceUpdatedEvent.Broadcast(ClientViewModelCollection);
+
+	SetClientItemList(FUDViewModelList(viewModels));
 }
 
 void UUDLobbyViewModel::Back()
@@ -208,4 +208,34 @@ void UUDLobbyViewModel::SetIsHostValue(bool newIsHostValue)
 bool UUDLobbyViewModel::GetIsHostValue() const
 {
 	return IsHostValue;
+}
+
+void UUDLobbyViewModel::SetClientItemList(FUDViewModelList newClientItemList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ClientItemList, newClientItemList);
+}
+
+FUDViewModelList UUDLobbyViewModel::GetClientItemList() const
+{
+	return ClientItemList;
+}
+
+void UUDLobbyViewModel::SetLobbyHostContent(FUDViewModelContent newLobbyHostContent)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(LobbyHostContent, newLobbyHostContent);
+}
+
+FUDViewModelContent UUDLobbyViewModel::GetLobbyHostContent() const
+{
+	return LobbyHostContent;
+}
+
+void UUDLobbyViewModel::SetLobbyMemberContent(FUDViewModelContent newLobbyMemberContent)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(LobbyMemberContent, newLobbyMemberContent);
+}
+
+FUDViewModelContent UUDLobbyViewModel::GetLobbyMemberContent() const
+{
+	return LobbyMemberContent;
 }

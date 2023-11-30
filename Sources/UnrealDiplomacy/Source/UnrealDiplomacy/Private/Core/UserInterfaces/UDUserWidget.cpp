@@ -1,6 +1,7 @@
 // Copyright Miroslav Valach
 
 #include "Core/UserInterfaces/UDUserWidget.h"
+#include "Core/UserInterfaces/UDViewModel.h"
 
 void UUDUserWidget::SetViewModel(TObjectPtr<UUDViewModel> viewModel) 
 {
@@ -17,7 +18,6 @@ void UUDUserWidget::NativeOnInitialized()
 void UUDUserWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
-	SetAppearance();
 }
 
 void UUDUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
@@ -31,11 +31,6 @@ void UUDUserWidget::BindDelegates()
 }
 
 void UUDUserWidget::BindWidgets()
-{
-	return;
-}
-
-void UUDUserWidget::SetAppearance()
 {
 	return;
 }

@@ -7,13 +7,13 @@
 
 #define LOCTEXT_NAMESPACE "PolicyItem"
 
-void UUDPolicySelectItemViewModel::Initialize()
+void UUDPolicySelectItemViewModel::Setup()
 {
 	FText selectItem = FText(LOCTEXT("PolicyItem", "Undefined"));
 	SetSelectItemText(selectItem);
 }
 
-void UUDPolicySelectItemViewModel::Update()
+void UUDPolicySelectItemViewModel::Refresh()
 {
 	SetSelectItemText(FText::FromString(Content.Name));
 	SetCanSelectItemValue(!Content.IsSelected);
@@ -25,7 +25,8 @@ void UUDPolicySelectItemViewModel::SetContent(FUDPolicySelectItemInfo content)
 {
 	Content = content;
 	// Can select only these that are not selected.
-	Update();
+	// TODO check if it works and remove it
+	//Update();
 }
 
 void UUDPolicySelectItemViewModel::Select()

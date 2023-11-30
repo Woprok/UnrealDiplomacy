@@ -9,6 +9,7 @@
 
 class UUDMapState;
 class UUDTileState;
+class UUDResourceManager;
 
 /**
  * 
@@ -24,6 +25,7 @@ public:
 	 * Provided parameter is modified!
 	 */
 	void CreateAndDuplicate(TObjectPtr<UUDMapState> targetMapState);
+	virtual void SetResourceManager(TObjectPtr<UUDResourceManager> resourceManager);
 protected:
 	/**
 	 * Creates map with specified parameters as defined in UUDMapState object.
@@ -54,6 +56,8 @@ protected:
 	 */
 	UPROPERTY()
 	TArray<TObjectPtr<UUDTileState>> Map;
+	UPROPERTY()
+	TWeakObjectPtr<UUDResourceManager> ResourceManager = nullptr;
 private:
 	/**
 	 * Retrieves generator for current seed, if seed changed or was not set creates new.

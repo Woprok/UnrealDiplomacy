@@ -6,10 +6,11 @@
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Skirmish/UDSkirmishHUD.h"
 #include "Core/Simulation/Actions/UDDealActionMessageSend.h"
+#include "Core/Simulation/UDActionData.h"
 
 #define LOCTEXT_NAMESPACE "Chat"
 
-void UUDChatViewModel::Initialize()
+void UUDChatViewModel::Setup()
 {
 	ChatItemViewModelType = UUDChatItemViewModel::StaticClass();
 
@@ -19,7 +20,7 @@ void UUDChatViewModel::Initialize()
 	SetSendText(send);
 }
 
-void UUDChatViewModel::Update()
+void UUDChatViewModel::Refresh()
 {
 	if (!Model->IsOverseeingStatePresent())
 		return;
@@ -63,11 +64,11 @@ void UUDChatViewModel::UpdateChatItemList()
 	{
 		TObjectPtr<UUDChatItemViewModel> newViewModel = Cast<UUDChatItemViewModel>(viewModels[i]);
 		newViewModel->SetContent(messages[i]);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		ChatItemViewModelCollection.Add(newViewModel);
 	}
 
-	ChatItemSourceUpdatedEvent.Broadcast(ChatItemViewModelCollection);
+	SetChatItemList(FUDViewModelList(viewModels));
 }
 
 void UUDChatViewModel::StartTextEditation(const FText& InText)
@@ -116,4 +117,14 @@ void UUDChatViewModel::SetSelectedText(FText newSelectedText)
 FText UUDChatViewModel::GetSelectedText() const
 {
 	return SelectedText;
+}
+
+void UUDChatViewModel::SetChatItemList(FUDViewModelList newChatItemList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ChatItemList, newChatItemList);
+}
+
+FUDViewModelList UUDChatViewModel::GetChatItemList() const
+{
+	return ChatItemList;
 }

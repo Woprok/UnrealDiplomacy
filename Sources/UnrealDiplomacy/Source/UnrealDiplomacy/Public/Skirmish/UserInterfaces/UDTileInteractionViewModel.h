@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelContent.h"
 #include "Core/Simulation/UDModelStructs.h"
 #include "UDTileInteractionViewModel.generated.h"
 
@@ -11,8 +12,6 @@
 
 struct FUDTileInteractionInfo;
 class UUDParameterEditorViewModel;
-
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDParameterEditorChanged, const TObjectPtr<UUDParameterEditorViewModel>& editorViewModel);
 
 /**
  * Single interactable action.
@@ -22,25 +21,21 @@ class UNREALDIPLOMACY_API UUDTileInteractionViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Set content of the interaction option.
-	 */
+	/** Set content of the interaction option. */
 	void SetContent(FIntPoint selectedTile, FUDTileInteractionInfo content);
 public:
 	// Button Functions
-	/**
-	 * Execution of the interaction.
-	 */
+	/** Execution of the interaction. */
 	UFUNCTION()
 	void Interact();
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText InteractText;
-	// Events
-	FUDParameterEditorChanged ParameterEditorChangedEvent;
-protected:
-	virtual void Initialize() override;
-	virtual void Update() override;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent ParameterEditorContent;
+public:
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
 	/** Updates all parameter lists. */
 	void UpdateEditor();
@@ -50,6 +45,8 @@ private:
 	// MVVM Setters & Getters
 	void SetInteractText(FText newInteractText);
 	FText GetInteractText() const;
+	void SetParameterEditorContent(FUDViewModelContent newParameterEditorContent);
+	FUDViewModelContent GetParameterEditorContent() const;
 private:
 	// Fields
 	FIntPoint SelectedTile;

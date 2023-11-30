@@ -43,13 +43,9 @@ public:
 	 */
 	void SetModelManager(TObjectPtr<UUDActionAdministrator> model);
 	/**
-	 * Calls initialize on all view models.
+	 * Starts update on all view models, so they are up to date on desired content.
 	 */
-	void ForceInitialize();
-	/**
-	 * Calls update on all view models.
-	 */
-	void ForceUpdate();
+	bool RefreshViewModel(const FName& name);
 	/**
 	 * Retrieve global view model based on name.
 	 */

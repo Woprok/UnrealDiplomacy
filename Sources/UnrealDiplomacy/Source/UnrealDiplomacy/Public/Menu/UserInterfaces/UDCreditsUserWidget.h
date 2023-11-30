@@ -8,7 +8,6 @@
 
 // Forward Declaratiosn
 
-class UTextBlock;
 class UButton;
 class UUDCreditsViewModel;
 
@@ -20,9 +19,7 @@ class UNREALDIPLOMACY_API UUDCreditsUserWidget : public UUDUserWidget
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Enables blueprint to bind view model.
-	 */
+	/** Enables blueprint to bind view model. */
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetBlueprintViewModel(UUDCreditsViewModel* model);
 protected:
@@ -31,12 +28,6 @@ protected:
 	virtual void BindWidgets() override;
 protected:
 	// Bindings
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> CreditsTitleTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> ContentTextWidget;
-	UPROPERTY()
-	TWeakObjectPtr<UTextBlock> BackTextWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> BackButtonWidget;
 	// ViewModel

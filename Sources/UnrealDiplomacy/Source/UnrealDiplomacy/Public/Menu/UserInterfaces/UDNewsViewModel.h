@@ -24,8 +24,8 @@ public:
 	FText MessageText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText CloseText;
-protected:
-	virtual void Initialize() override;
+public:
+	virtual void Setup() override;
 private:
 	// MVVM Setters & Getters
 	void SetNewsTitleText(FText newNewsTitleText);

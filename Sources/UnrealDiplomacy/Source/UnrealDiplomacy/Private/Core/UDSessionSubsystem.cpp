@@ -119,6 +119,8 @@ void UUDSessionSubsystem::CreateDefaultSettings()
 
 void UUDSessionSubsystem::ChangeDefaultSettings(bool isLANMatch)
 {
+	if (DefaultSessionSettings == nullptr)
+		CreateDefaultSettings();
 	DefaultSessionSettings->bIsLANMatch = isLANMatch;
 }
 

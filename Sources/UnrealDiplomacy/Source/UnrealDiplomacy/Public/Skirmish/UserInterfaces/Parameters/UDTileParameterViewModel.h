@@ -47,9 +47,9 @@ public:
 	FText NextText;
 	// Events
 	FUDParameterChanged OnChangeEvent;
-protected:
-	virtual void Initialize() override;
-	virtual void Update() override;
+public:
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
 	/** 
 	 * Tries to retrieve desired selected item, on fail returns first element.

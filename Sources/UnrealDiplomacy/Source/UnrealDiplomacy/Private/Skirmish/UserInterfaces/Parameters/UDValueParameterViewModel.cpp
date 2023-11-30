@@ -6,12 +6,12 @@
 
 #define LOCTEXT_NAMESPACE "ValueParameter"
 
-void UUDValueParameterViewModel::Initialize()
+void UUDValueParameterViewModel::Setup()
 {
 
 }
 
-void UUDValueParameterViewModel::Update()
+void UUDValueParameterViewModel::Refresh()
 {
 	SetMaxValue(Content.MaxValue);
 	SetMinValue(Content.MinValue);

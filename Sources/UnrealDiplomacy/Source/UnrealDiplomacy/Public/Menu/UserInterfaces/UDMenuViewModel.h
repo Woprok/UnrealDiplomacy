@@ -34,8 +34,8 @@ public:
 	FText SettingsText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText QuitText;
-protected:
-	virtual void Initialize() override;
+public:
+	virtual void Setup() override;
 private:
 	// MVVM Setters & Getters
 	void SetGameTitleText(FText newGameTitleText);

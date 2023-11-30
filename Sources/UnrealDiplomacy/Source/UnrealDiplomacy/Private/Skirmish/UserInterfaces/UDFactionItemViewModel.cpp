@@ -7,7 +7,7 @@
 
 #define LOCTEXT_NAMESPACE "FactionItem"
 
-void UUDFactionItemViewModel::Initialize()
+void UUDFactionItemViewModel::Setup()
 {
 	FText name = FText(LOCTEXT("FactionItem", "Faction"));
 	SetNameText(name);
@@ -16,7 +16,7 @@ void UUDFactionItemViewModel::Initialize()
 	SetIsHumanValue(false);
 }
 
-void UUDFactionItemViewModel::Update()
+void UUDFactionItemViewModel::Refresh()
 {
 	FText name = FText::FromString(Content.Name);
 	SetNameText(name);

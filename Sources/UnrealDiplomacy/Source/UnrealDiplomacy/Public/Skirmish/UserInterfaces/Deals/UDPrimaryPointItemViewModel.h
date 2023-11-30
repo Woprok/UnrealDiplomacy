@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelList.h"
+#include "Core/UserInterfaces/UDViewModelContent.h"
 #include "Core/Simulation/UDModelStructs.h"
 #include "UDPrimaryPointItemViewModel.generated.h"
 
@@ -13,7 +15,6 @@ struct FUDDealPointMinimalInfo;
 class UUDSecondaryPointItemViewModel;
 class UUDPointContentViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDSecondaryPointItemSourceUpdated, const TArray<TObjectPtr<UUDSecondaryPointItemViewModel>>& itemViewModels);
 DECLARE_MULTICAST_DELEGATE_OneParam(FUDPointContentSourceUpdated, const TObjectPtr<UUDPointContentViewModel>& itemViewModel);
 
 /**
@@ -24,9 +25,7 @@ class UNREALDIPLOMACY_API UUDPrimaryPointItemViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Set content of the strategy option.
-	 */
+	/** Set content of the deal point content. */
 	void SetContent(FUDDealPointMinimalInfo content, bool isValid);
 public:
 	// Button Functions
@@ -37,20 +36,17 @@ public:
 	FText CreatePointText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsValidContentValue;
-	// Events
-	FUDSecondaryPointItemSourceUpdated PointItemSourceUpdatedEvent;
-	FUDPointContentSourceUpdated PointContentSourceUpdatedEvent;
-protected:
-	virtual void Initialize() override;
-	virtual void Update() override;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList PointItemList;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelContent PointContent;
+public:
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
-	/**
-	 * Fill with current deal points.
-	 */
+	/** Fill with current deal points. */
 	void UpdatePointList();
-	/**
-	 * Fill current point with data.
-	 */
+	/** Fill current point with data. */
 	void UpdatePointContent();
 private:
 	// MVVM Setters & Getters
@@ -58,6 +54,10 @@ private:
 	FText GetCreatePointText() const;
 	void SetIsValidContentValue(bool newIsValidContentValue);
 	bool GetIsValidContentValue() const;
+	void SetPointItemList(FUDViewModelList newPointItemList);
+	FUDViewModelList GetPointItemList() const;
+	void SetPointContent(FUDViewModelContent newPointContent);
+	FUDViewModelContent GetPointContent() const;
 private:
 	// Fields
 	FUDDealPointMinimalInfo Content;

@@ -10,7 +10,7 @@
 
 #define LOCTEXT_NAMESPACE "MessageItem"
 
-void UUDMessageItemViewModel::Initialize()
+void UUDMessageItemViewModel::Setup()
 {
 	FText messageTitle = FText(LOCTEXT("MessageItem", "Invalid Message"));
 	SetMessageTitleText(messageTitle);
@@ -31,7 +31,7 @@ void UUDMessageItemViewModel::Initialize()
 	SetHasContentValue(false);
 }
 
-void UUDMessageItemViewModel::Update()
+void UUDMessageItemViewModel::Refresh()
 {
 	SetMessageTypeText(FText::FromString(Content.Type));
 	SetMessageTitleText(FText::FromString(Content.Content.Name));
@@ -47,14 +47,12 @@ void UUDMessageItemViewModel::InvalidateContent(FUDMessageInfo content)
 {
 	Content = content;
 	SetHasContentValue(false);
-	Update();
 }
 
 void UUDMessageItemViewModel::SetContent(FUDMessageInfo content)
 {
 	Content = content;
 	SetHasContentValue(true);
-	Update();
 }
 
 void UUDMessageItemViewModel::Accept()

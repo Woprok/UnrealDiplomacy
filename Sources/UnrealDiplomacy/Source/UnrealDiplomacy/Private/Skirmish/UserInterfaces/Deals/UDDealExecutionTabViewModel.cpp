@@ -10,18 +10,12 @@
 
 #define LOCTEXT_NAMESPACE "DealExecutionTab"
 
-void UUDDealExecutionTabViewModel::Initialize()
+void UUDDealExecutionTabViewModel::Setup()
 {
 	ActionItemViewModelType = UUDActionItemViewModel::StaticClass();
-	Update();
 }
 
-void UUDDealExecutionTabViewModel::Reload()
-{
-	Update();
-}
-
-void UUDDealExecutionTabViewModel::Update()
+void UUDDealExecutionTabViewModel::Refresh()
 {
 	if (!Model->IsOverseeingStatePresent())
 		return;
@@ -61,9 +55,19 @@ void UUDDealExecutionTabViewModel::UpdateActionList()
 	for (int32 i = 0; i < actions.Num(); i++)
 	{
 		TObjectPtr<UUDActionItemViewModel> newViewModel = Cast<UUDActionItemViewModel>(viewModels[i]);
-		newViewModel->SetContent(actions[i]);
-		newViewModel->FullUpdate();
 		ActionItemViewModelCollection.Add(newViewModel);
+		newViewModel->SetContent(actions[i]);
+		newViewModel->Refresh();
 	}
-	ActionItemSourceUpdatedEvent.Broadcast(ActionItemViewModelCollection);
+	SetActionItemList(FUDViewModelList(viewModels));
+}
+
+void UUDDealExecutionTabViewModel::SetActionItemList(FUDViewModelList newActionItemList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ActionItemList, newActionItemList);
+}
+
+FUDViewModelList UUDDealExecutionTabViewModel::GetActionItemList() const
+{
+	return ActionItemList;
 }

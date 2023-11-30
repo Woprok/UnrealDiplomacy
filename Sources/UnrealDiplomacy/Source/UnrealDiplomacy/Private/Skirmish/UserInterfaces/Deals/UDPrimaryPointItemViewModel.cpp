@@ -7,6 +7,7 @@
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Skirmish/UDSkirmishHUD.h"
 #include "Core/Simulation/Actions/UDDealActionPointAdd.h"
+#include "Core/Simulation/UDActionData.h"
 
 #define LOCTEXT_NAMESPACE "PrimaryPointItem"
 
@@ -21,7 +22,7 @@ FUDDealPointMinimalInfo GetInvalidSecondaryPoint(int32 dealId, int32 pointId)
 	return info;
 }
 
-void UUDPrimaryPointItemViewModel::Initialize()
+void UUDPrimaryPointItemViewModel::Setup()
 {
 	if (!IsUniqueNameDefined)
 	{
@@ -37,9 +38,15 @@ void UUDPrimaryPointItemViewModel::Initialize()
 	}
 	FText createPoint = FText(LOCTEXT("PrimaryPointItem", "+ Point"));
 	SetCreatePointText(createPoint);
+
+	// Retrieve model
+	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
+	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(PointContentViewModelInstanceName, PointContentViewModelType);
+	PointContentViewModelInstance = Cast<UUDPointContentViewModel>(viewModel);
+	SetPointContent(FUDViewModelContent(PointContentViewModelInstance));
 }
 
-void UUDPrimaryPointItemViewModel::Update()
+void UUDPrimaryPointItemViewModel::Refresh()
 {
 	if (GetIsValidContentValue())
 	{
@@ -50,7 +57,7 @@ void UUDPrimaryPointItemViewModel::Update()
 	else
 	{
 		PointItemViewModelCollection.Empty();
-		PointItemSourceUpdatedEvent.Broadcast(PointItemViewModelCollection);
+		SetPointItemList(FUDViewModelList(TArray<TObjectPtr<UUDViewModel>>()));
 	}
 }
 
@@ -65,13 +72,9 @@ void UUDPrimaryPointItemViewModel::SetContent(FUDDealPointMinimalInfo content, b
 void UUDPrimaryPointItemViewModel::UpdatePointContent()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDPrimaryPointItemViewModel: UpdatePointContent."));
-	// Retrieve model
-	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TObjectPtr<UUDViewModel> viewModel = hud->GetViewModelCollection(PointContentViewModelInstanceName, PointContentViewModelType);
-	PointContentViewModelInstance = Cast<UUDPointContentViewModel>(viewModel);
+	// Get update on content
 	PointContentViewModelInstance->SetContent(Content);
-	PointContentViewModelInstance->FullUpdate();
-	PointContentSourceUpdatedEvent.Broadcast(PointContentViewModelInstance);
+	PointContentViewModelInstance->Refresh();
 }
 
 void UUDPrimaryPointItemViewModel::UpdatePointList()
@@ -92,16 +95,16 @@ void UUDPrimaryPointItemViewModel::UpdatePointList()
 	{
 		TObjectPtr<UUDSecondaryPointItemViewModel> newViewModel = Cast<UUDSecondaryPointItemViewModel>(viewModels[i]);
 		newViewModel->SetContent(points[i], true);
-		newViewModel->FullUpdate();
+		newViewModel->Refresh();
 		PointItemViewModelCollection.Add(newViewModel);
 	}
 	// Finally add invalid node.
 	TObjectPtr<UUDSecondaryPointItemViewModel> newViewModel = Cast<UUDSecondaryPointItemViewModel>(viewModels[desiredPointIndex]);
 	newViewModel->SetContent(GetInvalidSecondaryPoint(Content.DealId, Content.PointId), false);
-	newViewModel->FullUpdate();
+	newViewModel->Refresh();
 	PointItemViewModelCollection.Add(newViewModel);
 
-	PointItemSourceUpdatedEvent.Broadcast(PointItemViewModelCollection);
+	SetPointItemList(FUDViewModelList(viewModels));
 }
 
 void UUDPrimaryPointItemViewModel::CreatePoint()
@@ -128,4 +131,24 @@ void UUDPrimaryPointItemViewModel::SetIsValidContentValue(bool newIsValidContent
 bool UUDPrimaryPointItemViewModel::GetIsValidContentValue() const
 {
 	return IsValidContentValue;
+}
+
+void UUDPrimaryPointItemViewModel::SetPointItemList(FUDViewModelList newPointItemList)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(PointItemList, newPointItemList);
+}
+
+FUDViewModelList UUDPrimaryPointItemViewModel::GetPointItemList() const
+{
+	return PointItemList;
+}
+
+void UUDPrimaryPointItemViewModel::SetPointContent(FUDViewModelContent newPointContent)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(PointContent, newPointContent);
+}
+
+FUDViewModelContent UUDPrimaryPointItemViewModel::GetPointContent() const
+{
+	return PointContent;
 }

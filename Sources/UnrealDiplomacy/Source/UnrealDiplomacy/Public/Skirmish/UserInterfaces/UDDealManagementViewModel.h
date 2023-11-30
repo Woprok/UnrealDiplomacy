@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelContent.h"
 #include "Core/Simulation/UDModelStructs.h"
 #include "UDDealManagementViewModel.generated.h"
 
@@ -12,8 +13,6 @@
 struct FUDDealMinimalInfo;
 struct FUDDealListInfo;
 class UUDDealItemViewModel;
-
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDDealItemChanged, const TObjectPtr<UUDDealItemViewModel>& dealItemViewModel);
 
 /**
  * Window for showing and editing deals.
@@ -69,31 +68,22 @@ public:
 	int32 ActiveTabValue = 0;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Getter)
 	int32 HistoryTabValue = 1;
-	// Events
-	FUDDealItemChanged ActiveDealItemChangedEvent;
-	FUDDealItemChanged HistoryDealItemChangedEvent;
-protected:
-	virtual void Initialize() override;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Getter)
+	FUDViewModelContent ActiveDealItemContent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Getter)
+	FUDViewModelContent HistoryDealItemContent;
+public:
+	virtual void Setup() override;
 	UFUNCTION()
-	virtual void Update() override;
-	UFUNCTION()
-	void Reload();
+	virtual void Refresh() override;
 private:
-	/**
-	 * Updates items.
-	 */
+	/** Updates items. */
 	void UpdateDealItems();
-	/**
-	 * Updates selection.
-	 */
+	/** Updates selection. */
 	void UpdateSelectedDealItem();
-	/**
-	 * Attempts to select specified item.
-	 */
+	/** Attempts to select specified item. */
 	FUDDealMinimalInfo GetSelectedOrDefaultActive(int32 desiredSelectedItem);
-	/**
-	 * Attempts to select specified item.
-	 */
+	/** Attempts to select specified item. */
 	FUDDealMinimalInfo GetSelectedOrDefaultHistory(int32 desiredSelectedItem);
 	/** Swift check to which of the tab is selected. */
 	bool IsActive() { return SelectedTabValue == ActiveTabValue; };
@@ -127,6 +117,10 @@ private:
 	int32 GetSelectedTabValue() const;
 	int32 GetActiveTabValue() const;
 	int32 GetHistoryTabValue() const;
+	void SetActiveDealItemContent(FUDViewModelContent newActiveDealItemContent);
+	FUDViewModelContent GetActiveDealItemContent() const;
+	void SetHistoryDealItemContent(FUDViewModelContent newHistoryDealItemContent);
+	FUDViewModelContent GetHistoryDealItemContent() const;
 private:
 	// Fields
 	int32 SelectedActiveIndex;

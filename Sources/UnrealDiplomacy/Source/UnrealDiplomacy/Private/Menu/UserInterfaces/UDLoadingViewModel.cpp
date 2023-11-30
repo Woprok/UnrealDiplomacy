@@ -11,7 +11,7 @@ FText ConstructGameplayHint()
 	return FText::FromString(content.ToString());
 }
 
-void UUDLoadingViewModel::Initialize()
+void UUDLoadingViewModel::Setup()
 {
 	FText loadingTitle = FText(LOCTEXT("Loading", "Loading..."));
 	SetLoadingTitleText(loadingTitle);

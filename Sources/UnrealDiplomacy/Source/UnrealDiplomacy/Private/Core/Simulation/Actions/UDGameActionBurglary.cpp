@@ -4,6 +4,9 @@
 #include "Core/UDGlobalData.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDWorldState.h"
+#include "Core/Simulation/UDResourceManager.h"
+#include "Core/Simulation/Resources/UDGameResourceGold.h"
+#include "Core/Simulation/Resources/UDGameResourceLuxuries.h"
 
 bool UUDGameActionBurglary::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
@@ -15,10 +18,11 @@ void UUDGameActionBurglary::Execute(const FUDActionData& action, TObjectPtr<UUDW
 	IUDActionInterface::Execute(action, world);
 	// Reduce target reputation and invoker finances.
 	FUDGameDataTarget data(action.ValueParameters);
-	world->Factions[data.TargetId]->Resources[UD_RESOURCE_LUXURIES_ID] -= 50;
-	world->Factions[data.TargetId]->Resources[UD_RESOURCE_GOLD_ID] -= 100;
-	world->Factions[action.InvokerFactionId]->Resources[UD_RESOURCE_LUXURIES_ID] += 50;
-	world->Factions[action.InvokerFactionId]->Resources[UD_RESOURCE_GOLD_ID] += 100;
+
+	ResourceManager->Substract(world->Factions[data.TargetId], UUDGameResourceGold::ResourceId, TargetGoldLose);
+	ResourceManager->Substract(world->Factions[data.TargetId], UUDGameResourceLuxuries::ResourceId, TargetLuxuriesLose);
+	ResourceManager->Add(world->Factions[action.InvokerFactionId], UUDGameResourceGold::ResourceId, InvokerGoldGain);
+	ResourceManager->Add(world->Factions[action.InvokerFactionId], UUDGameResourceLuxuries::ResourceId, InvokerLuxuriesGain);
 }
 
 void UUDGameActionBurglary::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -26,10 +30,11 @@ void UUDGameActionBurglary::Revert(const FUDActionData& action, TObjectPtr<UUDWo
 	IUDActionInterface::Revert(action, world);
 	// Increase target reputation and invoker finances.
 	FUDGameDataTarget data(action.ValueParameters);
-	world->Factions[data.TargetId]->Resources[UD_RESOURCE_LUXURIES_ID] += 50;
-	world->Factions[data.TargetId]->Resources[UD_RESOURCE_GOLD_ID] += 100;
-	world->Factions[action.InvokerFactionId]->Resources[UD_RESOURCE_LUXURIES_ID] -= 50;
-	world->Factions[action.InvokerFactionId]->Resources[UD_RESOURCE_GOLD_ID] -= 100;
+
+	ResourceManager->Add(world->Factions[data.TargetId], UUDGameResourceGold::ResourceId, TargetGoldLose);
+	ResourceManager->Add(world->Factions[data.TargetId], UUDGameResourceLuxuries::ResourceId, TargetLuxuriesLose);
+	ResourceManager->Substract(world->Factions[action.InvokerFactionId], UUDGameResourceGold::ResourceId, InvokerGoldGain);
+	ResourceManager->Substract(world->Factions[action.InvokerFactionId], UUDGameResourceLuxuries::ResourceId, InvokerLuxuriesGain);
 }
 
 #define LOCTEXT_NAMESPACE "Burglary"
@@ -62,3 +67,8 @@ FUDActionPresentation UUDGameActionBurglary::GetPresentation() const
 	return presentation;
 }
 #undef LOCTEXT_NAMESPACE
+
+void UUDGameActionBurglary::SetResourceManager(TObjectPtr<UUDResourceManager> resourceManager)
+{
+	ResourceManager = resourceManager;
+}

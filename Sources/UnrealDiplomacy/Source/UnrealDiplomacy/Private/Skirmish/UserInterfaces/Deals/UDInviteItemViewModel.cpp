@@ -5,10 +5,11 @@
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Skirmish/UDSkirmishHUD.h"
 #include "Core/Simulation/Actions/UDDealActionParticipantInvite.h"
+#include "Core/Simulation/UDActionData.h"
 
 #define LOCTEXT_NAMESPACE "InviteItem"
 
-void UUDInviteItemViewModel::Initialize()
+void UUDInviteItemViewModel::Setup()
 {
 	FText factionName = FText(LOCTEXT("ParticipantItem", "Faction"));
 	SetFactionNameText(factionName);
@@ -16,7 +17,7 @@ void UUDInviteItemViewModel::Initialize()
 	SetInviteText(invite);
 }
 
-void UUDInviteItemViewModel::Update()
+void UUDInviteItemViewModel::Refresh()
 {
 	SetFactionNameText(FText::FromString(Content.FactionName));
 }

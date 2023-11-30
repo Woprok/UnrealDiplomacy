@@ -2,7 +2,6 @@
 
 #include "Menu/UserInterfaces/UDDialogueUserWidget.h"
 #include "Menu/UserInterfaces/UDDialogueViewModel.h"
-#include "Components/TextBlock.h"
 #include "Components/Button.h"
 
 void UUDDialogueUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
@@ -20,8 +19,5 @@ void UUDDialogueUserWidget::BindDelegates()
 
 void UUDDialogueUserWidget::BindWidgets()
 {
-	DialogueTitleTextWidget = GetWidget<UTextBlock>(TEXT("DialogueTitleText"));
-	ContentTextWidget = GetWidget<UTextBlock>(TEXT("ContentText"));
-	CloseTextWidget = GetWidget<UTextBlock>(TEXT("CloseText"));
 	CloseButtonWidget = GetWidget<UButton>(TEXT("CloseButton"));
 }

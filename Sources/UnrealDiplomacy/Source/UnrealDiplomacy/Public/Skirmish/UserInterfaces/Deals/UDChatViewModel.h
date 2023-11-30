@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelList.h"
 #include "Core/Simulation/UDModelStructs.h"
 #include "UDChatViewModel.generated.h"
 
@@ -13,8 +14,6 @@ enum ETextCommit::Type : int;
 struct FUDDealMinimalInfo;
 class UUDChatItemViewModel;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDChatItemSourceUpdated, const TArray<TObjectPtr<UUDChatItemViewModel>>& chatItemViewModels);
-
 /**
  * Single faction in a list.
  */
@@ -23,9 +22,7 @@ class UNREALDIPLOMACY_API UUDChatViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Set content of the chat.
-	 */
+	/** Set content of the chat. */
 	void SetContent(FUDDealMinimalInfo content);
 public:
 	// Button Functions
@@ -42,15 +39,14 @@ public:
 	FText SendText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText SelectedText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList ChatItemList;
 	// Events
-	FUDChatItemSourceUpdated ChatItemSourceUpdatedEvent;
-protected:
-	virtual void Initialize() override;
-	virtual void Update() override;
+public:
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
-	/**
-	 * Updates chat history list.
-	 */
+	/** Updates chat history list. */
 	void UpdateChatItemList();
 private:
 	// MVVM Setters & Getters
@@ -60,6 +56,8 @@ private:
 	FText GetSendText() const;
 	void SetSelectedText(FText newSelectedText);
 	FText GetSelectedText() const;
+	void SetChatItemList(FUDViewModelList newChatItemList);
+	FUDViewModelList GetChatItemList() const;
 private:
 	// Fields
 	bool IsTextEditing = false;

@@ -19,9 +19,7 @@ class UNREALDIPLOMACY_API UUDInviteItemViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Set content of the strategy option.
-	 */
+	/** Set content of the invite player. */
 	void SetContent(FUDDealFactionInfo content);
 public:
 	// Button Functions
@@ -32,9 +30,9 @@ public:
 	FText FactionNameText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText InviteText;
-protected:
-	virtual void Initialize() override;
-	virtual void Update() override;
+public:
+	virtual void Setup() override;
+	virtual void Refresh() override;
 private:
 	// MVVM Setters & Getters
 	void SetFactionNameText(FText newFactionNameText);

@@ -4,13 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelList.h"
 #include "UDFactionPanelViewModel.generated.h"
 
 // Forward Declarations
 
 class UUDFactionItemViewModel;
-
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDFactionSourceUpdated, const TArray<TObjectPtr<UUDFactionItemViewModel>>& factionItemViewModels);
 
 /**
  * List that holds all factions.
@@ -25,18 +24,15 @@ public:
 	FText NameHeaderText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText ControllerHeaderText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList FactionItemList;
 	// Events
-	FUDFactionSourceUpdated FactionSourceUpdatedEvent;
-protected:
-	virtual void Initialize() override;
+public:
+	virtual void Setup() override;
 	UFUNCTION()
-	virtual void Update() override;
-	UFUNCTION()
-	void Reload();
+	virtual void Refresh() override;
 private:
-	/**
-	 * Updates faction list.
-	 */
+	/** Updates faction list. */
 	void UpdateFactionList();
 private:
 	// MVVM Setters & Getters
@@ -44,6 +40,8 @@ private:
 	FText GetNameHeaderText() const;
 	void SetControllerHeaderText(FText newControllerHeaderText);
 	FText GetControllerHeaderText() const;
+	void SetFactionItemList(FUDViewModelList newFactionItemList);
+	FUDViewModelList GetFactionItemList() const;
 private:
 	// Fields
 	FName FactionViewModelCollectionName = TEXT("FactionItemCollection");

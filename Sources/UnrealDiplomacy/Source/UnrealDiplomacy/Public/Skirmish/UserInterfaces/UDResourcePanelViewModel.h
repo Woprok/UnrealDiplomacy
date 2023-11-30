@@ -4,13 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Core/UserInterfaces/UDViewModel.h"
+#include "Core/UserInterfaces/UDViewModelList.h"
 #include "UDResourcePanelViewModel.generated.h"
 
 // Forward Declarations
 
 class UUDResourceItemViewModel;
-
-DECLARE_MULTICAST_DELEGATE_OneParam(FUDResourceSourceUpdated, const TArray<TObjectPtr<UUDResourceItemViewModel>>& resourceItemViewModels);
 
 /**
  * List that holds all resources.
@@ -21,14 +20,13 @@ class UNREALDIPLOMACY_API UUDResourcePanelViewModel : public UUDViewModel
 	GENERATED_BODY()
 public:
 	// MVVM Fields
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FUDViewModelList ResourceList;
 	// Events
-	FUDResourceSourceUpdated ResourceSourceUpdatedEvent;
-protected:
-	virtual void Initialize() override;
+public:
+	virtual void Setup() override;
 	UFUNCTION()
-	virtual void Update() override;
-	UFUNCTION()
-	void Reload();
+	virtual void Refresh() override;
 private:
 	/**
 	 * Updates resource list.
@@ -36,6 +34,8 @@ private:
 	void UpdateResourceList();
 private:
 	// MVVM Setters & Getters
+	void SetResourceList(FUDViewModelList newResourceList);
+	FUDViewModelList GetResourceList() const;
 private:
 	// Fields
 	FName ResourceViewModelCollectionName = TEXT("ResourceItemCollection");

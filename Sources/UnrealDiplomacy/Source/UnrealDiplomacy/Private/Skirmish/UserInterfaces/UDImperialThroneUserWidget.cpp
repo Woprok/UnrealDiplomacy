@@ -2,7 +2,6 @@
 
 #include "Skirmish/UserInterfaces/UDImperialThroneUserWidget.h"
 #include "Skirmish/UserInterfaces/UDImperialThroneViewModel.h"
-#include "Components/TextBlock.h"
 #include "Components/Button.h"
 
 void UUDImperialThroneUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
@@ -23,9 +22,6 @@ void UUDImperialThroneUserWidget::BindDelegates()
 
 void UUDImperialThroneUserWidget::BindWidgets()
 {
-	DealCountTextWidget = GetWidget<UTextBlock>(TEXT("DealCountText"));
-	MessageCountTextWidget = GetWidget<UTextBlock>(TEXT("MessageCountText"));
-	ThroneTextWidget = GetWidget<UTextBlock>(TEXT("ThroneText"));
 	ThroneButtonWidget = GetWidget<UButton>(TEXT("ThroneButton"));
 	ThroneTextButtonWidget = GetWidget<UButton>(TEXT("ThroneTextButton"));
 	DealButtonWidget = GetWidget<UButton>(TEXT("DealButton"));
