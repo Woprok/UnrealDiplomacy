@@ -32,3 +32,8 @@ void UUDSystemActionPlayerAdd::Revert(const FUDActionData& action, TObjectPtr<UU
 	// Faction is removed from the state.
 	world->Factions.Remove(action.InvokerFactionId);
 }
+
+void UUDSystemActionPlayerAdd::SetResourceManager(TObjectPtr<UUDResourceManager> resourceManager)
+{
+	ResourceManager = resourceManager;
+}

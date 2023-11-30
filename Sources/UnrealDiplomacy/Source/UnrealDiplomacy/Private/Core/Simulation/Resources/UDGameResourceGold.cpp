@@ -11,7 +11,9 @@ FUDResourcePresentation UUDGameResourceGold::GetPresentation() const
 	presentation.Tags.Append(
 		{
 			UD_RESOURCE_TAG_VALID,
-			UD_RESOURCE_TAG_TYPE_PRIMARY
+			UD_RESOURCE_TAG_TYPE_PRIMARY,
+			UD_RESOURCE_TAG_FACTION_STARTING,
+			UD_RESOURCE_TAG_TILE_STARTING
 		}
 	);
 	// TODO what is actually a resource description format ?
@@ -19,6 +21,9 @@ FUDResourcePresentation UUDGameResourceGold::GetPresentation() const
 		"Gold is [{TYPE}] resource."
 	)).ToString();
 
+	presentation.FactionStartingAmount = GetFactionStartingAmount();
+	presentation.TileStartingAmount = GetTileStartingAmount();
+	presentation.TileWeight = GetTileWeight();
 	return presentation;
 }
 #undef LOCTEXT_NAMESPACE

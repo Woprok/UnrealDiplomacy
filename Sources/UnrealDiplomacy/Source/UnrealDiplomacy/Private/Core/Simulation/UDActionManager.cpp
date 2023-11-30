@@ -63,6 +63,7 @@ void UUDActionManager::Initialize()
 
 	RegisterCoreActions();
 	RegisterAdditionalActions();
+	WorldGenerator->SetResourceManager(ResourceManager);
 }
 
 void UUDActionManager::RegisterCoreActions()

@@ -21,13 +21,6 @@ struct FUDResourcePresentation;
 #define UD_RESOURCE_TAG_TYPE_PRIMARY 10
 #define UD_RESOURCE_TAG_TYPE_SECONDARY 11
 // Resources used by the game.
-// TODO move this to resource manager. IN PROGRESS
-//#define UD_RESOURCE_REPUTATION_ID 0
-//#define UD_RESOURCE_GOLD_ID 1
-//#define UD_RESOURCE_FOOD_ID 2
-//#define UD_RESOURCE_MATERIALS_ID 3
-//#define UD_RESOURCE_LUXURIES_ID 4
-//#define UD_RESOURCE_MANPOWER_ID 5
 
 /**
  * Defines informations about the modifier and how it can be displayed in UI.
@@ -49,6 +42,10 @@ public:
 	 * To use this use format and supply all parameters required by tags.
 	 */
 	FString ResourceDescriptionFormat = TEXT("");
+
+	int32 FactionStartingAmount;
+	int32 TileStartingAmount;
+	int32 TileWeight;
 };
 
 /**
@@ -86,14 +83,20 @@ public:
 	/**
 	 * Resources are assignable to faction state.
 	 * Thus they might have default starting amount.
-	 * This is unique value for faction. Default is 0;
+	 * This is value for faction. Default is 0;
 	 */
 	virtual int32 GetFactionStartingAmount() const;
 	/**
 	 * Resources are assignable to tile state.
 	 * Thus they might have default starting amount.
-	 * This is unique value for tile. Default is 0;
+	 * This is value for tile. Default is 0;
 	 */
 	virtual int32 GetTileStartingAmount() const;
-
+	/**
+	 * Resources are assignable to tile state.
+	 * Thus they need a chance to appear.
+	 * Default is 0. Thus it will not be generated.
+	 * It's adviced to keep weight for resources in 1 - 100 range.
+	 */
+	virtual int32 GetTileWeight() const;
 };

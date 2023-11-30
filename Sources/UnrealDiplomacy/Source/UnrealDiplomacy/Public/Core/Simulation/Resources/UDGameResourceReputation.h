@@ -19,10 +19,13 @@ public:
 	virtual FUDResourcePresentation GetPresentation() const override;
 	virtual int32 GetFactionStartingAmount() const override { return FactionStartingAmount; };
 	virtual int32 GetTileStartingAmount() const override { return TileStartingAmount; };
+	virtual int32 GetTileWeight() const override { return TileWeight; };
 public:
 	static const int32 ResourceId = 1001;
 	UPROPERTY()
 	int32 FactionStartingAmount = 0;
 	UPROPERTY()
 	int32 TileStartingAmount = 0;
+	UPROPERTY()
+	int32 TileWeight= 0;
 };

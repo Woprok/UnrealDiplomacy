@@ -13,22 +13,22 @@ void UUDResourceManager::SetupFactionStartingResources(TObjectPtr<UUDFactionStat
 	for (auto& resource : FilterStartpoint)
 	{
 		if (resource.Tags.Contains(UD_RESOURCE_TAG_FACTION_STARTING))
-			faction->Resources[resource.ResourceId] = Resources[resource.ResourceId]->GetFactionStartingAmount();
+			faction->Resources[resource.ResourceId] = resource.FactionStartingAmount;
 	}
 }
 
-void UUDResourceManager::GenerateTileStartingResources(TObjectPtr<UUDTileState> tile)
+TArray<FUDResourcePresentation> UUDResourceManager::CreateTileResourceOptionArray()
 {
+	TArray<FUDResourcePresentation> resources = { };
 	for (auto& resource : FilterStartpoint)
 	{
-		if (resource.Tags.Contains(UD_RESOURCE_TAG_TILE_STARTING))
+		if (resource.Tags.Contains(UD_RESOURCE_TAG_TILE_STARTING) && resource.TileWeight > 0)
 		{
-			// TODO choose one from all valid
+			// Only resources with non-zero chance are relevant for generation.
+			resources.Add(resource);
 		}
 	}
-
-	tile->ResourceType = resource.ResourceId;
-	tile->ResourceStored = Resources[resource.ResourceId]->GetTileStartingAmount();
+	return resources;
 }
 
 int32 UUDResourceManager::GetCurrent(TObjectPtr<UUDFactionState> faction, int32 resourceId)

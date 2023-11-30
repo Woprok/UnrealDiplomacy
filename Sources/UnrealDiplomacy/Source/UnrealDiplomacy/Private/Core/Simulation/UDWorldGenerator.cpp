@@ -3,6 +3,8 @@
 
 #include "Core/Simulation/UDWorldGenerator.h"
 #include "Core/Simulation/UDWorldState.h"
+#include "Core/Simulation/UDResourceManager.h"
+#include "Core/Simulation/UDResourceInterface.h"
 //#include "Kismet/GameplayStatics.h"
 //#include "Core/UDGameInstance.h"
 
@@ -46,10 +48,31 @@ bool InRange(int value, int32 min, int32 max)
 	return value >= min && value <= max;
 }
 
+void AssignTileResource(TArray<FUDResourcePresentation>& options, int32 random, TObjectPtr<UUDTileState> tile)
+{
+	for (auto& resource : options)
+	{
+		random -= resource.TileWeight;
+		if (random <= 0)
+		{
+			tile->ResourceType = resource.ResourceId;
+			tile->ResourceStored = resource.TileStartingAmount;
+			break;
+		}
+	}
+}
+
 void UUDWorldGenerator::GenerateProperties(int32 mapSeed)
 {
 	// Remember core value.
 	Seed = mapSeed;
+	// Get possible options
+	TArray<FUDResourcePresentation> options = ResourceManager->CreateTileResourceOptionArray();
+	int32 maxWeight = 0;
+	for (auto& resource : options)
+	{
+		maxWeight += resource.TileWeight;
+	}
 
 	const FRandomStream& current = GetRandom();
 	// Generate specific tiles for each available empty tile.
@@ -57,25 +80,16 @@ void UUDWorldGenerator::GenerateProperties(int32 mapSeed)
 	{
 		for (int32 y = 0; y < SizeOfY; y++)
 		{
-			int32 next = current.RandRange(1, 100);
 			int32 xy = CalculateIndex(x, y);
+			// Generate resource
+			int32 next = current.RandRange(1, maxWeight);
+			
+			AssignTileResource(options, next, Map[xy]);
+
 			// TODO make this properly choose and generate all types of tiles.
-			// TODO added generator that actually does something properly.
-			if (InRange(next, 0, 40))
+			if (maxWeight / 2 > next)
 			{
 				Map[xy]->Type = 69;
-			}
-			else if (InRange(next, 41, 70))
-			{
-				Map[xy]->Type = 69;
-			}
-			else if (InRange(next, 71, 90))
-			{
-				Map[xy]->Type = 42;
-			}
-			else if (InRange(next, 91, 100))
-			{
-				Map[xy]->Type = 42;
 			}
 			else
 			{
@@ -122,4 +136,9 @@ const FRandomStream& UUDWorldGenerator::GetRandom()
 		Random = FRandomStream(Seed);
 	}
 	return Random;
+}
+
+void UUDWorldGenerator::SetResourceManager(TObjectPtr<UUDResourceManager> resourceManager)
+{
+	ResourceManager = resourceManager;
 }

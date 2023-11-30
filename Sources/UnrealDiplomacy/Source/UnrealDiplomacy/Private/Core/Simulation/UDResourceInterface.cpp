@@ -43,3 +43,8 @@ int32 IUDResourceInterface::GetTileStartingAmount() const
 {
 	return 0;
 }
+
+int32 IUDResourceInterface::GetTileWeight() const
+{
+	return 0;
+}

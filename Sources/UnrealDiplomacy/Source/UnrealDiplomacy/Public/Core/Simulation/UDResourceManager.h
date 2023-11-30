@@ -30,7 +30,7 @@ public:
 	/** Updates faction state to contain all starting resources and their correct amount. */
 	void SetupFactionStartingResources(TObjectPtr<UUDFactionState> faction);
 	/** Updates tile state to contain starting resources and correct starting amount. */
-	void GenerateTileStartingResources(TObjectPtr<UUDTileState> tile);
+	TArray<FUDResourcePresentation> CreateTileResourceOptionArray();
 #pragma endregion
 #pragma region Resource Use API
 public:
