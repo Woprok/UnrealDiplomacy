@@ -13,7 +13,7 @@ void UUDResourceManager::SetupFactionStartingResources(TObjectPtr<UUDFactionStat
 	for (auto& resource : FilterStartpoint)
 	{
 		if (resource.Tags.Contains(UD_RESOURCE_TAG_FACTION_STARTING))
-			faction->Resources[resource.ResourceId] = resource.FactionStartingAmount;
+			faction->Resources.Add(resource.ResourceId, resource.FactionStartingAmount);
 	}
 }
 

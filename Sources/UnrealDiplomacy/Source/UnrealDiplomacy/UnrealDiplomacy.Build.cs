@@ -14,6 +14,7 @@ public class UnrealDiplomacy : ModuleRules
                 "Core", "CoreUObject", "Engine", "InputCore",
 				"ModularGameplay", "ModularGameplayActors", 
 				"ModelViewViewModel",
+                "EnhancedInput",
                 "OnlineSubsystem", "OnlineSubsystemUtils"
             });
 
