@@ -87,14 +87,8 @@ void UUDWorldGenerator::GenerateProperties(int32 mapSeed)
 			AssignTileResource(options, next, Map[xy]);
 
 			// TODO make this properly choose and generate all types of tiles.
-			if (maxWeight / 2 > next)
-			{
-				Map[xy]->Type = 69;
-			}
-			else
-			{
-				Map[xy]->Type = 42;
-			}
+			// This will unify Type and ResourceType as Terrain types are not present in this version.
+			Map[xy]->Type = Map[xy]->ResourceType;
 		}
 	}
 }

@@ -36,16 +36,16 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 protected:
 	/** ...and back. */
-	void MoveForward(const FInputActionValue& value);
+	void CameraMoveForward(const FInputActionValue& value);
 	/** ...and left. */
-	void MoveRight(const FInputActionValue& value);
+	void CameraMoveRight(const FInputActionValue& value);
 	/** ...and out. */
-	void ZoomIn(const FInputActionValue& value);
+	void CameraZoomIn(const FInputActionValue& value);
 	/** ...and left. */
-	void RotateRight(const FInputActionValue& value);
+	void CameraRotateRight(const FInputActionValue& value);
 	/** ...in both directions. e.g. by mouse drag. */
-	void RotateDrag(const FInputActionValue& value);
-	void EnableRotate(const FInputActionValue& value);
+	void CameraRotateDrag(const FInputActionValue& value);
+	void CameraEnableRotate(const FInputActionValue& value);
 	void CameraBounds();
 
 protected:

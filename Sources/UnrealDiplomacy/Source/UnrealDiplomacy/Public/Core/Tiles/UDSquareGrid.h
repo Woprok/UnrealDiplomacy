@@ -1,14 +1,38 @@
 // Copyright Miroslav Valach
+// TODO added a way to give each tile a different spawn chance, spawn rules etc...
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Core/UDActor.h"
-#include "UDSquareTile.h"
-#include "Core/Simulation/UDWorldState.h"
-#include "Core/Simulation/UDActionAdministrator.h"
-#include "Skirmish/UDSkirmishPlayerController.h"
 #include "UDSquareGrid.generated.h"
+
+// Forward Declarations
+
+class UUDActionAdministrator;
+class AUDSquareTile;
+class UUDMapState;
+class UUDTileState;
+struct FUDActionData;
+
+/**
+ * Tile type class mapping to type Id.
+ * e.g. ResourceType is binded in this version to Type on TileState. 
+ * Thus this will link type to a blueprint class, that will be spawned on the map.
+ */
+USTRUCT(Blueprintable, BlueprintType)
+struct FUDTileType
+{
+	GENERATED_BODY()
+public:
+	FUDTileType() {}
+	UPROPERTY(EditAnywhere)
+	FName TypeName;
+	UPROPERTY(EditAnywhere)
+	int32 TypeId;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AUDSquareTile> TileType;
+};
 
 /**
  * Grid that uses square shaped tiles.
@@ -18,138 +42,46 @@ class UNREALDIPLOMACY_API AUDSquareGrid : public AUDActor
 {
 	GENERATED_BODY()
 public:
-	/**
-	 * Primary call for creating the world, once Authority is defined.
-	 */
+	/** Primary call for creating the world, once Authority is defined. */
 	UFUNCTION(BlueprintCallable)
-	void GenerateWorld()
-	{
-		Create(MapModel->GetMapState());
-	}
-	/**
-	 * Reference to model, used for retrieving all important action.
-	 */
+	void GenerateWorld();
+	/** Reference to model, used for retrieving all important action. */
 	UFUNCTION(BlueprintCallable)
-	void SetAuthority(UUDActionAdministrator* model)
-	{
-		MapModel = model;
-
-		TObjectPtr<AUDSkirmishPlayerController> pc = AUDSkirmishPlayerController::Get(GetWorld());
-		pc->OnSynchronizationFinishedEvent.AddUniqueDynamic(this, &AUDSquareGrid::OnSynchronized);
-		pc->OnWorldSimulationUpdatedEvent.AddUniqueDynamic(this, &AUDSquareGrid::OnUpdate);
-	}
-	/**
-	 * Public handle for notifying grid to update it's tiles based on changes in model.
-	 */
+	void SetAuthority(UUDActionAdministrator* model);
+	/** Public handle for notifying grid to update it's tiles based on changes in model. */
 	UFUNCTION(BlueprintCallable)
-	virtual void OnUpdate(const FUDActionData& action)
-	{
-		OnSynchronized();
-	}
-
+	virtual void OnUpdate(const FUDActionData& action);
 	UFUNCTION()
-	virtual void OnSynchronized()
-	{
-		if (!MapModel->IsMapStatePresent())
-		{
-			UE_LOG(LogTemp, Log, TEXT("AUDSquareGrid: Map not yet present."));
-		}
-		else
-		{
-			UE_LOG(LogTemp, Log, TEXT("AUDSquareGrid: Map ready."));
-			if (Grid.Num() > 0)
-			{
-				UE_LOG(LogTemp, Log, TEXT("AUDSquareGrid: Map updated."));
-			}
-			else
-			{
-				UE_LOG(LogTemp, Log, TEXT("AUDSquareGrid: Map generated."));
-				GenerateWorld();
-			}
-		}
-	}
-
-	UFUNCTION(BlueprintCallable)
-	virtual void EmplaceTypeMapping(int32 key, int32 target)
-	{
-		TypeToClassMapping.Emplace(key, target);
-	}
+	virtual void OnSynchronized();
 protected:
-	/**
-	 * Creates map from the map state.
-	 */
-	void Create(TObjectPtr<UUDMapState> state)
-	{
-		for (TObjectPtr<UUDTileState> dataTile : state->Tiles)
-		{
-			// Spawn new tile.
-			CreateTile(dataTile);
-			// Invoke update.
-			Grid.Last()->OnUpdate();
-		}
-	}
-	/**
-	 * Invoked by tiles, when they are selected by the user. 
-	 */
-	virtual void OnTileSelected(TObjectPtr<AUDSquareTile> tile)
-	{
-		UE_LOG(LogTemp, Log, TEXT("AUDSquareGrid: Selected[%d][%d]."), tile->GetTilePosition().X, tile->GetTilePosition().Y);
-	}
+	/** Creates map from the map state. */
+	void Create(TObjectPtr<UUDMapState> state);
+	/** Invoked by tiles, when they are selected by the user. */
+	virtual void OnTileSelected(TObjectPtr<AUDSquareTile> tile);
 	UPROPERTY()
 	TObjectPtr<UUDActionAdministrator> MapModel = nullptr;
 private:
-	void CreateTile(TObjectPtr<UUDTileState> dataTile)
-	{
-		FVector worldPosition = CalculateTileWorldPosition(dataTile->Position);
-		TSubclassOf<AUDSquareTile> tileClass = RetrieveTileType(dataTile);
-		TObjectPtr<AUDSquareTile> newWorldTile = GetWorld()->SpawnActor<AUDSquareTile>(tileClass, worldPosition, FRotator::ZeroRotator);
-		newWorldTile->SetTilePosition(dataTile->Position);
-		newWorldTile->Selected.BindUObject(this, &AUDSquareGrid::OnTileSelected);
-		Grid.Add(newWorldTile);
-	}
-	FVector CalculateTileWorldPosition(FIntPoint tilePosition)
-	{
-		float x = tilePosition.X * TileHorizontalOffset;
-		float y = tilePosition.Y * TileVerticalOffset;
-		float z = 0;
-		return FVector(x, y, z);
-	}
-	TSubclassOf<AUDSquareTile> RetrieveTileType(TObjectPtr<UUDTileState> tileClass)
-	{
-		if (TypeToClassMapping.Contains(tileClass->Type))
-		{
-			// Returns value in TileTypes based on index mapping of TypeMapping.
-			auto tmp = TypeToClassMapping[tileClass->Type];
-			return TileTypeClasses[tmp];
-		}
-		// Fallback...
-		return TileType;
-	}
+	void CreateTile(TObjectPtr<UUDTileState> dataTile);
+	FVector CalculateTileWorldPosition(FIntPoint tilePosition);
+	TSubclassOf<AUDSquareTile> RetrieveTileType(TObjectPtr<UUDTileState> tileClass);
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SquareGrid|Config")
 	float TileLength = 100;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SquareGrid|Config")
-	float TileDistance = 104;
+	float TileDistance = 102;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SquareGrid|Config")
 	float TileHorizontalOffset = 100;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SquareGrid|Config")
 	float TileVerticalOffset = 100;
-	// TODO added a way to give each tile a different spawn chance, spawn rules etc...
+	
+	/** Maps Type ID to specific Tile type class. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SquareGrid|Config")
-	TArray<TSubclassOf<AUDSquareTile>> TileTypeClasses;
-	/**
-	 * Fallback type for tiles to use.
-	 */
+	TMap<int32, FUDTileType> TypeIdTileTypeMap;
+	/** Fallback type for tiles to use in case they were not properly defined. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SquareGrid|Config")
-	TSubclassOf<AUDSquareTile> TileType;
-	/**
-	 * TODO proper tile mapping feature...
-	 */
-	TMap<int32, int32> TypeToClassMapping;
+	TSubclassOf<AUDSquareTile> FallbackTileType;
 private:
-	/**
-	 * Current list of tiles present in the world.
-	 */
+	/** Current list of tiles present in the world. */
 	UPROPERTY()
 	TArray<TWeakObjectPtr<AUDSquareTile>> Grid;
 };

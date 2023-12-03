@@ -29,12 +29,12 @@ void AUDSkirmishPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	if (UEnhancedInputComponent* enhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		enhancedInputComponent->BindAction(MoveForwardAction, ETriggerEvent::Triggered, this, &AUDSkirmishPawn::MoveForward);
-		enhancedInputComponent->BindAction(MoveRightAction, ETriggerEvent::Triggered, this, &AUDSkirmishPawn::MoveRight);
-		enhancedInputComponent->BindAction(ZoomAction, ETriggerEvent::Triggered, this, &AUDSkirmishPawn::ZoomIn);
-		enhancedInputComponent->BindAction(RotateAction, ETriggerEvent::Triggered, this, &AUDSkirmishPawn::RotateRight);
-		enhancedInputComponent->BindAction(RotateDragAction, ETriggerEvent::Triggered, this, &AUDSkirmishPawn::RotateDrag);
-		enhancedInputComponent->BindAction(RotateEnableAction, ETriggerEvent::Completed, this, &AUDSkirmishPawn::EnableRotate);
+		enhancedInputComponent->BindAction(MoveForwardAction, ETriggerEvent::Triggered, this, &AUDSkirmishPawn::CameraMoveForward);
+		enhancedInputComponent->BindAction(MoveRightAction, ETriggerEvent::Triggered, this, &AUDSkirmishPawn::CameraMoveRight);
+		enhancedInputComponent->BindAction(ZoomAction, ETriggerEvent::Triggered, this, &AUDSkirmishPawn::CameraZoomIn);
+		enhancedInputComponent->BindAction(RotateAction, ETriggerEvent::Triggered, this, &AUDSkirmishPawn::CameraRotateRight);
+		enhancedInputComponent->BindAction(RotateDragAction, ETriggerEvent::Triggered, this, &AUDSkirmishPawn::CameraRotateDrag);
+		enhancedInputComponent->BindAction(RotateEnableAction, ETriggerEvent::Completed, this, &AUDSkirmishPawn::CameraEnableRotate);
 	}
 }
 
@@ -95,7 +95,7 @@ void AUDSkirmishPawn::Tick(float DeltaTime)
 	SpringArmComponent->SetRelativeRotation(interpolatedRotation);
 }
 
-void AUDSkirmishPawn::MoveForward(const FInputActionValue& value)
+void AUDSkirmishPawn::CameraMoveForward(const FInputActionValue& value)
 {
 	float axisValue = value.Get<float>();
 	if (axisValue == 0.0f)
@@ -106,7 +106,7 @@ void AUDSkirmishPawn::MoveForward(const FInputActionValue& value)
 	TargetLocation = SpringArmComponent->GetForwardVector() * axisValue * MoveSpeed + TargetLocation;
 }
 
-void AUDSkirmishPawn::MoveRight(const FInputActionValue& value)
+void AUDSkirmishPawn::CameraMoveRight(const FInputActionValue& value)
 {
 	float axisValue = value.Get<float>();
 	if (axisValue == 0.0f)
@@ -117,7 +117,7 @@ void AUDSkirmishPawn::MoveRight(const FInputActionValue& value)
 	TargetLocation = SpringArmComponent->GetRightVector() * axisValue * MoveSpeed + TargetLocation;
 }
 
-void AUDSkirmishPawn::ZoomIn(const FInputActionValue& value)
+void AUDSkirmishPawn::CameraZoomIn(const FInputActionValue& value)
 {
 	float axisValue = value.Get<float>();
 	if (axisValue == 0.0f)
@@ -128,7 +128,7 @@ void AUDSkirmishPawn::ZoomIn(const FInputActionValue& value)
 	TargetZoom = FMath::Clamp(axisValue * ZoomSensitivity + TargetZoom, MinZoom, MaxZoom);
 }
 
-void AUDSkirmishPawn::RotateRight(const FInputActionValue& value)
+void AUDSkirmishPawn::CameraRotateRight(const FInputActionValue& value)
 {
 	float axisValue = value.Get<float>();	
 	if (axisValue == 0.0f)
@@ -138,7 +138,7 @@ void AUDSkirmishPawn::RotateRight(const FInputActionValue& value)
 	TargetRotation = UKismetMathLibrary::ComposeRotators(TargetRotation, FRotator(0.0f, FMath::Sign(axisValue) * RotationDegree, 0.0f));
 }
 
-void AUDSkirmishPawn::RotateDrag(const FInputActionValue& value)
+void AUDSkirmishPawn::CameraRotateDrag(const FInputActionValue& value)
 {
 	FVector2D axisValue = value.Get<FVector2D>();
 
@@ -153,7 +153,7 @@ void AUDSkirmishPawn::RotateDrag(const FInputActionValue& value)
 	}
 }
 
-void AUDSkirmishPawn::EnableRotate(const FInputActionValue& value)
+void AUDSkirmishPawn::CameraEnableRotate(const FInputActionValue& value)
 {
 	CanRotate = !CanRotate;
 }
