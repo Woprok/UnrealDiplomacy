@@ -25,7 +25,7 @@ struct FUDTileType
 {
 	GENERATED_BODY()
 public:
-	FUDTileType() {}
+	FUDTileType() {};
 	UPROPERTY(EditAnywhere)
 	FName TypeName;
 	UPROPERTY(EditAnywhere)

@@ -19,7 +19,7 @@ public:
 	 */
 	static TArray<TScriptInterface<IUDResourceInterface>> GetDefaultResources(UObject* parent);
 	/**
-	 * Returns new instances of default resources.
+	 * Returns new instances of game resources.
 	 */
 	static TArray<TScriptInterface<IUDResourceInterface>> GetGameResources(UObject* parent);
 };

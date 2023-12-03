@@ -70,3 +70,8 @@ bool UUDViewBindingConverters::ValueToNotBool(int32 InValue, int32 PrimaryValue)
 {
 	return InValue != PrimaryValue;
 }
+
+UImage* UUDViewBindingConverters::IdToMaterial(int32 InId, FUDMaterialMap map)
+{
+	return nullptr;
+}

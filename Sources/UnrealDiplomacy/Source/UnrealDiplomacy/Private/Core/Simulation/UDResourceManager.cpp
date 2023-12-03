@@ -99,8 +99,8 @@ void UUDResourceManager::Initialize()
 	check(!IsInitialized);
 	IsInitialized = true;
 
+	RegisterBlueprintResources();
 	RegisterCoreResources();
-	RegisterAdditionalResources();
 }
 
 void UUDResourceManager::RegisterCoreResources()
@@ -109,10 +109,41 @@ void UUDResourceManager::RegisterCoreResources()
 	RegisterResourceList(UUDResourceDatabase::GetGameResources(this));
 }
 
-void UUDResourceManager::RegisterAdditionalResources()
+void UUDResourceManager::RegisterBlueprintResources()
 {
-	// This is only for inherited managers.
-	return;
+	TArray<TScriptInterface<IUDResourceInterface>> newResources = { };
+
+	for (const auto& resourceType : BlueprintResources)
+	{
+		// Check if this is actually a valid item.
+		if (!resourceType)
+		{
+			UE_LOG(LogTemp, Log, TEXT("UUDResourceManager: Failed to initialize resource type. Probably empty array item."));
+			continue;
+		}
+		// Create an instance of the class
+		UObject* newResourceObject = NewObject<UObject>(this, resourceType);
+
+		if (!newResourceObject)
+		{
+			UE_LOG(LogTemp, Log, TEXT("UUDResourceManager: Failed to initialize resource type instance."));
+			continue;
+		}
+
+		// Check if the object implements the desired interface
+		if (!newResourceObject->GetClass()->ImplementsInterface(UUDResourceInterface::StaticClass()))
+		{
+			UE_LOG(LogTemp, Log, TEXT("UUDResourceManager: Incorrect resource type."));
+			continue;
+		}
+		// Cast to the interface
+		TScriptInterface<IUDResourceInterface> ResourceInterface;
+		ResourceInterface.SetObject(newResourceObject);
+		ResourceInterface.SetInterface(Cast<IUDResourceInterface>(newResourceObject));
+		newResources.Add(ResourceInterface);
+	}
+
+	RegisterResourceList(newResources);
 }
 
 void UUDResourceManager::RegisterResourceList(TArray<TScriptInterface<IUDResourceInterface>> resourceList)

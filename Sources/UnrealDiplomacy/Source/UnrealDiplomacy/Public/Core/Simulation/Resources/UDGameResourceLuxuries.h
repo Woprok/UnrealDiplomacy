@@ -28,4 +28,6 @@ public:
 	int32 TileStartingAmount = 40;
 	UPROPERTY()
 	int32 TileWeight = 10;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Icon Config")
+	//TSubclassOf<AUDSquareTile> Icon;
 };
