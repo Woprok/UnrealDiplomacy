@@ -76,7 +76,7 @@ FUDActionPresentation UUDGameActionTileRaid::GetPresentation() const
 }
 #undef LOCTEXT_NAMESPACE
 
-void UUDGameActionTileRaid::SetResourceManager(TObjectPtr<UUDResourceManager> resourceManager)
+void UUDGameActionTileRaid::SetResourceManager(TWeakObjectPtr<UUDResourceManager> resourceManager)
 {
 	ResourceManager = resourceManager;
 }

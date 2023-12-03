@@ -44,7 +44,7 @@ void UUDGameActionThroneSupport::Revert(const FUDActionData& action, TObjectPtr<
 	ModifierManager->RemoveFactionModifier(faction, action.UniqueId);
 }
 
-void UUDGameActionThroneSupport::SetModifierManager(TObjectPtr<UUDModifierManager> modifierManager)
+void UUDGameActionThroneSupport::SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager)
 {
 	ModifierManager = modifierManager;
 }

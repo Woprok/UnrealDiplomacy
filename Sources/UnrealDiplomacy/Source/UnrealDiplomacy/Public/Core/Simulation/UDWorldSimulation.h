@@ -40,7 +40,7 @@ public:
 	/**
 	 * Initialize all necessary fields for actions and simulation.
 	 */
-	void Initialize();
+	void Initialize(TWeakObjectPtr<UUDActionManager> actionManager);
 #pragma region Assigns of controllers to specific state.
 public:
 	/**
@@ -131,7 +131,7 @@ private:
 	 * Manager that is responsible for providing actions for execution.
 	 */
 	UPROPERTY()
-	TObjectPtr<UUDActionManager> ActionManager = nullptr;
+	TWeakObjectPtr<UUDActionManager> ActionManager = nullptr;
 #pragma endregion
 
 #pragma region Actions

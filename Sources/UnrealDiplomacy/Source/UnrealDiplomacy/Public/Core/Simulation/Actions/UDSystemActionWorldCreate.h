@@ -17,7 +17,7 @@ public:
 	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual int32 GetId() const override { return ActionTypeId; };
-	virtual void SetWorldGenerator(TObjectPtr<UUDWorldGenerator> worldGenerator) override;
+	virtual void SetWorldGenerator(TWeakObjectPtr<UUDWorldGenerator> worldGenerator) override;
 public:
 	static const int32 ActionTypeId = 19;
 protected:

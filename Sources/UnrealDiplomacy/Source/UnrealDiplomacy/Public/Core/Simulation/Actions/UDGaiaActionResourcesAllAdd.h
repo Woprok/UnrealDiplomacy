@@ -18,7 +18,7 @@ public:
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual int32 GetId() const override { return ActionTypeId; };
 	//virtual int32 GetParameterCount() const override { return FUDGaiaDataAmount::ParameterCount; };
-	virtual void SetResourceManager(TObjectPtr<UUDResourceManager> resourceManager) override;
+	virtual void SetResourceManager(TWeakObjectPtr<UUDResourceManager> resourceManager) override;
 public:
 	static const int32 ActionTypeId = 1001;
 protected:

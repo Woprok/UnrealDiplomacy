@@ -3,26 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Core/UserInterfaces/UDViewModelContent.h"
 #include "UDViewBindingConverters.generated.h"
 
 // Forward Declarations
 
 enum class ESlateVisibility : uint8;
 class UImage;
-class UMaterialInstance;
-
-
-USTRUCT(BlueprintType)
-struct FUDMaterialMap
-{
-	GENERATED_BODY()
-public:
-	FUDMaterialMap() {};
-	UPROPERTY(BlueprintReadOnly)
-	int32 Id = 0;
-	UPROPERTY(BlueprintReadOnly)
-	UMaterialInstance* Instance = nullptr;
-};
+struct FUDMaterialBinding;
 
 /**
  * Collection of standard data type convertors.
@@ -47,11 +35,6 @@ public:
 	UFUNCTION(BlueprintPure, meta = (DisplayName = "Value To Not Bool", CompactNodeTitle = "ValueToNotBool", BlueprintAutocast), Category = "Convertors")
 	static bool ValueToNotBool(int32 InValue, int32 PrimaryValue);
 
-	/** TMP */
-	UFUNCTION(BlueprintPure, meta = (DisplayName = "Id To Material", CompactNodeTitle = "IdToMaterial", BlueprintAutocast), Category = "Convertors")
-		static UImage* IdToMaterial(int32 InId, FUDMaterialMap map);
-
-	/** If bPickA is true, A is returned, otherwise B is */
-	//UFUNCTION(BlueprintPure, Category = "Math|Color")
-	//static FLinearColor SelectColor(FLinearColor A, FLinearColor B, bool bPickA);
+	UFUNCTION(BlueprintPure, meta = (DisplayName = "Material To Icon", CompactNodeTitle = "MaterialToIcon", BlueprintAutocast), Category = "Convertors")
+	static FSlateBrush MaterialToIcon(FUDMaterialBinding icon, float x = 32.0f, float y = 32.0f);
 };

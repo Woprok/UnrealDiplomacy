@@ -116,12 +116,12 @@ FUDActionData UUDWorldArbiter::CreateEndGame()
 	return FUDActionData(UUDSystemActionGameEnd::ActionTypeId, UUDGlobalData::GaiaFactionId);
 }
 
-void UUDWorldArbiter::SetModifierManager(TObjectPtr<UUDModifierManager> modifierManager)
+void UUDWorldArbiter::SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager)
 {
 	ModifierManager = modifierManager;
 }
 
-void UUDWorldArbiter::SetResourceManager(TObjectPtr<UUDResourceManager> resourceManager)
+void UUDWorldArbiter::SetResourceManager(TWeakObjectPtr<UUDResourceManager> resourceManager)
 {
 	ResourceManager = resourceManager;
 }

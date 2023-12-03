@@ -25,7 +25,7 @@ public:
 	 * Provided parameter is modified!
 	 */
 	void CreateAndDuplicate(TObjectPtr<UUDMapState> targetMapState);
-	virtual void SetResourceManager(TObjectPtr<UUDResourceManager> resourceManager);
+	virtual void SetResourceManager(TWeakObjectPtr<UUDResourceManager> resourceManager);
 protected:
 	/**
 	 * Creates map with specified parameters as defined in UUDMapState object.

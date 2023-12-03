@@ -2,6 +2,7 @@
 
 #include "Skirmish/UDSkirmishGameMode.h"
 #include "Core/UDGlobalData.h"
+#include "Core/UDGameInstance.h"
 #include "Core/Simulation/Actions/UDSystemActionWorldCreate.h"
 #include "Core/Simulation/Actions/UDSystemActionGameStart.h"
 #include "Core/Simulation/Actions/UDSystemActionLog.h"
@@ -35,7 +36,7 @@ void AUDSkirmishGameMode::CreateWorldSimulation()
 {
 	InternalWorldSimulation = GetWorld()->SpawnActor<AUDWorldSimulation>();
 
-	GetWorldSimulation()->Initialize();
+	GetWorldSimulation()->Initialize(UUDGameInstance::Get(GetWorld())->GetActionManager());
 	RegisterAsListenerToWorldSimulation();
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Finalized initialization of UObjects and Actors for GameMode."));
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Setting up new Gaia player."));

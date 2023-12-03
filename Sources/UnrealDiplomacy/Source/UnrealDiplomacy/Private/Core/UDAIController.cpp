@@ -3,6 +3,7 @@
 // TODO consider changing it to behaviour tree.
 
 #include "Core/UDAIController.h"
+#include "Core/UDGameInstance.h"
 #include "Core/Simulation/UDWorldState.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDActionAdministrator.h"
@@ -104,6 +105,7 @@ void AUDAIController::SetSimulatedStateAccess(TObjectPtr<UUDWorldState> factionW
 void AUDAIController::InitializeAdministrator()
 {
 	ActionAdministrator = NewObject<UUDActionAdministrator>();
+	ActionAdministrator->SetActionManager(UUDGameInstance::Get(GetWorld())->GetActionManager());
 	UE_LOG(LogTemp, Log, TEXT("AUDAIController(%d): Initialized administrator."), GetControllerUniqueId());
 }
 

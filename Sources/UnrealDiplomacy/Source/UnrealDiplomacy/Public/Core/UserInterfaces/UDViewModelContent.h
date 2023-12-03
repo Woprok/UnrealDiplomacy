@@ -33,3 +33,25 @@ public:
 		return ViewModel == rhs.ViewModel;
 	}
 };
+
+USTRUCT(BlueprintType)
+struct FUDMaterialBinding
+{
+	GENERATED_BODY()
+public:
+	FUDMaterialBinding() {};
+	FUDMaterialBinding(UMaterialInterface* instance) : Instance(instance) {};
+	UPROPERTY(BlueprintReadOnly)
+	UMaterialInterface* Instance = nullptr;
+public:
+	/** Equality over UniqueId field. */
+	inline bool operator!=(const FUDMaterialBinding& rhs) const
+	{
+		return !(*this == rhs);
+	}
+	/** Equality over UniqueId field. */
+	inline bool operator==(const FUDMaterialBinding& rhs) const
+	{
+		return Instance == rhs.Instance;
+	}
+};

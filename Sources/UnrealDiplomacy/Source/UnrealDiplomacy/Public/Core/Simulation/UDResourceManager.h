@@ -19,6 +19,7 @@ class UUDTileState;
  * it will not be assignable or useable.
  *
  * Provides basic filters to retrieve information about resources.
+ * This is stateless and only keeps references to his childs, that are as well stateless.
  */
 UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDResourceManager : public UObject
@@ -70,6 +71,8 @@ public:
 	TArray<FUDResourcePresentation> FilterSecondaryResources();
 	/** Retrieves specifeid resource presentation. */
 	FUDResourcePresentation GetSpecified(int32 resourceId);
+	/** Retrieves specifeid resource presentation. */
+	UMaterialInterface* GetIcon(int32 resourceId);
 private:
 	/** Retrieves all resources that are tagged by specified tag. */
 	TArray<FUDResourcePresentation> FilterByTag(const TArray<FUDResourcePresentation>& selection, int32 tag);

@@ -68,7 +68,7 @@ FUDActionPresentation UUDGameActionBurglary::GetPresentation() const
 }
 #undef LOCTEXT_NAMESPACE
 
-void UUDGameActionBurglary::SetResourceManager(TObjectPtr<UUDResourceManager> resourceManager)
+void UUDGameActionBurglary::SetResourceManager(TWeakObjectPtr<UUDResourceManager> resourceManager)
 {
 	ResourceManager = resourceManager;
 }

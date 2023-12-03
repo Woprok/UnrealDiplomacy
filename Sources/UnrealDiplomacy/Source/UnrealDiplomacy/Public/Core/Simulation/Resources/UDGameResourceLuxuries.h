@@ -20,14 +20,15 @@ public:
 	virtual int32 GetFactionStartingAmount() const override { return FactionStartingAmount; };
 	virtual int32 GetTileStartingAmount() const override { return TileStartingAmount; };
 	virtual int32 GetTileWeight() const override { return TileWeight; };
+	virtual UMaterialInterface* GetIcon() const override { return Icon; };
 public:
 	static const int32 ResourceId = 1006;
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Icon Config")
 	int32 FactionStartingAmount = 10;
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Icon Config")
 	int32 TileStartingAmount = 40;
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Icon Config")
 	int32 TileWeight = 10;
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Icon Config")
-	//TSubclassOf<AUDSquareTile> Icon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Icon Config")
+	UMaterialInterface* Icon;
 };

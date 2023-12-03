@@ -166,19 +166,20 @@ public:
 	 * Returns new action that can be invoked.
 	 */
 	FUDActionData GetDeclineAction(int32 decisionId);
+public:
+	/**
+	 * Initialize new instance for future use with proper action list used in game.
+	 */
+	void SetActionManager(TWeakObjectPtr<UUDActionManager> actionManager);
 protected:
 	UPROPERTY()
 	TObjectPtr<UUDWorldState> State;
 	UPROPERTY()
-	TObjectPtr<UUDActionManager> ActionManager;
+	TWeakObjectPtr<UUDActionManager> ActionManager;
 	/**
 	 * Safe retrieve of an action manager.
 	 */
-	TObjectPtr<UUDActionManager> GetActionManager();
-	/**
-	 * Initialize new instance for future use with proper action list used in game.
-	 */
-	void InitializeActionManager();
+	TWeakObjectPtr<UUDActionManager> GetActionManager();
 #pragma endregion
 	
 #pragma region Lobby & HUD
@@ -249,6 +250,8 @@ public:
 	TArray<FUDResourceInfo> GetLocalFactionResourceList();
 	/** Retrieves all resources supported by the game. */
 	TArray<FUDResourceMinimalInfo> GetResourceItemList();
+	/** Retrieves all resources supported by the game. */
+	UMaterialInterface* GetIcon(int32 resourceId);
 #pragma endregion
 
 #pragma region Gameplay

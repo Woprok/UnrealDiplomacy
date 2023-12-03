@@ -8,6 +8,7 @@
 // Forward Declarations
 
 struct FUDResourcePresentation;
+class UMaterialInterface;
 
 // TODO Reevaluate if this tag system can be done it in different way to reduce complexity.
 
@@ -99,4 +100,9 @@ public:
 	 * It's adviced to keep weight for resources in 1 - 100 range.
 	 */
 	virtual int32 GetTileWeight() const;
+	/**
+	 * Retrieves icon, if any is defined.
+	 * Nullptr is valid return value, if icon was not defined...
+	 */
+	virtual UMaterialInterface* GetIcon() const;
 };

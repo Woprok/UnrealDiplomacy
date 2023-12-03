@@ -64,17 +64,17 @@ void IUDActionInterface::Backup(FUDActionData& action, TObjectPtr<UUDWorldState>
 	return;
 }
 
-void IUDActionInterface::SetWorldGenerator(TObjectPtr<UUDWorldGenerator> generator)
+void IUDActionInterface::SetWorldGenerator(TWeakObjectPtr<UUDWorldGenerator> generator)
 {
 	return;
 }
 
-void IUDActionInterface::SetModifierManager(TObjectPtr<UUDModifierManager> manager)
+void IUDActionInterface::SetModifierManager(TWeakObjectPtr<UUDModifierManager> manager)
 {
 	return;
 }
 
-void IUDActionInterface::SetResourceManager(TObjectPtr<UUDResourceManager> manager)
+void IUDActionInterface::SetResourceManager(TWeakObjectPtr<UUDResourceManager> manager)
 {
 	return;
 }

@@ -5,12 +5,57 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/GameUserSettings.h"
 #include "Core/UDGlobalData.h"
+#include "Core/Simulation/UDActionManager.h"
+#include "Core/Simulation/UDModifierManager.h"
+#include "Core/Simulation/UDResourceManager.h"
+
+UUDGameInstance::UUDGameInstance()
+{
+    ActionManagerType = UUDActionManager::StaticClass();
+    ModifierManagerType = UUDModifierManager::StaticClass();
+    ResourceManagerType = UUDResourceManager::StaticClass();
+    UE_LOG(LogTemp, Log, TEXT("UUDGameInstance: Defined static classes for UUDGameInstance."));
+}
 
 TObjectPtr<UUDGameInstance> UUDGameInstance::Get(TObjectPtr<UWorld> world)
 {
     TObjectPtr<UGameInstance> gameInstance = UGameplayStatics::GetGameInstance(world);
+    //    TObjectPtr<UGameInstance> gameInstance = UGameplayStatics::GetGameInstance(GEngine->GetWorld());
     check(gameInstance != nullptr);
     return CastChecked<UUDGameInstance>(gameInstance);
+}
+
+void UUDGameInstance::Init()
+{
+    // Call parent to do it's thing.
+    Super::Init();
+    // Setup instances
+    ActionManager = NewObject<UUDActionManager>(this, ActionManagerType);
+    ModifierManager = NewObject<UUDModifierManager>(this, ModifierManagerType);
+    ResourceManager = NewObject<UUDResourceManager>(this, ResourceManagerType);
+    // First we initialize these that do not require dependencies.
+    ModifierManager->Initialize();
+    ResourceManager->Initialize();
+    // Finally we finish initialization on action manager.
+    ActionManager->SetResourceManager(ResourceManager);
+    ActionManager->SetModifierManager(ModifierManager);
+    // Requires other managers to be present (as actions work over all managers).
+    ActionManager->Initialize();
+}
+
+TWeakObjectPtr<UUDActionManager> UUDGameInstance::GetActionManager()
+{
+    return ActionManager;
+}
+
+TWeakObjectPtr<UUDModifierManager> UUDGameInstance::GetModifierManager()
+{
+    return ModifierManager;
+}
+
+TWeakObjectPtr<UUDResourceManager> UUDGameInstance::GetResourceManager()
+{
+    return ResourceManager;
 }
 
 FUDApplicationSettings UUDGameInstance::LoadSettings()

@@ -16,17 +16,14 @@
 #include "Core/Simulation/UDWorldState.h"
 #include "Core/Simulation/Actions/UDSystemActionPlayerAdd.h"
 
-void AUDWorldSimulation::Initialize()
+void AUDWorldSimulation::Initialize(TWeakObjectPtr<UUDActionManager> actionManager)
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Initializing."));
 	NextUniqueFactionId = UUDGlobalData::FirstUseableFactionId;
 	NextUniqueActionId = UUDGlobalData::FirstUseableActionId;
-	ActionManager = NewObject<UUDActionManager>(this);
+	ActionManager = actionManager;
+	
 	Arbiter = NewObject<UUDWorldArbiter>(this);
-
-	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Registering Actions."));
-	ActionManager->Initialize();
-
 	Arbiter->SetModifierManager(ActionManager->GetModifierManager());
 	Arbiter->SetResourceManager(ActionManager->GetResourceManager());
 }

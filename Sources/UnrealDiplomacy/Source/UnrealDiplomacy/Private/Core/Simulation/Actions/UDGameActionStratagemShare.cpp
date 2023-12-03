@@ -44,7 +44,7 @@ void UUDGameActionStratagemShare::Revert(const FUDActionData& action, TObjectPtr
 	ModifierManager->RemoveFactionModifier(faction, action.UniqueId);
 }
 
-void UUDGameActionStratagemShare::SetModifierManager(TObjectPtr<UUDModifierManager> modifierManager)
+void UUDGameActionStratagemShare::SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager)
 {
 	ModifierManager = modifierManager;
 }

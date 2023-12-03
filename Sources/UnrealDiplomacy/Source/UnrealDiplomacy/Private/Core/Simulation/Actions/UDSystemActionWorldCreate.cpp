@@ -22,7 +22,7 @@ void UUDSystemActionWorldCreate::Revert(const FUDActionData& action, TObjectPtr<
 	world->Map = nullptr;
 }
 
-void UUDSystemActionWorldCreate::SetWorldGenerator(TObjectPtr<UUDWorldGenerator> worldGenerator)
+void UUDSystemActionWorldCreate::SetWorldGenerator(TWeakObjectPtr<UUDWorldGenerator> worldGenerator)
 {
 	WorldGenerator = worldGenerator;
 }

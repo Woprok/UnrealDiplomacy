@@ -11,6 +11,7 @@
 #include "Core/Tiles/UDSquareGrid.h"
 #include "Skirmish/UDSkirmishGameState.h"
 #include "Core/Simulation/UDWorldSimulation.h"
+#include "Core/UDGameInstance.h"
 
 TObjectPtr<AUDSkirmishPlayerController> AUDSkirmishPlayerController::Get(TObjectPtr<UWorld> world)
 {
@@ -208,7 +209,7 @@ void AUDSkirmishPlayerController::InitializeSimulation()
 		return;
 	}
 
-	InternalWorldSimulation->Initialize();
+	InternalWorldSimulation->Initialize(UUDGameInstance::Get(GetWorld())->GetActionManager());
 	InternalWorldSimulation->OnBroadcastActionAppliedDelegate.AddUObject(this, &AUDSkirmishPlayerController::OnWorldSimulationUpdated);
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Initialized with temporary Id."), GetControllerUniqueId());
 }
@@ -216,6 +217,7 @@ void AUDSkirmishPlayerController::InitializeSimulation()
 void AUDSkirmishPlayerController::InitializeAdministrator()
 {
 	InternalPersonalAdministrator = NewObject<UUDActionAdministrator>();
+	InternalPersonalAdministrator->SetActionManager(UUDGameInstance::Get(GetWorld())->GetActionManager());
 	InternalPersonalAdministrator->OnUserActionRequestedDelegate.BindUObject(this, &AUDSkirmishPlayerController::OnUserActionRequested);
 	OnSynchronizationFinishedEvent.AddUniqueDynamic(InternalPersonalAdministrator, &UUDActionAdministrator::OnDataReloaded);
 	OnWorldSimulationUpdatedEvent.AddUniqueDynamic(InternalPersonalAdministrator, &UUDActionAdministrator::OnDataChanged);

@@ -67,7 +67,7 @@ FUDResourceInfo::FUDResourceInfo()
 
 }
 
-FUDResourceInfo::FUDResourceInfo(int32 resourceId, FString name, int32 amount) 
+FUDResourceInfo::FUDResourceInfo(int32 resourceId, FString name, int32 amount)
 	: Id(resourceId), Name(name), Amount(amount)
 {
 

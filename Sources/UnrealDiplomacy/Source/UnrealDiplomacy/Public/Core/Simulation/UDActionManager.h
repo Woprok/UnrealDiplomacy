@@ -19,16 +19,21 @@ class UUDResourceManager;
  * it will not be executable.
  * 
  * Provides basic filters to retrieve information about actions.
+ * This is stateless and only keeps references to his childs, that are as well stateless.
  */
 UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDActionManager : public UObject
 {
 	GENERATED_BODY()
 public:
+	/** Sets inner instance of modifier manager */
+	void SetModifierManager(TWeakObjectPtr<UUDModifierManager> manager);
+	/** Sets inner instance of resource manager */
+	void SetResourceManager(TWeakObjectPtr<UUDResourceManager> manager);
 	/** Retrieves inner instance of modifier manager */
-	TObjectPtr<UUDModifierManager> GetModifierManager();
+	TWeakObjectPtr<UUDModifierManager> GetModifierManager();
 	/** Retrieves inner instance of resource manager */
-	TObjectPtr<UUDResourceManager> GetResourceManager();
+	TWeakObjectPtr<UUDResourceManager> GetResourceManager();
 public:
 	/**
 	 * Returns Action associated with the supplied Id.
@@ -112,10 +117,10 @@ protected:
 	TObjectPtr<UUDWorldGenerator> WorldGenerator = nullptr;
 	/** Modifier Manager shared by actions. */
 	UPROPERTY()
-	TObjectPtr<UUDModifierManager> ModifierManager = nullptr;
+	TWeakObjectPtr<UUDModifierManager> ModifierManager = nullptr;
 	/** Resource Manager shared by actions. */
 	UPROPERTY()
-	TObjectPtr<UUDResourceManager> ResourceManager = nullptr;
+	TWeakObjectPtr<UUDResourceManager> ResourceManager = nullptr;
 private:
 	/**
 	 * Determines if this was initialized and can be used.

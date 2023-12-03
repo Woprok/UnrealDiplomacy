@@ -9,6 +9,9 @@
 // Forward Declarations
 
 struct FUDApplicationSettings;
+class UUDActionManager;
+class UUDModifierManager;
+class UUDResourceManager;
 
 /**
  * Persistent state per game instance.
@@ -18,11 +21,15 @@ class UNREALDIPLOMACY_API UUDGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 public:
+	UUDGameInstance();
+public:
 	/**
 	 * Shortcut to retrieve casted GameInstance.
 	 * Requries World pointer that can be retrieved by GetWorld().
 	 */
 	static TObjectPtr<UUDGameInstance> Get(TObjectPtr<UWorld> world);
+	/** virtual function to allow custom GameInstances an opportunity to set up what it needs */
+	virtual void Init() override;
 	/**
 	 * Loads current global application settings.
 	 */
@@ -58,6 +65,32 @@ protected:
 	 */
 	UPROPERTY(EditDefaultsOnly)
 	TSoftObjectPtr<UWorld> SkirmishLevel;
+public:
+	/** Change this if you want to use BP implementation of manager. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Managers")
+	TSubclassOf<UUDActionManager> ActionManagerType;
+	/** Change this if you want to use BP implementation of manager. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Managers")
+	TSubclassOf<UUDModifierManager> ModifierManagerType;
+	/** Change this if you want to use BP implementation of manager. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Managers")
+	TSubclassOf<UUDResourceManager> ResourceManagerType;
+	/** Manager shared by application during the whole runtime. */
+	TWeakObjectPtr<UUDActionManager> GetActionManager();
+	/** Manager shared by application during the whole runtime. */
+	TWeakObjectPtr<UUDModifierManager> GetModifierManager();
+	/** Manager shared by application during the whole runtime. */
+	TWeakObjectPtr<UUDResourceManager> GetResourceManager();
+protected:
+	/** Manager shared by application during the whole runtime. */
+	UPROPERTY()
+	TObjectPtr<UUDActionManager> ActionManager = nullptr;
+	/** Manager shared by application during the whole runtime. */
+	UPROPERTY()
+	TObjectPtr<UUDModifierManager> ModifierManager = nullptr;
+	/** Manager shared by application during the whole runtime. */
+	UPROPERTY()
+	TObjectPtr<UUDResourceManager> ResourceManager = nullptr;
 private:
 	TObjectPtr<UGameUserSettings> GetGameUserSettings();
 };

@@ -132,7 +132,7 @@ const FRandomStream& UUDWorldGenerator::GetRandom()
 	return Random;
 }
 
-void UUDWorldGenerator::SetResourceManager(TObjectPtr<UUDResourceManager> resourceManager)
+void UUDWorldGenerator::SetResourceManager(TWeakObjectPtr<UUDResourceManager> resourceManager)
 {
 	ResourceManager = resourceManager;
 }

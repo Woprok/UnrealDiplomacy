@@ -189,15 +189,15 @@ public:
 	/**
 	 * Shared world generator that can be used by action.
 	 */
-	virtual void SetWorldGenerator(TObjectPtr<UUDWorldGenerator> generator);
+	virtual void SetWorldGenerator(TWeakObjectPtr<UUDWorldGenerator> generator);
 	/**
 	 * Shared modifier manager that can be used by action.
 	 */
-	virtual void SetModifierManager(TObjectPtr<UUDModifierManager> manager);
+	virtual void SetModifierManager(TWeakObjectPtr<UUDModifierManager> manager);
 	/**
 	 * Shared resource manager that can be used by action.
 	 */
-	virtual void SetResourceManager(TObjectPtr<UUDResourceManager> manager);
+	virtual void SetResourceManager(TWeakObjectPtr<UUDResourceManager> manager);
 	/**
 	 * Formatted version of the action.
 	 */

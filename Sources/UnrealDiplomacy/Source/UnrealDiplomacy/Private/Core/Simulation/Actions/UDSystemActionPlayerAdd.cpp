@@ -33,7 +33,7 @@ void UUDSystemActionPlayerAdd::Revert(const FUDActionData& action, TObjectPtr<UU
 	world->Factions.Remove(action.InvokerFactionId);
 }
 
-void UUDSystemActionPlayerAdd::SetResourceManager(TObjectPtr<UUDResourceManager> resourceManager)
+void UUDSystemActionPlayerAdd::SetResourceManager(TWeakObjectPtr<UUDResourceManager> resourceManager)
 {
 	ResourceManager = resourceManager;
 }

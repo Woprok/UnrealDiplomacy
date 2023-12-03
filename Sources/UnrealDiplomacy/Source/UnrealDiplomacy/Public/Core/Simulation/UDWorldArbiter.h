@@ -35,8 +35,8 @@ public:
 	 */
 	bool OnActionExecutionFinished(int32 actionType, const TObjectPtr<UUDWorldState>& gaiaWorldState);
 	TArray<FUDActionData> EndGame();
-	void SetModifierManager(TObjectPtr<UUDModifierManager> modifierManager);
-	void SetResourceManager(TObjectPtr<UUDResourceManager> resourceManager);
+	void SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager);
+	void SetResourceManager(TWeakObjectPtr<UUDResourceManager> resourceManager);
 protected:
 	void EvaluateTurnGameOverState(const TObjectPtr<UUDWorldState>& gaiaWorldState);
 	FUDActionData DetermineNewRuler();

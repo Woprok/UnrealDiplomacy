@@ -21,6 +21,7 @@ void UUDResourceItemViewModel::Refresh()
 	SetNameText(name);
 	SetAmountValue(Content.Amount);
 	SetIdValue(Content.Id);
+	SetIcon(FUDMaterialBinding(Model->GetIcon(Content.Id)));
 }
 
 #undef LOCTEXT_NAMESPACE
@@ -58,4 +59,14 @@ void UUDResourceItemViewModel::SetIdValue(int32 newIdValue)
 int32 UUDResourceItemViewModel::GetIdValue() const
 {
 	return IdValue;
+}
+
+void UUDResourceItemViewModel::SetIcon(FUDMaterialBinding newIcon)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(Icon, newIcon);
+}
+
+FUDMaterialBinding UUDResourceItemViewModel::GetIcon() const
+{
+	return Icon;
 }

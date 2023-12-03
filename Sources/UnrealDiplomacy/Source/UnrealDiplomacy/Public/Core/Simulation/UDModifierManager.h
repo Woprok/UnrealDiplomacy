@@ -19,6 +19,7 @@ class UUDFactionState;
  * it will not be assignable.
  *
  * Provides basic filters to retrieve information about modifiers.
+ * This is stateless and only keeps references to his childs, that are as well stateless.
  */
 UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDModifierManager : public UObject

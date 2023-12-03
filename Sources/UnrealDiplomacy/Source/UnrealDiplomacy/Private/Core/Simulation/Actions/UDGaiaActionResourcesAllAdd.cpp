@@ -44,7 +44,7 @@ void UUDGaiaActionResourcesAllAdd::Revert(const FUDActionData& action, TObjectPt
 	}
 }
 
-void UUDGaiaActionResourcesAllAdd::SetResourceManager(TObjectPtr<UUDResourceManager> resourceManager)
+void UUDGaiaActionResourcesAllAdd::SetResourceManager(TWeakObjectPtr<UUDResourceManager> resourceManager)
 {
 	ResourceManager = resourceManager;
 }

@@ -2,6 +2,7 @@
 
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Core/UDGlobalData.h"
+#include "Core/UDGameInstance.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDModelStructs.h"
 #include "Core/Simulation/UDActionManager.h"
@@ -45,20 +46,14 @@ bool UUDActionAdministrator::IsOverseeingStatePresent()
 	return IsValid(State);
 }
 
-TObjectPtr<UUDActionManager> UUDActionAdministrator::GetActionManager()
+TWeakObjectPtr<UUDActionManager> UUDActionAdministrator::GetActionManager()
 {
-	if (ActionManager == nullptr)
-	{
-		InitializeActionManager();
-	}
 	return ActionManager;
 }
 
-void UUDActionAdministrator::InitializeActionManager()
+void UUDActionAdministrator::SetActionManager(TWeakObjectPtr<UUDActionManager> actionManager)
 {
-	UE_LOG(LogTemp, Log, TEXT("UUDActionAdministrator: Creating manager for referencing Actions."));
-	ActionManager = NewObject<UUDActionManager>(this);
-	ActionManager->Initialize();
+	ActionManager = actionManager;
 }
 
 FUDActionData UUDActionAdministrator::GetAction(int32 actionId)
@@ -378,6 +373,11 @@ TArray<FUDResourceInfo> UUDActionAdministrator::GetLocalFactionResourceList()
 	}
 
 	return resources;
+}
+
+UMaterialInterface* UUDActionAdministrator::GetIcon(int32 resourceId)
+{
+	return ActionManager->GetResourceManager()->GetIcon(resourceId);
 }
 
 TArray<FUDResourceMinimalInfo> UUDActionAdministrator::GetResourceItemList()

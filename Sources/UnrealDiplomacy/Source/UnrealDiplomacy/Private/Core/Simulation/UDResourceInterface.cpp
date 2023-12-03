@@ -19,7 +19,6 @@ FUDResourcePresentation IUDResourceInterface::GetPresentation() const
 			UD_RESOURCE_TAG_INVALID,
 		}
 	);
-
 	return presentation;
 }
 #undef LOCTEXT_NAMESPACE
@@ -47,4 +46,9 @@ int32 IUDResourceInterface::GetTileStartingAmount() const
 int32 IUDResourceInterface::GetTileWeight() const
 {
 	return 0;
+}
+
+UMaterialInterface* IUDResourceInterface::GetIcon() const
+{
+	return nullptr;
 }

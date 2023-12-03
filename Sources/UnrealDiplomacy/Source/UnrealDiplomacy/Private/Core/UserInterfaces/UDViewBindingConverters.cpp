@@ -2,6 +2,7 @@
 
 #include "Core/UserInterfaces/UDViewBindingConverters.h"
 #include "Components/SlateWrapperTypes.h"
+#include "Brushes/SlateImageBrush.h"
 
 ESlateVisibility UUDViewBindingConverters::BoolToVisible(bool InBool)
 {
@@ -71,7 +72,8 @@ bool UUDViewBindingConverters::ValueToNotBool(int32 InValue, int32 PrimaryValue)
 	return InValue != PrimaryValue;
 }
 
-UImage* UUDViewBindingConverters::IdToMaterial(int32 InId, FUDMaterialMap map)
+FSlateBrush UUDViewBindingConverters::MaterialToIcon(FUDMaterialBinding icon, float x, float y)
 {
-	return nullptr;
+	FSlateImageBrush brush(icon.Instance, FVector2f(x,y));
+	return brush;
 }

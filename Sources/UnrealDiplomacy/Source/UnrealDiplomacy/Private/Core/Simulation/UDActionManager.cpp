@@ -6,15 +6,26 @@
 #include "Core/Simulation/UDModifierManager.h"
 #include "Core/Simulation/UDResourceManager.h"
 #include "Core/UDGlobalData.h"
+#include "Core/UDGameInstance.h"
 // Actions
 #include "Core/Simulation/Actions/UDActionDatabase.h"
 
-TObjectPtr<UUDModifierManager> UUDActionManager::GetModifierManager()
+void UUDActionManager::SetModifierManager(TWeakObjectPtr<UUDModifierManager> manager)
+{
+	ModifierManager = manager;
+}
+
+void UUDActionManager::SetResourceManager(TWeakObjectPtr<UUDResourceManager> manager)
+{
+	ResourceManager = manager;
+}
+
+TWeakObjectPtr<UUDModifierManager> UUDActionManager::GetModifierManager()
 {
 	return ModifierManager;
 }
 
-TObjectPtr<UUDResourceManager> UUDActionManager::GetResourceManager()
+TWeakObjectPtr<UUDResourceManager> UUDActionManager::GetResourceManager()
 {
 	return ResourceManager;
 }
@@ -56,14 +67,10 @@ void UUDActionManager::Initialize()
 	IsInitialized = true;
 
 	WorldGenerator = NewObject<UUDWorldGenerator>(this);
-	ModifierManager = NewObject<UUDModifierManager>(this);
-	ResourceManager = NewObject<UUDResourceManager>(this);
-	ModifierManager->Initialize();
-	ResourceManager->Initialize();
+	WorldGenerator->SetResourceManager(ResourceManager);
 
 	RegisterCoreActions();
 	RegisterAdditionalActions();
-	WorldGenerator->SetResourceManager(ResourceManager);
 }
 
 void UUDActionManager::RegisterCoreActions()

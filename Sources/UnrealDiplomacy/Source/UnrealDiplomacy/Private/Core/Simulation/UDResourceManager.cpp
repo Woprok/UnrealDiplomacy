@@ -187,6 +187,11 @@ FUDResourcePresentation UUDResourceManager::GetSpecified(int32 resourceId)
 	return Resources[resourceId]->GetPresentation();
 }
 
+UMaterialInterface* UUDResourceManager::GetIcon(int32 resourceId)
+{
+	return Resources[resourceId]->GetIcon();
+}
+
 TArray<FUDResourcePresentation> UUDResourceManager::FilterByTag(const TArray<FUDResourcePresentation>& selection, int32 tag)
 {
 	TArray<FUDResourcePresentation> filtered = { };
