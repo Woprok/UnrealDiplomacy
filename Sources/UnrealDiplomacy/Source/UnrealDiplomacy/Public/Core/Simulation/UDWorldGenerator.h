@@ -12,7 +12,7 @@ class UUDTileState;
 class UUDResourceManager;
 
 /**
- * 
+ * Generates initial world.
  */
 UCLASS()
 class UNREALDIPLOMACY_API UUDWorldGenerator : public UObject
@@ -25,6 +25,7 @@ public:
 	 * Provided parameter is modified!
 	 */
 	void CreateAndDuplicate(TObjectPtr<UUDMapState> targetMapState);
+	/** Sets pointer to resource manager, so it can use resources in generation. */
 	virtual void SetResourceManager(TWeakObjectPtr<UUDResourceManager> resourceManager);
 protected:
 	/**
@@ -46,9 +47,7 @@ protected:
 	 * other then their location.
 	 */
 	void GenerateArray(int32 xSize, int32 ySize);
-	/**
-	 * Checks if last map is same as the new request.
-	 */
+	/** Checks if last map is same as the new request. */
 	bool IsNewMapRequested(TObjectPtr<UUDMapState> mapState);
 	/**
 	 * Holds generated information about the last generated map.

@@ -43,16 +43,6 @@ class UNREALDIPLOMACY_API AUDSquareTile : public AUDActor
 public:
 	AUDSquareTile();
 	/**
-	 * Position inside of the grid.
-	 */
-	UFUNCTION()
-	void SetTilePosition(FIntPoint tilePosition);
-	/**
-	 * Retrieves position of this tile inside of the grid.
-	 */
-	UFUNCTION(BlueprintCallable)
-	FIntPoint GetTilePosition();
-	/**
 	 * Called after notifying UI for any tile subscriber about tile being selected.
 	 */
 	UFUNCTION(BlueprintCallable)
@@ -68,16 +58,29 @@ public:
 	 */
 	TileSelectedDelegate Selected;
 public:
+	/** Position inside of the grid. */
+	UFUNCTION()
+	void SetTilePosition(FIntPoint tilePosition);
+	/** Retrieves position of this tile inside of the grid. */
+	UFUNCTION(BlueprintCallable)
+	FIntPoint GetTilePosition();
+	UFUNCTION()
+	int32 GetTileType();
+	UFUNCTION()
+	void SetTileType(int32 tileType);
+public:
 	/** 
 	 * Event when this actor is clicked by the mouse when using the clickable interface. 
 	 */
 	virtual void NotifyActorOnClicked(FKey ButtonPressed = EKeys::LeftMouseButton) override;
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Tile")
-	ESquareTileType TileType;
+	ESquareTileType TileInteractionType;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Tile")
 	TObjectPtr<UStaticMeshComponent> TileMesh;
 private:
 	UPROPERTY()
 	FIntPoint TilePosition;
+	UPROPERTY()
+	int32 TileType;
 };

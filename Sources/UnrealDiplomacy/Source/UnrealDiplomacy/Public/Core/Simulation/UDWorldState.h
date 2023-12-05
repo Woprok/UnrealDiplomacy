@@ -75,7 +75,7 @@ public:
 	/**
 	 * Creates new instance of the map state.
 	 */
-	static TObjectPtr<UUDMapState> CreateState(int32 mapSeed, int32 xSizeOfMap, int32 ySizeOfMap);
+	static TObjectPtr<UUDMapState> CreateState(int32 mapSeed, int32 xSizeOfMap, int32 ySizeOfMap, int32 requiredFactionSpace);
 	/**
 	 * Creates new instance of the map state based on existing one.
 	 * Used for copying map to a state.
@@ -97,21 +97,18 @@ public:
 	 */
 	UPROPERTY()
 	TArray<TObjectPtr<UUDTileState>> Tiles;
-	/**
-	 * Seed used by generator.
-	 */
+	/** Seed used by generator. */
 	UPROPERTY()
 	int32 MapSeed = 0;
-	/**
-	 * X size of Map (first in array).
-	 */
+	/** X size of Map (first in array). */
 	UPROPERTY()
 	int32 MapSizeOfX = 0;
-	/**
-	 * Y size of Map (second in array).
-	 */
+	/** Y size of Map (second in array). */
 	UPROPERTY()
 	int32 MapSizeOfY = 0;
+	/** Faction Count that is required by setup to be accomondable. */
+	UPROPERTY()
+	int32 RequiredFactionSpace = 0;
 };
 
 /**
@@ -299,7 +296,6 @@ public:
 	FString Name;
 	/**
 	 * Defines what kind of controller is responsible for this faction.
-	 * This is purely informative and has no gameplay consequencies.
 	 */
 	UPROPERTY()
 	EUDFactionController Controller;

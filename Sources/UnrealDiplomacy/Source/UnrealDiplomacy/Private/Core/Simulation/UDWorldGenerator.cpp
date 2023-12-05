@@ -5,8 +5,6 @@
 #include "Core/Simulation/UDWorldState.h"
 #include "Core/Simulation/UDResourceManager.h"
 #include "Core/Simulation/UDResourceInterface.h"
-//#include "Kismet/GameplayStatics.h"
-//#include "Core/UDGameInstance.h"
 
 void UUDWorldGenerator::CreateAndDuplicate(TObjectPtr<UUDMapState> targetMapState)
 {

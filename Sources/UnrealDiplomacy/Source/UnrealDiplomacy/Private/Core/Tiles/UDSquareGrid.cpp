@@ -11,6 +11,11 @@ void AUDSquareGrid::GenerateWorld()
 	Create(MapModel->GetMapState());
 }
 
+void AUDSquareGrid::UpdateWorld()
+{
+	Update(MapModel->GetMapState());
+}
+
 void AUDSquareGrid::SetAuthority(UUDActionAdministrator* model)
 {
 	MapModel = model;
@@ -34,15 +39,32 @@ void AUDSquareGrid::OnSynchronized()
 	else
 	{
 		UE_LOG(LogTemp, Log, TEXT("AUDSquareGrid: Map ready."));
-		if (Grid.Num() > 0)
+		if (GridMap.Num() > 0)
 		{
 			UE_LOG(LogTemp, Log, TEXT("AUDSquareGrid: Map updated."));
+			UpdateWorld();
 		}
 		else
 		{
 			UE_LOG(LogTemp, Log, TEXT("AUDSquareGrid: Map generated."));
 			GenerateWorld();
 		}
+	}
+}
+
+void AUDSquareGrid::Update(TObjectPtr<UUDMapState> state)
+{
+	for (TObjectPtr<UUDTileState> dataTile : state->Tiles)
+	{
+		if (dataTile->Type == GridMap[dataTile->Position]->GetTileType())
+		{
+			continue;
+		}
+		DeleteTile(dataTile);
+		// Spawn new tile.
+		CreateTile(dataTile);
+		// Invoke update.
+		GridMap[dataTile->Position]->OnUpdate();
 	}
 }
 
@@ -53,7 +75,7 @@ void AUDSquareGrid::Create(TObjectPtr<UUDMapState> state)
 		// Spawn new tile.
 		CreateTile(dataTile);
 		// Invoke update.
-		Grid.Last()->OnUpdate();
+		GridMap[dataTile->Position]->OnUpdate();
 	}
 }
 
@@ -62,14 +84,21 @@ void AUDSquareGrid::OnTileSelected(TObjectPtr<AUDSquareTile> tile)
 	UE_LOG(LogTemp, Log, TEXT("AUDSquareGrid: Selected[%d][%d]."), tile->GetTilePosition().X, tile->GetTilePosition().Y);
 }
 
+void AUDSquareGrid::DeleteTile(TObjectPtr<UUDTileState> dataTile)
+{
+	GridMap[dataTile->Position]->Destroy();
+	GridMap.Remove(dataTile->Position);
+}
+
 void AUDSquareGrid::CreateTile(TObjectPtr<UUDTileState> dataTile)
 {
 	FVector worldPosition = CalculateTileWorldPosition(dataTile->Position);
 	TSubclassOf<AUDSquareTile> tileClass = RetrieveTileType(dataTile);
 	TObjectPtr<AUDSquareTile> newWorldTile = GetWorld()->SpawnActor<AUDSquareTile>(tileClass, worldPosition, FRotator::ZeroRotator);
 	newWorldTile->SetTilePosition(dataTile->Position);
+	newWorldTile->SetTileType(dataTile->Type);
 	newWorldTile->Selected.BindUObject(this, &AUDSquareGrid::OnTileSelected);
-	Grid.Add(newWorldTile);
+	GridMap.Add(dataTile->Position, newWorldTile);
 }
 
 FVector AUDSquareGrid::CalculateTileWorldPosition(FIntPoint tilePosition)

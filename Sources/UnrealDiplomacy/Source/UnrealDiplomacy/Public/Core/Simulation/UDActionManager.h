@@ -10,6 +10,7 @@
 struct FUDActionPresentation;
 class IUDActionInterface;
 class UUDWorldGenerator;
+class UUDWorldFactionGenerator;
 class UUDModifierManager;
 class UUDResourceManager;
 
@@ -87,40 +88,35 @@ private:
 	TArray<FUDActionPresentation> FilterStartpoint = { };
 #pragma endregion
 protected:
-	/**
-	 * Registers all core actions.
-	 */
+	/** Registers all core actions. */
 	UFUNCTION()
 	void RegisterCoreActions();
-	/**
-	 * Registers all additional actions.
-	 */
-	UFUNCTION(BlueprintCallable)
-	virtual void RegisterAdditionalActions();
-	/**
-	 * Default method for registering multiple actions at once.
-	 */
+	/** Registers all blueprint actions. This takes precedence over the core. */
+	virtual void RegisterBlueprintActions();
+	/** Default method for registering multiple actions at once. */
 	UFUNCTION()
 	void RegisterActionList(TArray<TScriptInterface<IUDActionInterface>> actionList);
-	/**
-	 * Binds all shared objects to an action that is being registered.
-	 */
+	/** Binds all shared objects to an action that is being registered.  */
 	UFUNCTION()
 	void BindSharedToAction(TScriptInterface<IUDActionInterface> newAction);
-	/**
-	 * All actions registered with the manager.
-	 */
+	/** All actions registered with the manager. */
 	UPROPERTY()
 	TMap<int32, TScriptInterface<IUDActionInterface>> Actions;
 	/** World Generator shared by actions. */
 	UPROPERTY()
 	TObjectPtr<UUDWorldGenerator> WorldGenerator = nullptr;
+	/** World Faction Generator shared by actions. */
+	UPROPERTY()
+	TObjectPtr<UUDWorldFactionGenerator> WorldFactionGenerator = nullptr;
 	/** Modifier Manager shared by actions. */
 	UPROPERTY()
 	TWeakObjectPtr<UUDModifierManager> ModifierManager = nullptr;
 	/** Resource Manager shared by actions. */
 	UPROPERTY()
 	TWeakObjectPtr<UUDResourceManager> ResourceManager = nullptr;
+	/** Enables blueprint defined and overrides for registration. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actions")
+	TArray<TSubclassOf<UObject>> BlueprintActions;
 private:
 	/**
 	 * Determines if this was initialized and can be used.

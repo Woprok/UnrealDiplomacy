@@ -105,30 +105,22 @@ private:
 	TArray<FUDModifierPresentation> FilterStartpoint = { };
 #pragma endregion
 protected:
-	/**
-	 * Registers all core modifiers.
-	 */
+	/** Registers all core modifiers. */
 	UFUNCTION()
 	void RegisterCoreModifiers();
-	/**
-	 * Registers all additional modifiers.
-	 */
-	UFUNCTION(BlueprintCallable)
-	virtual void RegisterAdditionalModifiers();
-	/**
-	 * Default method for registering multiple modifiers at once.
-	 */
+	/** Registers all blueprint modifiers. This takes precedence over the core. */
+	void RegisterBlueprintModifiers();
+	/** Default method for registering multiple modifiers at once. */
 	UFUNCTION()
 	void RegisterModifierList(TArray<TScriptInterface<IUDModifierInterface>> modifierList);
-	/**
-	 * All modifiers registered with the manager.
-	 */
+	/** All modifiers registered with the manager. */
 	UPROPERTY()
 	TMap<int32, TScriptInterface<IUDModifierInterface>> Modifiers;
+	/** Enables blueprint defined and overrides for registration. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Modifiers")
+	TArray<TSubclassOf<UObject>> BlueprintModifiers;
 private:
-	/**
-	 * Determines if this was initialized and can be used.
-	 */
+	/** Determines if this was initialized and can be used. */
 	UPROPERTY()
 	bool IsInitialized = false;
 };

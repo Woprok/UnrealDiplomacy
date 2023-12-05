@@ -41,8 +41,8 @@ void UUDModifierManager::Initialize()
 	check(!IsInitialized);
 	IsInitialized = true;
 
+	RegisterBlueprintModifiers();
 	RegisterCoreModifiers();
-	RegisterAdditionalModifiers();
 }
 
 void UUDModifierManager::RegisterCoreModifiers()
@@ -52,10 +52,41 @@ void UUDModifierManager::RegisterCoreModifiers()
 	RegisterModifierList(UUDModifierDatabase::GetFactionModifiers(this));
 }
 
-void UUDModifierManager::RegisterAdditionalModifiers()
+void UUDModifierManager::RegisterBlueprintModifiers()
 {
-	// This is only for inherited managers.
-	return;
+	TArray<TScriptInterface<IUDModifierInterface>> newModifiers = { };
+
+	for (const auto& modifierType : BlueprintModifiers)
+	{
+		// Check if this is actually a valid item.
+		if (!modifierType)
+		{
+			UE_LOG(LogTemp, Log, TEXT("UUDModifierManager: Failed to initialize modifier type. Probably empty array item."));
+			continue;
+		}
+		// Create an instance of the class
+		UObject* newModifierObject = NewObject<UObject>(this, modifierType);
+
+		if (!newModifierObject)
+		{
+			UE_LOG(LogTemp, Log, TEXT("UUDModifierManager: Failed to initialize modifier type instance."));
+			continue;
+		}
+
+		// Check if the object implements the desired interface
+		if (!newModifierObject->GetClass()->ImplementsInterface(UUDModifierInterface::StaticClass()))
+		{
+			UE_LOG(LogTemp, Log, TEXT("UUDModifierManager: Incorrect modifier type."));
+			continue;
+		}
+		// Cast to the interface
+		TScriptInterface<IUDModifierInterface> ResourceInterface;
+		ResourceInterface.SetObject(newModifierObject);
+		ResourceInterface.SetInterface(Cast<IUDModifierInterface>(newModifierObject));
+		newModifiers.Add(ResourceInterface);
+	}
+
+	RegisterModifierList(newModifiers);
 }
 
 void UUDModifierManager::RegisterModifierList(TArray<TScriptInterface<IUDModifierInterface>> modifierList)

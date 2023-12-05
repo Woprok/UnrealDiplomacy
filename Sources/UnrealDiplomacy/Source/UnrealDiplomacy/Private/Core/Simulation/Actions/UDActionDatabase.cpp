@@ -91,6 +91,7 @@
 #include "Core/Simulation/Actions/UDSystemActionTurnEnd.h"
 #include "Core/Simulation/Actions/UDSystemActionRegentChange.h"
 #include "Core/Simulation/Actions/UDSystemActionWorldCreate.h"
+#include "Core/Simulation/Actions/UDSystemActionWorldSpawnFactions.h"
 #include "Core/Simulation/Actions/UDSystemActionFactionTakeover.h"
 #include "Core/Simulation/Actions/UDSystemActionTurnFinish.h"
 #include "Core/Simulation/Actions/UDSystemActionIntermezzoStart.h"
@@ -116,6 +117,7 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetSystemActions
 		NewObject<UUDSystemActionTurnEnd>(parent),
 		NewObject<UUDSystemActionRegentChange>(parent),
 		NewObject<UUDSystemActionWorldCreate>(parent),
+		NewObject<UUDSystemActionWorldSpawnFactions>(parent),
 		NewObject<UUDSystemActionFactionTakeover>(parent),
 		NewObject<UUDSystemActionTurnFinish>(parent),
 		NewObject<UUDSystemActionIntermezzoStart>(parent),

@@ -45,6 +45,9 @@ public:
 	/** Primary call for creating the world, once Authority is defined. */
 	UFUNCTION(BlueprintCallable)
 	void GenerateWorld();
+	/** Updates the world, to reflect current state. */
+	UFUNCTION(BlueprintCallable)
+	void UpdateWorld();
 	/** Reference to model, used for retrieving all important action. */
 	UFUNCTION(BlueprintCallable)
 	void SetAuthority(UUDActionAdministrator* model);
@@ -56,11 +59,14 @@ public:
 protected:
 	/** Creates map from the map state. */
 	void Create(TObjectPtr<UUDMapState> state);
+	/** Creates map from the map state. */
+	void Update(TObjectPtr<UUDMapState> state);
 	/** Invoked by tiles, when they are selected by the user. */
 	virtual void OnTileSelected(TObjectPtr<AUDSquareTile> tile);
 	UPROPERTY()
 	TObjectPtr<UUDActionAdministrator> MapModel = nullptr;
 private:
+	void DeleteTile(TObjectPtr<UUDTileState> dataTile);
 	void CreateTile(TObjectPtr<UUDTileState> dataTile);
 	FVector CalculateTileWorldPosition(FIntPoint tilePosition);
 	TSubclassOf<AUDSquareTile> RetrieveTileType(TObjectPtr<UUDTileState> tileClass);
@@ -81,7 +87,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SquareGrid|Config")
 	TSubclassOf<AUDSquareTile> FallbackTileType;
 private:
-	/** Current list of tiles present in the world. */
+	/** Current map of tiles present in the world. */
 	UPROPERTY()
-	TArray<TWeakObjectPtr<AUDSquareTile>> Grid;
+	TMap<FIntPoint, TWeakObjectPtr<AUDSquareTile>> GridMap;
 };

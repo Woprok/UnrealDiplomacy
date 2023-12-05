@@ -22,6 +22,16 @@ FIntPoint AUDSquareTile::GetTilePosition()
 	return TilePosition;
 }
 
+int32 AUDSquareTile::GetTileType()
+{
+	return TileType;
+}
+
+void AUDSquareTile::SetTileType(int32 tileType)
+{
+	TileType = tileType;
+}
+
 void AUDSquareTile::NotifyTileSelected()
 {
 	Selected.ExecuteIfBound(this);

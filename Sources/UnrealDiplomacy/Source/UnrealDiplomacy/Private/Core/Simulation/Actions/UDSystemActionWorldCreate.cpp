@@ -10,7 +10,7 @@ void UUDSystemActionWorldCreate::Execute(const FUDActionData& action, TObjectPtr
 {
 	IUDActionInterface::Execute(action, world);
 	// Create new state and call generator to fill it with new world action.
-	world->Map = UUDMapState::CreateState(world->Settings.MapSeed, world->Settings.MapWidth, world->Settings.MapHeight);
+	world->Map = UUDMapState::CreateState(world->Settings.MapSeed, world->Settings.MapWidth, world->Settings.MapHeight, world->Factions.Num());
 	// Generated data are dumped into the provided state by the world generator automatically.
 	WorldGenerator->CreateAndDuplicate(world->Map);
 }

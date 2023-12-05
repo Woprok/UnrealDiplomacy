@@ -11,6 +11,7 @@ struct FUDActionData;
 struct FUDActionPresentation;
 class UUDWorldState;
 class UUDWorldGenerator;
+class UUDWorldFactionGenerator;
 class UUDModifierManager;
 class UUDResourceManager;
 
@@ -186,17 +187,13 @@ public:
 	 * Enables to backup additional data to the provided action action.
 	 */
 	virtual void Backup(FUDActionData& action, TObjectPtr<UUDWorldState> world);
-	/**
-	 * Shared world generator that can be used by action.
-	 */
+	/** Shared world generator that can be used by action. */
 	virtual void SetWorldGenerator(TWeakObjectPtr<UUDWorldGenerator> generator);
-	/**
-	 * Shared modifier manager that can be used by action.
-	 */
+	/** Shared world faction generator that can be used by action. */
+	virtual void SetWorldFactionGenerator(TWeakObjectPtr<UUDWorldFactionGenerator> generator);
+	/** Shared modifier manager that can be used by action. */
 	virtual void SetModifierManager(TWeakObjectPtr<UUDModifierManager> manager);
-	/**
-	 * Shared resource manager that can be used by action.
-	 */
+	/** Shared resource manager that can be used by action. */
 	virtual void SetResourceManager(TWeakObjectPtr<UUDResourceManager> manager);
 	/**
 	 * Formatted version of the action.

@@ -31,12 +31,21 @@ TObjectPtr<UUDTileState> UUDTileState::Duplicate(TObjectPtr<UUDTileState> existi
 	return MoveTempIfPossible(newState);
 }
 
-TObjectPtr<UUDMapState> UUDMapState::CreateState(int32 seed, int32 sizeOfX, int32 sizeOfY)
+TObjectPtr<UUDMapState> UUDMapState::CreateState(int32 seed, int32 sizeOfX, int32 sizeOfY, int32 requiredFactionSpace)
 {
 	TObjectPtr<UUDMapState> newState = NewObject<UUDMapState>();
 	newState->MapSeed = seed;
 	newState->MapSizeOfX = sizeOfX;
 	newState->MapSizeOfY = sizeOfY;
+	newState->RequiredFactionSpace = requiredFactionSpace;
+
+	// TODO remove this hack
+	while (requiredFactionSpace > newState->MapSizeOfX * newState->MapSizeOfY)
+	{
+		newState->MapSizeOfX++;
+		newState->MapSizeOfY++;
+	}
+
 	return newState;
 }
 

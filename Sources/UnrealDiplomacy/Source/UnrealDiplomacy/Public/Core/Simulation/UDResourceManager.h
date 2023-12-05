@@ -85,7 +85,6 @@ protected:
 	UFUNCTION()
 	void RegisterCoreResources();
 	/** Registers all blueprint resources. This takes precedence over the core. */
-	UFUNCTION(BlueprintCallable)
 	void RegisterBlueprintResources();
 	/** Default method for registering multiple resources at once.  */
 	UFUNCTION()
@@ -93,6 +92,7 @@ protected:
 	/** All resources registered with the manager. */
 	UPROPERTY()
 	TMap<int32, TScriptInterface<IUDResourceInterface>> Resources;
+	/** Enables blueprint defined and overrides for registration. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Resources")
 	TArray<TSubclassOf<UObject>> BlueprintResources;
 private:

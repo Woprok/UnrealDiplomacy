@@ -5,6 +5,7 @@
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDWorldState.h"
 #include "Core/Simulation/UDWorldGenerator.h"
+#include "Core/Simulation/UDWorldFactionGenerator.h"
 #include "Core/Simulation/UDModifierManager.h"
 #include "Core/Simulation/UDResourceManager.h"
 
@@ -65,6 +66,11 @@ void IUDActionInterface::Backup(FUDActionData& action, TObjectPtr<UUDWorldState>
 }
 
 void IUDActionInterface::SetWorldGenerator(TWeakObjectPtr<UUDWorldGenerator> generator)
+{
+	return;
+}
+
+void IUDActionInterface::SetWorldFactionGenerator(TWeakObjectPtr<UUDWorldFactionGenerator> generator)
 {
 	return;
 }

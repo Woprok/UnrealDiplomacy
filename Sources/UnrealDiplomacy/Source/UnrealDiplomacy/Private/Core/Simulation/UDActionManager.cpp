@@ -3,6 +3,7 @@
 #include "Core/Simulation/UDActionManager.h"
 #include "Core/Simulation/UDActionInterface.h"
 #include "Core/Simulation/UDWorldGenerator.h"
+#include "Core/Simulation/UDWorldFactionGenerator.h"
 #include "Core/Simulation/UDModifierManager.h"
 #include "Core/Simulation/UDResourceManager.h"
 #include "Core/UDGlobalData.h"
@@ -69,8 +70,11 @@ void UUDActionManager::Initialize()
 	WorldGenerator = NewObject<UUDWorldGenerator>(this);
 	WorldGenerator->SetResourceManager(ResourceManager);
 
+	WorldFactionGenerator = NewObject<UUDWorldFactionGenerator>(this);
+	WorldFactionGenerator->SetResourceManager(ResourceManager);
+
+	RegisterBlueprintActions();
 	RegisterCoreActions();
-	RegisterAdditionalActions();
 }
 
 void UUDActionManager::RegisterCoreActions()
@@ -84,10 +88,41 @@ void UUDActionManager::RegisterCoreActions()
 	RegisterActionList(UUDActionDatabase::GetSettingActions(this));
 }
 
-void UUDActionManager::RegisterAdditionalActions()
+void UUDActionManager::RegisterBlueprintActions()
 {
-	// This is only for inherited managers.
-	return;
+	TArray<TScriptInterface<IUDActionInterface>> newActions = { };
+
+	for (const auto& actionType : BlueprintActions)
+	{
+		// Check if this is actually a valid item.
+		if (!actionType)
+		{
+			UE_LOG(LogTemp, Log, TEXT("UUDResourceManager: Failed to initialize action type. Probably empty array item."));
+			continue;
+		}
+		// Create an instance of the class
+		UObject* newActionObject = NewObject<UObject>(this, actionType);
+
+		if (!newActionObject)
+		{
+			UE_LOG(LogTemp, Log, TEXT("UUDResourceManager: Failed to initialize action type instance."));
+			continue;
+		}
+
+		// Check if the object implements the desired interface
+		if (!newActionObject->GetClass()->ImplementsInterface(UUDActionInterface::StaticClass()))
+		{
+			UE_LOG(LogTemp, Log, TEXT("UUDResourceManager: Incorrect action type."));
+			continue;
+		}
+		// Cast to the interface
+		TScriptInterface<IUDActionInterface> ResourceInterface;
+		ResourceInterface.SetObject(newActionObject);
+		ResourceInterface.SetInterface(Cast<IUDActionInterface>(newActionObject));
+		newActions.Add(ResourceInterface);
+	}
+
+	RegisterActionList(newActions);
 }
 
 void UUDActionManager::RegisterActionList(TArray<TScriptInterface<IUDActionInterface>> actionList)
@@ -112,6 +147,7 @@ void UUDActionManager::RegisterActionList(TArray<TScriptInterface<IUDActionInter
 void UUDActionManager::BindSharedToAction(TScriptInterface<IUDActionInterface> newAction)
 {
 	newAction->SetWorldGenerator(WorldGenerator);
+	newAction->SetWorldFactionGenerator(WorldFactionGenerator);
 	newAction->SetModifierManager(ModifierManager);
 	newAction->SetResourceManager(ResourceManager);
 }

@@ -4,6 +4,7 @@
 #include "Core/UDGlobalData.h"
 #include "Core/UDGameInstance.h"
 #include "Core/Simulation/Actions/UDSystemActionWorldCreate.h"
+#include "Core/Simulation/Actions/UDSystemActionWorldSpawnFactions.h"
 #include "Core/Simulation/Actions/UDSystemActionGameStart.h"
 #include "Core/Simulation/Actions/UDSystemActionLog.h"
 #include "Core/Simulation/Actions/UDSystemActionPlayerRemove.h"
@@ -160,12 +161,16 @@ void AUDSkirmishGameMode::OnStartGameCommand()
 	// Sequence:
 	// - Create AI players
 	// - Create Map
+	// - Spawn Factions on the Map
 	// - Start Game
 	MatchState = EUDMatchState::Match;
 	CreateAiPlayers(GetWorldSimulation()->GetDesiredAiCount());
 
 	FUDActionData mapGen(UUDSystemActionWorldCreate::ActionTypeId, UUDGlobalData::GaiaFactionId);
 	GetWorldSimulation()->CheckAndExecuteAction(mapGen);
+
+	FUDActionData mapFactionSpawn(UUDSystemActionWorldSpawnFactions::ActionTypeId, UUDGlobalData::GaiaFactionId);
+	GetWorldSimulation()->CheckAndExecuteAction(mapFactionSpawn);
 
 	FUDActionData startGame(UUDSystemActionGameStart::ActionTypeId, UUDGlobalData::GaiaFactionId);
 	GetWorldSimulation()->CheckAndExecuteAction(startGame);
