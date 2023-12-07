@@ -35,6 +35,7 @@ void AUDSkirmishPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 		enhancedInputComponent->BindAction(RotateAction, ETriggerEvent::Triggered, this, &AUDSkirmishPawn::CameraRotateRight);
 		enhancedInputComponent->BindAction(RotateDragAction, ETriggerEvent::Triggered, this, &AUDSkirmishPawn::CameraRotateDrag);
 		enhancedInputComponent->BindAction(RotateEnableAction, ETriggerEvent::Completed, this, &AUDSkirmishPawn::CameraEnableRotate);
+		enhancedInputComponent->BindAction(CameraResetAction, ETriggerEvent::Completed, this, &AUDSkirmishPawn::CameraReset);
 	}
 }
 
@@ -58,10 +59,9 @@ void AUDSkirmishPawn::BeginPlay()
 	}
 	subsystem->AddMappingContext(CameraMappingContext, CameraMappingPriority);
 
-	TargetLocation = GetActorLocation();
-	TargetZoom = DefaultZoom;
-	const FRotator Rotation = SpringArmComponent->GetRelativeRotation();
-	TargetRotation = FRotator(Rotation.Pitch + DefaultPitch, Rotation.Yaw, 0.0f);
+	DefaultLocation = GetActorLocation();
+	DefaultRotation = SpringArmComponent->GetRelativeRotation();
+	CameraResetDefaultSettings();
 }
 
 void AUDSkirmishPawn::Tick(float DeltaTime)
@@ -156,6 +156,20 @@ void AUDSkirmishPawn::CameraRotateDrag(const FInputActionValue& value)
 void AUDSkirmishPawn::CameraEnableRotate(const FInputActionValue& value)
 {
 	CanRotate = !CanRotate;
+}
+
+void AUDSkirmishPawn::CameraReset(const FInputActionValue& value)
+{
+	CameraResetDefaultSettings();
+}
+
+void AUDSkirmishPawn::CameraResetDefaultSettings()
+{
+	TargetLocation = DefaultLocation;
+	TargetZoom = DefaultZoom;
+	const FRotator Rotation = DefaultRotation;
+	TargetRotation = FRotator(Rotation.Pitch + DefaultPitch, Rotation.Yaw, 0.0f);
+	CanRotate = true;
 }
 
 void AUDSkirmishPawn::CameraBounds()

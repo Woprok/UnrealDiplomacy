@@ -61,7 +61,7 @@ public:
 	/**
 	 * Defines Session Search Paramters that will be used for next session search.
 	 */
-	void CreateSearchSettings(int32 maxSearchResults = 20, bool isLANQuery = true);
+	void CreateSearchSettings(bool isLANQuery = true, int32 maxSearchResults = 20);
 	/**
 	 * Creates new session with specified name and settings specified by last CreateSettings.
 	 */

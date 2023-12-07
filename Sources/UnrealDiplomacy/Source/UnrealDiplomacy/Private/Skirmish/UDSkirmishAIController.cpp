@@ -33,9 +33,14 @@ void AUDSkirmishAIController::ProcessInTurnPlay()
 
 	const auto res = GetAdministrator()->GetLocalFactionResourceList();
 	const auto throne = GetAdministrator()->GetThroneInfo();
-	
+	TMap<int32, FUDResourceInfo> resources = { };
+	for (const auto& t_res : res)
+	{
+		resources.Add(t_res.Id, t_res);
+	}
+
 	// Try taking the throne or support your favorite if someone claimed it.
-	if (throne.State == EUDThroneState::Empty && res[UUDGameResourceReputation::ResourceId].Amount >= 500)
+	if (throne.State == EUDThroneState::Empty && resources[UUDGameResourceReputation::ResourceId].Amount >= 500)
 	{
 		MakeAction(UUDGameActionThroneUsurp::ActionTypeId);
 	}
@@ -45,10 +50,10 @@ void AUDSkirmishAIController::ProcessInTurnPlay()
 	}
 
 	// Try sharing the wealth...
-	if (res[UUDGameResourceGold::ResourceId].Amount >= 1000)
+	if (resources[UUDGameResourceGold::ResourceId].Amount >= 1000)
 	{
 		TArray<int32> smallGoldGift = { FavoriteFaction,
-			UUDGameResourceGold::ResourceId, res[UUDGameResourceGold::ResourceId].Amount / 10
+			UUDGameResourceGold::ResourceId, resources[UUDGameResourceGold::ResourceId].Amount / 10
 		};
 		MakeAction(UUDGameActionGift::ActionTypeId, smallGoldGift);
 	}

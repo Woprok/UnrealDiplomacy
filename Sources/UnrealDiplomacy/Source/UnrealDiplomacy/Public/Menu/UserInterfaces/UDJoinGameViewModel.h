@@ -44,6 +44,10 @@ public:
 	FText SearchText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FUDViewModelList ServerItemList;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText IsLANText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	ECheckBoxState IsLANValue;
 public:
 	virtual void Setup() override;
 	virtual void Refresh() override;
@@ -74,6 +78,10 @@ private:
 	FText GetSearchText() const;
 	void SetServerItemList(FUDViewModelList newServerItemList);
 	FUDViewModelList GetServerItemList() const;
+	void SetIsLANText(FText newIsLANText);
+	FText GetIsLANText() const;
+	void SetIsLANValue(ECheckBoxState newIsLANValue);
+	ECheckBoxState GetIsLANValue() const;
 private:
 	// Fields
 	FName ViewModelCollectionName = TEXT("JoinServerItemCollection");

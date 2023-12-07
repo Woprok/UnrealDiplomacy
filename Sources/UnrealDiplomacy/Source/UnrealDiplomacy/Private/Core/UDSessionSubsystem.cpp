@@ -173,7 +173,7 @@ bool UUDSessionSubsystem::IsSessionInterfaceValid(IOnlineSessionPtr& obtainedSes
 	return true;
 }
 
-void UUDSessionSubsystem::CreateSearchSettings(int32 maxSearchResults, bool isLANQuery)
+void UUDSessionSubsystem::CreateSearchSettings(bool isLANQuery, int32 maxSearchResults)
 {
 	CurrentSessionSearch = MakeShareable(new FOnlineSessionSearch());
 	CurrentSessionSearch->MaxSearchResults = maxSearchResults;

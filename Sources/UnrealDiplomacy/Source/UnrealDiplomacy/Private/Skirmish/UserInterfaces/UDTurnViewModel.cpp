@@ -40,7 +40,7 @@ void UUDTurnViewModel::Setup()
 	SetFinishTurnText(finishTurn);
 	FText finishTurnToolTip = ConstructFinishTurnToolTip();
 	SetFinishTurnToolTipText(finishTurnToolTip);
-	FText turn = FText::Format(LOCTEXT("Turn", "Turn {0}"), 0);
+	FText turn = FText::Format(LOCTEXT("Turn", "Turn {0} / {1}"), 0, 0);
 	SetTurnText(turn);
 	SetIsRegent(false);
 	SetIsFinished(true);
@@ -71,7 +71,7 @@ void UUDTurnViewModel::UpdateTurnPresentation()
 
 	FText remaining = FText::Format(LOCTEXT("Turn", "Waiting {0} / {1}"), info.CurrentFinished, info.MaximumFinished);
 	SetRemainingText(remaining);
-	FText turn = FText::Format(LOCTEXT("Turn", "Turn {0}"), info.Turn);
+	FText turn = FText::Format(LOCTEXT("Turn", "Turn {0} / {1}"), info.Turn, 12);
 	SetTurnText(turn);
 	SetIsFinished(info.IsFinished);
 }

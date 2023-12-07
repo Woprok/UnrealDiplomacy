@@ -26,6 +26,8 @@ bool UUDWorldFactionGenerator::IsNewFactionSpawnRequested(TObjectPtr<UUDMapState
 
 void UUDWorldFactionGenerator::CreateFactionMap(TObjectPtr<UUDWorldState> worldState)
 {
+	// Remember core value.
+	Seed = worldState->Map->MapSeed;
 	// Store the count...
 	FactionCount = worldState->Map->RequiredFactionSpace;
 	// Store collections...

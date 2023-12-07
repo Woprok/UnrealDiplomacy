@@ -42,6 +42,8 @@ void UUDJoinGameViewModel::Setup()
 	FText pingHeader = FText(LOCTEXT("JoinGame", "Ping"));	
 	SetPingHeaderText(pingHeader);
 	SetSearchText(SessionCountToText(InUseViewModelCollection.Num()));
+	FText newIsLANText = FText(LOCTEXT("JoinGame", "Search LAN"));
+	SetIsLANText(newIsLANText);
 
 	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
 	sessions->OnFindSessionsCompleteEvent.AddUObject(this, &UUDJoinGameViewModel::OnSessionSearched);
@@ -96,7 +98,7 @@ void UUDJoinGameViewModel::RefreshList()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDJoinGameViewModel: RefreshList."));
 	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
-	sessions->CreateSearchSettings();
+	sessions->CreateSearchSettings(UUDApplicationConverters::FromCheckBoxState(GetIsLANValue()));
 	SetSearchText(SessionCountToText(SearchIndicator));
 	sessions->FindSessions();
 }
@@ -209,4 +211,24 @@ void UUDJoinGameViewModel::SetServerItemList(FUDViewModelList newServerItemList)
 FUDViewModelList UUDJoinGameViewModel::GetServerItemList() const
 {
 	return ServerItemList;
+}
+
+void UUDJoinGameViewModel::SetIsLANText(FText newIsLANText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(IsLANText, newIsLANText);
+}
+
+FText UUDJoinGameViewModel::GetIsLANText() const
+{
+	return IsLANText;
+}
+
+void UUDJoinGameViewModel::SetIsLANValue(ECheckBoxState newIsLANValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(IsLANValue, newIsLANValue);
+}
+
+ECheckBoxState UUDJoinGameViewModel::GetIsLANValue() const
+{
+	return IsLANValue;
 }

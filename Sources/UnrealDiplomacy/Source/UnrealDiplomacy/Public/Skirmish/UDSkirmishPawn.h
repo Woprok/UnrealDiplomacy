@@ -47,6 +47,9 @@ protected:
 	void CameraRotateDrag(const FInputActionValue& value);
 	void CameraEnableRotate(const FInputActionValue& value);
 	void CameraBounds();
+	/** ..restores default. */
+	void CameraReset(const FInputActionValue& value);
+	void CameraResetDefaultSettings();
 
 protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera Settings")
@@ -89,7 +92,8 @@ protected:
 	UInputAction* RotateDragAction;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera Input Settings")
 	UInputAction* RotateEnableAction;
-
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera Input Settings")
+	UInputAction* CameraResetAction;
 private:
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
 	USceneComponent* SceneComponent;
@@ -106,4 +110,8 @@ private:
 	float TargetZoom;
 	UPROPERTY()
 	bool CanRotate;
+	UPROPERTY()
+	FVector DefaultLocation;
+	UPROPERTY()
+	FRotator DefaultRotation;
 };

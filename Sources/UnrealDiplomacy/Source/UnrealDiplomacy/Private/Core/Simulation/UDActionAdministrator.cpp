@@ -428,7 +428,7 @@ bool UUDActionAdministrator::IsIntermezzo()
 
 bool UUDActionAdministrator::CanFinishTurn()
 {
-	return State->TurnData.TurnFinishedFactions.Contains(State->FactionPerspective);
+	return !State->TurnData.TurnFinishedFactions.Contains(State->FactionPerspective);
 }
 #pragma endregion
 
