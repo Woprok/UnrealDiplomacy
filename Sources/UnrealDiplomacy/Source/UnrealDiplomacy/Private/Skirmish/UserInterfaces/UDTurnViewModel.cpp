@@ -71,7 +71,7 @@ void UUDTurnViewModel::UpdateTurnPresentation()
 
 	FText remaining = FText::Format(LOCTEXT("Turn", "Waiting {0} / {1}"), info.CurrentFinished, info.MaximumFinished);
 	SetRemainingText(remaining);
-	FText turn = FText::Format(LOCTEXT("Turn", "Turn {0} / {1}"), info.Turn, 12);
+	FText turn = FText::Format(LOCTEXT("Turn", "Turn {0} / {1}"), info.Turn, info.MaxTurn);
 	SetTurnText(turn);
 	SetIsFinished(info.IsFinished);
 }

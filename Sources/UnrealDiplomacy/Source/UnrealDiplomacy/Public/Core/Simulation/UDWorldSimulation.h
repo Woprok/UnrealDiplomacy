@@ -16,6 +16,7 @@ struct FUDActionArray;
 class IUDControllerInterface;
 class IUDActionInterface;
 class UUDActionManager;
+class UUDSettingManager;
 class UUDWorldArbiter;
 class UUDWorldState;
 
@@ -40,7 +41,7 @@ public:
 	/**
 	 * Initialize all necessary fields for actions and simulation.
 	 */
-	void Initialize(TWeakObjectPtr<UUDActionManager> actionManager);
+	void Initialize(TWeakObjectPtr<UUDSettingManager> settingManager, TWeakObjectPtr<UUDActionManager> actionManager);
 #pragma region Assigns of controllers to specific state.
 public:
 	/**
@@ -132,6 +133,8 @@ private:
 	 */
 	UPROPERTY()
 	TWeakObjectPtr<UUDActionManager> ActionManager = nullptr;
+	UPROPERTY()
+	TWeakObjectPtr<UUDSettingManager> SettingManager = nullptr;
 #pragma endregion
 
 #pragma region Actions

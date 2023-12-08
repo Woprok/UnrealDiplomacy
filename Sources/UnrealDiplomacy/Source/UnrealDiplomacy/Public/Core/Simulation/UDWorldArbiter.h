@@ -10,15 +10,7 @@ struct FUDActionData;
 class UUDWorldState;
 class UUDModifierManager;
 class UUDResourceManager;
-
-USTRUCT(BlueprintType)
-struct UNREALDIPLOMACY_API FUDArbiterRuleset
-{
-	GENERATED_BODY()
-public:
-	UPROPERTY(BlueprintReadOnly)
-	int32 MaxTurnCount = 12;
-};
+class UUDSettingManager;
 
 /**
  * The only absolute authority over the execution flow.
@@ -37,6 +29,7 @@ public:
 	TArray<FUDActionData> EndGame();
 	void SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager);
 	void SetResourceManager(TWeakObjectPtr<UUDResourceManager> resourceManager);
+	void SetSettingManager(TWeakObjectPtr<UUDSettingManager> settingManager);
 protected:
 	void EvaluateTurnGameOverState(const TObjectPtr<UUDWorldState>& gaiaWorldState);
 	FUDActionData DetermineNewRuler();
@@ -45,10 +38,11 @@ protected:
 	TWeakObjectPtr<UUDModifierManager> ModifierManager = nullptr;
 	UPROPERTY()
 	TWeakObjectPtr<UUDResourceManager> ResourceManager = nullptr;
+	UPROPERTY()
+	TWeakObjectPtr<UUDSettingManager> SettingManager = nullptr;
 private:
 	bool GameReachedEnd = false;
 	bool CrownIsEmpty = false;
 	int32 CrownableRuler = 0;
-	FUDArbiterRuleset CurrentRuleSet = FUDArbiterRuleset();
 	int32 GetTotalSupport(const TObjectPtr<UUDWorldState>& state, int32 factionId);
 };

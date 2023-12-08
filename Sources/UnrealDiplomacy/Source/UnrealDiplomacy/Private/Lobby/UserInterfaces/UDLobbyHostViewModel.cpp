@@ -7,6 +7,8 @@
 #include "Core/Simulation/Actions/UDSettingActionMapWidthChange.h"
 #include "Core/Simulation/Actions/UDSettingActionMapHeightChange.h"
 #include "Core/Simulation/Actions/UDSettingActionStratagemPointsChange.h"
+#include "Core/UDGameInstance.h"
+#include "Core/UDSettingManager.h"
 #include "Core/UDSessionSubsystem.h"
 #include "Core/Simulation/UDActionData.h"
 
@@ -26,6 +28,10 @@ void UUDLobbyHostViewModel::Setup()
 	SetMapHeightText(mapHeight);
 	FText stratagemPoints = FText(LOCTEXT("LobbyHost", "Stratagem Points"));
 	SetStratagemPointsText(stratagemPoints);
+
+	int32 maxAiCount = UUDGameInstance::Get(GetWorld())->GetSettingManager()->MaxAiCount;
+	SetMaxAICountValue(maxAiCount);
+
 }
 
 void UUDLobbyHostViewModel::Refresh()
@@ -187,6 +193,16 @@ void UUDLobbyHostViewModel::SetAICountValue(float newAICountValue)
 float UUDLobbyHostViewModel::GetAICountValue() const
 {
 	return AICountValue;
+}
+
+void UUDLobbyHostViewModel::SetMaxAICountValue(float newMaxAICountValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(MaxAICountValue, newMaxAICountValue);
+}
+
+float UUDLobbyHostViewModel::GetMaxAICountValue() const
+{
+	return MaxAICountValue;
 }
 
 void UUDLobbyHostViewModel::SetMapSeedValue(float newMapSeedValue)

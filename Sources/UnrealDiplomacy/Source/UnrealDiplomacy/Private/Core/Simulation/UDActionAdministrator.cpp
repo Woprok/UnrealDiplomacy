@@ -5,6 +5,7 @@
 #include "Core/UDGameInstance.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDModelStructs.h"
+#include "Core/UDSettingManager.h"
 #include "Core/Simulation/UDActionManager.h"
 #include "Core/Simulation/UDWorldState.h"
 #include "Core/Simulation/UDModifierData.h"
@@ -51,8 +52,9 @@ TWeakObjectPtr<UUDActionManager> UUDActionAdministrator::GetActionManager()
 	return ActionManager;
 }
 
-void UUDActionAdministrator::SetActionManager(TWeakObjectPtr<UUDActionManager> actionManager)
+void UUDActionAdministrator::SetManagers(TWeakObjectPtr<UUDSettingManager> settingManager, TWeakObjectPtr<UUDActionManager> actionManager)
 {
+	SettingManager = settingManager;
 	ActionManager = actionManager;
 }
 
@@ -415,6 +417,7 @@ FUDRegencyTurnInfo UUDActionAdministrator::GetRegencyTurnInfo()
 	newInfo.IsRegent = regencyFaction == State->FactionPerspective;
 	newInfo.RegentFactionName = State->Factions[regencyFaction]->Name;
 	newInfo.Turn = State->TurnData.Turn;
+	newInfo.MaxTurn = SettingManager->MaxTurnCount;
 	newInfo.CurrentFinished = State->TurnData.TurnFinishedFactions.Num();
 	newInfo.MaximumFinished = State->TurnData.FactionTurnOrder.Num();
 	newInfo.IsFinished = State->TurnData.TurnFinishedFactions.Contains(State->FactionPerspective);

@@ -16,6 +16,7 @@
 #include "Core/Simulation/UDModifierData.h"
 #include "Core/Simulation/UDResourceManager.h"
 #include "Core/Simulation/UDModifierManager.h"
+#include "Core/UDSettingManager.h"
 #include "Core/Simulation/Resources/UDGameResourceReputation.h"
 
 bool UUDWorldArbiter::OnActionExecutionFinished(int32 actionType, const TObjectPtr<UUDWorldState>& gaiaWorldState)
@@ -75,7 +76,7 @@ int32 UUDWorldArbiter::GetTotalSupport(const TObjectPtr<UUDWorldState>& state, i
 void UUDWorldArbiter::EvaluateTurnGameOverState(const TObjectPtr<UUDWorldState>& gaiaWorldState)
 {
 	// Winner was found
-	if (gaiaWorldState->TurnData.Turn <= CurrentRuleSet.MaxTurnCount)
+	if (gaiaWorldState->TurnData.Turn <= SettingManager->MaxTurnCount)
 	{
 		return;
 	}
@@ -124,4 +125,9 @@ void UUDWorldArbiter::SetModifierManager(TWeakObjectPtr<UUDModifierManager> modi
 void UUDWorldArbiter::SetResourceManager(TWeakObjectPtr<UUDResourceManager> resourceManager)
 {
 	ResourceManager = resourceManager;
+}
+
+void UUDWorldArbiter::SetSettingManager(TWeakObjectPtr<UUDSettingManager> settingManager)
+{
+	SettingManager = settingManager;
 }

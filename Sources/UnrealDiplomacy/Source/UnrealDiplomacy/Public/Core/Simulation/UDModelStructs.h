@@ -166,6 +166,8 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	int32 Turn = 0;
 	UPROPERTY(BlueprintReadOnly)
+	int32 MaxTurn = 0;
+	UPROPERTY(BlueprintReadOnly)
 	int32 CurrentFinished = 0;
 	UPROPERTY(BlueprintReadOnly)
 	int32 MaximumFinished = 0;

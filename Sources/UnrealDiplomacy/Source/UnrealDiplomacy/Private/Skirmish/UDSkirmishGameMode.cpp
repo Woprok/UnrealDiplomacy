@@ -37,7 +37,9 @@ void AUDSkirmishGameMode::CreateWorldSimulation()
 {
 	InternalWorldSimulation = GetWorld()->SpawnActor<AUDWorldSimulation>();
 
-	GetWorldSimulation()->Initialize(UUDGameInstance::Get(GetWorld())->GetActionManager());
+	GetWorldSimulation()->Initialize(
+		UUDGameInstance::Get(GetWorld())->GetSettingManager(),
+		UUDGameInstance::Get(GetWorld())->GetActionManager());
 	RegisterAsListenerToWorldSimulation();
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Finalized initialization of UObjects and Actors for GameMode."));
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishGameMode: Setting up new Gaia player."));

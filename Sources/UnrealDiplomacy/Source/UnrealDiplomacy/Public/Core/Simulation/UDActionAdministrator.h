@@ -12,6 +12,7 @@ class IUDActionInterface;
 struct FUDActionPresentation;
 class UUDWorldState;
 class UUDMapState;
+class UUDSettingManager;
 class UUDActionManager;
 class UUDActionDatabase;
 
@@ -170,10 +171,12 @@ public:
 	/**
 	 * Initialize new instance for future use with proper action list used in game.
 	 */
-	void SetActionManager(TWeakObjectPtr<UUDActionManager> actionManager);
+	void SetManagers(TWeakObjectPtr<UUDSettingManager> settingManager, TWeakObjectPtr<UUDActionManager> actionManager);
 protected:
 	UPROPERTY()
 	TObjectPtr<UUDWorldState> State;
+	UPROPERTY()
+	TWeakObjectPtr<UUDSettingManager> SettingManager;
 	UPROPERTY()
 	TWeakObjectPtr<UUDActionManager> ActionManager;
 	/**

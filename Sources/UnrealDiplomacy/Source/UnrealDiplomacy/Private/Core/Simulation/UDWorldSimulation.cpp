@@ -7,6 +7,7 @@
 #include "Core/UDGlobalData.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDActionManager.h"
+#include "Core/UDSettingManager.h"
 #include "Core/Simulation/UDWorldArbiter.h"
 #include "Core/Simulation/UDWorldState.h"
 #include "Core/Simulation/UDWorldGenerator.h"
@@ -16,16 +17,18 @@
 #include "Core/Simulation/UDWorldState.h"
 #include "Core/Simulation/Actions/UDSystemActionPlayerAdd.h"
 
-void AUDWorldSimulation::Initialize(TWeakObjectPtr<UUDActionManager> actionManager)
+void AUDWorldSimulation::Initialize(TWeakObjectPtr<UUDSettingManager> settingManager, TWeakObjectPtr<UUDActionManager> actionManager)
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Initializing."));
 	NextUniqueFactionId = UUDGlobalData::FirstUseableFactionId;
 	NextUniqueActionId = UUDGlobalData::FirstUseableActionId;
 	ActionManager = actionManager;
+	SettingManager = settingManager;
 	
 	Arbiter = NewObject<UUDWorldArbiter>(this);
 	Arbiter->SetModifierManager(ActionManager->GetModifierManager());
 	Arbiter->SetResourceManager(ActionManager->GetResourceManager());
+	Arbiter->SetSettingManager(SettingManager);
 }
 
 #pragma region Assigns of controllers to specific state.

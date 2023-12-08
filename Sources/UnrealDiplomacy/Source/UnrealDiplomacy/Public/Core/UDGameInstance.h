@@ -12,6 +12,7 @@ struct FUDApplicationSettings;
 class UUDActionManager;
 class UUDModifierManager;
 class UUDResourceManager;
+class UUDSettingManager;
 
 /**
  * Persistent state per game instance.
@@ -75,12 +76,17 @@ public:
 	/** Change this if you want to use BP implementation of manager. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Managers")
 	TSubclassOf<UUDResourceManager> ResourceManagerType;
+	/** Change this if you want to use BP implementation of manager. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Managers")
+	TSubclassOf<UUDSettingManager> SettingManagerType;
 	/** Manager shared by application during the whole runtime. */
 	TWeakObjectPtr<UUDActionManager> GetActionManager();
 	/** Manager shared by application during the whole runtime. */
 	TWeakObjectPtr<UUDModifierManager> GetModifierManager();
 	/** Manager shared by application during the whole runtime. */
 	TWeakObjectPtr<UUDResourceManager> GetResourceManager();
+	/** Manager shared by application during the whole runtime. */
+	TWeakObjectPtr<UUDSettingManager> GetSettingManager();
 protected:
 	/** Manager shared by application during the whole runtime. */
 	UPROPERTY()
@@ -91,6 +97,9 @@ protected:
 	/** Manager shared by application during the whole runtime. */
 	UPROPERTY()
 	TObjectPtr<UUDResourceManager> ResourceManager = nullptr;
+	/** Manager shared by application during the whole runtime. */
+	UPROPERTY()
+	TObjectPtr<UUDSettingManager> SettingManager = nullptr;
 private:
 	TObjectPtr<UGameUserSettings> GetGameUserSettings();
 };

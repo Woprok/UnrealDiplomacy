@@ -209,7 +209,9 @@ void AUDSkirmishPlayerController::InitializeSimulation()
 		return;
 	}
 
-	InternalWorldSimulation->Initialize(UUDGameInstance::Get(GetWorld())->GetActionManager());
+	InternalWorldSimulation->Initialize(
+		UUDGameInstance::Get(GetWorld())->GetSettingManager(),
+		UUDGameInstance::Get(GetWorld())->GetActionManager());
 	InternalWorldSimulation->OnBroadcastActionAppliedDelegate.AddUObject(this, &AUDSkirmishPlayerController::OnWorldSimulationUpdated);
 	UE_LOG(LogTemp, Log, TEXT("AUDSkirmishPlayerController(%d): Initialized with temporary Id."), GetControllerUniqueId());
 }
@@ -217,7 +219,9 @@ void AUDSkirmishPlayerController::InitializeSimulation()
 void AUDSkirmishPlayerController::InitializeAdministrator()
 {
 	InternalPersonalAdministrator = NewObject<UUDActionAdministrator>();
-	InternalPersonalAdministrator->SetActionManager(UUDGameInstance::Get(GetWorld())->GetActionManager());
+	InternalPersonalAdministrator->SetManagers(
+		UUDGameInstance::Get(GetWorld())->GetSettingManager(),
+		UUDGameInstance::Get(GetWorld())->GetActionManager());
 	InternalPersonalAdministrator->OnUserActionRequestedDelegate.BindUObject(this, &AUDSkirmishPlayerController::OnUserActionRequested);
 	OnSynchronizationFinishedEvent.AddUniqueDynamic(InternalPersonalAdministrator, &UUDActionAdministrator::OnDataReloaded);
 	OnWorldSimulationUpdatedEvent.AddUniqueDynamic(InternalPersonalAdministrator, &UUDActionAdministrator::OnDataChanged);

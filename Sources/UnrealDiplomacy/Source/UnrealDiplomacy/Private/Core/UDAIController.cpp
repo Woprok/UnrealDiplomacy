@@ -105,7 +105,9 @@ void AUDAIController::SetSimulatedStateAccess(TObjectPtr<UUDWorldState> factionW
 void AUDAIController::InitializeAdministrator()
 {
 	ActionAdministrator = NewObject<UUDActionAdministrator>();
-	ActionAdministrator->SetActionManager(UUDGameInstance::Get(GetWorld())->GetActionManager());
+	ActionAdministrator->SetManagers(
+		UUDGameInstance::Get(GetWorld())->GetSettingManager(),
+		UUDGameInstance::Get(GetWorld())->GetActionManager());
 	UE_LOG(LogTemp, Log, TEXT("AUDAIController(%d): Initialized administrator."), GetControllerUniqueId());
 }
 

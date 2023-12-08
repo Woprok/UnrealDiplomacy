@@ -48,6 +48,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	float AICountValue;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	float MaxAICountValue;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	float MapSeedValue;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	float MapWidthValue;
@@ -78,6 +80,8 @@ private:
 
 	void SetAICountValue(float newAICountValue);
 	float GetAICountValue() const;
+	void SetMaxAICountValue(float newMaxAICountValue);
+	float GetMaxAICountValue() const;
 	void SetMapSeedValue(float newMapSeedValue);
 	float GetMapSeedValue() const;
 	void SetMapWidthValue(float newMapWidthValue);
