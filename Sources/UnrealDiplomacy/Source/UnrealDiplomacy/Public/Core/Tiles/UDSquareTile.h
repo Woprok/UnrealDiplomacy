@@ -47,11 +47,18 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable)
 	void NotifyTileSelected();
-	/**
-	 * Grid invoked event on the tile. Tile is responsible for visually updating itself.
-	 */
+	/** Grid invoked event on the tile. Tile is responsible for visually updating itself. */
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "Tile")
 	void OnUpdate();
+	/** Self invoked event on the tile. Called by SetTileOwner, can be invoked manually if required.... */
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "Tile")
+	void OnOwnerChanged();
+	/** Grid invoked event on the tile. Tile is responsible for visually updating itself. */
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "Tile")
+	void OnSelected();
+	/** Grid invoked event on the tile. Tile is responsible for visually updating itself. */
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "Tile")
+	void OnDeselected();
 	/**
 	 * Invoked when this tile is selected.
 	 * Grid is handling what it means to be selected.
@@ -68,6 +75,12 @@ public:
 	int32 GetTileType();
 	UFUNCTION()
 	void SetTileType(int32 tileType);
+	UFUNCTION()
+	int32 GetTileOwner();
+	UFUNCTION()
+	FLinearColor GetTileOwnerColor();
+	UFUNCTION()
+	void SetTileOwner(int32 tileOwner, FLinearColor ownerColor);
 public:
 	/** 
 	 * Event when this actor is clicked by the mouse when using the clickable interface. 
@@ -78,9 +91,13 @@ protected:
 	ESquareTileType TileInteractionType;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Tile")
 	TObjectPtr<UStaticMeshComponent> TileMesh;
-private:
-	UPROPERTY()
+protected:
+	UPROPERTY(BlueprintReadOnly, Category = "Tile")
 	FIntPoint TilePosition;
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, Category = "Tile")
 	int32 TileType;
+	UPROPERTY(BlueprintReadOnly, Category = "Tile")
+	int32 TileOwner;
+	UPROPERTY(BlueprintReadOnly, Category = "Tile")
+	FLinearColor OwnerColor;
 };

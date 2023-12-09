@@ -10,7 +10,7 @@
  * Primary purpose of these constants is to define invalid values to avoid
  * ambiquity of whatever something is present & correct or not present.
  */
-UCLASS(meta = (BlueprintThreadSafe))
+UCLASS(meta = (BlueprintThreadSafe, ScriptName = "UDGlobalData"))
 class UNREALDIPLOMACY_API UUDGlobalData : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
@@ -84,6 +84,12 @@ public:
 	static const FString ListenOption()
 	{
 		return TEXT("listen");
+	}
+	/** Shortcut for Gaia Id. */
+	UFUNCTION(BlueprintPure, meta = (DisplayName = "Get Gaia Faction Id", CompactNodeTitle = "GetGaiaFactionId", BlueprintAutocast), Category = "UDGlobalData")
+	static int32 GetGaiaFactionId()
+	{
+		return GaiaFactionId;
 	}
 };
 

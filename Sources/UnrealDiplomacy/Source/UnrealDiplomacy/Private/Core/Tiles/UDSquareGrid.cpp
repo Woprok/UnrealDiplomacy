@@ -5,6 +5,8 @@
 #include "Core/Simulation/UDWorldState.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Skirmish/UDSkirmishPlayerController.h"
+#include "Core/Simulation/UDModelStructs.h"
+#include "Core/UDGlobalData.h"
 
 void AUDSquareGrid::GenerateWorld()
 {
@@ -32,6 +34,7 @@ void AUDSquareGrid::OnUpdate(const FUDActionData& action)
 
 void AUDSquareGrid::OnSynchronized()
 {
+	UpdateColorMap();
 	if (!MapModel->IsMapStatePresent())
 	{
 		UE_LOG(LogTemp, Log, TEXT("AUDSquareGrid: Map not yet present."));
@@ -52,12 +55,32 @@ void AUDSquareGrid::OnSynchronized()
 	}
 }
 
+void AUDSquareGrid::UpdateColorMap()
+{
+	const auto mapFactions = MapModel->GetMapFactionList();
+	if (mapFactions.Num() != FactionColors.Num())
+	{
+		// Prepare
+		FactionColors.Empty(mapFactions.Num());
+		// This will work as long Id grows... in worst case everything will be one color...
+		for (const auto& faction : mapFactions)
+		{
+			FactionColors.Add(faction.Id, Colors[faction.Id % Colors.Num()]);
+		}
+	}
+}
+
 void AUDSquareGrid::Update(TObjectPtr<UUDMapState> state)
 {
 	for (TObjectPtr<UUDTileState> dataTile : state->Tiles)
 	{
 		if (dataTile->Type == GridMap[dataTile->Position]->GetTileType())
 		{
+			// If we are not switching tile, then we need to update it!
+			if (dataTile->OwnerUniqueId != GridMap[dataTile->Position]->GetTileOwner())
+			{
+				GridMap[dataTile->Position]->SetTileOwner(dataTile->OwnerUniqueId, FactionColors[dataTile->OwnerUniqueId]);
+			}
 			continue;
 		}
 		DeleteTile(dataTile);
@@ -79,9 +102,25 @@ void AUDSquareGrid::Create(TObjectPtr<UUDMapState> state)
 	}
 }
 
-void AUDSquareGrid::OnTileSelected(TObjectPtr<AUDSquareTile> tile)
+void AUDSquareGrid::OnTileSelected(TObjectPtr<AUDSquareTile> newSelectedtile)
 {
-	UE_LOG(LogTemp, Log, TEXT("AUDSquareGrid: Selected[%d][%d]."), tile->GetTilePosition().X, tile->GetTilePosition().Y);
+	// Just in case, something goes wrong...
+	if (!newSelectedtile)
+	{
+		return;
+	}
+	
+	UE_LOG(LogTemp, Log, TEXT("AUDSquareGrid: Selected[%d][%d]."), newSelectedtile->GetTilePosition().X, newSelectedtile->GetTilePosition().Y);
+
+	// If old is valid, we need to call deselect event.
+	if (LastSelectedTile.IsValid())
+	{
+		LastSelectedTile->OnDeselected();
+	}
+
+	// We can safely swap to new tile.
+	LastSelectedTile = newSelectedtile;
+	newSelectedtile->OnSelected();
 }
 
 void AUDSquareGrid::DeleteTile(TObjectPtr<UUDTileState> dataTile)
@@ -97,6 +136,7 @@ void AUDSquareGrid::CreateTile(TObjectPtr<UUDTileState> dataTile)
 	TObjectPtr<AUDSquareTile> newWorldTile = GetWorld()->SpawnActor<AUDSquareTile>(tileClass, worldPosition, FRotator::ZeroRotator);
 	newWorldTile->SetTilePosition(dataTile->Position);
 	newWorldTile->SetTileType(dataTile->Type);
+	newWorldTile->SetTileOwner(dataTile->OwnerUniqueId, FactionColors[dataTile->OwnerUniqueId]);
 	newWorldTile->Selected.BindUObject(this, &AUDSquareGrid::OnTileSelected);
 	GridMap.Add(dataTile->Position, newWorldTile);
 }

@@ -287,6 +287,8 @@ public:
 
 #pragma region Tile & Map Interaction
 public:
+	/** Provides list of all factions that can be on the map. */
+	TArray<FUDFactionMinimalInfo> GetMapFactionList();
 	/** Checks if map state is present and can be used. */
 	bool IsMapStatePresent();
 	/** Retrieves map. */

@@ -62,9 +62,11 @@ protected:
 	/** Creates map from the map state. */
 	void Update(TObjectPtr<UUDMapState> state);
 	/** Invoked by tiles, when they are selected by the user. */
-	virtual void OnTileSelected(TObjectPtr<AUDSquareTile> tile);
+	virtual void OnTileSelected(TObjectPtr<AUDSquareTile> newSelectedtile);
 	UPROPERTY()
 	TObjectPtr<UUDActionAdministrator> MapModel = nullptr;
+	/** Updates faction colors. */
+	void UpdateColorMap();
 private:
 	void DeleteTile(TObjectPtr<UUDTileState> dataTile);
 	void CreateTile(TObjectPtr<UUDTileState> dataTile);
@@ -90,4 +92,12 @@ private:
 	/** Current map of tiles present in the world. */
 	UPROPERTY()
 	TMap<FIntPoint, TWeakObjectPtr<AUDSquareTile>> GridMap;
+	/** Last selected tile, that should be updated on selection change. */
+	UPROPERTY()
+	TWeakObjectPtr<AUDSquareTile> LastSelectedTile;
+	/** Stores faction id to faction base color vector, primarily for handling colors. */
+	TMap<int32, FLinearColor> FactionColors = { };
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SquareGrid|Config")
+	TArray<FLinearColor> Colors = { FLinearColor(0.5,0.5,0.5,1.0) };
 };

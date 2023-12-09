@@ -493,6 +493,25 @@ int32 UUDActionAdministrator::GetUnresolvedMessagesCount()
 
 #pragma region Tile & Map Interaction
 
+TArray<FUDFactionMinimalInfo> UUDActionAdministrator::GetMapFactionList()
+{
+	TArray<FUDFactionMinimalInfo> factions = { };
+
+	for (const auto& faction : State->Factions)
+	{
+		if (IsFactionPlayerControlled(faction.Value->PlayerUniqueId) || IsNeutral(faction.Value->PlayerUniqueId))
+		{
+			FUDFactionMinimalInfo newInfo = FUDFactionMinimalInfo(
+				faction.Value->PlayerUniqueId,
+				faction.Value->Name
+			);
+			factions.Add(newInfo);
+		}
+	}
+
+	return factions;
+};
+
 bool UUDActionAdministrator::IsMapStatePresent()
 {
 	return State->Map != nullptr;

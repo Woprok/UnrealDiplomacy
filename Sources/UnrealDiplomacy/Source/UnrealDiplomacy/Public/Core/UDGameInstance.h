@@ -98,7 +98,7 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UUDResourceManager> ResourceManager = nullptr;
 	/** Manager shared by application during the whole runtime. */
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<UUDSettingManager> SettingManager = nullptr;
 private:
 	TObjectPtr<UGameUserSettings> GetGameUserSettings();

@@ -32,6 +32,23 @@ void AUDSquareTile::SetTileType(int32 tileType)
 	TileType = tileType;
 }
 
+int32 AUDSquareTile::GetTileOwner()
+{
+	return TileOwner;
+}
+
+FLinearColor AUDSquareTile::GetTileOwnerColor()
+{
+	return OwnerColor;
+}
+
+void AUDSquareTile::SetTileOwner(int32 tileOwner, FLinearColor ownerColor)
+{
+	TileOwner = tileOwner;
+	OwnerColor = ownerColor;
+	OnOwnerChanged();
+}
+
 void AUDSquareTile::NotifyTileSelected()
 {
 	Selected.ExecuteIfBound(this);
