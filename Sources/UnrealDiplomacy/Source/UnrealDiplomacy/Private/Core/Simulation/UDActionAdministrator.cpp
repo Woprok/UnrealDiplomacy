@@ -558,7 +558,7 @@ FUDTileInfo UUDActionAdministrator::GetTileInfo(FIntPoint position)
 	{
 		tileInfo.FactionName = TEXT("Gaia");
 	}
-	tileInfo.ResourceAmount = tile->ResourceStored;
+	tileInfo.ResourceAmount = tile->ResourceStockpile;
 	
 	for (const auto& res : GetResourceList())
 	{

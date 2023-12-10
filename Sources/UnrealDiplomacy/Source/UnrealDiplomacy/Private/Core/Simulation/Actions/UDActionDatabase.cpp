@@ -54,7 +54,8 @@
 #include "Core/Simulation/Actions/UDDecisionActionConsequenceSelect.h"
 // Gaia
 #include "Core/Simulation/Actions/UDGaiaAction.h"
-#include "Core/Simulation/Actions/UDGaiaActionResourcesAllAdd.h"
+#include "Core/Simulation/Actions/UDGaiaActionResourceYieldFaction.h"
+#include "Core/Simulation/Actions/UDGaiaActionResourceYieldTile.h"
 // Game
 #include "Core/Simulation/Actions/UDGameAction.h"
 #include "Core/Simulation/Actions/UDGameActionGift.h"
@@ -101,7 +102,7 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetDefaultAction
 {
 	return {
 		NewObject<UUDDefaultAction>(parent),
-		NewObject<UUDDefaultActionInvalid>(parent)
+		NewObject<UUDDefaultActionInvalid>(parent),
 	};
 }
 
@@ -121,7 +122,7 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetSystemActions
 		NewObject<UUDSystemActionFactionTakeover>(parent),
 		NewObject<UUDSystemActionTurnFinish>(parent),
 		NewObject<UUDSystemActionIntermezzoStart>(parent),
-		NewObject<UUDSystemActionIntermezzoEnd>(parent)
+		NewObject<UUDSystemActionIntermezzoEnd>(parent),
 	};
 }
 
@@ -140,7 +141,8 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetGaiaActions(U
 {
 	return {
 		//NewObject<UUDGaiaAction>(parent),
-		NewObject<UUDGaiaActionResourcesAllAdd>(parent)
+		NewObject<UUDGaiaActionResourceYieldFaction>(parent),
+		NewObject<UUDGaiaActionResourceYieldTile>(parent),
 	};
 }
 
@@ -206,7 +208,7 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetDealActions(U
 		NewObject<UUDDealActionStateAssemble>(parent),
 		NewObject<UUDDealActionStateExtendingDraft>(parent),
 		NewObject<UUDDealActionVoteNo>(parent),
-		NewObject<UUDDealActionVoteYes>(parent)
+		NewObject<UUDDealActionVoteYes>(parent),
 	};
 }
 
@@ -221,6 +223,6 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetSettingAction
 		NewObject<UUDSettingActionMapHeightChange>(parent),
 		NewObject<UUDSettingActionStratagemPointsChange>(parent),
 		NewObject<UUDSettingActionStratagemOptionSelect>(parent),
-		NewObject<UUDSettingActionStratagemOptionDeselect>(parent)
+		NewObject<UUDSettingActionStratagemOptionDeselect>(parent),
 	};
 }

@@ -47,6 +47,7 @@ public:
 	 * Used by generator and UI to properly convey information (requires proper tile mapping).
 	 * TODO proper tile mapping, see pseudo implementation in UDSqureGrid.
 	 * Useable by Modifiers etc...
+	 * Same as ResourceType in current version.
 	 */
 	UPROPERTY()
 	int32 Type;
@@ -60,7 +61,7 @@ public:
 	UPROPERTY()
 	int32 ResourceType;
 	UPROPERTY()
-	int32 ResourceStored;
+	int32 ResourceStockpile;
 };
 
 /**

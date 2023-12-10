@@ -15,7 +15,7 @@ TObjectPtr<UUDTileState> UUDTileState::CreateState(int32 x, int32 y)
 		{ FString::Printf(TEXT("%*d"), 2, x), FString::Printf(TEXT("%*d"), 2, y) }
 	);
 	newState->ResourceType = UUDGlobalData::InvalidResourceId;
-	newState->ResourceStored = 0;
+	newState->ResourceStockpile = 0;
 	return newState;
 }
 
@@ -27,7 +27,7 @@ TObjectPtr<UUDTileState> UUDTileState::Duplicate(TObjectPtr<UUDTileState> existi
 	newState->Type = existingState->Type;
 	newState->Name = FString(existingState->Name);
 	newState->ResourceType = existingState->ResourceType;
-	newState->ResourceStored = existingState->ResourceStored;
+	newState->ResourceStockpile = existingState->ResourceStockpile;
 	return MoveTempIfPossible(newState);
 }
 

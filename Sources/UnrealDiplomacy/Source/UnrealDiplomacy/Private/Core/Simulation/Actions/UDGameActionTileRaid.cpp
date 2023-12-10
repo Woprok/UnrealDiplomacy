@@ -26,7 +26,7 @@ void UUDGameActionTileRaid::Execute(const FUDActionData& action, TObjectPtr<UUDW
 	const TObjectPtr<UUDTileState>& editedTile = world->Map->GetTile(tile);
 
 	int32 resourceType = editedTile->ResourceType;
-	editedTile->ResourceStored /= 2;
+	editedTile->ResourceStockpile /= 2;
 
 	ResourceManager->Add(world->Factions[action.InvokerFactionId], resourceType, BaseGain);
 }
@@ -41,7 +41,7 @@ void UUDGameActionTileRaid::Revert(const FUDActionData& action, TObjectPtr<UUDWo
 	const TObjectPtr<UUDTileState>& editedTile = world->Map->GetTile(tile);
 
 	int32 resourceType = editedTile->ResourceType;
-	editedTile->ResourceStored *= 2;
+	editedTile->ResourceStockpile *= 2;
 
 	ResourceManager->Substract(world->Factions[action.InvokerFactionId], resourceType, BaseGain);
 }

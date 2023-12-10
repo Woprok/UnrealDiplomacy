@@ -23,12 +23,14 @@ public:
 	virtual UMaterialInterface* GetIcon() const override { return Icon; };
 public:
 	static const int32 ResourceId = 1004;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Icon Config")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Resource Config")
 	int32 FactionStartingAmount = 100;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Icon Config")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Resource Config")
 	int32 TileStartingAmount = 400;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Icon Config")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Resource Config")
 	int32 TileWeight = 75;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Resource Config")
+	int32 TileUpkeep = 5;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Icon Config")
 	UMaterialInterface* Icon;
 };

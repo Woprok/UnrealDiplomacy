@@ -54,7 +54,7 @@ void AssignTileResource(TArray<FUDResourcePresentation>& options, int32 random, 
 		if (random <= 0)
 		{
 			tile->ResourceType = resource.ResourceId;
-			tile->ResourceStored = resource.TileStartingAmount;
+			tile->ResourceStockpile = resource.TileStartingAmount;
 			break;
 		}
 	}

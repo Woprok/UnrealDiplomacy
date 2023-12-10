@@ -71,7 +71,7 @@ void AssignTileToFaction(TObjectPtr<UUDTileState> tile, const FUDResourcePresent
 	// TODO this is hack that is also done in WorldGenerator as type is same as resource type in this version.
 	tile->Type = resource.ResourceId;
 	tile->ResourceType = resource.ResourceId;
-	tile->ResourceStored = resource.TileStartingAmount;
+	tile->ResourceStockpile = resource.TileStartingAmount;
 }
 
 void UUDWorldFactionGenerator::AssignFactionSpawns(TObjectPtr<UUDWorldState> worldState)
