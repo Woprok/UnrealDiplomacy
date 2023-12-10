@@ -46,12 +46,14 @@ void UUDGameOverViewModel::ChangeGameOverPresentation()
 	bool isPlayer = Model->IsLocalFactionPlayer();
 
 	FText winnerFaction;
+	// Win
 	if (isPlayer && info.IsWinner)
 	{
-		winnerFaction = FText(LOCTEXT("GameOver", "Glory to your reign."));
+		winnerFaction = FText(LOCTEXT("GameOver", "Glory to your reign!"));
 		FText victory = FText(LOCTEXT("GameOver", "Victory!"));
 		SetGameOverTitleText(victory);
 	}
+	// Lose
 	if (isPlayer && !info.IsWinner)
 	{
 		winnerFaction = FText::Format(LOCTEXT("GameOver", "Empire was taken over by {0}"),
@@ -59,6 +61,15 @@ void UUDGameOverViewModel::ChangeGameOverPresentation()
 		FText defeat = FText(LOCTEXT("GameOver", "Defeated!"));
 		SetGameOverTitleText(defeat);
 	}
+	// Support
+	if (isPlayer && info.IsSupporter)
+	{
+		winnerFaction = FText::Format(LOCTEXT("GameOver", "Empire was taken over by {0}"),
+			FText::FromString(info.WinnerFactionName));
+		FText support = FText(LOCTEXT("GameOver", "Glory to your friend reign!"));
+		SetGameOverTitleText(support);
+	}
+	// Observer
 	if (!isPlayer)
 	{
 		winnerFaction = FText::Format(LOCTEXT("GameOver", "Empire was taken over by {0}"),

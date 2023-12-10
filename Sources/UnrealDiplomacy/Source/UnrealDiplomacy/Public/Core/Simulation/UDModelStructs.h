@@ -129,6 +129,8 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	bool IsWinner = false;
 	UPROPERTY(BlueprintReadOnly)
+	bool IsSupporter = false;
+	UPROPERTY(BlueprintReadOnly)
 	int32 WinnerFactionId = 0;
 	UPROPERTY(BlueprintReadOnly)
 	FString WinnerFactionName = TEXT("");

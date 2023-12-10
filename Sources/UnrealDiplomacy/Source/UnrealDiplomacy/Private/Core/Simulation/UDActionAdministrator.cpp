@@ -233,6 +233,7 @@ bool UUDActionAdministrator::IsGameOver()
 	return false;
 }
 
+#include "Core/Simulation/Modifiers/UDFactionModifierThroneSupport.h"
 FUDGameOverInfo UUDActionAdministrator::GetGameOverInfo()
 {
 	FUDGameOverInfo gameOverInfo;
@@ -241,6 +242,18 @@ FUDGameOverInfo UUDActionAdministrator::GetGameOverInfo()
 	gameOverInfo.IsWinner = winnerId == State->FactionPerspective;
 	gameOverInfo.WinnerFactionId = winnerId;
 	gameOverInfo.WinnerFactionName = State->Factions[winnerId]->Name;
+	
+	for (const auto& modifier : ActionManager->
+			GetModifierManager()->
+			GetAllFactionModifiers(State->Factions[gameOverInfo.WinnerFactionId],
+			UUDFactionModifierThroneSupport::ModifierTypeId
+		))
+	{
+		if (modifier.InvokerId == State->FactionPerspective)
+		{
+			gameOverInfo.IsSupporter = true;
+		}
+	}
 
 	return gameOverInfo;
 }
