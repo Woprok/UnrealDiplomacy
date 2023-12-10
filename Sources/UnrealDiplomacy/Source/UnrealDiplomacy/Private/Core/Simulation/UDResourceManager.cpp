@@ -31,14 +31,20 @@ TArray<FUDResourcePresentation> UUDResourceManager::CreateTileResourceOptionArra
 	return resources;
 }
 
+#pragma endregion
+
+#pragma region Resource Use API
+
+const TMap<int32, int32>& UUDResourceManager::GetAllCurrent(TObjectPtr<UUDFactionState> faction)
+{
+	return faction->Resources;
+}
+
 int32 UUDResourceManager::GetCurrent(TObjectPtr<UUDFactionState> faction, int32 resourceId)
 {
 	return faction->Resources[resourceId];
 }
 
-#pragma endregion
-
-#pragma region Resource Use API
 void UUDResourceManager::Gain(TObjectPtr<UUDFactionState> faction, int32 resourceId, int32 amount)
 {
 	faction->Resources[resourceId] += amount;

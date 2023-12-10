@@ -29,8 +29,6 @@ public:
 	int32 TileStartingAmount = 40;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Resource Config")
 	int32 TileWeight = 10;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Resource Config")
-	int32 TileUpkeep = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Icon Config")
 	UMaterialInterface* Icon;
 };

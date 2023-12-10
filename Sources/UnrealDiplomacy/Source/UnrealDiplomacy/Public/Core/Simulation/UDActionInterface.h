@@ -84,6 +84,9 @@ class UUDResourceManager;
 // Defines action that can be executed on demand rejection.
 #define UD_ACTION_TAG_DECISION_CONSEQUENCE 24
 
+// This action is hidden from all UI, even if it would be normally visible.
+//#define UD_ACTION_TAG_HIDDEN 30
+
 // This is default and is not necessary.
 #define UD_ACTION_TAG_VERIFY_PARAMETER_EQUALITY 50
 // This overrides default check inside of an interface.

@@ -13,7 +13,7 @@ FText ConstructRegentToolTip()
 	TStringBuilder<128> content;
 	content.Append(FText(LOCTEXT("Turn", "Regent is temporary position that rotates between factions.")).ToString());
 	content.Append(FText::FromString(TEXT("\n")).ToString());
-	content.Append(FText(LOCTEXT("Turn", "Regent is allowed to create new deals.")).ToString());
+	content.Append(FText(LOCTEXT("Turn", "Regent is allowed to create new deal once per turn.")).ToString());
 	return FText::FromString(content.ToString());
 }
 

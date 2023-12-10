@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "Core/Simulation/Actions/UDGaiaAction.h"
-#include "UDGaiaActionResourceYieldTile.generated.h"
+#include "UDGaiaActionFactionResourceYield.generated.h"
 
 /**
- * Generates income based on parameter for all players.
+ * Generates default income for all factions.
  */
 UCLASS(Blueprintable, BlueprintType)
-class UNREALDIPLOMACY_API UUDGaiaActionResourceYieldTile : public UUDGaiaAction
+class UNREALDIPLOMACY_API UUDGaiaActionFactionResourceYield : public UUDGaiaAction
 {
 	GENERATED_BODY()
 public:
-	UUDGaiaActionResourceYieldTile();
+	UUDGaiaActionFactionResourceYield();
 public:
 	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
@@ -22,10 +22,10 @@ public:
 	//virtual int32 GetParameterCount() const override { return FUDGaiaDataAmount::ParameterCount; };
 	virtual void SetResourceManager(TWeakObjectPtr<UUDResourceManager> resourceManager) override;
 public:
-	static const int32 ActionTypeId = 1002;
+	static const int32 ActionTypeId = 1001;
 protected:
 	UPROPERTY()
 	TWeakObjectPtr<UUDResourceManager> ResourceManager = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Resource Config")
-	TMap<int32, float> StockpilePercentages = { };
+	TMap<int32, int32> StockpileGains = { };
 };

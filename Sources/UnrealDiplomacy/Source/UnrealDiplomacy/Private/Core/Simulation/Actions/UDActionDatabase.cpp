@@ -54,8 +54,10 @@
 #include "Core/Simulation/Actions/UDDecisionActionConsequenceSelect.h"
 // Gaia
 #include "Core/Simulation/Actions/UDGaiaAction.h"
-#include "Core/Simulation/Actions/UDGaiaActionResourceYieldFaction.h"
-#include "Core/Simulation/Actions/UDGaiaActionResourceYieldTile.h"
+#include "Core/Simulation/Actions/UDGaiaActionFactionResourceDeficit.h"
+#include "Core/Simulation/Actions/UDGaiaActionFactionResourceYield.h"
+#include "Core/Simulation/Actions/UDGaiaActionTileResourceYield.h"
+#include "Core/Simulation/Actions/UDGaiaActionTileUpkeep.h"
 // Game
 #include "Core/Simulation/Actions/UDGameAction.h"
 #include "Core/Simulation/Actions/UDGameActionGift.h"
@@ -141,8 +143,10 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetGaiaActions(U
 {
 	return {
 		//NewObject<UUDGaiaAction>(parent),
-		NewObject<UUDGaiaActionResourceYieldFaction>(parent),
-		NewObject<UUDGaiaActionResourceYieldTile>(parent),
+		NewObject<UUDGaiaActionFactionResourceDeficit>(parent),
+		NewObject<UUDGaiaActionFactionResourceYield>(parent),
+		NewObject<UUDGaiaActionTileResourceYield>(parent),
+		NewObject<UUDGaiaActionTileUpkeep>(parent),
 	};
 }
 

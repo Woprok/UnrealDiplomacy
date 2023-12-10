@@ -1,6 +1,6 @@
 // Copyright Miroslav Valach
 
-#include "Core/Simulation/Actions/UDGaiaActionResourceYieldFaction.h"
+#include "Core/Simulation/Actions/UDGaiaActionFactionResourceYield.h"
 #include "Core/UDGlobalData.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDWorldState.h"
@@ -12,7 +12,7 @@
 #include "Core/Simulation/Resources/UDGameResourceManpower.h"
 #include "Core/Simulation/Resources/UDGameResourceLuxuries.h"
 
-UUDGaiaActionResourceYieldFaction::UUDGaiaActionResourceYieldFaction()
+UUDGaiaActionFactionResourceYield::UUDGaiaActionFactionResourceYield()
 {
 	StockpileGains.Add(UUDGameResourceReputation::ResourceId, 5);
 	StockpileGains.Add(UUDGameResourceGold::ResourceId, 25);
@@ -22,7 +22,7 @@ UUDGaiaActionResourceYieldFaction::UUDGaiaActionResourceYieldFaction()
 	StockpileGains.Add(UUDGameResourceLuxuries::ResourceId, 10);
 }
 
-void UUDGaiaActionResourceYieldFaction::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
+void UUDGaiaActionFactionResourceYield::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Execute(action, world);
 	// Grant all players defined amount of resources.
@@ -37,7 +37,7 @@ void UUDGaiaActionResourceYieldFaction::Execute(const FUDActionData& action, TOb
 	}
 }
 
-void UUDGaiaActionResourceYieldFaction::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
+void UUDGaiaActionFactionResourceYield::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Revert(action, world);
 	// Take defined amount of resources from all players.
@@ -52,7 +52,7 @@ void UUDGaiaActionResourceYieldFaction::Revert(const FUDActionData& action, TObj
 	}
 }
 
-void UUDGaiaActionResourceYieldFaction::SetResourceManager(TWeakObjectPtr<UUDResourceManager> resourceManager)
+void UUDGaiaActionFactionResourceYield::SetResourceManager(TWeakObjectPtr<UUDResourceManager> resourceManager)
 {
 	ResourceManager = resourceManager;
 }

@@ -35,6 +35,8 @@ public:
 #pragma endregion
 #pragma region Resource Use API
 public:
+	/** Returns current amount of all resources. */
+	const TMap<int32, int32>& GetAllCurrent(TObjectPtr<UUDFactionState> faction);
 	/** Returns current amount of the specified resource. */
 	int32 GetCurrent(TObjectPtr<UUDFactionState> faction, int32 resourceId);
 	/** Applies all modifiers and increses amount of resource for specified faction. Negates Lose. */
