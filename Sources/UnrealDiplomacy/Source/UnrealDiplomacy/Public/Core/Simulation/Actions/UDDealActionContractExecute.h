@@ -21,6 +21,7 @@ public:
 	virtual int32 GetParameterCount() const override { return FUDDealData::ParameterCount; };
 	virtual bool HasContinuations() const override { return true; }
 	virtual TArray<FUDActionData> GetContinuations(const FUDActionData& parentAction, TObjectPtr<UUDWorldState> world) const override;
+	virtual bool IsBypassingStratagemRequirements() const override { return true; } 
 public:
 	static const int32 ActionTypeId = 3019;
 	static bool AreAllActionsPrepared(TObjectPtr<UUDWorldState> world, int32 dealUniqueId);

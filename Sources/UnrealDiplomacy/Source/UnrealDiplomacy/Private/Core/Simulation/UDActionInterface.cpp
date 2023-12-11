@@ -111,3 +111,8 @@ FUDActionPresentation IUDActionInterface::GetPresentation() const
 	return presentation;
 }
 #undef LOCTEXT_NAMESPACE
+
+bool IUDActionInterface::IsBypassingStratagemRequirements() const
+{
+	return false;
+}

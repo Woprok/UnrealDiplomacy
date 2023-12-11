@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Core/Simulation/Actions/UDGameAction.h"
-#include "UDGameActionThroneUsurp.generated.h"
+#include "UDGameActionThroneContest.generated.h"
 
 /**
  * Enables player to contest the throne from usurper.

@@ -206,4 +206,12 @@ public:
 	 * Contains definition for filtering and displaying action.
 	 */
 	virtual FUDActionPresentation GetPresentation() const;
+	/** 
+	 * Should this action bypass Stratagem Checks. 
+	 * Exclusive for Deal Execution and any other action that wants to execute action on behalf of the faction.
+	 * This means that action will be executed even if faction already used it (from the last reset).
+	 * And that action can be used, even if invoker does not have a stratagem.
+	 * Note that decisions use continuations as well, but these are not supposed to bypass stratagems.
+	 */
+	virtual bool IsBypassingStratagemRequirements() const;
 };

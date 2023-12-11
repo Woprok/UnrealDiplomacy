@@ -149,8 +149,9 @@ public:
 	/**
 	 * Properly checks and only then executes action.
 	 * Actions that fail the check are discarded.
+	 * By default this does not bypass stratagem checks, thus it requires action to change this for continuations.
 	 */
-	void CheckAndExecuteAction(FUDActionData& newAction);
+	void CheckAndExecuteAction(FUDActionData& newAction, bool inheritedBypass = false);
 	/**
 	 * Delegate for broadcast of an action being executed, thus resulting in state changing.
 	 * This is executed after the other broadcast. 
@@ -188,10 +189,11 @@ private:
 	void CreateActionBackup(FUDActionData& newAction,
 		TScriptInterface<IUDActionInterface>& actionExecutor,
 		TObjectPtr<UUDWorldState>& gaiaFactionState);
-
+	/** inheritedBypass is always propagated from the parent action and never changed in this function. */
 	void RunActionContinuations(FUDActionData& newAction,
 		TScriptInterface<IUDActionInterface>& actionExecutor,
-		TObjectPtr<UUDWorldState>& gaiaFactionState);
+		TObjectPtr<UUDWorldState>& gaiaFactionState, 
+		bool inheritedBypass);
 
 	void PostActionStateCheck(int32 actionExecutorId,
 		TObjectPtr<UUDWorldState>& gaiaFactionState);

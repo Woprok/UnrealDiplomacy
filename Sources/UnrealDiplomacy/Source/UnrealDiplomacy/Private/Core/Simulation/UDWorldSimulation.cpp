@@ -180,7 +180,7 @@ void AUDWorldSimulation::OnlyExecuteAction(FUDActionData& trustworthyAction)
 	OnBroadcastActionAppliedDelegate.Broadcast(trustworthyAction);
 }
 
-void AUDWorldSimulation::CheckAndExecuteAction(FUDActionData& newAction)
+void AUDWorldSimulation::CheckAndExecuteAction(FUDActionData& newAction, bool inheritedBypass)
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: CheckAndExecuteAction Started."));
 
@@ -213,7 +213,8 @@ void AUDWorldSimulation::CheckAndExecuteAction(FUDActionData& newAction)
 	// Continue execution if it has any continuations.
 	if (actionExecutor->HasContinuations())
 	{
-		RunActionContinuations(newAction, actionExecutor, gaiaFactionState);
+		bool isThisBypassing = actionExecutor->IsBypassingStratagemRequirements() || inheritedBypass;
+		RunActionContinuations(newAction, actionExecutor, gaiaFactionState, isThisBypassing);
 	}
 
 	// Check endgame
@@ -247,13 +248,14 @@ void AUDWorldSimulation::CreateActionBackup(FUDActionData& newAction,
 }
 void AUDWorldSimulation::RunActionContinuations(FUDActionData& newAction,
 	TScriptInterface<IUDActionInterface>& actionExecutor,
-	TObjectPtr<UUDWorldState>& gaiaFactionState)
+	TObjectPtr<UUDWorldState>& gaiaFactionState,
+	bool inheritedBypass)
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Composite Action UID(%d) Started."), newAction.UniqueId);
 	TArray<FUDActionData> subactions = actionExecutor->GetContinuations(newAction, gaiaFactionState);
 	for (auto& action : subactions)
 	{
-		CheckAndExecuteAction(action);
+		CheckAndExecuteAction(action, inheritedBypass);
 	}
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Composite Action UID(%d) Finished."), newAction.UniqueId);
 }
