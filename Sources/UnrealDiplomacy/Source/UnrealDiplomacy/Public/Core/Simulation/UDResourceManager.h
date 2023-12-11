@@ -49,6 +49,8 @@ public:
 	void Add(TObjectPtr<UUDFactionState> faction, int32 resourceId, int32 amount);
 	/** Decreases amount of resource for specified faction. Negates Add */
 	void Substract(TObjectPtr<UUDFactionState> faction, int32 resourceId, int32 amount);
+	/** Decreases amount of resource for specified faction by specified percentage (Current - Current * Perc[0.00 - 1.00]). Max 100%... */
+	void SubstractPercentage(TObjectPtr<UUDFactionState> faction, int32 resourceId, float percentage);
 #pragma endregion
 public:
 	/** Returns Resource associated with the supplied Id. */

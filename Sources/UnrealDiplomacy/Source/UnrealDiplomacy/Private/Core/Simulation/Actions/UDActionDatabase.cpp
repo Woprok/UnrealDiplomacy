@@ -65,6 +65,7 @@
 #include "Core/Simulation/Actions/UDGameActionThroneAbdicate.h"
 #include "Core/Simulation/Actions/UDGameActionThroneReceive.h"
 #include "Core/Simulation/Actions/UDGameActionThroneUsurp.h"
+#include "Core/Simulation/Actions/UDGameActionThroneContest.h"
 #include "Core/Simulation/Actions/UDGameActionTileExploit.h"
 #include "Core/Simulation/Actions/UDGameActionTileTake.h"
 #include "Core/Simulation/Actions/UDGameActionTileTransfer.h"
@@ -162,6 +163,7 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetGameActions(U
 		NewObject<UUDGameActionThroneAbdicate>(parent),
 		NewObject<UUDGameActionThroneReceive>(parent),
 		NewObject<UUDGameActionThroneUsurp>(parent),
+		NewObject<UUDGameActionThroneContest>(parent),
 		NewObject<UUDGameActionTileExploit>(parent),
 		NewObject<UUDGameActionTileTake>(parent),
 		NewObject<UUDGameActionTileTransfer>(parent),

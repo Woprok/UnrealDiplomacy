@@ -69,6 +69,12 @@ void UUDResourceManager::Substract(TObjectPtr<UUDFactionState> faction, int32 re
 {
 	faction->Resources[resourceId] -= amount;
 }
+
+void UUDResourceManager::SubstractPercentage(TObjectPtr<UUDFactionState> faction, int32 resourceId, float percentage)
+{
+	percentage = FMath::Clamp(percentage, 0.0f, 1.0f);
+	faction->Resources[resourceId] -= (faction->Resources[resourceId] * percentage);
+}
 #pragma endregion
 
 TScriptInterface<IUDResourceInterface> UUDResourceManager::GetResource(int32 resourceTypeId)
