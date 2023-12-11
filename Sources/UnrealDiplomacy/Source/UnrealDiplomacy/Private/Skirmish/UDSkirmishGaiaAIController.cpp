@@ -8,12 +8,12 @@
 #include "Core/Simulation/Actions/UDGaiaActionFactionResourceYield.h"
 #include "Core/Simulation/Actions/UDGaiaActionTileResourceYield.h"
 #include "Core/Simulation/Actions/UDGaiaActionTileUpkeep.h"
-#include "Core/Simulation/Actions/UDGaiaActionStratagemUseReset.h"
+#include "Core/Simulation/Actions/UDGaiaActionStratagemActivatedReset.h"
 #include "Core/Simulation/Actions/UDSystemActionRegentChange.h"
 
 void AUDSkirmishGaiaAIController::ProcessIntermezzoPlay()
 {
-	MakeAction(UUDGaiaActionStratagemUseReset::ActionTypeId);
+	MakeAction(UUDGaiaActionStratagemActivatedReset::ActionTypeId);
 	MakeAction(UUDGaiaActionFactionResourceYield::ActionTypeId);
 	MakeAction(UUDGaiaActionTileResourceYield::ActionTypeId);
 	MakeAction(UUDGaiaActionTileUpkeep::ActionTypeId);

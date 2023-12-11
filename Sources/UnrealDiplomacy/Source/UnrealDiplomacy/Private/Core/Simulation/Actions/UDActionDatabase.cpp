@@ -58,8 +58,9 @@
 #include "Core/Simulation/Actions/UDGaiaActionFactionResourceYield.h"
 #include "Core/Simulation/Actions/UDGaiaActionTileResourceYield.h"
 #include "Core/Simulation/Actions/UDGaiaActionTileUpkeep.h"
-#include "Core/Simulation/Actions/UDGaiaActionStratagemUse.h"
-#include "Core/Simulation/Actions/UDGaiaActionStratagemUseReset.h"
+#include "Core/Simulation/Actions/UDGaiaActionFactionStratagemActivated.h"
+#include "Core/Simulation/Actions/UDGaiaActionTileStratagemActivated.h"
+#include "Core/Simulation/Actions/UDGaiaActionStratagemActivatedReset.h"
 // Game
 #include "Core/Simulation/Actions/UDGameAction.h"
 #include "Core/Simulation/Actions/UDGameActionGift.h"
@@ -153,8 +154,9 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetGaiaActions(U
 		NewObject<UUDGaiaActionFactionResourceYield>(parent),
 		NewObject<UUDGaiaActionTileResourceYield>(parent),
 		NewObject<UUDGaiaActionTileUpkeep>(parent),
-		NewObject<UUDGaiaActionStratagemUse>(parent),
-		NewObject<UUDGaiaActionStratagemUseReset>(parent),
+		NewObject<UUDGaiaActionFactionStratagemActivated>(parent),
+		NewObject<UUDGaiaActionTileStratagemActivated>(parent),
+		NewObject<UUDGaiaActionStratagemActivatedReset>(parent),
 	};
 }
 

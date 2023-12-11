@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Core/Simulation/Actions/UDGaiaAction.h"
-#include "UDGaiaActionStratagemUseReset.generated.h"
+#include "UDGaiaActionStratagemActivatedReset.generated.h"
 
 /**
  * Resets all stratagem use modifiers.
  */
 UCLASS(Blueprintable, BlueprintType)
-class UNREALDIPLOMACY_API UUDGaiaActionStratagemUseReset : public UUDGaiaAction
+class UNREALDIPLOMACY_API UUDGaiaActionStratagemActivatedReset : public UUDGaiaAction
 {
 	GENERATED_BODY()
 public:
@@ -18,10 +18,10 @@ public:
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual int32 GetId() const override { return ActionTypeId; };
 	//virtual int32 GetParameterCount() const override { return FUDGaiaDataAmount::ParameterCount; };
-	virtual void SetResourceManager(TWeakObjectPtr<UUDResourceManager> resourceManager) override;
+	virtual void SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager) override;
 public:
-	static const int32 ActionTypeId = 1003;
+	static const int32 ActionTypeId = 1007;
 protected:
 	UPROPERTY()
-	TWeakObjectPtr<UUDResourceManager> ResourceManager = nullptr;
+	TWeakObjectPtr<UUDModifierManager> ModifierManager = nullptr;
 };

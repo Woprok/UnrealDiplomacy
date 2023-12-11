@@ -12,7 +12,7 @@
 #include "Core/Simulation/UDWorldState.h"
 #include "Core/Simulation/UDWorldGenerator.h"
 #include "Core/Simulation/UDModifierManager.h"
-#include "Core/Simulation/UDStratagemUseManager.h"
+#include "Core/Simulation/UDStratagemOperationManager.h"
 #include "Core/Simulation/UDActionInterface.h"
 #include "Core/Simulation/UDActionHandlingInterface.h"
 #include "Core/Simulation/UDWorldState.h"
@@ -25,7 +25,7 @@ void AUDWorldSimulation::Initialize(TWeakObjectPtr<UUDSettingManager> settingMan
 	NextUniqueActionId = UUDGlobalData::FirstUseableActionId;
 	ActionManager = actionManager;
 	SettingManager = settingManager;
-	StratagemUseManager = ActionManager->GetStratagemUseManager();
+	StratagemOperationManager = ActionManager->GetStratagemOperationManager();
 	
 	Arbiter = NewObject<UUDWorldArbiter>(this);
 	Arbiter->SetModifierManager(ActionManager->GetModifierManager());
@@ -201,7 +201,10 @@ void AUDWorldSimulation::CheckAndExecuteAction(FUDActionData& newAction, bool in
 	// Check stratagem rules, if bypass is not true
 	if (!inheritedBypass)
 	{
-		StratagemUseManager->DoMagic();
+		if (StratagemOperationManager->CanDoMagic(gaiaFactionState, actionExecutor, newAction))
+		{
+			StratagemOperationManager->DoMagic(gaiaFactionState, actionExecutor, newAction);
+		}
 	}
 
 	// Prepare action.

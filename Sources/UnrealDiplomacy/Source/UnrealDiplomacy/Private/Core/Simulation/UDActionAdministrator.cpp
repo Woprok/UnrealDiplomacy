@@ -666,7 +666,8 @@ bool UUDActionAdministrator::HasFactionParameter(const TSet<int32>& tags, int32 
 bool UUDActionAdministrator::HasActionParameter(const TSet<int32>& tags, int32 excludeTag)
 {
 	TSet<int32> searchTags = {
-		UD_ACTION_TAG_PARAMETER_ACTION
+		UD_ACTION_TAG_PARAMETER_ACTION,
+		UD_MODIFIER_TAG_PARAMETER_ACTION
 	};
 
 	if (searchTags.Contains(excludeTag))
@@ -1096,11 +1097,18 @@ FUDMessageInteractionInfo UUDActionAdministrator::GetAllLocalRequests()
 FStringFormatNamedArguments UUDActionAdministrator::GetModifierContentArguments(const TSet<int32>& tags, FUDModifierData modifier)
 {
 	FStringFormatNamedArguments args;
+	int32 startIndex = 0;
 	
 	args.Add(UD_PARAMETER_ARG_FACTION_INVOKER,
 		FStringFormatArg(State->Factions[modifier.InvokerId]->Name));
 	args.Add(UD_PARAMETER_ARG_FACTION_TARGET,
 		FStringFormatArg(State->Factions[modifier.TargetId]->Name));
+
+	if (HasActionParameter(tags, UD_INVALID_TAG_ID))
+	{
+		args.Add(UD_PARAMETER_ARG_ACTION,
+			GetActionArgument(modifier.ValueParameters, startIndex));
+	}
 
 	return args;
 }

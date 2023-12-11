@@ -179,6 +179,22 @@ void UUDModifierManager::RemoveFactionModifier(const TObjectPtr<UUDFactionState>
 	}
 }
 
+void UUDModifierManager::RemoveAllTileModifiersOfType(const TObjectPtr<UUDTileState>& tile, int32 modifierTypeId)
+{	
+	// Find & Delete
+	const auto& found = tile->Modifiers.RemoveAll(
+		[&modifierTypeId](const FUDModifierData& item) { return item.ModifierTypeId == modifierTypeId; }
+	);
+}
+
+void UUDModifierManager::RemoveAllFactionModifiersOfType(const TObjectPtr<UUDFactionState>& faction, int32 modifierTypeId)
+{
+	// Find & Delete
+	const auto& found = faction->Modifiers.RemoveAll(
+		[&modifierTypeId](const FUDModifierData& item) { return item.ModifierTypeId == modifierTypeId; }
+	);
+}
+
 bool UUDModifierManager::HasTileModifier(const TObjectPtr<UUDTileState>& tile, FUDModifierData searchedModifier) const
 {	
 	// Find
@@ -218,13 +234,27 @@ bool UUDModifierManager::HasFactionModifier(const TObjectPtr<UUDFactionState>& f
 	return false;
 }
 
-TArray<FUDModifierData> UUDModifierManager::GetAllFactionModifiers(const TObjectPtr<UUDFactionState>& faction, int32 modifierId)
+TArray<FUDModifierData> UUDModifierManager::GetAllFactionModifiers(const TObjectPtr<UUDFactionState>& faction, int32 modifierTypeId)
 {
 	TArray<FUDModifierData> list = { };
 
 	for (const auto& modifier : faction->Modifiers)
 	{
-		if (modifier.ModifierTypeId == modifierId) 
+		if (modifier.ModifierTypeId == modifierTypeId)
+		{
+			list.Add(modifier);
+		}
+	}
+	return list;
+}
+
+TArray<FUDModifierData> UUDModifierManager::GetAllTileModifiers(const TObjectPtr<UUDTileState>& tile, int32 modifierTypeId)
+{
+	TArray<FUDModifierData> list = { };
+
+	for (const auto& modifier : tile->Modifiers)
+	{
+		if (modifier.ModifierTypeId == modifierTypeId)
 		{
 			list.Add(modifier);
 		}

@@ -19,6 +19,8 @@ struct FUDModifierPresentation;
 #define UD_MODIFIER_TAG_TYPE_FACTION 2
 // Applied as tile modifier to tile.
 #define UD_MODIFIER_TAG_TYPE_TILE 3
+// Specific parameter that should be included in parameter list.
+#define UD_MODIFIER_TAG_PARAMETER_ACTION 15
 
 /**
  * Defines informations about the modifier and how it can be displayed in UI.

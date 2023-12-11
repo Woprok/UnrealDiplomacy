@@ -13,7 +13,7 @@ class UUDActionManager;
 class UUDModifierManager;
 class UUDResourceManager;
 class UUDSettingManager;
-class UUDStratagemUseManager;
+class UUDStratagemOperationManager;
 
 /**
  * Persistent state per game instance.
@@ -79,7 +79,7 @@ public:
 	TSubclassOf<UUDResourceManager> ResourceManagerType;
 	/** Change this if you want to use BP implementation of manager. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Managers")
-	TSubclassOf<UUDStratagemUseManager> StratagemUseManagerType;
+	TSubclassOf<UUDStratagemOperationManager> StratagemOperationManagerType;
 	/** Change this if you want to use BP implementation of manager. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Managers")
 	TSubclassOf<UUDSettingManager> SettingManagerType;
@@ -90,7 +90,7 @@ public:
 	/** Manager shared by application during the whole runtime. */
 	TWeakObjectPtr<UUDResourceManager> GetResourceManager();
 	/** Manager shared by application during the whole runtime. */
-	TWeakObjectPtr<UUDStratagemUseManager> GetStratagemUseManager();
+	TWeakObjectPtr<UUDStratagemOperationManager> GetStratagemOperationManager();
 	/** Manager shared by application during the whole runtime. */
 	TWeakObjectPtr<UUDSettingManager> GetSettingManager();
 protected:
@@ -105,7 +105,7 @@ protected:
 	TObjectPtr<UUDResourceManager> ResourceManager = nullptr;
 	/** Manager shared by application during the whole runtime. */
 	UPROPERTY()
-	TObjectPtr<UUDStratagemUseManager> StratagemUseManager = nullptr;
+	TObjectPtr<UUDStratagemOperationManager> StratagemOperationManager = nullptr;
 	/** Manager shared by application during the whole runtime. */
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<UUDSettingManager> SettingManager = nullptr;

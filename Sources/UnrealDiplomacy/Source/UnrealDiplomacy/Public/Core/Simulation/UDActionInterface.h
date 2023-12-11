@@ -18,10 +18,12 @@ class UUDResourceManager;
 // TODO Define proper order for parameters in ValueParameters ?
 // SPECIALS:
 // Map Settings
-// TARGET/TILE/AMOUNT/ACTION
+// TARGET -> TILE -> AMOUNT -> ACTION
 // Amount
+// Action
 // Tile
 // Tile Amount
+// Tile Action
 // Target
 // Target Amount
 // Target Tile

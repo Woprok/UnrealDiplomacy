@@ -44,6 +44,14 @@ public:
 	 */
 	void RemoveFactionModifier(const TObjectPtr<UUDFactionState>& faction, int32 actionUniqueId);
 	/**
+	 * Removes tile modifiers from a specified tile of specified type.
+	 */
+	void RemoveAllTileModifiersOfType(const TObjectPtr<UUDTileState>& tile, int32 modifierTypeId);
+	/**
+	 * Removes faction modifiers from a specified faction of specified type.
+	 */
+	void RemoveAllFactionModifiersOfType(const TObjectPtr<UUDFactionState>& faction, int32 modifierTypeId);
+	/**
 	 * Checks if specified tile modifier on a specified tile is present.
 	 * This requires modifier that would be applied amd will use value compare.
 	 * See FUDModifierData::IsTypeTargetEqual
@@ -65,7 +73,11 @@ public:
 	/**
 	 * Get all modifiers with the specified Id that are currently present on the specified faction.
 	 */
-	TArray<FUDModifierData> GetAllFactionModifiers(const TObjectPtr<UUDFactionState>& faction, int32 modifierId);
+	TArray<FUDModifierData> GetAllFactionModifiers(const TObjectPtr<UUDFactionState>& faction, int32 modifierTypeId);
+	/**
+	 * Get all modifiers with the specified Id that are currently present on the specified tile.
+	 */
+	TArray<FUDModifierData> GetAllTileModifiers(const TObjectPtr<UUDTileState>& tile, int32 modifierTypeId);
 #pragma endregion
 public:
 	/**

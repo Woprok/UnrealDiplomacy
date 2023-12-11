@@ -3,7 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UDStratagemUseManager.generated.h"
+#include "UDStratagemOperationManager.generated.h"
+
+// Forward Declarations
+
+struct FUDActionData;
+class IUDActionInterface;
+class UUDWorldState;
+class UUDModifierManager;
 
 USTRUCT(BlueprintType)
 struct FUDStratagemResourceCost
@@ -33,10 +40,16 @@ public:
  * Stratagem use manager is responsible for handling used modifiers and stratagem cost.
  */
 UCLASS(Blueprintable, BlueprintType)
-class UNREALDIPLOMACY_API UUDStratagemUseManager : public UObject
+class UNREALDIPLOMACY_API UUDStratagemOperationManager : public UObject
 {
 public:
 	GENERATED_BODY()
 public:
-	void DoMagic() { };
+	bool CanDoMagic(const TObjectPtr<UUDWorldState>& world, const TScriptInterface<IUDActionInterface>& executor, const FUDActionData& action);
+	// Task add modifier stratagem use for each stratagem used!
+	void DoMagic(const TObjectPtr<UUDWorldState>& world, const TScriptInterface<IUDActionInterface>& executor, const FUDActionData& action);
+
+protected:
+	UPROPERTY()
+	TWeakObjectPtr<UUDModifierManager> ModifierManager = nullptr;
 };

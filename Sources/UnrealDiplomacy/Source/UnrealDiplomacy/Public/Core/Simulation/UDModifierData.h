@@ -86,6 +86,7 @@ public:
 	int32 ModifierTypeId = -1;
 	/**
 	 * Each modifier is exclusively associated with single action.
+	 * This is not ActionTypeId...mj
 	 */
 	UPROPERTY(BlueprintReadOnly)
 	int32 ActionUniqueId = -1;
@@ -101,6 +102,7 @@ public:
 	int32 TargetId = -1;
 	/**
 	 * Optional parameters...
+	 * Highest priority is used by ActionTypeId.
 	 */
 	UPROPERTY(BlueprintReadOnly)
 	TArray<int32> ValueParameters;

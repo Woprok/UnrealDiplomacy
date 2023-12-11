@@ -19,7 +19,7 @@ class UUDActionManager;
 class UUDSettingManager;
 class UUDWorldArbiter;
 class UUDWorldState;
-class UUDStratagemUseManager;
+class UUDStratagemOperationManager;
 
 /**
  * Allows controllers to register for incoming messages from the simulation about the state change.
@@ -134,9 +134,9 @@ private:
 	TWeakObjectPtr<UUDActionManager> ActionManager = nullptr;
 	UPROPERTY()
 	TWeakObjectPtr<UUDSettingManager> SettingManager = nullptr;
-	/** StratagemUseManager is responsible for defining costs. */
+	/** StratagemOperationManager is responsible for defining costs. */
 	UPROPERTY()
-	TWeakObjectPtr<UUDStratagemUseManager> StratagemUseManager = nullptr;
+	TWeakObjectPtr<UUDStratagemOperationManager> StratagemOperationManager = nullptr;
 #pragma endregion
 
 #pragma region Actions
