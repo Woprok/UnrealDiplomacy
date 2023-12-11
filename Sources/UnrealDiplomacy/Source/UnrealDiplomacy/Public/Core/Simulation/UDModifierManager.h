@@ -56,6 +56,13 @@ public:
 	 */
 	bool HasFactionModifier(const TObjectPtr<UUDFactionState>& faction, FUDModifierData searchedModifier) const;
 	/**
+	 * Checks if specified faction modifier on a specified faction is present and returns his ActionId.
+	 * This requires modifier that would be applied amd will use value compare.
+	 * See FUDModifierData::IsTypeTargetEqual
+	 * Warning this will return InvalidActionId if modifier was not found!
+	 */
+	int32 GetFactionModifierActionId(const TObjectPtr<UUDFactionState>& faction, FUDModifierData searchedModifier) const;
+	/**
 	 * Get all modifiers with the specified Id that are currently present on the specified faction.
 	 */
 	TArray<FUDModifierData> GetAllFactionModifiers(const TObjectPtr<UUDFactionState>& faction, int32 modifierId);

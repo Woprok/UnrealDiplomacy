@@ -192,6 +192,19 @@ bool UUDModifierManager::HasTileModifier(const TObjectPtr<UUDTileState>& tile, F
 	return false;
 }
 
+int32 UUDModifierManager::GetFactionModifierActionId(const TObjectPtr<UUDFactionState>& faction, FUDModifierData searchedModifier) const
+{
+	// Find
+	const auto& found = faction->Modifiers.FindByPredicate(
+		[&searchedModifier](const FUDModifierData& item) { return item.IsTypeTargetEqual(searchedModifier); }
+	);
+	if (found)
+	{
+		return found->ActionUniqueId;
+	}
+	return UUDGlobalData::InvalidActionId;
+}
+
 bool UUDModifierManager::HasFactionModifier(const TObjectPtr<UUDFactionState>& faction, FUDModifierData searchedModifier) const
 {	
 	// Find

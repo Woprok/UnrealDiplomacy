@@ -69,6 +69,9 @@
 #include "Core/Simulation/Actions/UDGameActionTileTake.h"
 #include "Core/Simulation/Actions/UDGameActionTileTransfer.h"
 #include "Core/Simulation/Actions/UDGameActionThroneSupport.h"
+#include "Core/Simulation/Actions/UDGameActionThroneSupportCancel.h"
+#include "Core/Simulation/Actions/UDGameActionMilitarySupport.h"
+#include "Core/Simulation/Actions/UDGameActionMilitarySupportCancel.h"
 #include "Core/Simulation/Actions/UDGameActionNone.h"
 #include "Core/Simulation/Actions/UDGameActionRumour.h"
 #include "Core/Simulation/Actions/UDGameActionBurglary.h"
@@ -163,6 +166,9 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetGameActions(U
 		NewObject<UUDGameActionTileTake>(parent),
 		NewObject<UUDGameActionTileTransfer>(parent),
 		NewObject<UUDGameActionThroneSupport>(parent),
+		NewObject<UUDGameActionThroneSupportCancel>(parent),
+		NewObject<UUDGameActionMilitarySupport>(parent),
+		NewObject<UUDGameActionMilitarySupportCancel>(parent),
 		NewObject<UUDGameActionNone>(parent),
 		NewObject<UUDGameActionRumour>(parent),
 		NewObject<UUDGameActionBurglary>(parent),
