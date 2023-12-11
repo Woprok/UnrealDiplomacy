@@ -8,6 +8,7 @@
 #include "Core/Simulation/UDActionManager.h"
 #include "Core/Simulation/UDModifierManager.h"
 #include "Core/Simulation/UDResourceManager.h"
+#include "Core/Simulation/UDStratagemUseManager.h"
 #include "Core/UDSettingManager.h"
 
 UUDGameInstance::UUDGameInstance()
@@ -15,6 +16,7 @@ UUDGameInstance::UUDGameInstance()
     ActionManagerType = UUDActionManager::StaticClass();
     ModifierManagerType = UUDModifierManager::StaticClass();
     ResourceManagerType = UUDResourceManager::StaticClass();
+    StratagemUseManagerType = UUDStratagemUseManager::StaticClass();
     SettingManagerType = UUDSettingManager::StaticClass();
     UE_LOG(LogTemp, Log, TEXT("UUDGameInstance: Defined static classes for UUDGameInstance."));
 }
@@ -36,12 +38,14 @@ void UUDGameInstance::Init()
     ModifierManager = NewObject<UUDModifierManager>(this, ModifierManagerType);
     ResourceManager = NewObject<UUDResourceManager>(this, ResourceManagerType);
     SettingManager = NewObject<UUDSettingManager>(this, SettingManagerType);
+    StratagemUseManager = NewObject<UUDStratagemUseManager>(this, StratagemUseManagerType);
     // First we initialize these that do not require dependencies.
     ModifierManager->Initialize();
     ResourceManager->Initialize();
     // Finally we finish initialization on action manager.
     ActionManager->SetResourceManager(ResourceManager);
     ActionManager->SetModifierManager(ModifierManager);
+    ActionManager->SetStratagemUseManager(StratagemUseManager);
     // Requires other managers to be present (as actions work over all managers).
     ActionManager->Initialize();
 }
@@ -59,6 +63,11 @@ TWeakObjectPtr<UUDModifierManager> UUDGameInstance::GetModifierManager()
 TWeakObjectPtr<UUDResourceManager> UUDGameInstance::GetResourceManager()
 {
     return ResourceManager;
+}
+
+TWeakObjectPtr<UUDStratagemUseManager> UUDGameInstance::GetStratagemUseManager()
+{
+    return StratagemUseManager;
 }
 
 TWeakObjectPtr<UUDSettingManager> UUDGameInstance::GetSettingManager()

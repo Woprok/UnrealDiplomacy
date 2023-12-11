@@ -6,6 +6,7 @@
 #include "Core/Simulation/UDWorldFactionGenerator.h"
 #include "Core/Simulation/UDModifierManager.h"
 #include "Core/Simulation/UDResourceManager.h"
+#include "Core/Simulation/UDStratagemUseManager.h"
 #include "Core/UDGlobalData.h"
 #include "Core/UDGameInstance.h"
 // Actions
@@ -21,6 +22,11 @@ void UUDActionManager::SetResourceManager(TWeakObjectPtr<UUDResourceManager> man
 	ResourceManager = manager;
 }
 
+void UUDActionManager::SetStratagemUseManager(TWeakObjectPtr<UUDStratagemUseManager> manager)
+{
+	StratagemUseManager = manager;
+}
+
 TWeakObjectPtr<UUDModifierManager> UUDActionManager::GetModifierManager()
 {
 	return ModifierManager;
@@ -29,6 +35,11 @@ TWeakObjectPtr<UUDModifierManager> UUDActionManager::GetModifierManager()
 TWeakObjectPtr<UUDResourceManager> UUDActionManager::GetResourceManager()
 {
 	return ResourceManager;
+}
+
+TWeakObjectPtr<UUDStratagemUseManager> UUDActionManager::GetStratagemUseManager()
+{
+	return StratagemUseManager;
 }
 
 TScriptInterface<IUDActionInterface> UUDActionManager::GetAction(int32 actionTypeId)

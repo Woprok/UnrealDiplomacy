@@ -6,10 +6,12 @@
 #include "Core/Simulation/Modifiers/UDDefaultModifierInvalid.h"
 #include "Core/Simulation/Modifiers/UDTileModifier.h"
 #include "Core/Simulation/Modifiers/UDTileModifierPermitExploit.h"
+#include "Core/Simulation/Modifiers/UDTileModifierStratagemUsed.h"
 #include "Core/Simulation/Modifiers/UDFactionModifier.h"
 #include "Core/Simulation/Modifiers/UDFactionModifierThroneSupport.h"
-#include "Core/Simulation/Modifiers/UDFactionModifierMilitarySupport.h"
 #include "Core/Simulation/Modifiers/UDFactionModifierStratagemShare.h"
+#include "Core/Simulation/Modifiers/UDFactionModifierMilitarySupport.h"
+#include "Core/Simulation/Modifiers/UDFactionModifierStratagemUsed.h"
 
 TArray<TScriptInterface<IUDModifierInterface>> UUDModifierDatabase::GetDefaultModifiers(UObject* parent)
 {
@@ -24,6 +26,7 @@ TArray<TScriptInterface<IUDModifierInterface>> UUDModifierDatabase::GetTileModif
 	return {
 		//NewObject<UUDTileModifier>(parent),
 		NewObject<UUDTileModifierPermitExploit>(parent),
+		NewObject<UUDTileModifierStratagemUsed>(parent),
 	};
 }
 
@@ -34,5 +37,6 @@ TArray<TScriptInterface<IUDModifierInterface>> UUDModifierDatabase::GetFactionMo
 		NewObject<UUDFactionModifierThroneSupport>(parent),
 		NewObject<UUDFactionModifierMilitarySupport>(parent),
 		NewObject<UUDFactionModifierStratagemShare>(parent),
+		NewObject<UUDFactionModifierStratagemUsed>(parent),
 	};
 }

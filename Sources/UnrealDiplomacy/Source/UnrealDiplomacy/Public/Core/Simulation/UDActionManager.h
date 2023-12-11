@@ -13,6 +13,7 @@ class UUDWorldGenerator;
 class UUDWorldFactionGenerator;
 class UUDModifierManager;
 class UUDResourceManager;
+class UUDStratagemUseManager;
 
 /**
  * Manages all actions that are allowed to execute.
@@ -31,10 +32,14 @@ public:
 	void SetModifierManager(TWeakObjectPtr<UUDModifierManager> manager);
 	/** Sets inner instance of resource manager */
 	void SetResourceManager(TWeakObjectPtr<UUDResourceManager> manager);
+	/** Sets inner instance of stratagem use manager */
+	void SetStratagemUseManager(TWeakObjectPtr<UUDStratagemUseManager> manager);
 	/** Retrieves inner instance of modifier manager */
 	TWeakObjectPtr<UUDModifierManager> GetModifierManager();
 	/** Retrieves inner instance of resource manager */
 	TWeakObjectPtr<UUDResourceManager> GetResourceManager();
+	/** Retrieves inner instance of stratagem use manager */
+	TWeakObjectPtr<UUDStratagemUseManager> GetStratagemUseManager();
 public:
 	/**
 	 * Returns Action associated with the supplied Id.
@@ -114,6 +119,9 @@ protected:
 	/** Resource Manager shared by actions. */
 	UPROPERTY()
 	TWeakObjectPtr<UUDResourceManager> ResourceManager = nullptr;
+	/** StratagemUse Manager shared by actions. */
+	UPROPERTY()
+	TWeakObjectPtr<UUDStratagemUseManager> StratagemUseManager = nullptr;
 	/** Enables blueprint defined and overrides for registration. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actions")
 	TArray<TSubclassOf<UObject>> BlueprintActions;

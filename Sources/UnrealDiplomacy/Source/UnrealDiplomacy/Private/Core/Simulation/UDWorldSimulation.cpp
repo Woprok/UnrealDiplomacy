@@ -12,6 +12,7 @@
 #include "Core/Simulation/UDWorldState.h"
 #include "Core/Simulation/UDWorldGenerator.h"
 #include "Core/Simulation/UDModifierManager.h"
+#include "Core/Simulation/UDStratagemUseManager.h"
 #include "Core/Simulation/UDActionInterface.h"
 #include "Core/Simulation/UDActionHandlingInterface.h"
 #include "Core/Simulation/UDWorldState.h"
@@ -24,6 +25,7 @@ void AUDWorldSimulation::Initialize(TWeakObjectPtr<UUDSettingManager> settingMan
 	NextUniqueActionId = UUDGlobalData::FirstUseableActionId;
 	ActionManager = actionManager;
 	SettingManager = settingManager;
+	StratagemUseManager = ActionManager->GetStratagemUseManager();
 	
 	Arbiter = NewObject<UUDWorldArbiter>(this);
 	Arbiter->SetModifierManager(ActionManager->GetModifierManager());
@@ -194,6 +196,12 @@ void AUDWorldSimulation::CheckAndExecuteAction(FUDActionData& newAction, bool in
 		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Executor halted for action type id(%d) due to executor type id(%d)."),
 			newAction.ActionTypeId, actionExecutor->GetId());
 		return;
+	}
+
+	// Check stratagem rules, if bypass is not true
+	if (!inheritedBypass)
+	{
+		StratagemUseManager->DoMagic();
 	}
 
 	// Prepare action.
