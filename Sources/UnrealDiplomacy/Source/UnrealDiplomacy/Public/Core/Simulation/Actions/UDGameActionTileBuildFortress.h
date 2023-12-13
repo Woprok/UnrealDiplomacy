@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Core/Simulation/Actions/UDGameAction.h"
-#include "UDGameActionTileRaid.generated.h"
+#include "UDGameActionTileBuildFortress.generated.h"
 
 /**
- * Invoker will raid targets tile.
+ * Invoker will build fortress on specified tile.
  */
 UCLASS(Blueprintable, BlueprintType)
-class UNREALDIPLOMACY_API UUDGameActionTileRaid : public UUDGameAction
+class UNREALDIPLOMACY_API UUDGameActionTileBuildFortress : public UUDGameAction
 {
 	GENERATED_BODY()
 public:
@@ -18,14 +18,12 @@ public:
 	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual int32 GetId() const override { return ActionTypeId; };
-	virtual int32 GetParameterCount() const override { return FUDGameDataTile::ParameterCount; };
+	virtual int32 GetParameterCount() const override { return FUDGameDataTarget::ParameterCount; };
+	virtual void SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager) override;
 	virtual FUDActionPresentation GetPresentation() const override;
-	virtual void SetResourceManager(TWeakObjectPtr<UUDResourceManager> resourceManager) override;
 public:
-	static const int32 ActionTypeId = 2010;
+	static const int32 ActionTypeId = 2020;
 protected:
 	UPROPERTY()
-	TWeakObjectPtr<UUDResourceManager> ResourceManager = nullptr;
-	UPROPERTY()
-	int32 BaseGain = 50;
+	TWeakObjectPtr<UUDModifierManager> ModifierManager = nullptr;
 };

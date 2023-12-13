@@ -1,59 +1,62 @@
 // Copyright Miroslav Valach
-// TODO proper mechanic for raid that is actually correct mathematically as /2 *2 might not work as intended
-// TODO add backup for revert
 
-#include "Core/Simulation/Actions/UDGameActionTileRaid.h"
+#include "Core/Simulation/Actions/UDGameActionTileBuildFortress.h"
 #include "Core/UDGlobalData.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDWorldState.h"
-#include "Core/Simulation/UDResourceManager.h"
+#include "Core/Simulation/UDModifierManager.h"
+#include "Core/Simulation/UDModifierData.h"
+#include "Core/Simulation/Modifiers/UDTileModifierBuildingFortress.h"
 
-bool UUDGameActionTileRaid::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
+bool UUDGameActionTileBuildFortress::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	FUDGameDataTile data(action.ValueParameters);
-	FIntPoint tile(data.X, data.Y);
-	bool isNotOwner = world->Map->GetTile(tile)->OwnerUniqueId != action.InvokerFactionId;
-	return IUDActionInterface::CanExecute(action, world) && isNotOwner;
+	FUDGameDataTarget data(action.ValueParameters);
+	const TObjectPtr<UUDFactionState>& faction = world->Factions[data.TargetId];
+	FUDModifierData modifierData = FUDModifierData(
+		UUDTileModifierBuildingFortress::ModifierTypeId, action.UniqueId,
+		action.InvokerFactionId, data.TargetId
+	);
+
+	bool isNotSelfTargeting = action.InvokerFactionId != data.TargetId;
+	bool isNotSupporting = !ModifierManager->HasFactionModifier(faction, modifierData);
+	return IUDActionInterface::CanExecute(action, world) && isNotSupporting && isNotSelfTargeting;
 }
 
-void UUDGameActionTileRaid::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
+void UUDGameActionTileBuildFortress::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Execute(action, world);
-	// Raid is conducted.
-	FUDGameDataTile data(action.ValueParameters);
-	FIntPoint tile(data.X, data.Y);
-
-	const TObjectPtr<UUDTileState>& editedTile = world->Map->GetTile(tile);
-
-	int32 resourceType = editedTile->ResourceType;
-	editedTile->ResourceStockpile /= 2;
-
-	ResourceManager->Add(world->Factions[action.InvokerFactionId], resourceType, BaseGain);
+	// Takeover the empty throne.
+	FUDGameDataTarget data(action.ValueParameters);
+	const TObjectPtr<UUDFactionState>& faction = world->Factions[data.TargetId];
+	FUDModifierData modifierData = FUDModifierData(
+		UUDTileModifierBuildingFortress::ModifierTypeId, action.UniqueId,
+		action.InvokerFactionId, data.TargetId
+	);
+	ModifierManager->CreateFactionModifier(faction, modifierData);
 }
 
-void UUDGameActionTileRaid::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
+void UUDGameActionTileBuildFortress::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Revert(action, world);
-	// Raid is reverted.
-	FUDGameDataTile data(action.ValueParameters);
-	FIntPoint tile(data.X, data.Y);
-
-	const TObjectPtr<UUDTileState>& editedTile = world->Map->GetTile(tile);
-
-	int32 resourceType = editedTile->ResourceType;
-	editedTile->ResourceStockpile *= 2;
-
-	ResourceManager->Substract(world->Factions[action.InvokerFactionId], resourceType, BaseGain);
+	// Rollback to the empty throne.
+	FUDGameDataTarget data(action.ValueParameters);
+	const TObjectPtr<UUDFactionState>& faction = world->Factions[data.TargetId];
+	ModifierManager->RemoveFactionModifier(faction, action.UniqueId);
 }
 
-#define LOCTEXT_NAMESPACE "TileRaid"
-FUDActionPresentation UUDGameActionTileRaid::GetPresentation() const
+void UUDGameActionTileBuildFortress::SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager)
 {
-	if (GetId() != UUDGameActionTileRaid::ActionTypeId)
+	ModifierManager = modifierManager;
+}
+
+#define LOCTEXT_NAMESPACE "TileBuildFortress"
+FUDActionPresentation UUDGameActionTileBuildFortress::GetPresentation() const
+{
+	if (GetId() != UUDGameActionTileBuildFortress::ActionTypeId)
 		return Super::GetPresentation();
 	FUDActionPresentation presentation = FUDActionPresentation();
 	presentation.ActionId = GetId();
-	presentation.Name = FText(LOCTEXT("TileRaid", "Tile Raid")).ToString();
+	presentation.Name = FText(LOCTEXT("TileBuildFortress", "Tile Build Fortress")).ToString();
 	presentation.Tags.Append(
 		{
 			UD_ACTION_TAG_VALID,
@@ -65,18 +68,13 @@ FUDActionPresentation UUDGameActionTileRaid::GetPresentation() const
 		}
 	);
 
-	presentation.MessageContentFormat = FText(LOCTEXT("TileRaid",
-		"Faction [{INVOKER}] raids province [{TILE}] owned by [{TARGET}]."
+	presentation.MessageContentFormat = FText(LOCTEXT("TileBuildFortress",
+		"Faction [{INVOKER}] builds Fortress on province [{TILE}] owned by [{TARGET}]."
 	)).ToString();
-	presentation.DealContentFormat = FText(LOCTEXT("TileRaid",
-		"Faction [{INVOKER}] will raid province [{TILE}] owned by [{TARGET}]."
+	presentation.DealContentFormat = FText(LOCTEXT("TileBuildFortress",
+		"Faction [{INVOKER}] will build Fortress on province [{TILE}] owned by [{TARGET}]."
 	)).ToString();
 
 	return presentation;
 }
 #undef LOCTEXT_NAMESPACE
-
-void UUDGameActionTileRaid::SetResourceManager(TWeakObjectPtr<UUDResourceManager> resourceManager)
-{
-	ResourceManager = resourceManager;
-}
