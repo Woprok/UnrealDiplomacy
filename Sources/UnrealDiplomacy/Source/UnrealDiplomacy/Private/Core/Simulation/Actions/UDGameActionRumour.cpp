@@ -11,8 +11,7 @@
 bool UUDGameActionRumour::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
 	TObjectPtr<UUDFactionState> spender = world->Factions[action.InvokerFactionId];
-	bool canSpent = ResourceManager->CanSpend(spender, UUDGameResourceGold::ResourceId, InvokerGoldCost);
-	return IUDActionInterface::CanExecute(action, world) && canSpent;
+	return IUDActionInterface::CanExecute(action, world);
 }
 
 void UUDGameActionRumour::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -22,7 +21,6 @@ void UUDGameActionRumour::Execute(const FUDActionData& action, TObjectPtr<UUDWor
 	FUDGameDataTarget data(action.ValueParameters);
 
 	ResourceManager->Substract(world->Factions[data.TargetId], UUDGameResourceReputation::ResourceId, TargetReputationPenalty);
-	ResourceManager->Substract(world->Factions[action.InvokerFactionId], UUDGameResourceGold::ResourceId, InvokerGoldCost);
 }
 
 void UUDGameActionRumour::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -32,7 +30,6 @@ void UUDGameActionRumour::Revert(const FUDActionData& action, TObjectPtr<UUDWorl
 	FUDGameDataTarget data(action.ValueParameters);
 
 	ResourceManager->Add(world->Factions[data.TargetId], UUDGameResourceReputation::ResourceId, TargetReputationPenalty);
-	ResourceManager->Add(world->Factions[action.InvokerFactionId], UUDGameResourceGold::ResourceId, InvokerGoldCost);
 }
 
 #define LOCTEXT_NAMESPACE "Rumour"

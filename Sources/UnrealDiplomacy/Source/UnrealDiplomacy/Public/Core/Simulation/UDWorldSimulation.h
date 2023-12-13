@@ -154,6 +154,7 @@ public:
 	 * By default this does not bypass stratagem checks, thus it requires action to change this for continuations.
 	 */
 	void CheckAndExecuteAction(FUDActionData& newAction, bool inheritedBypass = false);
+	void RunStratagemConsequences(TArray<FUDActionData>& consequences);
 	/**
 	 * Delegate for broadcast of an action being executed, thus resulting in state changing.
 	 * This is executed after the other broadcast. 

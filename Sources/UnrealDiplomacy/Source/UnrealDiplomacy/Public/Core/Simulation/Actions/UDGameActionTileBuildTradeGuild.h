@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Core/Simulation/Actions/UDGameAction.h"
-#include "UDGameActionRumour.generated.h"
+#include "UDGameActionTileRaid.generated.h"
 
 /**
- * Invoking player will reduce target reputation for small cost.
+ * Invoker will raid targets tile.
  */
 UCLASS(Blueprintable, BlueprintType)
-class UNREALDIPLOMACY_API UUDGameActionRumour : public UUDGameAction
+class UNREALDIPLOMACY_API UUDGameActionTileRaid : public UUDGameAction
 {
 	GENERATED_BODY()
 public:
@@ -18,14 +18,14 @@ public:
 	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual int32 GetId() const override { return ActionTypeId; };
-	virtual int32 GetParameterCount() const override { return FUDGameDataTarget::ParameterCount; };
+	virtual int32 GetParameterCount() const override { return FUDGameDataTile::ParameterCount; };
 	virtual FUDActionPresentation GetPresentation() const override;
 	virtual void SetResourceManager(TWeakObjectPtr<UUDResourceManager> resourceManager) override;
 public:
-	static const int32 ActionTypeId = 2009;
+	static const int32 ActionTypeId = 2010;
 protected:
 	UPROPERTY()
 	TWeakObjectPtr<UUDResourceManager> ResourceManager = nullptr;
 	UPROPERTY()
-	int32 TargetReputationPenalty = 25;
+	int32 BaseGain = 50;
 };

@@ -198,12 +198,22 @@ void AUDWorldSimulation::CheckAndExecuteAction(FUDActionData& newAction, bool in
 		return;
 	}
 
-	// Check stratagem rules, if bypass is not true
-	if (!inheritedBypass)
+	// Now we check stratagem activation rules.
+	// if bypass is true or target action does not meet requiremets e.g. not being stratagem we skip
+	// otherwise we will verify if we can execute
+	FUDActionPresentation details = actionExecutor->GetPresentation();
+	if (!inheritedBypass && StratagemOperationManager->IsStratagemOrHasCost(details))
 	{
-		if (StratagemOperationManager->CanDoMagic(gaiaFactionState, actionExecutor, newAction))
+		if (StratagemOperationManager->CanStratagemBeActivated(gaiaFactionState, details, newAction))
 		{
-			StratagemOperationManager->DoMagic(gaiaFactionState, actionExecutor, newAction);
+			auto consequences = StratagemOperationManager->CreateConsequences(gaiaFactionState, details, newAction);	
+			RunStratagemConsequences(consequences);
+		}
+		else
+		{
+			// This can't be executed, faction or tile prevents the execution.
+			UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Stratagem Operation Manager halted execution for Action UID(%d)."), newAction.UniqueId);
+			return;
 		}
 	}
 
@@ -234,7 +244,6 @@ void AUDWorldSimulation::CheckAndExecuteAction(FUDActionData& newAction, bool in
 	UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: CheckAndExecuteAction Ended for Action UID(%d)."), 
 		newAction.UniqueId);
 }
-
 #pragma endregion
 
 #pragma region CheckAndExecute Helpers
@@ -257,6 +266,16 @@ void AUDWorldSimulation::CreateActionBackup(FUDActionData& newAction,
 		actionExecutor->Backup(newAction, gaiaFactionState);
 	}
 }
+
+void AUDWorldSimulation::RunStratagemConsequences(TArray<FUDActionData>& consequences)
+{
+	for (auto& action : consequences)
+	{
+		// consequences will always skip bypass as they are not limited by anything.
+		CheckAndExecuteAction(action, true);
+	}
+}
+
 void AUDWorldSimulation::RunActionContinuations(FUDActionData& newAction,
 	TScriptInterface<IUDActionInterface>& actionExecutor,
 	TObjectPtr<UUDWorldState>& gaiaFactionState,
