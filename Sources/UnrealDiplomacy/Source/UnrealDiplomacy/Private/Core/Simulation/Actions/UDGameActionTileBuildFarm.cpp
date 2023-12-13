@@ -18,7 +18,7 @@ bool UUDGameActionTileBuildFarm::CanExecute(const FUDActionData& action, TObject
 	);
 
 	bool isNotSelfTargeting = action.InvokerFactionId != data.TargetId;
-	bool isNotSupporting = !ModifierManager->HasFactionModifier(faction, modifierData);
+	bool isNotSupporting = !ModifierManager->HasValueEqualFactionModifier(faction, modifierData);
 	return IUDActionInterface::CanExecute(action, world) && isNotSupporting && isNotSelfTargeting;
 }
 
@@ -61,7 +61,7 @@ FUDActionPresentation UUDGameActionTileBuildFarm::GetPresentation() const
 		{
 			UD_ACTION_TAG_VALID,
 			UD_ACTION_TAG_STRATAGEM,
-			UD_ACTION_TAG_STRATAGEM_COST_2,
+			UD_ACTION_TAG_STRATAGEM_COST_1,
 			UD_ACTION_TAG_TILE_INTERACTION,
 			UD_ACTION_TAG_PARAMETER_TILE,
 			UD_ACTION_TAG_DECISION_DIRECT,

@@ -18,7 +18,7 @@ bool UUDGameActionTileBuildManufactury::CanExecute(const FUDActionData& action, 
 	);
 
 	bool isNotSelfTargeting = action.InvokerFactionId != data.TargetId;
-	bool isNotSupporting = !ModifierManager->HasFactionModifier(faction, modifierData);
+	bool isNotSupporting = !ModifierManager->HasValueEqualFactionModifier(faction, modifierData);
 	return IUDActionInterface::CanExecute(action, world) && isNotSupporting && isNotSelfTargeting;
 }
 

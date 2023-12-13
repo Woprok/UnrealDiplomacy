@@ -206,7 +206,7 @@ void AUDWorldSimulation::CheckAndExecuteAction(FUDActionData& newAction, bool in
 	{
 		if (StratagemOperationManager->CanStratagemBeActivated(gaiaFactionState, details, newAction))
 		{
-			auto consequences = StratagemOperationManager->CreateConsequences(gaiaFactionState, details, newAction);	
+			auto consequences = StratagemOperationManager->CreateConsequences(details, newAction);	
 			RunStratagemConsequences(consequences);
 		}
 		else

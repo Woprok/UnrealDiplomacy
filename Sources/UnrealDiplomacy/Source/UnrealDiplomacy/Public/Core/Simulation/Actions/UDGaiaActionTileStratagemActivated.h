@@ -17,7 +17,7 @@ public:
 	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual int32 GetId() const override { return ActionTypeId; };
-	virtual int32 GetParameterCount() const override { return FUDGaiaDataTileAction::ParameterCount; };
+	virtual int32 GetParameterCount() const override { return FUDGaiaDataTargetTileAction::ParameterCount; };
 	virtual void SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager) override;
 public:
 	static const int32 ActionTypeId = 1005;

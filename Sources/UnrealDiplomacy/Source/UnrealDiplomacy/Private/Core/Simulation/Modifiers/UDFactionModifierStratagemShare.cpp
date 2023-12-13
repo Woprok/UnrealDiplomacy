@@ -13,10 +13,11 @@ FUDModifierPresentation UUDFactionModifierStratagemShare::GetPresentation() cons
 		{
 			UD_MODIFIER_TAG_VALID,
 			UD_MODIFIER_TAG_TYPE_FACTION,
+			UD_MODIFIER_TAG_PARAMETER_ACTION,
 		}
 	);
 	presentation.ModifierDescriptionFormat = FText(LOCTEXT("StratagemShare",
-		"Faction [{INVOKER}] shares stratagem with [{TARGET}]."
+		"Faction [{INVOKER}] shares stratagem [{ACTION}] with [{TARGET}]."
 	)).ToString();
 
 	return presentation;

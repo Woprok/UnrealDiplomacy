@@ -86,6 +86,9 @@ class UUDResourceManager;
 // Defines action that can be executed on demand rejection.
 #define UD_ACTION_TAG_DECISION_CONSEQUENCE 24
 
+// Specifies for this action to have at least default resource cost
+#define UD_ACTION_TAG_RESOURCE_COST 30
+
 // This action is hidden from all UI, even if it would be normally visible.
 //#define UD_ACTION_TAG_HIDDEN 30
 

@@ -18,7 +18,7 @@ bool UUDGameActionThroneSupportCancel::CanExecute(const FUDActionData& action, T
 	);
 
 	bool isNotSelfTargeting = action.InvokerFactionId != data.TargetId;
-	bool isSupporting = ModifierManager->HasFactionModifier(faction, modifierData);
+	bool isSupporting = ModifierManager->HasValueEqualFactionModifier(faction, modifierData);
 	return IUDActionInterface::CanExecute(action, world) && isSupporting && isNotSelfTargeting;
 }
 

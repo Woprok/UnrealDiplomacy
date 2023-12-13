@@ -1,19 +1,22 @@
 // Copyright Miroslav Valach
-// TODO proper mechanic for raid that is actually correct mathematically as /2 *2 might not work as intended
-// TODO add backup for revert
 
 #include "Core/Simulation/Actions/UDGameActionTileRaid.h"
 #include "Core/UDGlobalData.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDWorldState.h"
 #include "Core/Simulation/UDResourceManager.h"
+#include "Core/Simulation/UDModifierManager.h"
+#include "Core/Simulation/Modifiers/UDTileModifierBuildingFortress.h"
 
 bool UUDGameActionTileRaid::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
 	FUDGameDataTile data(action.ValueParameters);
 	FIntPoint tile(data.X, data.Y);
-	bool isNotOwner = world->Map->GetTile(tile)->OwnerUniqueId != action.InvokerFactionId;
-	return IUDActionInterface::CanExecute(action, world) && isNotOwner;
+	const TObjectPtr<UUDTileState>& targetTile = world->Map->GetTile(tile);
+	bool isNotOwner = targetTile->OwnerUniqueId != action.InvokerFactionId;
+	bool doesNotHaveFort = ModifierManager->GetAllTileModifiers(targetTile, UUDTileModifierBuildingFortress::ModifierTypeId).Num() <= 0;
+	bool hasResourcesToRaid = targetTile->ResourceStockpile > MinimumForRaid;
+	return IUDActionInterface::CanExecute(action, world) && isNotOwner && doesNotHaveFort && hasResourcesToRaid;
 }
 
 void UUDGameActionTileRaid::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -22,13 +25,14 @@ void UUDGameActionTileRaid::Execute(const FUDActionData& action, TObjectPtr<UUDW
 	// Raid is conducted.
 	FUDGameDataTile data(action.ValueParameters);
 	FIntPoint tile(data.X, data.Y);
-
 	const TObjectPtr<UUDTileState>& editedTile = world->Map->GetTile(tile);
 
-	int32 resourceType = editedTile->ResourceType;
-	editedTile->ResourceStockpile /= 2;
+	int32 maxGain = FMath::Max(MinBaseGain, editedTile->ResourceStockpile * BaseGainPercentage);
+	int32 maxDevastation = FMath::Max(MinBaseDevastation, editedTile->ResourceStockpile * BaseDevastationPercentage);
 
-	ResourceManager->Add(world->Factions[action.InvokerFactionId], resourceType, BaseGain);
+	editedTile->ResourceStockpile = FMath::Max(0, editedTile->ResourceStockpile - maxDevastation);
+
+	ResourceManager->Add(world->Factions[action.InvokerFactionId], editedTile->ResourceType, maxGain);
 }
 
 void UUDGameActionTileRaid::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -37,13 +41,11 @@ void UUDGameActionTileRaid::Revert(const FUDActionData& action, TObjectPtr<UUDWo
 	// Raid is reverted.
 	FUDGameDataTile data(action.ValueParameters);
 	FIntPoint tile(data.X, data.Y);
-
 	const TObjectPtr<UUDTileState>& editedTile = world->Map->GetTile(tile);
 
-	int32 resourceType = editedTile->ResourceType;
-	editedTile->ResourceStockpile *= 2;
+	// TODO proper revert code
 
-	ResourceManager->Substract(world->Factions[action.InvokerFactionId], resourceType, BaseGain);
+	ResourceManager->Substract(world->Factions[action.InvokerFactionId], editedTile->ResourceType, MinBaseGain);
 }
 
 #define LOCTEXT_NAMESPACE "TileRaid"
@@ -75,6 +77,11 @@ FUDActionPresentation UUDGameActionTileRaid::GetPresentation() const
 	return presentation;
 }
 #undef LOCTEXT_NAMESPACE
+
+void UUDGameActionTileRaid::SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager)
+{
+	ModifierManager = modifierManager;
+}
 
 void UUDGameActionTileRaid::SetResourceManager(TWeakObjectPtr<UUDResourceManager> resourceManager)
 {

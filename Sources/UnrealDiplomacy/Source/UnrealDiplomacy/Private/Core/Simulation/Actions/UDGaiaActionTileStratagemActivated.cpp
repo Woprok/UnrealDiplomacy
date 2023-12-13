@@ -12,11 +12,11 @@ void UUDGaiaActionTileStratagemActivated::Execute(const FUDActionData& action, T
 	IUDActionInterface::Execute(action, world);
 	// Add modifier for the action type activated on the tile.
 	// Invoker & Target are same, so we are always using Invoker, in addition we have Tile & Action in params
-	FUDGaiaDataTileAction data(action.ValueParameters);
+	FUDGaiaDataTargetTileAction data(action.ValueParameters);
 	FIntPoint tile(data.X, data.Y);
 	FUDModifierData modifierData = FUDModifierData(
 		UUDTileModifierStratagemActivated::ModifierTypeId, action.UniqueId,
-		action.InvokerFactionId, action.InvokerFactionId, { data.ActionTypeId }
+		data.TargetId, data.TargetId, { data.ActionTypeId }
 	);
 	ModifierManager->CreateTileModifier(world->Map->GetTile(tile), modifierData);
 }
@@ -26,7 +26,7 @@ void UUDGaiaActionTileStratagemActivated::Revert(const FUDActionData& action, TO
 	IUDActionInterface::Revert(action, world);
 	// Remove modifier for the action type activated from tile.
 	// We can use action id (this is not type id!) as we are just reverting... and this runs as normal action.
-	FUDGaiaDataTileAction data(action.ValueParameters);
+	FUDGaiaDataTargetTileAction data(action.ValueParameters);
 	FIntPoint tile(data.X, data.Y);
 	ModifierManager->RemoveTileModifier(world->Map->GetTile(tile), action.UniqueId);
 }

@@ -12,10 +12,10 @@ void UUDGaiaActionFactionStratagemActivated::Execute(const FUDActionData& action
 	IUDActionInterface::Execute(action, world);
 	// Add modifier for the action type activated on the faction.
 	// Invoker & Target are same, so we are always using Invoker, in addition we have Action in params
-	FUDGaiaDataAction data(action.ValueParameters);
+	FUDGaiaDataTargetAction data(action.ValueParameters);
 	FUDModifierData modifierData = FUDModifierData(
 		UUDFactionModifierStratagemActivated::ModifierTypeId, action.UniqueId,
-		action.InvokerFactionId, action.InvokerFactionId, { data.ActionTypeId }
+		data.TargetId, data.TargetId, { data.ActionTypeId }
 	);
 	ModifierManager->CreateFactionModifier(world->Factions[action.InvokerFactionId], modifierData);
 }
@@ -26,7 +26,8 @@ void UUDGaiaActionFactionStratagemActivated::Revert(const FUDActionData& action,
 	// Remove modifier for the action type activated from faction.
 	// We can use action id (this is not type id!) as we are just reverting... and this runs as normal action.
 	// FUDGaiaDataAction data(action.ValueParameters);
-	ModifierManager->RemoveFactionModifier(world->Factions[action.InvokerFactionId], action.UniqueId);
+	FUDGaiaDataTargetAction data(action.ValueParameters);
+	ModifierManager->RemoveFactionModifier(world->Factions[data.TargetId], action.UniqueId);
 }
 
 void UUDGaiaActionFactionStratagemActivated::SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager)

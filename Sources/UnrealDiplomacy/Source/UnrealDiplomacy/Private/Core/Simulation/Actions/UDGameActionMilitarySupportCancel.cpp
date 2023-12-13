@@ -18,7 +18,7 @@ bool UUDGameActionMilitarySupportCancel::CanExecute(const FUDActionData& action,
 	);
 
 	bool isNotSelfTargeting = action.InvokerFactionId != data.TargetId;
-	bool isSupporting = ModifierManager->HasFactionModifier(faction, modifierData);
+	bool isSupporting = ModifierManager->HasValueEqualFactionModifier(faction, modifierData);
 	return IUDActionInterface::CanExecute(action, world) && isSupporting && isNotSelfTargeting;
 }
 

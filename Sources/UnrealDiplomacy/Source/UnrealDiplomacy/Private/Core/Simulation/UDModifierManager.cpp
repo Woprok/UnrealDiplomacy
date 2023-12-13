@@ -195,11 +195,24 @@ void UUDModifierManager::RemoveAllFactionModifiersOfType(const TObjectPtr<UUDFac
 	);
 }
 
-bool UUDModifierManager::HasTileModifier(const TObjectPtr<UUDTileState>& tile, FUDModifierData searchedModifier) const
+bool UUDModifierManager::HasTileModifierOfTypeTarget(const TObjectPtr<UUDTileState>& tile, FUDModifierData searchedModifier) const
 {	
 	// Find
 	const auto& found = tile->Modifiers.FindByPredicate(
 		[&searchedModifier](const FUDModifierData& item) { return item.IsTypeTargetEqual(searchedModifier); }
+	);
+	if (found)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool UUDModifierManager::HasValueEqualTileModifier(const TObjectPtr<UUDTileState>& tile, FUDModifierData searchedModifier) const
+{	
+	// Find
+	const auto& found = tile->Modifiers.FindByPredicate(
+		[&searchedModifier](const FUDModifierData& item) { return item.IsValueEqual(searchedModifier); }
 	);
 	if (found)
 	{
@@ -221,11 +234,24 @@ int32 UUDModifierManager::GetFactionModifierActionId(const TObjectPtr<UUDFaction
 	return UUDGlobalData::InvalidActionId;
 }
 
-bool UUDModifierManager::HasFactionModifier(const TObjectPtr<UUDFactionState>& faction, FUDModifierData searchedModifier) const
+bool UUDModifierManager::HasFactionModifierOfTypeTarget(const TObjectPtr<UUDFactionState>& faction, FUDModifierData searchedModifier) const
 {	
 	// Find
 	const auto& found = faction->Modifiers.FindByPredicate(
 		[&searchedModifier](const FUDModifierData& item) { return item.IsTypeTargetEqual(searchedModifier); }
+	);
+	if (found)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool UUDModifierManager::HasValueEqualFactionModifier(const TObjectPtr<UUDFactionState>& faction, FUDModifierData searchedModifier) const
+{	
+	// Find
+	const auto& found = faction->Modifiers.FindByPredicate(
+		[&searchedModifier](const FUDModifierData& item) { return item.IsValueEqual(searchedModifier); }
 	);
 	if (found)
 	{

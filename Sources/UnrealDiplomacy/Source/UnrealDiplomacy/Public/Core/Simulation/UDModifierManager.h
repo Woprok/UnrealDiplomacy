@@ -56,13 +56,21 @@ public:
 	 * This requires modifier that would be applied amd will use value compare.
 	 * See FUDModifierData::IsTypeTargetEqual
 	 */
-	bool HasTileModifier(const TObjectPtr<UUDTileState>& tile, FUDModifierData searchedModifier) const;
+	bool HasTileModifierOfTypeTarget(const TObjectPtr<UUDTileState>& tile, FUDModifierData searchedModifier) const;
+	/**
+	 * Checks if specified tile modifier on a specified tile is present.
+	 */
+	bool HasValueEqualTileModifier(const TObjectPtr<UUDTileState>& tile, FUDModifierData searchedModifier) const;
 	/**
 	 * Checks if specified faction modifier on a specified faction is present.
 	 * This requires modifier that would be applied amd will use value compare.
 	 * See FUDModifierData::IsTypeTargetEqual
 	 */
-	bool HasFactionModifier(const TObjectPtr<UUDFactionState>& faction, FUDModifierData searchedModifier) const;
+	bool HasFactionModifierOfTypeTarget(const TObjectPtr<UUDFactionState>& faction, FUDModifierData searchedModifier) const;
+	/**
+	 * Checks if specified faction modifier on a specified faction is present.
+	 */
+	bool HasValueEqualFactionModifier(const TObjectPtr<UUDFactionState>& faction, FUDModifierData searchedModifier) const;
 	/**
 	 * Checks if specified faction modifier on a specified faction is present and returns his ActionId.
 	 * This requires modifier that would be applied amd will use value compare.
