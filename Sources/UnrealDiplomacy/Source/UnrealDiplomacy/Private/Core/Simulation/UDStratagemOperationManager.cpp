@@ -121,7 +121,7 @@ bool UUDStratagemOperationManager::HasCost(const TObjectPtr<UUDWorldState>& worl
 		const TObjectPtr<UUDFactionState>& faction = world->Factions[action.InvokerFactionId];
 		canBeUsed = canBeUsed && CanPayActivationCost(faction, StratagemCosts[detail.ActionId].Costs);
 	}
-	else if (detail.Tags.Contains(UD_ACTION_TAG_RESOURCE_COST))
+	else if (detail.Tags.Contains(UD_ACTION_TAG_RESOURCE_COST) || detail.Tags.Contains(UD_ACTION_TAG_STRATAGEM))
 	{
 		const TObjectPtr<UUDFactionState>& faction = world->Factions[action.InvokerFactionId];
 		canBeUsed = canBeUsed && CanPayActivationCost(faction, DefaultStratagemCost.Costs);
@@ -192,7 +192,7 @@ TArray<FUDActionData> UUDStratagemOperationManager::CreateCostConsequences(const
 	{
 		stratagemConsequences.Add(GetActivationCostAction(action.InvokerFactionId, StratagemCosts[detail.ActionId].Costs));
 	}
-	else if (detail.Tags.Contains(UD_ACTION_TAG_RESOURCE_COST))
+	else if (detail.Tags.Contains(UD_ACTION_TAG_RESOURCE_COST) || detail.Tags.Contains(UD_ACTION_TAG_STRATAGEM))
 	{
 		stratagemConsequences.Add(GetActivationCostAction(action.InvokerFactionId, DefaultStratagemCost.Costs));
 	}

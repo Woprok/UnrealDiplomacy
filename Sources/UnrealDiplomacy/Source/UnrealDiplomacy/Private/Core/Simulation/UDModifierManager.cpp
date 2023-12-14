@@ -154,29 +154,19 @@ void UUDModifierManager::CreateFactionModifier(const TObjectPtr<UUDFactionState>
 }
 
 void UUDModifierManager::RemoveTileModifier(const TObjectPtr<UUDTileState>& tile, int32 actionUniqueId)
-{	
-	// Find
-	const auto& found = tile->Modifiers.FindByPredicate(
+{
+	// Find & Delete
+	const auto& found = tile->Modifiers.RemoveAll(
 		[&actionUniqueId](const FUDModifierData& item) { return item.ActionUniqueId == actionUniqueId; }
 	);
-	// Delete
-	if (found)
-	{
-		tile->Modifiers.Remove(*found);
-	}
 }
 
 void UUDModifierManager::RemoveFactionModifier(const TObjectPtr<UUDFactionState>& faction, int32 actionUniqueId)
 {
-	// Find
-	const auto& found = faction->Modifiers.FindByPredicate(
+	// Find & Delete
+	const auto& found = faction->Modifiers.RemoveAll(
 		[&actionUniqueId](const FUDModifierData& item) { return item.ActionUniqueId == actionUniqueId; }
 	);
-	// Delete
-	if (found)
-	{
-		faction->Modifiers.Remove(*found);
-	}
 }
 
 void UUDModifierManager::RemoveAllTileModifiersOfType(const TObjectPtr<UUDTileState>& tile, int32 modifierTypeId)
