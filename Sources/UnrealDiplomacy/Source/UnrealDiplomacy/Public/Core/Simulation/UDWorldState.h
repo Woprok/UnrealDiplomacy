@@ -218,6 +218,12 @@ public:
 	bool HasDecline = false;
 	UPROPERTY(BlueprintReadOnly)
 	EUDDecisionResult Result = EUDDecisionResult::Pending;
+	/** 
+	 * This is hardcoded value for ticking away decisions. 
+	 * If this drops to 0 during DecisionReset it will decline this decision and apply additional ignore penalty.
+	 */
+	UPROPERTY(BlueprintReadOnly)
+	int32 Lifetime = 2;
 public:
 	/**
 	 * Equality over all fields.

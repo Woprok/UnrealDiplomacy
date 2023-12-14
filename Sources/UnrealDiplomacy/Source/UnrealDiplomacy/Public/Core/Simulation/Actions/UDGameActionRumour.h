@@ -27,5 +27,5 @@ protected:
 	UPROPERTY()
 	TWeakObjectPtr<UUDResourceManager> ResourceManager = nullptr;
 	UPROPERTY()
-	int32 TargetReputationPenalty = 25;
+	int32 TargetReputationPenalty = 5;
 };

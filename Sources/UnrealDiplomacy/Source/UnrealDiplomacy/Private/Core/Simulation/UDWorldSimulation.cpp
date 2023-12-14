@@ -220,7 +220,8 @@ void AUDWorldSimulation::CheckAndExecuteAction(FUDActionData& newAction, bool in
 	}
 
 	// Checks cost of the actions. Always appliable.
-	if (StratagemOperationManager->HasCost(gaiaFactionState, details, newAction))
+	bool hasCost = StratagemOperationManager->HasCost(gaiaFactionState, details, newAction);
+	if (hasCost)
 	{
 		auto consequences = StratagemOperationManager->CreateCostConsequences(details, newAction);
 		RunStratagemConsequences(consequences);

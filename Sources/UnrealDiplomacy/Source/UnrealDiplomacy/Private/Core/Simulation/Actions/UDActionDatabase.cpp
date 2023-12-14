@@ -10,6 +10,7 @@
 #include "Core/Simulation/Actions/UDDealAction.h"
 #include "Core/Simulation/Actions/UDDealActionContractCreate.h"
 #include "Core/Simulation/Actions/UDDealActionContractExecute.h"
+#include "Core/Simulation/Actions/UDDealActionContractReputationBonus.h"
 #include "Core/Simulation/Actions/UDDealActionContractPointAccept.h"
 #include "Core/Simulation/Actions/UDDealActionContractPointReject.h"
 #include "Core/Simulation/Actions/UDDealActionContractPointSabotage.h"
@@ -63,6 +64,7 @@
 #include "Core/Simulation/Actions/UDGaiaActionStratagemActivatedReset.h"
 #include "Core/Simulation/Actions/UDGaiaActionStratagemResourceCost.h"
 #include "Core/Simulation/Actions/UDGaiaActionThroneReceive.h"
+#include "Core/Simulation/Actions/UDGaiaActionDecisionReset.h"
 // Game
 #include "Core/Simulation/Actions/UDGameAction.h"
 #include "Core/Simulation/Actions/UDGameActionGift.h"
@@ -167,6 +169,7 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetGaiaActions(U
 		NewObject<UUDGaiaActionStratagemActivatedReset>(parent),
 		NewObject<UUDGaiaActionStratagemResourceCost>(parent),
 		NewObject<UUDGaiaActionThroneReceive>(parent),
+		NewObject<UUDGaiaActionDecisionReset>(parent),
 	};
 }
 
@@ -207,6 +210,7 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetDealActions(U
 		//NewObject<UUDDealAction>(parent),
 		NewObject<UUDDealActionContractCreate>(parent),
 		NewObject<UUDDealActionContractExecute>(parent),
+		NewObject<UUDDealActionContractReputationBonus>(parent),
 		NewObject<UUDDealActionContractPointAccept>(parent),
 		NewObject<UUDDealActionContractPointReject>(parent),
 		NewObject<UUDDealActionContractPointSabotage>(parent),

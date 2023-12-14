@@ -4,6 +4,7 @@
 #include "Core/UDGlobalData.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDWorldState.h"
+#include "Core/Simulation/Actions/UDDealActionContractReputationBonus.h"
 
 bool UUDDealActionContractExecute::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
@@ -55,5 +56,12 @@ TArray<FUDActionData> UUDDealActionContractExecute::GetAllContractedActions(TObj
 			finalActionList.Add(wrappedAction.Action);
 		}
 	}
+
+	finalActionList.Add(FUDActionData(
+		UUDDealActionContractReputationBonus::ActionTypeId,
+		world->Deals[dealUniqueId]->OwnerUniqueId,
+		{ dealUniqueId }
+	));
+
 	return finalActionList;
 }
