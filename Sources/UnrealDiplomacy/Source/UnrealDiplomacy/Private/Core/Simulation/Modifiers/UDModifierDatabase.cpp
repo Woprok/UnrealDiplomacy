@@ -18,6 +18,7 @@
 #include "Core/Simulation/Modifiers/UDFactionModifierStratagemShare.h"
 #include "Core/Simulation/Modifiers/UDFactionModifierMilitarySupport.h"
 #include "Core/Simulation/Modifiers/UDFactionModifierStratagemActivated.h"
+#include "Core/Simulation/Modifiers/UDFactionModifierThroneUsurper.h"
 
 TArray<TScriptInterface<IUDModifierInterface>> UUDModifierDatabase::GetDefaultModifiers(UObject* parent)
 {
@@ -50,5 +51,6 @@ TArray<TScriptInterface<IUDModifierInterface>> UUDModifierDatabase::GetFactionMo
 		NewObject<UUDFactionModifierMilitarySupport>(parent),
 		NewObject<UUDFactionModifierStratagemShare>(parent),
 		NewObject<UUDFactionModifierStratagemActivated>(parent),
+		NewObject<UUDFactionModifierThroneUsurper>(parent),
 	};
 }

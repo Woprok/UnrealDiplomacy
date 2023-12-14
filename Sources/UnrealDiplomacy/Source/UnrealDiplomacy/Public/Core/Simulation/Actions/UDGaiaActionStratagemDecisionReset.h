@@ -3,25 +3,24 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Core/Simulation/Actions/UDGameAction.h"
-#include "UDGameActionThroneUsurp.generated.h"
+#include "Core/Simulation/Actions/UDGaiaAction.h"
+#include "UDGaiaActionStratagemActivatedReset.generated.h"
 
 /**
- * Enables player to usurp the throne.
+ * Resets all stratagem use modifiers.
  */
 UCLASS(Blueprintable, BlueprintType)
-class UNREALDIPLOMACY_API UUDGameActionThroneUsurp : public UUDGameAction
+class UNREALDIPLOMACY_API UUDGaiaActionStratagemActivatedReset : public UUDGaiaAction
 {
 	GENERATED_BODY()
 public:
-	virtual bool CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const override;
 	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual int32 GetId() const override { return ActionTypeId; };
+	//virtual int32 GetParameterCount() const override { return FUDGaiaDataAmount::ParameterCount; };
 	virtual void SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager) override;
-	virtual FUDActionPresentation GetPresentation() const override;
 public:
-	static const int32 ActionTypeId = 2001;
+	static const int32 ActionTypeId = 1007;
 protected:
 	UPROPERTY()
 	TWeakObjectPtr<UUDModifierManager> ModifierManager = nullptr;

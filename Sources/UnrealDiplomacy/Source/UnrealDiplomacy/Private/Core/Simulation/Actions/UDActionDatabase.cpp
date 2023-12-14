@@ -62,14 +62,15 @@
 #include "Core/Simulation/Actions/UDGaiaActionTileStratagemActivated.h"
 #include "Core/Simulation/Actions/UDGaiaActionStratagemActivatedReset.h"
 #include "Core/Simulation/Actions/UDGaiaActionStratagemResourceCost.h"
+#include "Core/Simulation/Actions/UDGaiaActionThroneReceive.h"
 // Game
 #include "Core/Simulation/Actions/UDGameAction.h"
 #include "Core/Simulation/Actions/UDGameActionGift.h"
 #include "Core/Simulation/Actions/UDGameActionPermitTileExploit.h"
 #include "Core/Simulation/Actions/UDGameActionThroneAbdicate.h"
-#include "Core/Simulation/Actions/UDGameActionThroneReceive.h"
 #include "Core/Simulation/Actions/UDGameActionThroneUsurp.h"
 #include "Core/Simulation/Actions/UDGameActionThroneContest.h"
+#include "Core/Simulation/Actions/UDGameActionThroneLiberate.h"
 #include "Core/Simulation/Actions/UDGameActionTileExploit.h"
 #include "Core/Simulation/Actions/UDGameActionTileTake.h"
 #include "Core/Simulation/Actions/UDGameActionTileTransfer.h"
@@ -165,6 +166,7 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetGaiaActions(U
 		NewObject<UUDGaiaActionTileStratagemActivated>(parent),
 		NewObject<UUDGaiaActionStratagemActivatedReset>(parent),
 		NewObject<UUDGaiaActionStratagemResourceCost>(parent),
+		NewObject<UUDGaiaActionThroneReceive>(parent),
 	};
 }
 
@@ -175,9 +177,9 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetGameActions(U
 		NewObject<UUDGameActionGift>(parent),
 		NewObject<UUDGameActionPermitTileExploit>(parent),
 		NewObject<UUDGameActionThroneAbdicate>(parent),
-		NewObject<UUDGameActionThroneReceive>(parent),
 		NewObject<UUDGameActionThroneUsurp>(parent),
 		NewObject<UUDGameActionThroneContest>(parent),
+		NewObject<UUDGameActionThroneLiberate>(parent),
 		NewObject<UUDGameActionTileExploit>(parent),
 		NewObject<UUDGameActionTileTake>(parent),
 		NewObject<UUDGameActionTileTransfer>(parent),

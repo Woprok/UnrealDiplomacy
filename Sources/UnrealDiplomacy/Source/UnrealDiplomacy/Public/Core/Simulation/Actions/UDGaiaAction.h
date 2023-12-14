@@ -8,6 +8,22 @@
 
 /** Transforms action parameters to properly named fields. */
 USTRUCT(BlueprintType)
+struct FUDGaiaDataTarget
+{
+	GENERATED_BODY()
+public:
+	FUDGaiaDataTarget() {}
+	FUDGaiaDataTarget(TArray<int32> valueParameters)
+	{
+		TargetId = valueParameters[0];
+	}
+	UPROPERTY(BlueprintReadOnly)
+	int32 TargetId = 0;
+	static const int32 ParameterCount = 1;
+};
+
+/** Transforms action parameters to properly named fields. */
+USTRUCT(BlueprintType)
 struct FUDGaiaDataTargetAction
 {
 	GENERATED_BODY()

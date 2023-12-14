@@ -11,7 +11,7 @@
 #include "Core/Simulation/Actions/UDSystemActionIntermezzoEnd.h"
 #include "Core/Simulation/Actions/UDSystemActionRegentChange.h"
 #include "Core/Simulation/Actions/UDSystemActionGameEnd.h"
-#include "Core/Simulation/Actions/UDGameActionThroneReceive.h"
+#include "Core/Simulation/Actions/UDGaiaActionThroneReceive.h"
 #include "Core/Simulation/Modifiers/UDFactionModifierThroneSupport.h"
 #include "Core/Simulation/UDModifierData.h"
 #include "Core/Simulation/UDResourceManager.h"
@@ -109,7 +109,7 @@ void UUDWorldArbiter::EvaluateTurnGameOverState(const TObjectPtr<UUDWorldState>&
 
 FUDActionData UUDWorldArbiter::DetermineNewRuler()
 {
-	return FUDActionData(UUDGameActionThroneReceive::ActionTypeId, UUDGlobalData::GaiaFactionId, { CrownableRuler });
+	return FUDActionData(UUDGaiaActionThroneReceive::ActionTypeId, UUDGlobalData::GaiaFactionId, { CrownableRuler });
 }
 
 FUDActionData UUDWorldArbiter::CreateEndGame()
