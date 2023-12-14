@@ -1568,10 +1568,41 @@ bool UUDActionAdministrator::IsFactionPlayerControlled(int32 factionId)
 	return notGaia && notObserver;
 }
 
-bool UUDActionAdministrator::IsAvailableStratagem(TSet<int32> tags, int32 actionId)
+bool UUDActionAdministrator::HasActionOrStratagem(int32 actionId)
+{
+	const auto& data = GetActionManager()->GetSpecified(actionId);
+	return IsAvailableStratagem(data.Tags, data.ActionId);
+}
+
+#include "Core/Simulation/Modifiers/UDFactionModifierStratagemShare.h"
+bool UUDActionAdministrator::HasStratagemFromOtherFaction(int32 stratagemId)
+{
+	const auto& modifiers = GetActionManager()->GetModifierManager()->GetAllFactionModifiers(State->Factions[State->FactionPerspective],
+		UUDFactionModifierStratagemShare::ModifierTypeId);
+
+	for (const auto& mod : modifiers)
+	{
+		if (mod.ValueParameters[0] == stratagemId)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool UUDActionAdministrator::IsAvailableStratagem(const TSet<int32>& tags, int32 actionId)
 {
 	if (tags.Contains(UD_ACTION_TAG_STRATAGEM))
-		return State->Factions[State->FactionPerspective]->StratagemOptions.Contains(actionId);
+	{
+		bool stratagem = State->Factions[State->FactionPerspective]->StratagemOptions.Contains(actionId);
+		// Here comes checking modifiers:
+
+		bool shared = HasStratagemFromOtherFaction(actionId);
+
+		return stratagem || shared;
+	}
+
 	// Default is true as anything that was not defined as stratagem is always available to player.
 	return true;
 }

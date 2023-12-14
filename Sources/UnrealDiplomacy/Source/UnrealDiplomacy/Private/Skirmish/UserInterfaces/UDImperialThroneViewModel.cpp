@@ -6,6 +6,8 @@
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Core/Simulation/Actions/UDGameActionThroneUsurp.h"
 #include "Core/Simulation/Actions/UDGameActionThroneAbdicate.h"
+#include "Core/Simulation/Actions/UDGameActionThroneContest.h"
+#include "Core/Simulation/Actions/UDGameActionThroneLiberate.h"
 #include "Core/Simulation/UDActionData.h"
 
 #define LOCTEXT_NAMESPACE "ImperialThrone"
@@ -139,8 +141,17 @@ void UUDImperialThroneViewModel::AbdicateThrone()
 void UUDImperialThroneViewModel::ContestThrone()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDImperialThroneViewModel: ContestThrone."));
-	UE_LOG(LogTemp, Log, TEXT("UUDImperialThroneViewModel: Contesting Throne is not implemented!"));
-	//Model->RequestAction(Model->GetAction(UUDGameActionThroneContest::ActionTypeId));
+
+	if (Model->HasActionOrStratagem(UUDGameActionThroneContest::ActionTypeId))
+	{
+		UE_LOG(LogTemp, Log, TEXT("UUDImperialThroneViewModel: Contesting Throne attempted!"));
+		Model->RequestAction(Model->GetAction(UUDGameActionThroneContest::ActionTypeId));
+	}
+	else if (Model->HasActionOrStratagem(UUDGameActionThroneLiberate::ActionTypeId))
+	{
+		UE_LOG(LogTemp, Log, TEXT("UUDImperialThroneViewModel: Liberating Throne attempted!"));
+		Model->RequestAction(Model->GetAction(UUDGameActionThroneLiberate::ActionTypeId));
+	}
 }
 
 void UUDImperialThroneViewModel::OpenDeals()

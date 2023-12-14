@@ -412,13 +412,17 @@ public:
 	bool IsLocalFactionPlayer();
 	/** Checks if specified faction is owned & controlled by player or AI. */
 	bool IsFactionPlayerControlled(int32 factionId);
+	/** Checks if local player has access to specified action from any source, including not being stratagem. */
+	bool HasActionOrStratagem(int32 actionId);
+	/** Checks if local player has access to specified action explicitely from other faction. */
+	bool HasStratagemFromOtherFaction(int32 stratagemId);
 	/** 
 	 * Checks if specified presentation is stratagem.
 	 * If no returns true by default as non-stratagems are always available.
 	 * If yes then it checks if it's available to local player and returns based on result. 
 	 * TLDR: returns true if player can use specified action.
 	 */
-	bool IsAvailableStratagem(TSet<int32> tags, int32 actionId);
+	bool IsAvailableStratagem(const TSet<int32>& tags, int32 actionId);
 	/** Checks if specified faction is same as neutral. */
 	bool IsNeutral(int32 factionId);
 #pragma region AI Checks
