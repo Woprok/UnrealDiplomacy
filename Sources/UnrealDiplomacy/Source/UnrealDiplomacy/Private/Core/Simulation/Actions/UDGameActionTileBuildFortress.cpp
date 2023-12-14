@@ -10,38 +10,41 @@
 
 bool UUDGameActionTileBuildFortress::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	FUDGameDataTarget data(action.ValueParameters);
-	const TObjectPtr<UUDFactionState>& faction = world->Factions[data.TargetId];
+	FUDGameDataTile data(action.ValueParameters);
+	FIntPoint tile(data.X, data.Y);
+	const auto& editedTile = world->Map->GetTile(tile);
+
 	FUDModifierData modifierData = FUDModifierData(
 		UUDTileModifierBuildingFortress::ModifierTypeId, action.UniqueId,
-		action.InvokerFactionId, data.TargetId
+		action.InvokerFactionId, action.InvokerFactionId
 	);
 
-	bool isNotSelfTargeting = action.InvokerFactionId != data.TargetId;
-	bool isNotSupporting = !ModifierManager->HasValueEqualFactionModifier(faction, modifierData);
-	return IUDActionInterface::CanExecute(action, world) && isNotSupporting && isNotSelfTargeting;
+	bool isNotGaiaOwner = world->Map->GetTile(tile)->OwnerUniqueId != UUDGlobalData::GaiaFactionId;
+	return IUDActionInterface::CanExecute(action, world) && isNotGaiaOwner;
 }
 
 void UUDGameActionTileBuildFortress::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Execute(action, world);
-	// Takeover the empty throne.
-	FUDGameDataTarget data(action.ValueParameters);
-	const TObjectPtr<UUDFactionState>& faction = world->Factions[data.TargetId];
+	// Build structure.
+	FUDGameDataTile data(action.ValueParameters);
+	FIntPoint tile(data.X, data.Y);
+	const auto& editedTile = world->Map->GetTile(tile);
 	FUDModifierData modifierData = FUDModifierData(
 		UUDTileModifierBuildingFortress::ModifierTypeId, action.UniqueId,
-		action.InvokerFactionId, data.TargetId
+		action.InvokerFactionId, action.InvokerFactionId
 	);
-	ModifierManager->CreateFactionModifier(faction, modifierData);
+	ModifierManager->CreateTileModifier(editedTile, modifierData);
 }
 
 void UUDGameActionTileBuildFortress::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Revert(action, world);
-	// Rollback to the empty throne.
-	FUDGameDataTarget data(action.ValueParameters);
-	const TObjectPtr<UUDFactionState>& faction = world->Factions[data.TargetId];
-	ModifierManager->RemoveFactionModifier(faction, action.UniqueId);
+	// Destroy structure.
+	FUDGameDataTile data(action.ValueParameters);
+	FIntPoint tile(data.X, data.Y);
+	const auto& editedTile = world->Map->GetTile(tile);
+	ModifierManager->RemoveTileModifier(editedTile, action.UniqueId);
 }
 
 void UUDGameActionTileBuildFortress::SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager)

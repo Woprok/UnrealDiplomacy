@@ -48,7 +48,7 @@ void UUDDealExecutionTabViewModel::UpdateActionList()
 	TArray<FUDDealActionMinimalInfo> actions = Model->GetDealActionList(Content.DealId);
 	// Retrieve enough models
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(ActionItemViewModelCollectionName,
+	TArray<TObjectPtr<UUDViewModel>> viewModels = hud->GetViewModelCollection(ActionItemViewModelCollectionName,
 		ActionItemViewModelType, actions.Num());
 	// Get rid of all models
 	ActionItemViewModelCollection.Empty();

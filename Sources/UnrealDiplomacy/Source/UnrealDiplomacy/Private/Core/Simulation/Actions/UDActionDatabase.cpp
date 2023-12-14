@@ -61,6 +61,7 @@
 #include "Core/Simulation/Actions/UDGaiaActionFactionStratagemActivated.h"
 #include "Core/Simulation/Actions/UDGaiaActionTileStratagemActivated.h"
 #include "Core/Simulation/Actions/UDGaiaActionStratagemActivatedReset.h"
+#include "Core/Simulation/Actions/UDGaiaActionStratagemResourceCost.h"
 // Game
 #include "Core/Simulation/Actions/UDGameAction.h"
 #include "Core/Simulation/Actions/UDGameActionGift.h"
@@ -81,6 +82,12 @@
 #include "Core/Simulation/Actions/UDGameActionBurglary.h"
 #include "Core/Simulation/Actions/UDGameActionTileRaid.h"
 #include "Core/Simulation/Actions/UDGameActionStratagemShare.h"
+#include "Core/Simulation/Actions/UDGameActionTileBuildFarm.h"
+#include "Core/Simulation/Actions/UDGameActionTileBuildFortress.h"
+#include "Core/Simulation/Actions/UDGameActionTileBuildManufactury.h"
+#include "Core/Simulation/Actions/UDGameActionTileBuildPalace.h"
+#include "Core/Simulation/Actions/UDGameActionTileBuildQuarry.h"
+#include "Core/Simulation/Actions/UDGameActionTileBuildTradeGuild.h"
 // Setting
 #include "Core/Simulation/Actions/UDSettingAction.h"
 #include "Core/Simulation/Actions/UDSettingActionAICountChange.h"
@@ -157,6 +164,7 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetGaiaActions(U
 		NewObject<UUDGaiaActionFactionStratagemActivated>(parent),
 		NewObject<UUDGaiaActionTileStratagemActivated>(parent),
 		NewObject<UUDGaiaActionStratagemActivatedReset>(parent),
+		NewObject<UUDGaiaActionStratagemResourceCost>(parent),
 	};
 }
 
@@ -182,6 +190,12 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetGameActions(U
 		NewObject<UUDGameActionBurglary>(parent),
 		NewObject<UUDGameActionTileRaid>(parent),
 		NewObject<UUDGameActionStratagemShare>(parent),
+		NewObject<UUDGameActionTileBuildFarm>(parent),
+		NewObject<UUDGameActionTileBuildFortress>(parent),
+		NewObject<UUDGameActionTileBuildManufactury>(parent),
+		NewObject<UUDGameActionTileBuildPalace>(parent),
+		NewObject<UUDGameActionTileBuildQuarry>(parent),
+		NewObject<UUDGameActionTileBuildTradeGuild>(parent),
 	};
 }
 

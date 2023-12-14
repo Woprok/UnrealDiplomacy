@@ -7,6 +7,12 @@
 #include "Core/Simulation/Modifiers/UDTileModifier.h"
 #include "Core/Simulation/Modifiers/UDTileModifierPermitExploit.h"
 #include "Core/Simulation/Modifiers/UDTileModifierStratagemActivated.h"
+#include "Core/Simulation/Modifiers/UDTileModifierBuildingFarm.h"
+#include "Core/Simulation/Modifiers/UDTileModifierBuildingFortress.h"
+#include "Core/Simulation/Modifiers/UDTileModifierBuildingManufactury.h"
+#include "Core/Simulation/Modifiers/UDTileModifierBuildingPalace.h"
+#include "Core/Simulation/Modifiers/UDTileModifierBuildingQuarry.h"
+#include "Core/Simulation/Modifiers/UDTileModifierBuildingTradeGuild.h"
 #include "Core/Simulation/Modifiers/UDFactionModifier.h"
 #include "Core/Simulation/Modifiers/UDFactionModifierThroneSupport.h"
 #include "Core/Simulation/Modifiers/UDFactionModifierStratagemShare.h"
@@ -26,6 +32,12 @@ TArray<TScriptInterface<IUDModifierInterface>> UUDModifierDatabase::GetTileModif
 	return {
 		//NewObject<UUDTileModifier>(parent),
 		NewObject<UUDTileModifierPermitExploit>(parent),
+		NewObject<UUDTileModifierBuildingFarm>(parent),
+		NewObject<UUDTileModifierBuildingFortress>(parent),
+		NewObject<UUDTileModifierBuildingManufactury>(parent),
+		NewObject<UUDTileModifierBuildingPalace>(parent),
+		NewObject<UUDTileModifierBuildingQuarry>(parent),
+		NewObject<UUDTileModifierBuildingTradeGuild>(parent),
 		NewObject<UUDTileModifierStratagemActivated>(parent),
 	};
 }

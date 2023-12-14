@@ -83,7 +83,7 @@ void UUDLobbyViewModel::UpdateClientList()
 	// Retrieve enough models
 	TObjectPtr<AUDSkirmishPlayerController> pc = AUDSkirmishPlayerController::Get(GetWorld());
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(ClientViewModelCollectionName, ClientViewModelType, factions.Num());
+	TArray<TObjectPtr<UUDViewModel>> viewModels = hud->GetViewModelCollection(ClientViewModelCollectionName, ClientViewModelType, factions.Num());
 	// Get rid of all models
 	ClientViewModelCollection.Empty();
 	for (int32 i = 0; i < factions.Num(); i++)

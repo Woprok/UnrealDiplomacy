@@ -171,7 +171,7 @@ void UUDDealGeneralTabViewModel::UpdateParticipantItemList()
 	TArray<FUDDealFactionInfo> messages = Model->GetDealParticipantList(Content.DealId);
 	// Retrieve enough models
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(ParticipantItemViewModelCollectionName,
+	TArray<TObjectPtr<UUDViewModel>> viewModels = hud->GetViewModelCollection(ParticipantItemViewModelCollectionName,
 		ParticipantItemViewModelType, messages.Num());
 	// Get rid of all models
 	ParticipantItemViewModelCollection.Empty();
@@ -193,7 +193,7 @@ void UUDDealGeneralTabViewModel::UpdateInviteItemList()
 	TArray<FUDDealFactionInfo> messages = Model->GetDealInviteList(Content.DealId);
 	// Retrieve enough models
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(InviteItemViewModelCollectionName,
+	TArray<TObjectPtr<UUDViewModel>> viewModels = hud->GetViewModelCollection(InviteItemViewModelCollectionName,
 		InviteItemViewModelType, messages.Num());
 	// Get rid of all models
 	InviteItemViewModelCollection.Empty();

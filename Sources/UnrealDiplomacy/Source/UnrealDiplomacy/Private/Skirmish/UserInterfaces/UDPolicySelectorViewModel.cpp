@@ -41,7 +41,7 @@ void UUDPolicySelectorViewModel::UpdatePolicyItemList()
 	TArray<FUDPolicySelectItemInfo> policies = Model->GetConsequencePolicyList();
 	// Retrieve enough models
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(PolicySelectItemViewModelCollectionName, PolicySelectItemViewModelType, policies.Num());
+	TArray<TObjectPtr<UUDViewModel>> viewModels = hud->GetViewModelCollection(PolicySelectItemViewModelCollectionName, PolicySelectItemViewModelType, policies.Num());
 	// Get rid of all models
 	PolicySelectItemViewModelCollection.Empty();
 	for (int32 i = 0; i < policies.Num(); i++)

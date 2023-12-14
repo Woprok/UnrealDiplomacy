@@ -44,7 +44,7 @@ void UUDFactionPanelViewModel::UpdateFactionList()
 	TArray<FUDFactionInfo> factions = Model->GetFactionInfoList();
 	// Retrieve enough models
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(FactionViewModelCollectionName, FactionViewModelType, factions.Num());
+	TArray<TObjectPtr<UUDViewModel>> viewModels = hud->GetViewModelCollection(FactionViewModelCollectionName, FactionViewModelType, factions.Num());
 	// Get rid of all models
 	FactionViewModelCollection.Empty();
 	for (int32 i = 0; i < factions.Num(); i++)

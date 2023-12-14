@@ -28,6 +28,8 @@ void AUDWorldSimulation::Initialize(TWeakObjectPtr<UUDSettingManager> settingMan
 	StratagemOperationManager = ActionManager->GetStratagemOperationManager();
 	
 	Arbiter = NewObject<UUDWorldArbiter>(this);
+	StratagemOperationManager->SetModifierManager(ActionManager->GetModifierManager());
+	StratagemOperationManager->SetResourceManager(ActionManager->GetResourceManager());
 	Arbiter->SetModifierManager(ActionManager->GetModifierManager());
 	Arbiter->SetResourceManager(ActionManager->GetResourceManager());
 	Arbiter->SetSettingManager(SettingManager);
@@ -202,19 +204,32 @@ void AUDWorldSimulation::CheckAndExecuteAction(FUDActionData& newAction, bool in
 	// if bypass is true or target action does not meet requiremets e.g. not being stratagem we skip
 	// otherwise we will verify if we can execute
 	FUDActionPresentation details = actionExecutor->GetPresentation();
-	if (!inheritedBypass && StratagemOperationManager->IsStratagemOrHasCost(details))
+	if (!inheritedBypass && StratagemOperationManager->IsStratagem(details))
 	{
 		if (StratagemOperationManager->CanStratagemBeActivated(gaiaFactionState, details, newAction))
 		{
-			auto consequences = StratagemOperationManager->CreateConsequences(details, newAction);	
+			auto consequences = StratagemOperationManager->CreateStratagemConsequences(details, newAction);	
 			RunStratagemConsequences(consequences);
 		}
 		else
 		{
 			// This can't be executed, faction or tile prevents the execution.
-			UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Stratagem Operation Manager halted execution for Action UID(%d)."), newAction.UniqueId);
+			UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Stratagem Operation Manager halted execution for Action UID(%d) due to requirements."), newAction.UniqueId);
 			return;
 		}
+	}
+
+	// Checks cost of the actions. Always appliable.
+	if (StratagemOperationManager->HasCost(gaiaFactionState, details, newAction))
+	{
+		auto consequences = StratagemOperationManager->CreateCostConsequences(details, newAction);
+		RunStratagemConsequences(consequences);
+	}
+	else
+	{
+		// This can't be executed, faction or tile prevents the execution.
+		UE_LOG(LogTemp, Log, TEXT("AUDWorldSimulation: Stratagem Operation Manager halted execution for Action UID(%d) due to cost."), newAction.UniqueId);
+		return;
 	}
 
 	// Prepare action.

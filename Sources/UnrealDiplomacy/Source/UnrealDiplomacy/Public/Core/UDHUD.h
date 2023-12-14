@@ -84,8 +84,10 @@ public:
 	 * If collection does not exists it will be created.
 	 * If collection is not large enough it will be expanded.
 	 * Use this for filling ListViews or similiar use-cases.
+	 * Returns resized copy of the original collection.
+	 * Original collection is never shrinked, only expanded.
 	 */
-	TArray<TObjectPtr<UUDViewModel>>& GetViewModelCollection(const FName& name, TSubclassOf<UUDViewModel> viewModelType, int32 desiredTotalCount);
+	TArray<TObjectPtr<UUDViewModel>> GetViewModelCollection(const FName& name, TSubclassOf<UUDViewModel> viewModelType, int32 desiredTotalCount);
 	/**
 	 * Shortcut from retrieving single view model from the collection.
 	 */

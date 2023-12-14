@@ -62,16 +62,18 @@ void AUDHUD::HideWidget(const FName& widgetName)
 	ViewManager->HideWidget(widgetName);
 }
 
-TArray<TObjectPtr<UUDViewModel>>& AUDHUD::GetViewModelCollection(const FName& name, TSubclassOf<UUDViewModel> viewModelType, int32 desiredTotalCount)
+TArray<TObjectPtr<UUDViewModel>> AUDHUD::GetViewModelCollection(const FName& name, TSubclassOf<UUDViewModel> viewModelType, int32 desiredTotalCount)
 {
 	UE_LOG(LogTemp, Log, TEXT("AUDHUD: Obtaining collection for %s of size %d."), *name.ToString(), desiredTotalCount);
 	ViewModelManager->RegisterCollection(name, viewModelType, desiredTotalCount);
-	return ViewModelManager->GetCollection(name);
+	TArray<TObjectPtr<UUDViewModel>> array = ViewModelManager->GetCollection(name);
+	array.SetNum(desiredTotalCount, true);
+	return array;
 }
 
 TObjectPtr<UUDViewModel> AUDHUD::GetViewModelCollection(const FName& name, TSubclassOf<UUDViewModel> viewModelType)
 {
-	TArray<TObjectPtr<UUDViewModel>>& ref = GetViewModelCollection(name, viewModelType, 1);
+	TArray<TObjectPtr<UUDViewModel>> ref = GetViewModelCollection(name, viewModelType, 1);
 	return ref[0];
 }
 

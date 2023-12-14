@@ -94,7 +94,7 @@ void UUDTileManagementViewModel::UpdateTileInteractionList()
 	TArray<FUDTileInteractionInfo> interactions = Model->GetTileInteractionList();
 	// Retrieve enough models
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(TileInteractionViewModelCollectionName, TileInteractionViewModelType, interactions.Num());
+	TArray<TObjectPtr<UUDViewModel>> viewModels = hud->GetViewModelCollection(TileInteractionViewModelCollectionName, TileInteractionViewModelType, interactions.Num());
 	// Get rid of all models
 	TileInteractionViewModelCollection.Empty();
 	for (int32 i = 0; i < interactions.Num(); i++)
@@ -115,7 +115,7 @@ void UUDTileManagementViewModel::UpdateModifierItemList()
 	TArray<FUDModifierInfo> modifiers = Model->GetTileModifierList(SelectedTile);
 	// Retrieve enough models
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(ModifierItemViewModelCollectionName, ModifierItemViewModelType, modifiers.Num());
+	TArray<TObjectPtr<UUDViewModel>> viewModels = hud->GetViewModelCollection(ModifierItemViewModelCollectionName, ModifierItemViewModelType, modifiers.Num());
 	// Get rid of all models
 	ModifierItemViewModelCollection.Empty();
 	for (int32 i = 0; i < modifiers.Num(); i++)

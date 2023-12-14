@@ -73,7 +73,7 @@ void UUDLobbyMemberViewModel::UpdateStratagemsList()
 	TArray<FUDStratagemPickableInfo> stratagems = Model->GetStratagemsList();
 	// Retrieve enough models
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(StratagemViewModelCollectionName, StratagemViewModelType, stratagems.Num());
+	TArray<TObjectPtr<UUDViewModel>> viewModels = hud->GetViewModelCollection(StratagemViewModelCollectionName, StratagemViewModelType, stratagems.Num());
 	// Get rid of all models
 	StratagemViewModelCollection.Empty();
 	for (int32 i = 0; i < stratagems.Num(); i++)

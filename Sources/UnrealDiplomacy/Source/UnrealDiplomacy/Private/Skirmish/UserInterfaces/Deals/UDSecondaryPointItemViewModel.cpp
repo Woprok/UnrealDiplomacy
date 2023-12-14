@@ -86,7 +86,7 @@ void UUDSecondaryPointItemViewModel::UpdatePointList()
 	int32 desiredPointIndex = points.Num();
 	// Retrieve enough models
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(PointItemViewModelCollectionName,
+	TArray<TObjectPtr<UUDViewModel>> viewModels = hud->GetViewModelCollection(PointItemViewModelCollectionName,
 		PointItemViewModelType, desiredPointCount);
 	// Get rid of all models
 	PointItemViewModelCollection.Empty();

@@ -56,7 +56,7 @@ void UUDChatViewModel::UpdateChatItemList()
 	TArray<FUDChatMessageInfo> messages = Model->GetDealChatHistory(Content.DealId);
 	// Retrieve enough models
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(ChatItemViewModelCollectionName, 
+	TArray<TObjectPtr<UUDViewModel>> viewModels = hud->GetViewModelCollection(ChatItemViewModelCollectionName, 
 		ChatItemViewModelType, messages.Num());
 	// Get rid of all models
 	ChatItemViewModelCollection.Empty();

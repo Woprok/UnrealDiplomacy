@@ -17,7 +17,7 @@ void UUDGaiaActionFactionStratagemActivated::Execute(const FUDActionData& action
 		UUDFactionModifierStratagemActivated::ModifierTypeId, action.UniqueId,
 		data.TargetId, data.TargetId, { data.ActionTypeId }
 	);
-	ModifierManager->CreateFactionModifier(world->Factions[action.InvokerFactionId], modifierData);
+	ModifierManager->CreateFactionModifier(world->Factions[data.TargetId], modifierData);
 }
 
 void UUDGaiaActionFactionStratagemActivated::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)

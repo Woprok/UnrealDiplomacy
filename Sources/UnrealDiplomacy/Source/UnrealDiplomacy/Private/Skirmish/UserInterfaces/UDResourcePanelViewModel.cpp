@@ -37,7 +37,7 @@ void UUDResourcePanelViewModel::UpdateResourceList()
 	TArray<FUDResourceInfo> resources = Model->GetLocalFactionResourceList();
 	// Retrieve enough models
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(ResourceViewModelCollectionName, ResourceViewModelType, resources.Num());
+	TArray<TObjectPtr<UUDViewModel>> viewModels = hud->GetViewModelCollection(ResourceViewModelCollectionName, ResourceViewModelType, resources.Num());
 	// Get rid of all models
 	ResourceViewModelCollection.Empty();
 	for (int32 i = 0; i < resources.Num(); i++)

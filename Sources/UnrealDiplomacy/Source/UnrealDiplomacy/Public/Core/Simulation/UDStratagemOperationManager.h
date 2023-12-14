@@ -53,12 +53,18 @@ public:
 	GENERATED_BODY()
 public:
 	/** Determines if the action needs to be handlded by this manager. */
-	bool IsStratagemOrHasCost(const FUDActionPresentation& details) const;
+	bool IsStratagem(const FUDActionPresentation& details) const;
+	/** Determines if the action needs to be handlded by this manager. */
+	bool HasCost(const TObjectPtr<UUDWorldState>& world, const FUDActionPresentation& detail, const FUDActionData& action) const;
 	/** Determines if this action can be executed or will be halted by this manager. */
 	bool CanStratagemBeActivated(const TObjectPtr<UUDWorldState>& world, const FUDActionPresentation& details, const FUDActionData& action) const;
 	/** Creates modifiers that prevent another execution of the action, e.g. in this phase... */
-	TArray<FUDActionData> CreateConsequences(const FUDActionPresentation& details, const FUDActionData& action) const;
+	TArray<FUDActionData> CreateStratagemConsequences(const FUDActionPresentation& details, const FUDActionData& action) const;	
+	/** Creates modifiers that prevent another execution of the action, e.g. in this phase... */
+	TArray<FUDActionData> CreateCostConsequences(const FUDActionPresentation& details, const FUDActionData& action) const;
 
+	void SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager);
+	void SetResourceManager(TWeakObjectPtr<UUDResourceManager> resourceManager);
 protected:
 	UPROPERTY()
 	TWeakObjectPtr<UUDModifierManager> ModifierManager = nullptr;

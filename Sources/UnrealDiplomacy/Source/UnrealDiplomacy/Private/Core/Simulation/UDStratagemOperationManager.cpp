@@ -15,7 +15,17 @@
 #include "Core/Simulation/Modifiers/UDTileModifierStratagemActivated.h"
 #include "Core/Simulation/Modifiers/UDFactionModifierStratagemShare.h"
 
-bool HasNotActivatedStratagem(const TArray<FUDModifierData>& modifiers, int32 searchedActionId, int32 position = 1)
+void UUDStratagemOperationManager::SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager)
+{
+	ModifierManager = modifierManager;
+}
+
+void UUDStratagemOperationManager::SetResourceManager(TWeakObjectPtr<UUDResourceManager> resourceManager)
+{
+	ResourceManager = resourceManager;
+}
+
+bool HasNotActivatedStratagem(const TArray<FUDModifierData>& modifiers, int32 searchedActionId, int32 position = 0)
 {
 	// Find
 	const auto& found = modifiers.FindByPredicate(
@@ -28,18 +38,12 @@ bool HasNotActivatedStratagem(const TArray<FUDModifierData>& modifiers, int32 se
 	return true;
 }
 
-bool UUDStratagemOperationManager::IsStratagemOrHasCost(const FUDActionPresentation& detail) const
+bool UUDStratagemOperationManager::IsStratagem(const FUDActionPresentation& detail) const
 {
 	if (detail.Tags.Contains(UD_ACTION_TAG_STRATAGEM))
 	{
 		// We are interested only in stratagems.
 		// If something is not a stratagem, then it will need another tag in future to handle ?
-		return true;
-	}
-
-	if (detail.Tags.Contains(UD_ACTION_TAG_RESOURCE_COST))
-	{
-		// This action has a cost. So we will need to return at least default cost for it.
 		return true;
 	}
 
@@ -76,7 +80,8 @@ bool UUDStratagemOperationManager::CanStratagemBeActivated(const TObjectPtr<UUDW
 	}
 
 	// This is faction interaction, we will check if it was already used this turn by action invoker.
-	if (detail.Tags.Contains(UD_ACTION_TAG_FACTION_INTERACTION))
+	// And we need to check it even if its tile interaction. 
+	if (detail.Tags.Contains(UD_ACTION_TAG_FACTION_INTERACTION) || detail.Tags.Contains(UD_ACTION_TAG_TILE_INTERACTION))
 	{
 		// Get reference to executor
 		const TObjectPtr<UUDFactionState>& faction = world->Factions[action.InvokerFactionId];
@@ -93,7 +98,7 @@ bool UUDStratagemOperationManager::CanStratagemBeActivated(const TObjectPtr<UUDW
 		FIntPoint tilePosition(action.ValueParameters[0], action.ValueParameters[1]);
 		const TObjectPtr<UUDTileState>& tile = world->Map->GetTile(tilePosition);
 		// Get all tile modifiers that are about stratagem activated.
-		const auto tileModifiers = ModifierManager->GetAllTileModifiers(tile, UUDFactionModifierStratagemActivated::ModifierTypeId);
+		const auto tileModifiers = ModifierManager->GetAllTileModifiers(tile, UUDTileModifierStratagemActivated::ModifierTypeId);
 		// This should be on first position in the value param arrays on modifier.
 		canBeUsed = canBeUsed && HasNotActivatedStratagem(tileModifiers, detail.ActionId);
 	}
@@ -102,6 +107,14 @@ bool UUDStratagemOperationManager::CanStratagemBeActivated(const TObjectPtr<UUDW
 	// But that would mean that action is faction interaction that leaves modifier on tile or interacts with tile.
 	// Thus we can safely ignore them as I can't think of any action that would be faction interaction and 
 	// wanted to limit amount of time it can be used by different players on a single tile.
+
+	// This will give us result, and we either stop execution or continue.
+	return canBeUsed;
+}
+
+bool UUDStratagemOperationManager::HasCost(const TObjectPtr<UUDWorldState>& world, const FUDActionPresentation& detail, const FUDActionData& action) const
+{
+	bool canBeUsed = true;
 
 	if (StratagemCosts.Contains(detail.ActionId))
 	{
@@ -142,7 +155,7 @@ FUDActionData UUDStratagemOperationManager::GetActivationCostAction(int32 factio
 	);
 }
 
-TArray<FUDActionData> UUDStratagemOperationManager::CreateConsequences(const FUDActionPresentation& detail, const FUDActionData& action) const
+TArray<FUDActionData> UUDStratagemOperationManager::CreateStratagemConsequences(const FUDActionPresentation& detail, const FUDActionData& action) const
 {
 	TArray<FUDActionData> stratagemConsequences = { };
 
@@ -167,6 +180,13 @@ TArray<FUDActionData> UUDStratagemOperationManager::CreateConsequences(const FUD
 
 		stratagemConsequences.Add(tileStratagemActivatedAction);
 	}
+
+	return stratagemConsequences;
+}
+
+TArray<FUDActionData> UUDStratagemOperationManager::CreateCostConsequences(const FUDActionPresentation& detail, const FUDActionData& action) const
+{
+	TArray<FUDActionData> stratagemConsequences = { };
 
 	if (StratagemCosts.Contains(detail.ActionId))
 	{

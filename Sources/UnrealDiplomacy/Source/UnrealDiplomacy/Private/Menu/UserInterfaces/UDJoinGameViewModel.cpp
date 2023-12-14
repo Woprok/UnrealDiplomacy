@@ -109,7 +109,7 @@ void UUDJoinGameViewModel::OnSessionSearched(const TArray<FOnlineSessionSearchRe
 	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
 	TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
 
-	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(ViewModelCollectionName, ViewModelType, SessionResults.Num());
+	TArray<TObjectPtr<UUDViewModel>> viewModels = hud->GetViewModelCollection(ViewModelCollectionName, ViewModelType, SessionResults.Num());
 	InUseViewModelCollection.Empty();
 	for (int32 i = 0; i < SessionResults.Num(); i++)
 	{

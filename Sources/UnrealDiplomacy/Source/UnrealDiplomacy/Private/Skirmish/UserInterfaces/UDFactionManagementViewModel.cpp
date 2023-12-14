@@ -112,7 +112,7 @@ void UUDFactionManagementViewModel::UpdateFactionInteractionList()
 	TArray<FUDFactionInteractionInfo> interactions = Model->GetFactionInteractionList();
 	// Retrieve enough models
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(FactionInteractionViewModelCollectionName, FactionInteractionViewModelType, interactions.Num());
+	TArray<TObjectPtr<UUDViewModel>> viewModels = hud->GetViewModelCollection(FactionInteractionViewModelCollectionName, FactionInteractionViewModelType, interactions.Num());
 	// Get rid of all models
 	FactionInteractionViewModelCollection.Empty();
 	for (int32 i = 0; i < interactions.Num(); i++)
@@ -132,7 +132,7 @@ void UUDFactionManagementViewModel::UpdateFactionOfferList()
 	TArray<FUDFactionInteractionInfo> interactions = Model->GetFactionOfferList();
 	// Retrieve enough models
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(FactionOfferViewModelCollectionName, FactionInteractionViewModelType, interactions.Num());
+	TArray<TObjectPtr<UUDViewModel>> viewModels = hud->GetViewModelCollection(FactionOfferViewModelCollectionName, FactionInteractionViewModelType, interactions.Num());
 	// Get rid of all models
 	FactionOfferViewModelCollection.Empty();
 	for (int32 i = 0; i < interactions.Num(); i++)
@@ -152,7 +152,7 @@ void UUDFactionManagementViewModel::UpdateFactionRequestList()
 	TArray<FUDFactionInteractionInfo> interactions = Model->GetFactionRequestList();
 	// Retrieve enough models
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(FactionRequestViewModelCollectionName, FactionInteractionViewModelType, interactions.Num());
+	TArray<TObjectPtr<UUDViewModel>> viewModels = hud->GetViewModelCollection(FactionRequestViewModelCollectionName, FactionInteractionViewModelType, interactions.Num());
 	// Get rid of all models
 	FactionRequestViewModelCollection.Empty();
 	for (int32 i = 0; i < interactions.Num(); i++)
@@ -172,7 +172,7 @@ void UUDFactionManagementViewModel::UpdateFactionDemandList()
 	TArray<FUDFactionInteractionInfo> interactions = Model->GetFactionDemandList();
 	// Retrieve enough models
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(FactionDemandViewModelCollectionName, FactionInteractionViewModelType, interactions.Num());
+	TArray<TObjectPtr<UUDViewModel>> viewModels = hud->GetViewModelCollection(FactionDemandViewModelCollectionName, FactionInteractionViewModelType, interactions.Num());
 	// Get rid of all models
 	FactionDemandViewModelCollection.Empty();
 	for (int32 i = 0; i < interactions.Num(); i++)
@@ -193,7 +193,7 @@ void UUDFactionManagementViewModel::UpdateModifierItemList()
 	TArray<FUDModifierInfo> modifiers = Model->GetFactionModifierList(SelectedFactionId);
 	// Retrieve enough models
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-	TArray<TObjectPtr<UUDViewModel>>& viewModels = hud->GetViewModelCollection(ModifierItemViewModelCollectionName, ModifierItemViewModelType, modifiers.Num());
+	TArray<TObjectPtr<UUDViewModel>> viewModels = hud->GetViewModelCollection(ModifierItemViewModelCollectionName, ModifierItemViewModelType, modifiers.Num());
 	// Get rid of all models
 	ModifierItemViewModelCollection.Empty();
 	for (int32 i = 0; i < modifiers.Num(); i++)

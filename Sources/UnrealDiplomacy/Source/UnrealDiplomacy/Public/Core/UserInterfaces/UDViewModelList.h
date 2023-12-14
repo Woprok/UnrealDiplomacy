@@ -11,7 +11,6 @@ class UUDViewModel;
 
 /**
  * Wrapper around pointer to list of view models.
- * Note: this is required as UE macros can't be used with templates.
  */
 USTRUCT(BlueprintType)
 struct FUDViewModelList
