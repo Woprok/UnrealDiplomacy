@@ -40,6 +40,12 @@ public:
 	bool CanInteractValue;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	EUDThroneState ThroneStateValue;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool IsEmptyValue;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool IsUsurperValue;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool IsClaimerValue;
 public:
 	virtual void Setup() override;
 	UFUNCTION()
@@ -69,4 +75,10 @@ private:
 	bool GetCanInteractValue() const;
 	void SetThroneStateValue(EUDThroneState newThroneStateValue);
 	EUDThroneState GetThroneStateValue() const;
+	void SetIsEmptyValue(bool newIsEmptyValue);
+	bool GetIsEmptyValue() const;
+	void SetIsUsurperValue(bool newIsUsurperValue);
+	bool GetIsUsurperValue() const;
+	void SetIsClaimerValue(bool newIsClaimerValue);
+	bool GetIsClaimerValue() const;
 };

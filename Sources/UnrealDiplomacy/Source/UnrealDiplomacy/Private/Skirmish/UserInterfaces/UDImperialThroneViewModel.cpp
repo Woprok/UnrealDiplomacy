@@ -46,6 +46,9 @@ void UUDImperialThroneViewModel::Setup()
 	SetDealToolTipText(dealToolTip);
 	SetCanInteractValue(false);
 	SetThroneStateValue(EUDThroneState::Undefined);
+	SetIsEmptyValue(true);
+	SetIsUsurperValue(false);
+	SetIsClaimerValue(false);
 
 	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDImperialThroneViewModel::Refresh);
 	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDImperialThroneViewModel::Refresh);
@@ -74,16 +77,23 @@ void UUDImperialThroneViewModel::UpdateThronePresentation()
 	SetMessageCountText(messageCount);
 
 	FText throneText;
+	// This might not be the most elegant solution, e.g. creating new binding convertor, but it will work fine as temporary solution.
+	SetIsEmptyValue(false);
+	SetIsUsurperValue(false);
+	SetIsClaimerValue(false);
 	switch (throneInfo.State)
 	{
 	case EUDThroneState::Empty:
 		throneText = FText(LOCTEXT("ImperialThrone", "Claim"));
+		SetIsEmptyValue(true);
 		break;
 	case EUDThroneState::Usurper:
 		throneText = FText::Format(LOCTEXT("ImperialThrone", "{0}"), FText::FromString(throneInfo.FactionName));
+		SetIsUsurperValue(true);
 		break;
 	case EUDThroneState::Claimer:
 		throneText = FText(LOCTEXT("ImperialThrone", "Abdicate"));
+		SetIsClaimerValue(true);
 		break;
 	}
 	SetThroneText(throneText);
@@ -215,4 +225,34 @@ void UUDImperialThroneViewModel::SetThroneStateValue(EUDThroneState newThroneSta
 EUDThroneState UUDImperialThroneViewModel::GetThroneStateValue() const
 {
 	return ThroneStateValue;
+}
+
+void UUDImperialThroneViewModel::SetIsEmptyValue(bool newIsEmptyValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(IsEmptyValue, newIsEmptyValue);
+}
+
+bool UUDImperialThroneViewModel::GetIsEmptyValue() const
+{
+	return IsEmptyValue;
+}
+
+void UUDImperialThroneViewModel::SetIsUsurperValue(bool newIsUsurperValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(IsUsurperValue, newIsUsurperValue);
+}
+
+bool UUDImperialThroneViewModel::GetIsUsurperValue() const
+{
+	return IsUsurperValue;
+}
+
+void UUDImperialThroneViewModel::SetIsClaimerValue(bool newIsClaimerValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(IsClaimerValue, newIsClaimerValue);
+}
+
+bool UUDImperialThroneViewModel::GetIsClaimerValue() const
+{
+	return IsClaimerValue;
 }
