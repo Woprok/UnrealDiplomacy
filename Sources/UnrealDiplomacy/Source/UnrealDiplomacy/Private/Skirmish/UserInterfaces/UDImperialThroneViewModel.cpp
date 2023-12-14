@@ -49,9 +49,6 @@ void UUDImperialThroneViewModel::Setup()
 
 	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDImperialThroneViewModel::Refresh);
 	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDImperialThroneViewModel::Refresh);
-
-	// TODO delete this comment if it works as expected...
-	//Update();
 }
 
 void UUDImperialThroneViewModel::Refresh()

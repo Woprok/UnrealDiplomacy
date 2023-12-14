@@ -29,6 +29,8 @@ public:
 	void Back();
 	UFUNCTION()
 	void RefreshList();
+	UFUNCTION()
+	void DirectConnect();
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText JoinGameTitleText;
@@ -48,6 +50,10 @@ public:
 	FText IsLANText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	ECheckBoxState IsLANValue;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText AddressEditableText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText DirectConnectText;
 public:
 	virtual void Setup() override;
 	virtual void Refresh() override;
@@ -82,6 +88,10 @@ private:
 	FText GetIsLANText() const;
 	void SetIsLANValue(ECheckBoxState newIsLANValue);
 	ECheckBoxState GetIsLANValue() const;
+	void SetAddressEditableText(FText newAddressEditableText);
+	FText GetAddressEditableText() const;
+	void SetDirectConnectText(FText newDirectConnectText);
+	FText GetDirectConnectText() const;
 private:
 	// Fields
 	FName ViewModelCollectionName = TEXT("JoinServerItemCollection");

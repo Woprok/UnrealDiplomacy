@@ -19,11 +19,6 @@ void UUDFactionPanelViewModel::Setup()
 
 	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDFactionPanelViewModel::Refresh);
 	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDFactionPanelViewModel::Refresh);
-
-	//TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
-
-	// TODO delete this comment if it works as expected...
-	//Update();
 }
 
 void UUDFactionPanelViewModel::Refresh()

@@ -31,6 +31,12 @@ void UUDLobbyViewModel::Setup()
 	SetLeaveText(leave);
 	FText start = FText(LOCTEXT("Lobby", "Start"));
 	SetStartText(start);
+	FText addressTitle = FText(LOCTEXT("Lobby", "Address:"));
+	SetConnectAddressTitleText(addressTitle);
+	FText address = FText(LOCTEXT("Lobby", "127.0.0.1:7777"));
+	SetConnectAddressText(address);
+	FText addressHelp = FText(LOCTEXT("Lobby", "Instead of port 0 use 7777 as default port."));
+	SetConnectAddressHelpText(addressHelp);
 
 	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
 	sessions->OnStartSessionCompleteEvent.AddUniqueDynamic(this, &UUDLobbyViewModel::OnSessionStarted);
@@ -47,21 +53,13 @@ void UUDLobbyViewModel::Setup()
 	// Announce them to widget for additional binding.
 	SetLobbyHostContent(FUDViewModelContent(HostViewModelInstance));
 	SetLobbyMemberContent(FUDViewModelContent(MemberViewModelInstance));
-
-	// This is from change to refresh called also in the ViewModelManager.
-	// Thus this should no longer be needed for the main viewmodel as it will be called.
-	// Child model might still need this. But they lost their update callbacks, so its part of this refresh as well.
-	// This still needs to listen to change events for refresh...
-	// Call initialize so each Instance is ready to use, once it receives data in runtime.
-	//Refresh();
-	// TODO delete this comment if it works as expected...
 }
 
 void UUDLobbyViewModel::Refresh()
 {
 	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
 	SetIsHostValue(sessions->IsLocalPlayerHost(sessions->GetSessionName()));
-
+	SetConnectAddressText(FText::FromString(sessions->GetDirectConnectString(sessions->GetSessionName())));
 	FText newTitle = FText::Format(LOCTEXT("Lobby", "{0} Lobby"), FText::FromString(sessions->GetSessionNameString()));
 	SetLobbyTitleText(newTitle);
 
@@ -158,6 +156,36 @@ void UUDLobbyViewModel::SetLobbyTitleText(FText newLobbyTitleText)
 FText UUDLobbyViewModel::GetLobbyTitleText() const
 {
 	return LobbyTitleText;
+}
+
+void UUDLobbyViewModel::SetConnectAddressText(FText newConnectAddressText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ConnectAddressText, newConnectAddressText);
+}
+
+FText UUDLobbyViewModel::GetConnectAddressText() const
+{
+	return ConnectAddressText;
+}
+
+void UUDLobbyViewModel::SetConnectAddressHelpText(FText newConnectAddressHelpText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ConnectAddressHelpText, newConnectAddressHelpText);
+}
+
+FText UUDLobbyViewModel::GetConnectAddressHelpText() const
+{
+	return ConnectAddressHelpText;
+}
+
+void UUDLobbyViewModel::SetConnectAddressTitleText(FText newConnectAddressTitleText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ConnectAddressTitleText, newConnectAddressTitleText);
+}
+
+FText UUDLobbyViewModel::GetConnectAddressTitleText() const
+{
+	return ConnectAddressTitleText;
 }
 
 void UUDLobbyViewModel::SetNameHeaderText(FText newNameHeaderText)

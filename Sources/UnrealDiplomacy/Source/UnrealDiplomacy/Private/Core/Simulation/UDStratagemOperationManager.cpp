@@ -136,7 +136,7 @@ bool UUDStratagemOperationManager::CanPayActivationCost(const TObjectPtr<UUDFact
 	bool canSpend = true;
 	for (const auto& cost : costs)
 	{
-		canSpend == canSpend && ResourceManager->CanSpend(faction, cost.ResourceId, cost.ResourceCost);
+		canSpend = canSpend && ResourceManager->CanSpend(faction, cost.ResourceId, cost.ResourceCost);
 	}
 	return canSpend;
 }

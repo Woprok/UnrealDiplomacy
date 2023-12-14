@@ -455,6 +455,33 @@ void UUDSessionSubsystem::OnFindSessionsCompleted(bool successful)
 	}
 }
 
+bool UUDSessionSubsystem::TryDirectTravelToWorld(FString connectionString)
+{
+	UE_LOG(LogTemp, Log, TEXT("Sessions: Traveling %s."), *connectionString);
+	// Travels to server map.
+	APlayerController* playerController = GetWorld()->GetFirstPlayerController();
+	playerController->ClientTravel(connectionString, TRAVEL_Absolute);
+	return true;
+}
+
+FString UUDSessionSubsystem::GetDirectConnectString(FName sessionName)
+{
+	UE_LOG(LogTemp, Log, TEXT("Sessions: Retrieving connect string for %s."), *sessionName.ToString());
+	// Check Session Interface.
+	IOnlineSessionPtr sessionInterface;
+	if (!IsSessionInterfaceValid(sessionInterface))
+	{
+		return TEXT("127.0.0.1:7777");
+	}
+	// Retrieves connection / travel url.
+	FString connectString;
+	if (!sessionInterface->GetResolvedConnectString(sessionName, connectString))
+	{
+		return TEXT("127.0.0.1:7777");
+	}
+	return connectString;
+}
+
 bool UUDSessionSubsystem::TryTravelToCurrentSession(FName sessionName)
 {
 	UE_LOG(LogTemp, Log, TEXT("Sessions: Traveling %s."), *sessionName.ToString());

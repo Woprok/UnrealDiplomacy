@@ -44,6 +44,10 @@ void UUDJoinGameViewModel::Setup()
 	SetSearchText(SessionCountToText(InUseViewModelCollection.Num()));
 	FText newIsLANText = FText(LOCTEXT("JoinGame", "Search LAN"));
 	SetIsLANText(newIsLANText);
+	FText addressText = FText(LOCTEXT("JoinGame", "127.0.0.1:7777"));
+	SetAddressEditableText(addressText);
+	FText direct = FText(LOCTEXT("JoinGame", "Direct Connect"));
+	SetDirectConnectText(direct);
 
 	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
 	sessions->OnFindSessionsCompleteEvent.AddUObject(this, &UUDJoinGameViewModel::OnSessionSearched);
@@ -101,6 +105,25 @@ void UUDJoinGameViewModel::RefreshList()
 	sessions->CreateSearchSettings(UUDApplicationConverters::FromCheckBoxState(GetIsLANValue()));
 	SetSearchText(SessionCountToText(SearchIndicator));
 	sessions->FindSessions();
+}
+
+void UUDJoinGameViewModel::DirectConnect()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDJoinGameViewModel: DirectConnect %s."), *GetAddressEditableText().ToString());
+
+	TObjectPtr<UUDSessionSubsystem> sessions = UUDSessionSubsystem::Get(GetWorld());
+	if (sessions->TryDirectTravelToWorld(GetAddressEditableText().ToString()))
+	{
+		// On success travel to session level was invoked.
+	}
+	else
+	{
+		// Session Join Failed, we can provide error to user.
+		TObjectPtr<AUDMenuHUD> hud = AUDMenuHUD::Get(GetWorld());
+		hud->SwitchScreen(hud->JoinGameScreen);
+		FUDDialogueData dialogueData = GetSessionJoinFailed(EOnJoinSessionCompleteResult::Type::UnknownError);
+		UUDExceptionManagerSubsystem::Get(GetWorld())->ShowDialogue(dialogueData);
+	}
 }
 
 void UUDJoinGameViewModel::OnSessionSearched(const TArray<FOnlineSessionSearchResult>& SessionResults, bool Successful)
@@ -231,4 +254,24 @@ void UUDJoinGameViewModel::SetIsLANValue(ECheckBoxState newIsLANValue)
 ECheckBoxState UUDJoinGameViewModel::GetIsLANValue() const
 {
 	return IsLANValue;
+}
+
+void UUDJoinGameViewModel::SetAddressEditableText(FText newAddressEditableText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(AddressEditableText, newAddressEditableText);
+}
+
+FText UUDJoinGameViewModel::GetAddressEditableText() const
+{
+	return AddressEditableText;
+}
+
+void UUDJoinGameViewModel::SetDirectConnectText(FText newDirectConnectText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(DirectConnectText, newDirectConnectText);
+}
+
+FText UUDJoinGameViewModel::GetDirectConnectText() const
+{
+	return DirectConnectText;
 }

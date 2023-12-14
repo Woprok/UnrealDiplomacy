@@ -14,9 +14,6 @@ void UUDResourcePanelViewModel::Setup()
 
 	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDResourcePanelViewModel::Refresh);
 	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDResourcePanelViewModel::Refresh);
-
-	// TODO delete this comment if it works as expected...
-	//Update();
 }
 
 void UUDResourcePanelViewModel::Refresh()

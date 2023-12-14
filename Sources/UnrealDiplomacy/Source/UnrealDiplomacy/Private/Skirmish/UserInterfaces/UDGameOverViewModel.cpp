@@ -22,9 +22,6 @@ void UUDGameOverViewModel::Setup()
 
 	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDGameOverViewModel::Refresh);
 	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDGameOverViewModel::Refresh);
-
-	// TODO delete this comment if it works as expected...
-	//Update();
 }
 
 void UUDGameOverViewModel::Refresh()

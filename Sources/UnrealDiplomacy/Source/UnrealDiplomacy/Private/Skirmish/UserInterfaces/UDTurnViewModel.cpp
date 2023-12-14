@@ -47,9 +47,6 @@ void UUDTurnViewModel::Setup()
 
 	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDTurnViewModel::Refresh);
 	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDTurnViewModel::Refresh);
-
-	// TODO delete this comment if it works as expected...
-	//Update();
 }
 
 void UUDTurnViewModel::Refresh()

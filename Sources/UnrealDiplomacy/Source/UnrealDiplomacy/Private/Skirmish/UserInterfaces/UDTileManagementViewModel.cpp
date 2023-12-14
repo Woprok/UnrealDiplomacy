@@ -37,9 +37,6 @@ void UUDTileManagementViewModel::Setup()
 
 	Model->OnDataReloadedEvent.AddUniqueDynamic(this, &UUDTileManagementViewModel::Refresh);
 	Model->OnDataChangedEvent.AddUniqueDynamic(this, &UUDTileManagementViewModel::Refresh);
-
-	// TODO delete this comment if it works as expected...
-	//Update();
 }
 
 void UUDTileManagementViewModel::Refresh()

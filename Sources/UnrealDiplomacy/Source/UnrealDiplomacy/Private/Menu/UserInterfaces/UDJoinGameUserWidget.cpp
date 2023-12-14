@@ -16,10 +16,12 @@ void UUDJoinGameUserWidget::BindDelegates()
 	// Bind viewmodel to widgets.
 	BackButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDJoinGameViewModel::Back);
 	RefreshButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDJoinGameViewModel::RefreshList);
+	DirectConnectButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDJoinGameViewModel::DirectConnect);
 }
 
 void UUDJoinGameUserWidget::BindWidgets()
 {
 	BackButtonWidget = GetWidget<UButton>(TEXT("BackButton"));
 	RefreshButtonWidget = GetWidget<UButton>(TEXT("RefreshButton"));
+	DirectConnectButtonWidget = GetWidget<UButton>(TEXT("DirectConnectButton"));
 }

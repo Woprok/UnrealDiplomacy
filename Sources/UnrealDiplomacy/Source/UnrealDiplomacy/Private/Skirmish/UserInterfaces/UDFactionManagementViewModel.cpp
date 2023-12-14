@@ -45,9 +45,6 @@ void UUDFactionManagementViewModel::Setup()
 	PolicySelectorInstance = Cast<UUDPolicySelectorViewModel>(policySelectorModel);
 	// Announce them to widget for additional binding.
 	SetPolicySelectorContent(FUDViewModelContent(PolicySelectorInstance));
-
-	// TODO delete this comment if it works as expected...
-	//Update();
 }
 
 void UUDFactionManagementViewModel::Refresh()

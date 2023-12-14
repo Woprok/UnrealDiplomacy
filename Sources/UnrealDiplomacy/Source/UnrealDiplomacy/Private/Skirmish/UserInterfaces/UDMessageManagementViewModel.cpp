@@ -52,9 +52,6 @@ void UUDMessageManagementViewModel::Setup()
 	MessageItemInstance = Cast<UUDMessageItemViewModel>(messageItemModel);
 	// Announce them to widget for additional binding.
 	SetMessageItemContent(FUDViewModelContent(MessageItemInstance));
-
-	// TODO delete this comment if it works as expected...
-	//Update();
 }
 
 void UUDMessageManagementViewModel::Refresh()

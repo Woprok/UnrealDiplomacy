@@ -33,6 +33,12 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText LobbyTitleText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText ConnectAddressTitleText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText ConnectAddressHelpText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText ConnectAddressText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText NameHeaderText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText BackText;
@@ -83,6 +89,12 @@ private:
 	// MVVM Setters & Getters
 	void SetLobbyTitleText(FText newLobbyTitleText);
 	FText GetLobbyTitleText() const;
+	void SetConnectAddressText(FText newConnectAddressText);
+	FText GetConnectAddressText() const;
+	void SetConnectAddressTitleText(FText newConnectAddressTitleText);
+	FText GetConnectAddressTitleText() const;
+	void SetConnectAddressHelpText(FText newConnectAddressHelpText);
+	FText GetConnectAddressHelpText() const;
 	void SetNameHeaderText(FText newNameHeaderText);
 	FText GetNameHeaderText() const;
 	void SetBackText(FText newBackText);

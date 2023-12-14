@@ -94,6 +94,14 @@ public:
 	 */
 	void JoinGameSession(FName sessionName, const FOnlineSessionSearchResult& sessionResult);
 	/**
+	 * Attempts to join same world as host directly, skipping sessions.
+	 */
+	bool TryDirectTravelToWorld(FString connectionString);
+	/**
+	 * Retrives direct connect string for session.
+	 */
+	FString GetDirectConnectString(FName sessionName);
+	/**
 	 * Attempts to join same world as host.
 	 */
 	bool TryTravelToCurrentSession(FName sessionName);

@@ -33,6 +33,8 @@ protected:
 	TWeakObjectPtr<UButton> BackButtonWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> RefreshButtonWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UButton> DirectConnectButtonWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDJoinGameViewModel> ViewModel;
