@@ -7,7 +7,7 @@
 #include "UDImperialThroneViewModel.generated.h"
 
 // Forward Declarations
-enum class EUDThroneState : uint8;
+enum class EUDImperialThroneState : uint8;
 
 /**
  * Contains all data related presenting informations and actions related to starting diplomacy (deal, throne, messages).
@@ -39,7 +39,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool CanInteractValue;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
-	EUDThroneState ThroneStateValue;
+	EUDImperialThroneState ThroneStateValue;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	bool IsEmptyValue;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
@@ -73,8 +73,8 @@ private:
 	FText GetDealToolTipText() const;
 	void SetCanInteractValue(bool newCanInteractValue);
 	bool GetCanInteractValue() const;
-	void SetThroneStateValue(EUDThroneState newThroneStateValue);
-	EUDThroneState GetThroneStateValue() const;
+	void SetThroneStateValue(EUDImperialThroneState newThroneStateValue);
+	EUDImperialThroneState GetThroneStateValue() const;
 	void SetIsEmptyValue(bool newIsEmptyValue);
 	bool GetIsEmptyValue() const;
 	void SetIsUsurperValue(bool newIsUsurperValue);

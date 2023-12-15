@@ -458,19 +458,19 @@ FUDThroneInfo UUDActionAdministrator::GetThroneInfo()
 {
 	FUDThroneInfo info;
 	
-	info.State = EUDThroneState::Empty;
+	info.State = EUDImperialThroneState::Empty;
 	info.CanInteract = true;
 	// Name is not changed for empty, it should never be needed.
 
 	if (State->ImperialThrone.Ruler == State->FactionPerspective)
 	{
-		info.State = EUDThroneState::Claimer;
+		info.State = EUDImperialThroneState::Claimer;
 		info.CanInteract = true;
 		info.FactionName = State->Factions[State->ImperialThrone.Ruler]->Name;
 	}
 	else if (IsFactionPlayerControlled(State->ImperialThrone.Ruler))
 	{
-		info.State = EUDThroneState::Usurper;
+		info.State = EUDImperialThroneState::Usurper;
 		info.CanInteract = false;
 		info.FactionName = State->Factions[State->ImperialThrone.Ruler]->Name;
 	}

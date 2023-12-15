@@ -47,7 +47,7 @@ void UUDImperialThroneViewModel::Setup()
 	FText dealToolTip = ConstructDealToolTip();
 	SetDealToolTipText(dealToolTip);
 	SetCanInteractValue(false);
-	SetThroneStateValue(EUDThroneState::Undefined);
+	SetThroneStateValue(EUDImperialThroneState::Undefined);
 	SetIsEmptyValue(true);
 	SetIsUsurperValue(false);
 	SetIsClaimerValue(false);
@@ -85,15 +85,15 @@ void UUDImperialThroneViewModel::UpdateThronePresentation()
 	SetIsClaimerValue(false);
 	switch (throneInfo.State)
 	{
-	case EUDThroneState::Empty:
+	case EUDImperialThroneState::Empty:
 		throneText = FText(LOCTEXT("ImperialThrone", "Claim"));
 		SetIsEmptyValue(true);
 		break;
-	case EUDThroneState::Usurper:
+	case EUDImperialThroneState::Usurper:
 		throneText = FText::Format(LOCTEXT("ImperialThrone", "{0}"), FText::FromString(throneInfo.FactionName));
 		SetIsUsurperValue(true);
 		break;
-	case EUDThroneState::Claimer:
+	case EUDImperialThroneState::Claimer:
 		throneText = FText(LOCTEXT("ImperialThrone", "Abdicate"));
 		SetIsClaimerValue(true);
 		break;
@@ -114,13 +114,13 @@ void UUDImperialThroneViewModel::ThroneAction()
 
 	switch (ThroneStateValue)
 	{
-	case EUDThroneState::Empty:
+	case EUDImperialThroneState::Empty:
 		ClaimThrone();
 		break;
-	case EUDThroneState::Claimer:
+	case EUDImperialThroneState::Claimer:
 		AbdicateThrone();
 		break;
-	case EUDThroneState::Usurper:
+	case EUDImperialThroneState::Usurper:
 		ContestThrone();
 		break;
 	}
@@ -236,12 +236,12 @@ bool UUDImperialThroneViewModel::GetCanInteractValue() const
 	return CanInteractValue;
 }
 
-void UUDImperialThroneViewModel::SetThroneStateValue(EUDThroneState newThroneStateValue)
+void UUDImperialThroneViewModel::SetThroneStateValue(EUDImperialThroneState newThroneStateValue)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(ThroneStateValue, newThroneStateValue);
 }
 
-EUDThroneState UUDImperialThroneViewModel::GetThroneStateValue() const
+EUDImperialThroneState UUDImperialThroneViewModel::GetThroneStateValue() const
 {
 	return ThroneStateValue;
 }

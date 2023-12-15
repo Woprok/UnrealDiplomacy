@@ -40,11 +40,11 @@ void AUDSkirmishAIController::ProcessInTurnPlay()
 	}
 
 	// Try taking the throne or support your favorite if someone claimed it.
-	if (throne.State == EUDThroneState::Empty && resources[UUDGameResourceReputation::ResourceId].Amount >= 500)
+	if (throne.State == EUDImperialThroneState::Empty && resources[UUDGameResourceReputation::ResourceId].Amount >= 500)
 	{
 		MakeAction(UUDGameActionThroneUsurp::ActionTypeId);
 	}
-	else if (throne.State == EUDThroneState::Usurper)
+	else if (throne.State == EUDImperialThroneState::Usurper)
 	{
 		MakeAction(UUDGameActionThroneSupport::ActionTypeId, { FavoriteFaction });
 	}

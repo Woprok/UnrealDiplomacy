@@ -181,7 +181,7 @@ public:
  * Describes state of the throne in relation to faction.
  */
 UENUM(BlueprintType)
-enum class EUDThroneState : uint8
+enum class EUDImperialThroneState : uint8
 {
 	/**
 	 * Value was not changed yet and should be ignored.
@@ -208,7 +208,7 @@ struct FUDThroneInfo
 public:
 	FUDThroneInfo();
 	UPROPERTY(BlueprintReadOnly)
-	EUDThroneState State = EUDThroneState::Undefined;
+	EUDImperialThroneState State = EUDImperialThroneState::Undefined;
 	UPROPERTY(BlueprintReadOnly)
 	FString FactionName = TEXT("");
 	UPROPERTY(BlueprintReadOnly)
