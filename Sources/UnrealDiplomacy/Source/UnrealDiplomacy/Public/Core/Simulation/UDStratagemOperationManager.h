@@ -79,5 +79,4 @@ protected:
 private:
 	bool CanPayActivationCost(const TObjectPtr<UUDFactionState>& faction, const TArray<FUDStratagemResourceCost>& costs) const;
 	FUDActionData GetActivationCostAction(int32 factionId, const TArray<FUDStratagemResourceCost>& costs) const;
-	bool HasStratagemFromOtherFaction(const TObjectPtr<UUDFactionState>& faction, int32 stratagemId) const;
 };

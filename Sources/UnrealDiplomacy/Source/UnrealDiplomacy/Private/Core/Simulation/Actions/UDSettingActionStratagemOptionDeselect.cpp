@@ -1,5 +1,4 @@
 // Copyright Miroslav Valach
-// TODO add availability check
 
 #include "Core/Simulation/Actions/UDSettingActionStratagemOptionDeselect.h"
 #include "Core/UDGlobalData.h"
@@ -11,7 +10,8 @@ void UUDSettingActionStratagemOptionDeselect::Execute(const FUDActionData& actio
 	IUDActionInterface::Execute(action, world);
 	// Change to new value
 	FUDSettingDataValue data(action.ValueParameters);
-	world->Factions[action.InvokerFactionId]->StratagemOptions.Remove(data.Value);
+	world->Factions[action.InvokerFactionId]->PickedStratagemOptions.Remove(data.Value);
+	world->Factions[action.InvokerFactionId]->AccessibleStratagemOptions.Remove(data.Value);
 }
 
 void UUDSettingActionStratagemOptionDeselect::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -19,5 +19,6 @@ void UUDSettingActionStratagemOptionDeselect::Revert(const FUDActionData& action
 	IUDActionInterface::Revert(action, world);
 	// Change to backup value
 	FUDSettingDataValue data(action.ValueParameters);
-	world->Factions[action.InvokerFactionId]->StratagemOptions.Add(data.Value);
+	world->Factions[action.InvokerFactionId]->PickedStratagemOptions.Add(data.Value);
+	world->Factions[action.InvokerFactionId]->AccessibleStratagemOptions.Add(data.Value);
 }

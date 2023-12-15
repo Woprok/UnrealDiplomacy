@@ -73,7 +73,8 @@ TObjectPtr<UUDFactionState> UUDFactionState::CreateState(int32 factionId)
 	TObjectPtr<UUDFactionState> newState = NewObject<UUDFactionState>();
 	newState->PlayerUniqueId = factionId;
 	newState->PendingDecisions.Empty(0);
-	newState->StratagemOptions.Empty(0);
+	newState->AccessibleStratagemOptions.Empty(0);
+	newState->PickedStratagemOptions.Empty(0);
 	newState->Name = FString::Format(TEXT("Faction {0}"), { factionId });
 	newState->Controller = EUDFactionController::Error;
 	newState->Resources.Empty();

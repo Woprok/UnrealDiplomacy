@@ -10,7 +10,8 @@ void UUDSettingActionStratagemOptionSelect::Execute(const FUDActionData& action,
 	IUDActionInterface::Execute(action, world);
 	// Change to new value
 	FUDSettingDataValue data(action.ValueParameters);
-	world->Factions[action.InvokerFactionId]->StratagemOptions.Add(data.Value);
+	world->Factions[action.InvokerFactionId]->PickedStratagemOptions.Add(data.Value);
+	world->Factions[action.InvokerFactionId]->AccessibleStratagemOptions.Add(data.Value);
 }
 
 void UUDSettingActionStratagemOptionSelect::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -18,5 +19,6 @@ void UUDSettingActionStratagemOptionSelect::Revert(const FUDActionData& action, 
 	IUDActionInterface::Revert(action, world);
 	// Change to backup value
 	FUDSettingDataValue data(action.ValueParameters);
-	world->Factions[action.InvokerFactionId]->StratagemOptions.Remove(data.Value);
+	world->Factions[action.InvokerFactionId]->PickedStratagemOptions.Remove(data.Value);
+	world->Factions[action.InvokerFactionId]->AccessibleStratagemOptions.Remove(data.Value);
 }

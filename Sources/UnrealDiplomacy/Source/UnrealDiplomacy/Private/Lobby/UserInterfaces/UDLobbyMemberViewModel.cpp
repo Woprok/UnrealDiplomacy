@@ -70,7 +70,7 @@ void UUDLobbyMemberViewModel::UpdateStratagemsList()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDLobbyMemberViewModel: UpdateStratagemsList."));
 	// Retrieve all options to rebuild the list
-	TArray<FUDStratagemPickableInfo> stratagems = Model->GetStratagemsList();
+	TArray<FUDStratagemPickableInfo> stratagems = Model->GetPickableStratagemList();
 	// Retrieve enough models
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
 	TArray<TObjectPtr<UUDViewModel>> viewModels = hud->GetViewModelCollection(StratagemViewModelCollectionName, StratagemViewModelType, stratagems.Num());

@@ -206,7 +206,7 @@ public:
 	/** Calculates remaning points left, based on current stratagems and returns if it can be bought. */
 	bool IsStratagemTakeable(FUDStratagemPickableInfo stratagem);
 	/** Provides comprehensive list of all available stratagems, taking them from internal action manager instance. */
-	TArray<FUDStratagemPickableInfo> GetStratagemsList();
+	TArray<FUDStratagemPickableInfo> GetPickableStratagemList();
 	/** HUD methord for determining correct UI switching. */
 	EUDGameStateInfo GetMatchStateInfo();
 private:
@@ -414,8 +414,6 @@ public:
 	bool IsFactionPlayerControlled(int32 factionId);
 	/** Checks if local player has access to specified action from any source, including not being stratagem. */
 	bool HasActionOrStratagem(int32 actionId);
-	/** Checks if local player has access to specified action explicitely from other faction. */
-	bool HasStratagemFromOtherFaction(int32 stratagemId);
 	/** 
 	 * Checks if specified presentation is stratagem.
 	 * If no returns true by default as non-stratagems are always available.

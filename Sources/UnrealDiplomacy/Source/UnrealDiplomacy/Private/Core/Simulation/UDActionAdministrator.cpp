@@ -184,7 +184,7 @@ int32 UUDActionAdministrator::GetLocalStratagemPointsLeft()
 {
 	int32 total = GetSettingsStratagemPoints();
 	int32 costUsed = 0;
-	for (const auto& stratagem : State->Factions[State->FactionPerspective]->StratagemOptions)
+	for (const auto& stratagem : State->Factions[State->FactionPerspective]->PickedStratagemOptions)
 	{
 		TSet<int32> tags = GetActionManager()->GetSpecified(stratagem).Tags;
 		costUsed += GetStratagemCostFromTags(tags);
@@ -192,13 +192,13 @@ int32 UUDActionAdministrator::GetLocalStratagemPointsLeft()
 	return total - costUsed;
 }
 
-TArray<FUDStratagemPickableInfo> UUDActionAdministrator::GetStratagemsList()
+TArray<FUDStratagemPickableInfo> UUDActionAdministrator::GetPickableStratagemList()
 {
 	TArray<FUDStratagemPickableInfo> stratagemList = { };
 	
 	for (const auto& stratagem : GetActionManager()->FilterStratagems())
 	{
-		bool isSelected = State->Factions[State->FactionPerspective]->StratagemOptions.Contains(stratagem.ActionId);
+		bool isSelected = State->Factions[State->FactionPerspective]->PickedStratagemOptions.Contains(stratagem.ActionId);
 		stratagemList.Add(
 			FUDStratagemPickableInfo(stratagem.ActionId, stratagem.Name, GetStratagemCostFromTags(stratagem.Tags), isSelected)
 		);
@@ -1574,33 +1574,15 @@ bool UUDActionAdministrator::HasActionOrStratagem(int32 actionId)
 	return IsAvailableStratagem(data.Tags, data.ActionId);
 }
 
-#include "Core/Simulation/Modifiers/UDFactionModifierStratagemShare.h"
-bool UUDActionAdministrator::HasStratagemFromOtherFaction(int32 stratagemId)
-{
-	const auto& modifiers = GetActionManager()->GetModifierManager()->GetAllFactionModifiers(State->Factions[State->FactionPerspective],
-		UUDFactionModifierStratagemShare::ModifierTypeId);
-
-	for (const auto& mod : modifiers)
-	{
-		if (mod.ValueParameters[0] == stratagemId)
-		{
-			return true;
-		}
-	}
-
-	return false;
-}
-
 bool UUDActionAdministrator::IsAvailableStratagem(const TSet<int32>& tags, int32 actionId)
 {
 	if (tags.Contains(UD_ACTION_TAG_STRATAGEM))
 	{
-		bool stratagem = State->Factions[State->FactionPerspective]->StratagemOptions.Contains(actionId);
+		bool isSharedOrOwned = State->Factions[State->FactionPerspective]->AccessibleStratagemOptions.Contains(actionId);
 		// Here comes checking modifiers:
+		// bool isOwnedOnly = State->Factions[State->FactionPerspective]->PickedStratagemOptions.Contains(actionId);
 
-		bool shared = HasStratagemFromOtherFaction(actionId);
-
-		return stratagem || shared;
+		return isSharedOrOwned;
 	}
 
 	// Default is true as anything that was not defined as stratagem is always available to player.

@@ -129,13 +129,21 @@ void UUDImperialThroneViewModel::ThroneAction()
 void UUDImperialThroneViewModel::ClaimThrone()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDImperialThroneViewModel: ClaimThrone."));
-	Model->RequestAction(Model->GetAction(UUDGameActionThroneUsurp::ActionTypeId));
+	if (Model->HasActionOrStratagem(UUDGameActionThroneUsurp::ActionTypeId))
+	{
+		UE_LOG(LogTemp, Log, TEXT("UUDImperialThroneViewModel: Usurping attempted!"));
+		Model->RequestAction(Model->GetAction(UUDGameActionThroneUsurp::ActionTypeId));
+	}
 }
 
 void UUDImperialThroneViewModel::AbdicateThrone()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDImperialThroneViewModel: AbdicateThrone."));
-	Model->RequestAction(Model->GetAction(UUDGameActionThroneAbdicate::ActionTypeId));
+	if (Model->HasActionOrStratagem(UUDGameActionThroneAbdicate::ActionTypeId))
+	{
+		UE_LOG(LogTemp, Log, TEXT("UUDImperialThroneViewModel: Abdicating attempted!"));
+		Model->RequestAction(Model->GetAction(UUDGameActionThroneAbdicate::ActionTypeId));
+	}
 }
 
 void UUDImperialThroneViewModel::ContestThrone()

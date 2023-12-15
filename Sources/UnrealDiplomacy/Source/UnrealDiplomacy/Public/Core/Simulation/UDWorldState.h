@@ -293,9 +293,18 @@ public:
 	/**
 	 * List of all available stratagem options to use.
 	 * On other words what kind of expensive actions can be used.
+	 * This is changed, based on current game state. e.g. player receiving stratagem from other.
+	 * Primary purpose is to skip combined modifier iteration and stratagem set check.
+	 * Thus this is superset of PickedStratagemOptions.
 	 */
 	UPROPERTY()
-	TSet<int32> StratagemOptions = { };
+	TSet<int32> AccessibleStratagemOptions = { };
+	/**
+	 * List of all picked stratagem options.
+	 * This is most liekly never going to be changed after game start.
+	 */
+	UPROPERTY()
+	TSet<int32> PickedStratagemOptions = { };
 	/**
 	 * Current faction name that can be displayed.
 	 */
@@ -721,6 +730,11 @@ public:
 	 */
 	UPROPERTY(BlueprintReadOnly)
 	int32 StratagemPoints = 0;
+	/**
+	 * Current session name that can be displayed.
+	 */
+	UPROPERTY()
+	FString SessionName;
 };
 
 /**

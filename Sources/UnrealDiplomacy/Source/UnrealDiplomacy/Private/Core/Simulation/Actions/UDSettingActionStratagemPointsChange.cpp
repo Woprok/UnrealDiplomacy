@@ -48,7 +48,7 @@ TArray<FUDActionData> UUDSettingActionStratagemPointsChange::GetDeselectForAll(T
 TArray<FUDActionData> UUDSettingActionStratagemPointsChange::GetFactionDeselectAll(TObjectPtr<UUDFactionState> faction) const
 {
 	TArray<FUDActionData> factionList;
-	for (auto stratagem : faction->StratagemOptions)
+	for (auto stratagem : faction->PickedStratagemOptions)
 	{
 		factionList.Add(FUDActionData(
 			UUDSettingActionStratagemOptionDeselect::ActionTypeId,

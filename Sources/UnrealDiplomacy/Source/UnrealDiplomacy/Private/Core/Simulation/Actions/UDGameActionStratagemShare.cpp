@@ -11,15 +11,14 @@
 bool UUDGameActionStratagemShare::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
 	FUDGameDataTargetAction data(action.ValueParameters);
-	const TObjectPtr<UUDFactionState>& faction = world->Factions[data.TargetId];
-	FUDModifierData modifierData = FUDModifierData(
-		UUDFactionModifierStratagemShare::ModifierTypeId, action.UniqueId,
-		action.InvokerFactionId, data.TargetId, { data.ActionTypeId }
-	);
+	const TObjectPtr<UUDFactionState>& targetFaction = world->Factions[data.TargetId];
+	const TObjectPtr<UUDFactionState>& invokerFaction = world->Factions[action.InvokerFactionId];
 
 	bool isNotSelfSharing = action.InvokerFactionId != data.TargetId;
-	bool isNotProviding = !ModifierManager->HasValueEqualFactionModifier(faction, modifierData);
-	return IUDActionInterface::CanExecute(action, world) && isNotProviding && isNotSelfSharing;
+	bool targetDoesNotHaveStratagem = !targetFaction->AccessibleStratagemOptions.Contains(data.ActionTypeId);
+	bool invokerHasStratagem = invokerFaction->AccessibleStratagemOptions.Contains(data.ActionTypeId);
+
+	return IUDActionInterface::CanExecute(action, world) && targetDoesNotHaveStratagem && invokerHasStratagem && isNotSelfSharing;
 }
 
 void UUDGameActionStratagemShare::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -32,6 +31,8 @@ void UUDGameActionStratagemShare::Execute(const FUDActionData& action, TObjectPt
 		UUDFactionModifierStratagemShare::ModifierTypeId, action.UniqueId,
 		action.InvokerFactionId, data.TargetId, { data.ActionTypeId }
 	);
+	// Create modifier and add action as accessible (might do nothing, if present, we don't care)
+	faction->AccessibleStratagemOptions.Add(data.ActionTypeId);
 	ModifierManager->CreateFactionModifier(faction, modifierData);
 }
 
@@ -41,6 +42,10 @@ void UUDGameActionStratagemShare::Revert(const FUDActionData& action, TObjectPtr
 	// Revokes access to stratagems.
 	FUDGameDataTargetAction data(action.ValueParameters);
 	const TObjectPtr<UUDFactionState>& faction = world->Factions[data.TargetId];
+	// We do care if this is picked or not, so we never remove picked by accident.
+	// Technically this should nover succeed as the execution should prevent this case.
+	if (!faction->PickedStratagemOptions.Contains(data.ActionTypeId))
+		faction->AccessibleStratagemOptions.Remove(data.ActionTypeId);
 	ModifierManager->RemoveFactionModifier(faction, action.UniqueId);
 }
 

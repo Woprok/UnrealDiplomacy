@@ -51,21 +51,6 @@ bool UUDStratagemOperationManager::IsStratagem(const FUDActionPresentation& deta
 	return false;
 }
 
-bool UUDStratagemOperationManager::HasStratagemFromOtherFaction(const TObjectPtr<UUDFactionState>& faction, int32 stratagemId) const
-{
-	const auto& modifiers = ModifierManager->GetAllFactionModifiers(faction, UUDFactionModifierStratagemShare::ModifierTypeId);
-
-	for (const auto& mod : modifiers)
-	{
-		if (mod.ValueParameters[0] == stratagemId)
-		{
-			return true;
-		}
-	}
-
-	return false;
-}
-
 bool UUDStratagemOperationManager::CanStratagemBeActivated(const TObjectPtr<UUDWorldState>& world, const FUDActionPresentation& detail, const FUDActionData& action) const
 {
 	bool canBeUsed = true;
@@ -74,9 +59,8 @@ bool UUDStratagemOperationManager::CanStratagemBeActivated(const TObjectPtr<UUDW
 	{
 		// Get reference to executor
 		const TObjectPtr<UUDFactionState>& faction = world->Factions[action.InvokerFactionId];
-		bool isFactionStratagem = faction->StratagemOptions.Contains(action.ActionTypeId);
-		bool isSharedStratagem = HasStratagemFromOtherFaction(faction, action.ActionTypeId);
-		canBeUsed == canBeUsed && (isFactionStratagem || isSharedStratagem);
+		bool isFactionStratagemOrSharedStratagem = faction->AccessibleStratagemOptions.Contains(action.ActionTypeId);
+		canBeUsed == canBeUsed && isFactionStratagemOrSharedStratagem;
 	}
 
 	// This is faction interaction, we will check if it was already used this turn by action invoker.
