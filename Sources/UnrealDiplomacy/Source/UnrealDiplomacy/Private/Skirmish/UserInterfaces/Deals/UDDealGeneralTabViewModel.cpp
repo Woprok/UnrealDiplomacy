@@ -53,8 +53,6 @@ void UUDDealGeneralTabViewModel::Setup()
 	TObjectPtr<UUDViewModel> chatViewModel = hud->GetViewModelCollection(ChatViewModelInstanceName, ChatViewModelType);
 	ChatViewModelInstance = Cast<UUDChatViewModel>(chatViewModel);
 	SetDealChatContent(FUDViewModelContent(ChatViewModelInstance));
-	// TODO remove this commented code, if it works properly
-	// Update();
 }
 
 void UUDDealGeneralTabViewModel::Refresh()

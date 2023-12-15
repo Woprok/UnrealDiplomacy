@@ -22,15 +22,15 @@ void UUDActionItemViewModel::Setup()
 		DefineInstances();
 		IsUniqueNameDefined = true;
 	}
-	FText editor = FText(LOCTEXT("PointContent", "Change Editor"));
+	FText editor = FText(LOCTEXT("ActionItem", "Change Editor"));
 	SetEditorText(editor);
-	FText accept = FText(LOCTEXT("PointContent", "Accept"));
+	FText accept = FText(LOCTEXT("ActionItem", "Accept"));
 	SetAcceptText(accept);
-	FText deny = FText(LOCTEXT("PointContent", "Deny"));
+	FText deny = FText(LOCTEXT("ActionItem", "Deny"));
 	SetDenyText(deny);
-	FText sabotage = FText(LOCTEXT("PointContent", "Sabotage"));
+	FText sabotage = FText(LOCTEXT("ActionItem", "Sabotage"));
 	SetSabotageText(sabotage);
-	FText change = FText(LOCTEXT("PointContent", "Change"));
+	FText change = FText(LOCTEXT("ActionItem", "Change"));
 	SetChangeText(change);
 
 	// Retrieve model

@@ -39,12 +39,6 @@ void UUDDealItemViewModel::Setup()
 	SetGeneralTabContent(FUDViewModelContent(GeneralTabViewModelInstance));
 	SetEditationTabContent(FUDViewModelContent(EditationTabViewModelInstance));
 	SetExecutionTabContent(FUDViewModelContent(ExecutionTabViewModelInstance));
-	// Call initialize so each Instance is ready to use, once it receives data in runtime.
-	// TODO remove this commented code, if it works properly
-	//GeneralTabViewModelInstance->Refresh();
-	//EditationTabViewModelInstance->Refresh();
-	//ExecutionTabViewModelInstance->Refresh();
-	//Update();
 }
 
 void UUDDealItemViewModel::Refresh()

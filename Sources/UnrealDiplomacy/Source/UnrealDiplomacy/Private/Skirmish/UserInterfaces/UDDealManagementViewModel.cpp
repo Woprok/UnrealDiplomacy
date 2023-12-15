@@ -69,11 +69,6 @@ void UUDDealManagementViewModel::Setup()
 	// Announce them to widget for additional binding.
 	SetActiveDealItemContent(FUDViewModelContent(ActiveDealItemInstance));
 	SetHistoryDealItemContent(FUDViewModelContent(HistoryDealItemInstance));
-	// Call initialize so instance is ready to use, once it receives data in runtime.
-	// TODO remove this commented code, if it works properly
-	//ActiveDealItemInstance->Refresh();
-	//HistoryDealItemInstance->Refresh();
-	//Update();
 }
 
 void UUDDealManagementViewModel::Refresh()

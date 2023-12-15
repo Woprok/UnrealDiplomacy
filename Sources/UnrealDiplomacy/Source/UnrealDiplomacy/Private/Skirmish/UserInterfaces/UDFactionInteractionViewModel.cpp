@@ -27,9 +27,6 @@ void UUDFactionInteractionViewModel::Setup()
 	TObjectPtr<UUDViewModel> editorModel = hud->GetViewModelCollection(ParameterEditorInstanceName, ParameterEditorType);
 	ParameterEditorInstance = Cast<UUDParameterEditorViewModel>(editorModel);
 	SetParameterEditorContent(FUDViewModelContent(ParameterEditorInstance));
-	// Call initialize so each Instance is ready to use, once it receives data in runtime.
-	//ParameterEditorInstance->Refresh();
-	// TODO remove this commented code, if it works properly
 }
 
 void UUDFactionInteractionViewModel::Refresh()
