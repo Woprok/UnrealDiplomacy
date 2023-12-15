@@ -1614,7 +1614,8 @@ FUDActionInteractionInfo UUDActionAdministrator::GetActionInteraction(int32 deal
 
 	interaction.IsInteractable = pointData.Action.InvokerFactionId == State->FactionPerspective && 
 		pointData.SelectedResult == EUDDealActionResult::Unresolved;
-	interaction.IsSabotageable = pointData.Action.InvokerFactionId != State->FactionPerspective;
+	interaction.IsSabotageable = pointData.Action.InvokerFactionId != State->FactionPerspective &&
+		!pointData.WasSabotaged;
 
 	return interaction;
 }
