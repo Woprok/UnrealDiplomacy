@@ -14,6 +14,11 @@ void UUDImperialThroneUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewMod
 void UUDImperialThroneUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	ThroneButtonWidget->OnClicked.Clear();
+	ThroneTextButtonWidget->OnClicked.Clear();
+	DealButtonWidget->OnClicked.Clear();
+	MessageButtonWidget->OnClicked.Clear();
+
 	ThroneButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDImperialThroneViewModel::ThroneAction);
 	ThroneTextButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDImperialThroneViewModel::ThroneAction);
 	DealButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDImperialThroneViewModel::OpenDeals);

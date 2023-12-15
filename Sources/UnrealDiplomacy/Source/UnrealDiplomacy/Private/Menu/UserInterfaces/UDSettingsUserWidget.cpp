@@ -15,11 +15,21 @@ void UUDSettingsUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 void UUDSettingsUserWidget::BindDelegates()
 {
 	// Bind view to updates.
+	ViewModel->OnSettingsLoaded.Clear();
+
 	ViewModel->OnSettingsLoaded.AddUniqueDynamic(this, &UUDSettingsUserWidget::SetOptions);
 	// Bind viewmodel to widgets.
+	BackButtonWidget->OnClicked.Clear();
+	SaveButtonWidget->OnClicked.Clear();
+	CreditsButtonWidget->OnClicked.Clear();
+
 	BackButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDSettingsViewModel::Back);
 	SaveButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDSettingsViewModel::Save);
 	CreditsButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDSettingsViewModel::Credits);
+
+	WindowModeComboBoxWidget->OnSelectionChanged.Clear();
+	ResolutionComboBoxWidget->OnSelectionChanged.Clear();
+
 	WindowModeComboBoxWidget->OnSelectionChanged.AddUniqueDynamic(ViewModel.Get(), &UUDSettingsViewModel::SetSelectedWindowMode);
 	ResolutionComboBoxWidget->OnSelectionChanged.AddUniqueDynamic(ViewModel.Get(), &UUDSettingsViewModel::SetSelectedResolution);
 }

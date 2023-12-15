@@ -14,6 +14,10 @@ void UUDJoinGameUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 void UUDJoinGameUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	BackButtonWidget->OnClicked.Clear();
+	RefreshButtonWidget->OnClicked.Clear();
+	DirectConnectButtonWidget->OnClicked.Clear();
+
 	BackButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDJoinGameViewModel::Back);
 	RefreshButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDJoinGameViewModel::RefreshList);
 	DirectConnectButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDJoinGameViewModel::DirectConnect);

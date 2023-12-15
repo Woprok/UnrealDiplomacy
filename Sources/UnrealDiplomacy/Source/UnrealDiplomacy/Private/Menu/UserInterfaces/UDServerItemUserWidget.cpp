@@ -14,6 +14,8 @@ void UUDServerItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 void UUDServerItemUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	ItemButtonWidget->OnClicked.Clear();
+
 	ItemButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDServerItemViewModel::Join);
 }
 

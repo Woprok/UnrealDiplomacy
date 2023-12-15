@@ -14,6 +14,11 @@ void UUDMenuUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 void UUDMenuUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	CreateGameButtonWidget->OnClicked.Clear();
+	JoinGameButtonWidget->OnClicked.Clear();
+	SettingsButtonWidget->OnClicked.Clear();
+	QuitButtonWidget->OnClicked.Clear();
+
 	CreateGameButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMenuViewModel::CreateGame);
 	JoinGameButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMenuViewModel::JoinGame);
 	SettingsButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMenuViewModel::Settings);

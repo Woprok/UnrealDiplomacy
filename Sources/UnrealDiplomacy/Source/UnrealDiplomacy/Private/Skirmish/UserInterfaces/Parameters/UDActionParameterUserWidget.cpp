@@ -14,6 +14,8 @@ void UUDActionParameterUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewMo
 void UUDActionParameterUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	PreviousButtonWidget->OnClicked.Clear();
+	NextButtonWidget->OnClicked.Clear();
 	PreviousButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDActionParameterViewModel::PreviousAction);
 	NextButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDActionParameterViewModel::NextAction);
 }

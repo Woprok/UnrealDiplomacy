@@ -14,6 +14,7 @@ void UUDGameOverUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 void UUDGameOverUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	ReturnButtonWidget->OnClicked.Clear();
 	ReturnButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDGameOverViewModel::Return);
 }
 

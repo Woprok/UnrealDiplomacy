@@ -14,6 +14,7 @@ void UUDInviteItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 void UUDInviteItemUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	InviteButtonWidget->OnClicked.Clear();
 	InviteButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDInviteItemViewModel::Invite);
 }
 

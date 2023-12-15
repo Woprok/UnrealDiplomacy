@@ -88,7 +88,7 @@ void UUDTileManagementViewModel::UpdateTileInteractionList()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDTilePanelViewModel: UpdateTileList."));
 	// Retrieve tiles
-	TArray<FUDTileInteractionInfo> interactions = Model->GetTileInteractionList();
+	TArray<FUDTileInteractionInfo> interactions = Model->GetTileInteractionList(Model->GetLocalPlayerFaction());
 	// Retrieve enough models
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
 	TArray<TObjectPtr<UUDViewModel>> viewModels = hud->GetViewModelCollection(TileInteractionViewModelCollectionName, TileInteractionViewModelType, interactions.Num());

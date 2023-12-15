@@ -14,6 +14,7 @@ void UUDTileInteractionUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewMo
 void UUDTileInteractionUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	InteractButtonWidget->OnClicked.Clear();
 	InteractButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDTileInteractionViewModel::Interact);
 }
 

@@ -14,6 +14,7 @@ void UUDTurnUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 void UUDTurnUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	FinishTurnButtonWidget->OnClicked.Clear();
 	FinishTurnButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDTurnViewModel::FinishTurn);
 }
 

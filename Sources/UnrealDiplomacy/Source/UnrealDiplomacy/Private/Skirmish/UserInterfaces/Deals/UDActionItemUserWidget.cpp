@@ -14,6 +14,10 @@ void UUDActionItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 void UUDActionItemUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	AcceptButtonWidget->OnClicked.Clear();
+	ChangeButtonWidget->OnClicked.Clear();
+	DenyButtonWidget->OnClicked.Clear();
+	SabotageButtonWidget->OnClicked.Clear();
 	AcceptButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDActionItemViewModel::Accept);
 	ChangeButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDActionItemViewModel::Change);
 	DenyButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDActionItemViewModel::Deny);

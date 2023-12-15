@@ -14,6 +14,7 @@ void UUDPolicySelectItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewM
 void UUDPolicySelectItemUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	SelectButtonWidget->OnClicked.Clear();
 	SelectButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDPolicySelectItemViewModel::Select);
 }
 

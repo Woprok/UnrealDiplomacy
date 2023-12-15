@@ -14,6 +14,10 @@ void UUDMessageItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 void UUDMessageItemUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	AcceptButtonWidget->OnClicked.Clear();
+	OkButtonWidget->OnClicked.Clear();
+	RejectButtonWidget->OnClicked.Clear();
+
 	AcceptButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMessageItemViewModel::Accept);
 	OkButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMessageItemViewModel::Ok);
 	RejectButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMessageItemViewModel::Reject);

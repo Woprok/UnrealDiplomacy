@@ -14,6 +14,7 @@ void UUDFactionManagementUserWidget::BindViewModel(TObjectPtr<UUDViewModel> view
 void UUDFactionManagementUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	CloseButtonWidget->OnClicked.Clear();
 	CloseButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDFactionManagementViewModel::Close);
 }
 

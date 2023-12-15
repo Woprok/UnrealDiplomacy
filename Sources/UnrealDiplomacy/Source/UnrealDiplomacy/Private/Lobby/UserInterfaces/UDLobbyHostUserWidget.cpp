@@ -14,6 +14,17 @@ void UUDLobbyHostUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 void UUDLobbyHostUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	AICountValueWidget->OnValueChanged.Clear();
+	AICountValueWidget->OnValueCommitted.Clear();
+	MapSeedValueWidget->OnValueChanged.Clear();
+	MapSeedValueWidget->OnValueCommitted.Clear();
+	MapWidthValueWidget->OnValueChanged.Clear();
+	MapWidthValueWidget->OnValueCommitted.Clear();
+	MapHeightValueWidget->OnValueChanged.Clear();
+	MapHeightValueWidget->OnValueCommitted.Clear();
+	StratagemPointsValueWidget->OnValueChanged.Clear();
+	StratagemPointsValueWidget->OnValueCommitted.Clear();
+
 	AICountValueWidget->OnValueChanged.AddUniqueDynamic(ViewModel.Get(), &UUDLobbyHostViewModel::StartValueEditation);
 	AICountValueWidget->OnValueCommitted.AddUniqueDynamic(ViewModel.Get(), &UUDLobbyHostViewModel::StopAICountValueEditation);
 	MapSeedValueWidget->OnValueChanged.AddUniqueDynamic(ViewModel.Get(), &UUDLobbyHostViewModel::StartValueEditation);

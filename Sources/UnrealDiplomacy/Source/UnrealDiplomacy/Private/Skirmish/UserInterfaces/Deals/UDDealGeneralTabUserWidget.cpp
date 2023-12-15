@@ -14,6 +14,14 @@ void UUDDealGeneralTabUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewMod
 void UUDDealGeneralTabUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	ChangeReadyButtonWidget->OnClicked.Clear();
+	ChangeVoteButtonWidget->OnClicked.Clear();
+	LeaveButtonWidget->OnClicked.Clear();
+	CancelButtonWidget->OnClicked.Clear();
+
+	CreateContractButtonWidget->OnClicked.Clear();
+	ExecuteContractButtonWidget->OnClicked.Clear();
+
 	ChangeReadyButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDDealGeneralTabViewModel::ChangeReady);
 	ChangeVoteButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDDealGeneralTabViewModel::ChangeVote);
 	LeaveButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDDealGeneralTabViewModel::Leave);

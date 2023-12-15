@@ -14,6 +14,8 @@ void UUDTileParameterUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewMode
 void UUDTileParameterUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	PreviousButtonWidget->OnClicked.Clear();
+	NextButtonWidget->OnClicked.Clear();
 	PreviousButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDTileParameterViewModel::PreviousTile);
 	NextButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDTileParameterViewModel::NextTile);
 }

@@ -14,6 +14,7 @@ void UUDNewsWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 void UUDNewsWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	CloseButtonWidget->OnClicked.Clear();
 	CloseButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDNewsViewModel::Close);
 }
 

@@ -14,6 +14,15 @@ void UUDDealManagementUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewMod
 void UUDDealManagementUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	CreateButtonWidget->OnClicked.Clear();
+	ActiveButtonWidget->OnClicked.Clear();
+	HistoryButtonWidget->OnClicked.Clear();
+	CloseButtonWidget->OnClicked.Clear();
+	FirstButtonWidget->OnClicked.Clear();
+	PreviousButtonWidget->OnClicked.Clear();
+	NextButtonWidget->OnClicked.Clear();
+	LastButtonWidget->OnClicked.Clear();
+
 	CreateButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDDealManagementViewModel::CreateDeal);
 	ActiveButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDDealManagementViewModel::SwitchActiveDeals);
 	HistoryButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDDealManagementViewModel::SwitchHistoryDeals);

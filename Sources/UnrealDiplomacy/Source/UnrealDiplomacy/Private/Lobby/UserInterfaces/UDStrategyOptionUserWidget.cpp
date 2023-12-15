@@ -14,6 +14,7 @@ void UUDStrategyOptionUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewMod
 void UUDStrategyOptionUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	OptionButtonWidget->OnClicked.Clear();
 	OptionButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDStrategyOptionViewModel::Selected);
 }
 

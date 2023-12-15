@@ -14,6 +14,7 @@ void UUDPrimaryPointItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewM
 void UUDPrimaryPointItemUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	CreatePointButtonWidget->OnClicked.Clear();
 	CreatePointButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDPrimaryPointItemViewModel::CreatePoint);
 }
 

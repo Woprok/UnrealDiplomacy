@@ -14,6 +14,9 @@ void UUDResourceParameterUserWidget::BindViewModel(TObjectPtr<UUDViewModel> view
 void UUDResourceParameterUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	PreviousButtonWidget->OnClicked.Clear();
+	NextButtonWidget->OnClicked.Clear();
+
 	PreviousButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDResourceParameterViewModel::PreviousResource);
 	NextButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDResourceParameterViewModel::NextResource);
 }

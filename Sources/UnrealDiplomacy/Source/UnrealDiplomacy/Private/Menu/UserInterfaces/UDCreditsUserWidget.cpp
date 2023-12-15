@@ -13,6 +13,7 @@ void UUDCreditsUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 
 void UUDCreditsUserWidget::BindDelegates()
 {
+	BackButtonWidget->OnClicked.Clear();
 	BackButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDCreditsViewModel::Back);
 }
 

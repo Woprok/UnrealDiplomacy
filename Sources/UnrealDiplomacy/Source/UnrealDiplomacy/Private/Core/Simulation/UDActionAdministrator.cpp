@@ -295,38 +295,38 @@ FUDFactionMinimalInfo UUDActionAdministrator::GetFactionInfo(int32 factionId)
 	return factionInfo;
 }
 
-TArray<FUDFactionInteractionInfo> UUDActionAdministrator::GetFactionInteractionList()
+TArray<FUDFactionInteractionInfo> UUDActionAdministrator::GetFactionInteractionList(int32 factionId)
 {
-	return CreateFactionInteractionList(GetActionManager()->FilterFactionInteractions(UD_ACTION_TAG_DECISION_DIRECT));
+	return CreateFactionInteractionList(factionId, GetActionManager()->FilterFactionInteractions(UD_ACTION_TAG_DECISION_DIRECT));
 }
 
-TArray<FUDFactionInteractionInfo> UUDActionAdministrator::GetFactionOfferList()
+TArray<FUDFactionInteractionInfo> UUDActionAdministrator::GetFactionOfferList(int32 factionId)
 {
-	return CreateFactionInteractionList(GetActionManager()->FilterFactionInteractions(UD_ACTION_TAG_DECISION_OFFER));
+	return CreateFactionInteractionList(factionId, GetActionManager()->FilterFactionInteractions(UD_ACTION_TAG_DECISION_OFFER));
 }
 
-TArray<FUDFactionInteractionInfo> UUDActionAdministrator::GetFactionRequestList()
+TArray<FUDFactionInteractionInfo> UUDActionAdministrator::GetFactionRequestList(int32 factionId)
 {
-	return CreateFactionInteractionList(GetActionManager()->FilterFactionInteractions(UD_ACTION_TAG_DECISION_REQUEST));
+	return CreateFactionInteractionList(factionId, GetActionManager()->FilterFactionInteractions(UD_ACTION_TAG_DECISION_REQUEST));
 }
 
-TArray<FUDFactionInteractionInfo> UUDActionAdministrator::GetFactionDemandList()
+TArray<FUDFactionInteractionInfo> UUDActionAdministrator::GetFactionDemandList(int32 factionId)
 {
-	return CreateFactionInteractionList(GetActionManager()->FilterFactionInteractions(UD_ACTION_TAG_DECISION_DEMAND));
+	return CreateFactionInteractionList(factionId, GetActionManager()->FilterFactionInteractions(UD_ACTION_TAG_DECISION_DEMAND));
 }
 
-TArray<FUDFactionInteractionInfo> UUDActionAdministrator::GetFactionConsequenceList()
+TArray<FUDFactionInteractionInfo> UUDActionAdministrator::GetFactionConsequenceList(int32 factionId)
 {
-	return CreateFactionInteractionList(GetActionManager()->FilterFactionInteractions(UD_ACTION_TAG_DECISION_CONSEQUENCE));
+	return CreateFactionInteractionList(factionId, GetActionManager()->FilterFactionInteractions(UD_ACTION_TAG_DECISION_CONSEQUENCE));
 }
 
-TArray<FUDFactionInteractionInfo> UUDActionAdministrator::CreateFactionInteractionList(TArray<FUDActionPresentation>&& availableActions)
+TArray<FUDFactionInteractionInfo> UUDActionAdministrator::CreateFactionInteractionList(int32 factionId, TArray<FUDActionPresentation>&& availableActions)
 {
 	TArray<FUDFactionInteractionInfo> interactions = { };
 
 	for (const auto& interaction : availableActions)
 	{
-		bool isAvailable = IsAvailableStratagem(interaction.Tags, interaction.ActionId);
+		bool isAvailable = IsAvailableStratagem(factionId, interaction.Tags, interaction.ActionId);
 		// continue if it's not available with next.
 		if (!isAvailable)
 			continue;
@@ -343,13 +343,13 @@ TArray<FUDFactionInteractionInfo> UUDActionAdministrator::CreateFactionInteracti
 
 #include "Core/Simulation/Actions/UDDecisionActionConsequenceSelect.h"
 
-TArray<FUDPolicySelectItemInfo> UUDActionAdministrator::GetConsequencePolicyList()
+TArray<FUDPolicySelectItemInfo> UUDActionAdministrator::GetConsequencePolicyList(int32 factionId)
 {
 	TArray<FUDPolicySelectItemInfo> policies = { };
 
 	for (const auto& interaction : GetActionManager()->FilterFactionInteractions(UD_ACTION_TAG_DECISION_CONSEQUENCE))
 	{
-		bool isAvailable = IsAvailableStratagem(interaction.Tags, interaction.ActionId);
+		bool isAvailable = IsAvailableStratagem(factionId, interaction.Tags, interaction.ActionId);
 		// continue if it's not available with next.
 		if (!isAvailable)
 			continue;
@@ -540,13 +540,13 @@ TObjectPtr<UUDMapState> UUDActionAdministrator::GetMapState()
 	return State->Map;
 }
 
-TArray<FUDTileInteractionInfo> UUDActionAdministrator::GetTileInteractionList()
+TArray<FUDTileInteractionInfo> UUDActionAdministrator::GetTileInteractionList(int32 factionId)
 {
 	TArray<FUDTileInteractionInfo> interactions = { };
 
 	for (const auto& interaction : GetActionManager()->FilterTileInteractions())
 	{
-		bool isAvailable = IsAvailableStratagem(interaction.Tags, interaction.ActionId);
+		bool isAvailable = IsAvailableStratagem(factionId, interaction.Tags, interaction.ActionId);
 		// continue if it's not available with next.
 		if (!isAvailable)
 			continue;
@@ -1559,6 +1559,16 @@ FUDActionInteractionInfo UUDActionAdministrator::GetActionInteraction(int32 deal
 
 #pragma endregion
 
+int32 UUDActionAdministrator::GetLocalPlayerFaction()
+{
+	return State->FactionPerspective;
+}
+
+bool UUDActionAdministrator::IsLocalPlayer(int32 factionId)
+{
+	return State->FactionPerspective == factionId;
+}
+
 bool UUDActionAdministrator::IsLocalFactionPlayer()
 {
 	bool notGaia = State->FactionPerspective != UUDGlobalData::GaiaFactionId;
@@ -1576,14 +1586,14 @@ bool UUDActionAdministrator::IsFactionPlayerControlled(int32 factionId)
 bool UUDActionAdministrator::HasActionOrStratagem(int32 actionId)
 {
 	const auto& data = GetActionManager()->GetSpecified(actionId);
-	return IsAvailableStratagem(data.Tags, data.ActionId);
+	return IsAvailableStratagem(State->FactionPerspective, data.Tags, data.ActionId);
 }
 
-bool UUDActionAdministrator::IsAvailableStratagem(const TSet<int32>& tags, int32 actionId)
+bool UUDActionAdministrator::IsAvailableStratagem(int32 factionId, const TSet<int32>& tags, int32 actionId)
 {
 	if (tags.Contains(UD_ACTION_TAG_STRATAGEM))
 	{
-		bool isSharedOrOwned = State->Factions[State->FactionPerspective]->AccessibleStratagemOptions.Contains(actionId);
+		bool isSharedOrOwned = State->Factions[factionId]->AccessibleStratagemOptions.Contains(actionId);
 		// Here comes checking modifiers:
 		// bool isOwnedOnly = State->Factions[State->FactionPerspective]->PickedStratagemOptions.Contains(actionId);
 

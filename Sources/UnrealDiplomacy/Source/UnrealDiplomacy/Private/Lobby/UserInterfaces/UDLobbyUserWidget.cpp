@@ -14,6 +14,9 @@ void UUDLobbyUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 void UUDLobbyUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	BackButtonWidget->OnClicked.Clear();
+	LeaveButtonWidget->OnClicked.Clear();
+	StartButtonWidget->OnClicked.Clear();
 	BackButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDLobbyViewModel::Back);
 	LeaveButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDLobbyViewModel::Leave);
 	StartButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDLobbyViewModel::Start);

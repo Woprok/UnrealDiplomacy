@@ -38,7 +38,7 @@ void UUDPolicySelectorViewModel::Refresh()
 void UUDPolicySelectorViewModel::UpdatePolicyItemList()
 {
 	// Retrieve factions
-	TArray<FUDPolicySelectItemInfo> policies = Model->GetConsequencePolicyList();
+	TArray<FUDPolicySelectItemInfo> policies = Model->GetConsequencePolicyList(Model->GetLocalPlayerFaction());
 	// Retrieve enough models
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
 	TArray<TObjectPtr<UUDViewModel>> viewModels = hud->GetViewModelCollection(PolicySelectItemViewModelCollectionName, PolicySelectItemViewModelType, policies.Num());

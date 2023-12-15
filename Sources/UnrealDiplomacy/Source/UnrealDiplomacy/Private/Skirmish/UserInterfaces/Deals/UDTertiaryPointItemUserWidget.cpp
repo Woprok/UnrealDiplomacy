@@ -14,6 +14,7 @@ void UUDTertiaryPointItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> view
 void UUDTertiaryPointItemUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	CreateTertiaryPointButtonWidget->OnClicked.Clear();
 	CreateTertiaryPointButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDTertiaryPointItemViewModel::CreateTertiaryPoint);
 }
 

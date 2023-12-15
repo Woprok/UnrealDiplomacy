@@ -14,6 +14,12 @@ void UUDMessageManagementUserWidget::BindViewModel(TObjectPtr<UUDViewModel> view
 void UUDMessageManagementUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	CloseButtonWidget->OnClicked.Clear();
+	FirstButtonWidget->OnClicked.Clear();
+	PreviousButtonWidget->OnClicked.Clear();
+	NextButtonWidget->OnClicked.Clear();
+	LastButtonWidget->OnClicked.Clear();
+
 	CloseButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMessageManagementViewModel::Close);
 	FirstButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMessageManagementViewModel::First);
 	PreviousButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDMessageManagementViewModel::Previous);

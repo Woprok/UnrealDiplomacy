@@ -14,6 +14,8 @@ void UUDValueParameterUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewMod
 void UUDValueParameterUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	ValueBoxWidget->OnValueChanged.Clear();
+	ValueBoxWidget->OnValueCommitted.Clear();
 	ValueBoxWidget->OnValueChanged.AddUniqueDynamic(ViewModel.Get(), &UUDValueParameterViewModel::StartValueEditation);
 	ValueBoxWidget->OnValueCommitted.AddUniqueDynamic(ViewModel.Get(), &UUDValueParameterViewModel::StopValueEditation);
 }

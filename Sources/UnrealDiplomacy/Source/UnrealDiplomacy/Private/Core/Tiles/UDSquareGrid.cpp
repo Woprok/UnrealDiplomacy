@@ -23,6 +23,7 @@ void AUDSquareGrid::SetAuthority(UUDActionAdministrator* model)
 	MapModel = model;
 
 	TObjectPtr<AUDSkirmishPlayerController> pc = AUDSkirmishPlayerController::Get(GetWorld());
+	// TODO VERIFY THAT THIS IS NEVER AND WILL NEVER BE CALLED TWICE
 	pc->OnSynchronizationFinishedEvent.AddUniqueDynamic(this, &AUDSquareGrid::OnSynchronized);
 	pc->OnWorldSimulationUpdatedEvent.AddUniqueDynamic(this, &AUDSquareGrid::OnUpdate);
 }

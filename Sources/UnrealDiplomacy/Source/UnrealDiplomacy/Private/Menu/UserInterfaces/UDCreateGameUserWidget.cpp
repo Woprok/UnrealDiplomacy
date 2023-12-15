@@ -16,6 +16,8 @@ void UUDCreateGameUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 void UUDCreateGameUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	BackButtonWidget->OnClicked.Clear();
+	NewGameButtonWidget->OnClicked.Clear();
 	BackButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDCreateGameViewModel::Back);
 	NewGameButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDCreateGameViewModel::NewGame);
 }

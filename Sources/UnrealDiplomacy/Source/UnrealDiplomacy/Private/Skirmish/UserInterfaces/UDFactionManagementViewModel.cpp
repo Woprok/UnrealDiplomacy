@@ -106,7 +106,10 @@ void UUDFactionManagementViewModel::UpdateFactionLists()
 void UUDFactionManagementViewModel::UpdateFactionInteractionList()
 {
 	// Retrieve factions
-	TArray<FUDFactionInteractionInfo> interactions = Model->GetFactionInteractionList();
+	TArray<FUDFactionInteractionInfo> interactions = {};
+	if (!Model->IsLocalPlayer(SelectedFactionId))
+		interactions = Model->GetFactionInteractionList(Model->GetLocalPlayerFaction());
+
 	// Retrieve enough models
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
 	TArray<TObjectPtr<UUDViewModel>> viewModels = hud->GetViewModelCollection(FactionInteractionViewModelCollectionName, FactionInteractionViewModelType, interactions.Num());
@@ -126,7 +129,10 @@ void UUDFactionManagementViewModel::UpdateFactionInteractionList()
 void UUDFactionManagementViewModel::UpdateFactionOfferList()
 {
 	// Retrieve factions
-	TArray<FUDFactionInteractionInfo> interactions = Model->GetFactionOfferList();
+	TArray<FUDFactionInteractionInfo> interactions = {};
+	if (!Model->IsLocalPlayer(SelectedFactionId))
+		interactions = Model->GetFactionOfferList(Model->GetLocalPlayerFaction());
+
 	// Retrieve enough models
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
 	TArray<TObjectPtr<UUDViewModel>> viewModels = hud->GetViewModelCollection(FactionOfferViewModelCollectionName, FactionInteractionViewModelType, interactions.Num());
@@ -146,7 +152,10 @@ void UUDFactionManagementViewModel::UpdateFactionOfferList()
 void UUDFactionManagementViewModel::UpdateFactionRequestList()
 {
 	// Retrieve factions
-	TArray<FUDFactionInteractionInfo> interactions = Model->GetFactionRequestList();
+	TArray<FUDFactionInteractionInfo> interactions = {};
+	if (!Model->IsLocalPlayer(SelectedFactionId))
+		interactions = Model->GetFactionRequestList(SelectedFactionId);
+
 	// Retrieve enough models
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
 	TArray<TObjectPtr<UUDViewModel>> viewModels = hud->GetViewModelCollection(FactionRequestViewModelCollectionName, FactionInteractionViewModelType, interactions.Num());
@@ -166,7 +175,10 @@ void UUDFactionManagementViewModel::UpdateFactionRequestList()
 void UUDFactionManagementViewModel::UpdateFactionDemandList()
 {
 	// Retrieve factions
-	TArray<FUDFactionInteractionInfo> interactions = Model->GetFactionDemandList();
+	TArray<FUDFactionInteractionInfo> interactions = {};
+	if (!Model->IsLocalPlayer(SelectedFactionId))
+		interactions = Model->GetFactionDemandList(SelectedFactionId);
+
 	// Retrieve enough models
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
 	TArray<TObjectPtr<UUDViewModel>> viewModels = hud->GetViewModelCollection(FactionDemandViewModelCollectionName, FactionInteractionViewModelType, interactions.Num());

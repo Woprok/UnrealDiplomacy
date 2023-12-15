@@ -231,20 +231,20 @@ public:
 	/** Provides faction name. */
 	FUDFactionMinimalInfo GetFactionInfo(int32 factionId);
 	/** Provides list of faction interactions. */
-	TArray<FUDFactionInteractionInfo> GetFactionInteractionList();
+	TArray<FUDFactionInteractionInfo> GetFactionInteractionList(int32 factionId);
 	/** Provides list of faction offers. */
-	TArray<FUDFactionInteractionInfo> GetFactionOfferList();
+	TArray<FUDFactionInteractionInfo> GetFactionOfferList(int32 factionId);
 	/** Provides list of faction requests. */
-	TArray<FUDFactionInteractionInfo> GetFactionRequestList();
+	TArray<FUDFactionInteractionInfo> GetFactionRequestList(int32 factionId);
 	/** Provides list of faction demands. */
-	TArray<FUDFactionInteractionInfo> GetFactionDemandList();
+	TArray<FUDFactionInteractionInfo> GetFactionDemandList(int32 factionId);
 	/** Provides list of consequences for faction demands rejection. */
-	TArray<FUDFactionInteractionInfo> GetFactionConsequenceList();
+	TArray<FUDFactionInteractionInfo> GetFactionConsequenceList(int32 factionId);
 	/** Provides list of policies for consequences on demands rejection. */
-	TArray<FUDPolicySelectItemInfo> GetConsequencePolicyList();
+	TArray<FUDPolicySelectItemInfo> GetConsequencePolicyList(int32 factionId);
 private:
 	/** Provides interactions. */
-	TArray<FUDFactionInteractionInfo> CreateFactionInteractionList(TArray<FUDActionPresentation>&& availableActions);
+	TArray<FUDFactionInteractionInfo> CreateFactionInteractionList(int32 factionId, TArray<FUDActionPresentation>&& availableActions);
 #pragma endregion
 
 #pragma region Resources
@@ -300,7 +300,7 @@ public:
 	/** Provides tile core informations. */
 	FUDTileInfo GetTileInfo(FIntPoint position);
 	/** Provides list of tile interactions. */
-	TArray<FUDTileInteractionInfo> GetTileInteractionList();
+	TArray<FUDTileInteractionInfo> GetTileInteractionList(int32 factionId);
 	/** Provides list of all tiles. */
 	TArray<FUDTileMinimalInfo> GetTileOptions();
 #pragma endregion
@@ -410,6 +410,10 @@ private:
 #pragma endregion
 
 public:
+	/** Checks if this state is by specified player faction. */
+	int32 GetLocalPlayerFaction();
+	/** Checks if this state is by specified player faction. */
+	bool IsLocalPlayer(int32 factionId);
 	/** Checks if this state is owned by local player (not an observer or server). */
 	bool IsLocalFactionPlayer();
 	/** Checks if specified faction is owned & controlled by player or AI. */
@@ -421,8 +425,9 @@ public:
 	 * If no returns true by default as non-stratagems are always available.
 	 * If yes then it checks if it's available to local player and returns based on result. 
 	 * TLDR: returns true if player can use specified action.
+	 * Faction as first parameter defines which faction is checked. (thus does not check only this local faction)
 	 */
-	bool IsAvailableStratagem(const TSet<int32>& tags, int32 actionId);
+	bool IsAvailableStratagem(int32 factionId, const TSet<int32>& tags, int32 actionId);
 	/** Checks if specified faction is same as neutral. */
 	bool IsNeutral(int32 factionId);
 #pragma region AI Checks

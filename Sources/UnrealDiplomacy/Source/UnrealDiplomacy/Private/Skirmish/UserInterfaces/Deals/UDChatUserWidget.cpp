@@ -17,8 +17,12 @@ void UUDChatUserWidget::BindDelegates()
 {
 	// Bind view to updates.
 	// Bind viewmodel to widgets.
+	EditableMessageTextBoxWidget->OnTextChanged.Clear();
+	EditableMessageTextBoxWidget->OnTextCommitted.Clear();
 	EditableMessageTextBoxWidget->OnTextChanged.AddUniqueDynamic(ViewModel.Get(), &UUDChatViewModel::StartTextEditation);
 	EditableMessageTextBoxWidget->OnTextCommitted.AddUniqueDynamic(ViewModel.Get(), &UUDChatViewModel::StopTextEditation);
+
+	SendButtonWidget->OnClicked.Clear();
 	SendButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDChatViewModel::Send);
 }
 

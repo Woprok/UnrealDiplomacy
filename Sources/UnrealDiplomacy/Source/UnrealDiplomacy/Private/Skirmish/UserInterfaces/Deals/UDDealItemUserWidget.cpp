@@ -14,6 +14,10 @@ void UUDDealItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel)
 void UUDDealItemUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	GeneralButtonWidget->OnClicked.Clear();
+	EditationButtonWidget->OnClicked.Clear();
+	ExecutionButtonWidget->OnClicked.Clear();
+
 	GeneralButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDDealItemViewModel::General);
 	EditationButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDDealItemViewModel::Editation);
 	ExecutionButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDDealItemViewModel::Execution);

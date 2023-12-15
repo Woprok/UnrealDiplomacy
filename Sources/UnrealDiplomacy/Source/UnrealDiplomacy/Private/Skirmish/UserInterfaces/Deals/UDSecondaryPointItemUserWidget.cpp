@@ -14,6 +14,7 @@ void UUDSecondaryPointItemUserWidget::BindViewModel(TObjectPtr<UUDViewModel> vie
 void UUDSecondaryPointItemUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	CreateSecondaryPointButtonWidget->OnClicked.Clear();
 	CreateSecondaryPointButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDSecondaryPointItemViewModel::CreateSecondaryPoint);
 }
 

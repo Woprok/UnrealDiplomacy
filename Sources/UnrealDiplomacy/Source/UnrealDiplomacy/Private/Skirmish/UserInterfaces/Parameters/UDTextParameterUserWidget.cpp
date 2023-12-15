@@ -14,6 +14,8 @@ void UUDTextParameterUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewMode
 void UUDTextParameterUserWidget::BindDelegates()
 {
 	// Bind viewmodel to widgets.
+	TextEditableTextWidget->OnTextChanged.Clear();
+	TextEditableTextWidget->OnTextCommitted.Clear();
 	TextEditableTextWidget->OnTextChanged.AddUniqueDynamic(ViewModel.Get(), &UUDTextParameterViewModel::StartTextEditation);
 	TextEditableTextWidget->OnTextCommitted.AddUniqueDynamic(ViewModel.Get(), &UUDTextParameterViewModel::StopTextEditation);
 }
