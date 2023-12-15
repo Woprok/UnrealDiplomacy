@@ -25,7 +25,12 @@ public:
 	void SetBlueprintViewModel(UUDParticipantItemViewModel* model);
 protected:
 	virtual void BindViewModel(TObjectPtr<UUDViewModel> viewModel) override;
+	virtual void BindDelegates() override;
+	virtual void BindWidgets() override;
 protected:
+	// Bindings
+	UPROPERTY()
+	TWeakObjectPtr<UButton> KickButtonWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDParticipantItemViewModel> ViewModel;

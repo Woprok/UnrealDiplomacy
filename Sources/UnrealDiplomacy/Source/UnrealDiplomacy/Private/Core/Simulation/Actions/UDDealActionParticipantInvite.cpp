@@ -9,7 +9,11 @@ bool UUDDealActionParticipantInvite::CanExecute(const FUDActionData& action, TOb
 {
 	FUDDealDataTarget data(action.ValueParameters);
 	bool isNotMember = !world->Deals[data.DealId]->Participants.Contains(data.TargetId);
-	return IUDActionInterface::CanExecute(action, world) && isNotMember;
+	bool isStateOpen = world->Deals[data.DealId]->DealSimulationState <= EUDDealSimulationState::Assembling;
+	bool isResultOpen = world->Deals[data.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
+	bool isNotLeaver = !world->Deals[data.DealId]->BlockedParticipants.Contains(data.TargetId);
+
+	return IUDActionInterface::CanExecute(action, world) && isStateOpen && isResultOpen && isNotLeaver && isNotMember;
 }
 
 void UUDDealActionParticipantInvite::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)

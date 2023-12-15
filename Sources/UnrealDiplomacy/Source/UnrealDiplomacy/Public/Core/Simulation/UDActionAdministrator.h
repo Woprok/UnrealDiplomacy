@@ -312,9 +312,11 @@ public:
 	 * Allows to exclude single tag.
 	 * Used for removing implicit tags that is not desired to be edited.
 	 */
-	FUDParameterListInfo GetActionParameters(const TSet<int32>& tags, int32 excludeTag);
-	/** Returns list of actions that can be used as parameter. */
-	TArray<FUDActionMinimalInfo> GetActionList();
+	FUDParameterListInfo GetActionParameters(const TSet<int32>& tags, int32 excludeTag, int32 optionalDealId, int32 optionalFactionId);
+	/** Returns list of actions that can be used as parameter by deal members. */
+	TArray<FUDActionMinimalInfo> GetDealStratagemList(int32 dealId);
+	/** Returns list of actions that can be used as parameter by faction. */
+	TArray<FUDActionMinimalInfo> GetFullStratagemList(int32 factionId);
 private:
 	bool HasDealParameter(const TSet<int32>& tags, int32 excludeTag);
 	bool HasFactionParameter(const TSet<int32>& tags, int32 excludeTag);
@@ -326,7 +328,7 @@ private:
 	ParameterData GetDealParameter(const TSet<int32>& tags);
 	ParameterData GetFactionParameter(const TSet<int32>& tags);
 	ParameterData GetTileParameter(const TSet<int32>& tags);
-	ParameterData GetActionParameter(const TSet<int32>& tags);
+	ParameterData GetActionParameter(const TSet<int32>& tags, int32 dealId, int32 factionId);
 	ParameterData GetResourceParameter(const TSet<int32>& tags);
 	ParameterData GetValueParameter(const TSet<int32>& tags);
 	ParameterData GetTextParameter(const TSet<int32>& tags);
@@ -380,6 +382,8 @@ public:
 	TArray<FUDDealMinimalInfo> GetDealList();
 	/** Returns extended deal info. */
 	FUDDealInfo GetDealInfo(int32 dealId);
+	/** Returns extended deal info. */
+	int32 GetDealModeratorId(int32 dealId);
 	/** Returns list of participants. */
 	TArray<FUDDealFactionInfo> GetDealParticipantList(int32 dealId);
 	/** Returns list of inviteable. */
@@ -399,12 +403,13 @@ public:
 	/** Retrieves single point that can be used as executable content. */
 	FUDActionInteractionInfo GetActionInteraction(int32 dealId, int32 indexId);
 	/** Same as action parameters, but always includes special editable values for deals. */
-	FUDParameterListInfo GetDealActionParameters(const TSet<int32>& tags);
+	FUDParameterListInfo GetDealActionParameters(const TSet<int32>& tags, int32 optionalDealId, int32 optionalFactionId);
 private:
 	/** Retrieves action parameters for editing with their value. */
-	FUDParameterListInfo GeActionParametersWithValues(const TSet<int32>& tags, FUDActionData data);
+	FUDParameterListInfo GeActionParametersWithValues(const TSet<int32>& tags, FUDActionData data, int32 optionalFactionId);
 	/** Retrieves deal action parameters for editing with their value. */
-	FUDParameterListInfo GetDealActionParametersWithValues(const TSet<int32>& tags, int32 dealAction, FUDActionData data);
+	FUDParameterListInfo GetDealActionParametersWithValues(const TSet<int32>& tags, int32 dealAction, FUDActionData data, 
+		int32 optionalDealId, int32 optionalFactionId);
 	/** Converts state and result to unified name. */
 	FText GetStateName(EUDDealSimulationState stae, EUDDealSimulationResult result);
 #pragma endregion

@@ -629,6 +629,8 @@ public:
 	bool IsReady;
 	UPROPERTY(BlueprintReadOnly)
 	bool IsYesVote;
+	UPROPERTY(BlueprintReadOnly)
+	bool CanBeKicked;
 };
 
 USTRUCT(BlueprintType)

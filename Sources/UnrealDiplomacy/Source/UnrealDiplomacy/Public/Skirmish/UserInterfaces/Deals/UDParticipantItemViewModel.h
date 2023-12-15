@@ -23,6 +23,8 @@ public:
 	void SetContent(FUDDealFactionInfo content);
 public:
 	// Button Functions
+	UFUNCTION()
+	void Kick();
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText FactionNameText;
@@ -30,6 +32,10 @@ public:
 	FText ReadyStateText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText VoteStateText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText KickText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool CanKickValue;
 public:
 	virtual void Setup() override;
 	virtual void Refresh() override;
@@ -41,6 +47,10 @@ private:
 	FText GetReadyStateText() const;
 	void SetVoteStateText(FText newVoteStateText);
 	FText GetVoteStateText() const;
+	void SetKickText(FText newKickText);
+	FText GetKickText() const;
+	void SetCanKickValue(bool newCanKickValue);
+	bool GetCanKickValue() const;
 private:
 	// Fields
 	FUDDealFactionInfo Content;

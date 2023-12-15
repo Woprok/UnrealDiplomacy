@@ -334,7 +334,7 @@ TArray<FUDFactionInteractionInfo> UUDActionAdministrator::CreateFactionInteracti
 		FUDFactionInteractionInfo newInfo;
 		newInfo.Name = interaction.Name;
 		newInfo.ActionTypeId = interaction.ActionId;
-		newInfo.Parameters = GetActionParameters(interaction.Tags, UD_ACTION_TAG_PARAMETER_FACTION);
+		newInfo.Parameters = GetActionParameters(interaction.Tags, UD_ACTION_TAG_PARAMETER_FACTION, UUDGlobalData::InvalidDealId, factionId);
 		interactions.Add(newInfo);
 	}
 
@@ -554,7 +554,7 @@ TArray<FUDTileInteractionInfo> UUDActionAdministrator::GetTileInteractionList(in
 		FUDTileInteractionInfo newInfo;
 		newInfo.Name = interaction.Name;
 		newInfo.ActionTypeId = interaction.ActionId;
-		newInfo.Parameters = GetActionParameters(interaction.Tags, UD_ACTION_TAG_PARAMETER_TILE);
+		newInfo.Parameters = GetActionParameters(interaction.Tags, UD_ACTION_TAG_PARAMETER_TILE, UUDGlobalData::InvalidActionId, factionId);
 		interactions.Add(newInfo);
 	}
 
@@ -608,12 +608,42 @@ TArray<FUDTileMinimalInfo> UUDActionAdministrator::GetTileOptions()
 
 #pragma region Parameters
 #define LOCTEXT_NAMESPACE "Parameters"
-TArray<FUDActionMinimalInfo> UUDActionAdministrator::GetActionList()
+TArray<FUDActionMinimalInfo> UUDActionAdministrator::GetDealStratagemList(int32 dealId)
 {
+	// Create master list
+	TSet<int32> stratagemList = { };
+	for (const auto& factionId : State->Deals[dealId]->Participants)
+	{
+		stratagemList.Append(State->Factions[factionId]->AccessibleStratagemOptions);
+	}
+
+	TArray<FUDActionMinimalInfo> actions = { };
+	for (const auto& stratagem : ActionManager->FilterStratagems())
+	{
+		// skip all that are not our stratagems
+		if (!stratagemList.Contains(stratagem.ActionId))
+			continue;
+
+		FUDActionMinimalInfo action;
+		action.Id = stratagem.ActionId;
+		action.Name = stratagem.Name;
+		actions.Add(action);
+	}
+
+	return actions;
+}
+
+TArray<FUDActionMinimalInfo> UUDActionAdministrator::GetFullStratagemList(int32 factionId)
+{
+	const auto& faction = State->Factions[factionId];
 	TArray<FUDActionMinimalInfo> actions = { };
 
 	for (const auto& stratagem : ActionManager->FilterStratagems())
 	{
+		// skip all that are not our stratagems
+		if (!faction->AccessibleStratagemOptions.Contains(stratagem.ActionId))
+			continue;
+
 		FUDActionMinimalInfo action;
 		action.Id = stratagem.ActionId;
 		action.Name = stratagem.Name;
@@ -771,7 +801,7 @@ ParameterData UUDActionAdministrator::GetFactionParameter(const TSet<int32>& tag
 	return data;
 }
 
-ParameterData UUDActionAdministrator::GetActionParameter(const TSet<int32>& tags)
+ParameterData UUDActionAdministrator::GetActionParameter(const TSet<int32>& tags, int32 dealId, int32 factionId)
 {
 	ParameterData data;
 	FUDActionParameter parameter;
@@ -779,7 +809,21 @@ ParameterData UUDActionAdministrator::GetActionParameter(const TSet<int32>& tags
 	parameter.Name = FText(LOCTEXT("Parameters", "Action")).ToString();
 	parameter.ToolTip = FText(LOCTEXT("Parameters", "Action is required to be selected for this action.")).ToString();
 
-	parameter.Options = GetActionList();
+	// This should always return one of the two...
+	// If you are debugging it here, you are looking at wrong place.
+	if (dealId != UUDGlobalData::InvalidDealId)
+	{
+		parameter.Options = GetDealStratagemList(dealId);
+	}
+	else if (factionId != UUDGlobalData::InvalidFactionId)
+	{
+		parameter.Options = GetFullStratagemList(factionId);
+	}
+	else
+	{
+		// In worst case this is left empty
+		parameter.Options = { };
+	}
 
 	data.Set<FUDActionParameter>(parameter);
 	return data;
@@ -839,7 +883,7 @@ ParameterData UUDActionAdministrator::GetTextParameter(const TSet<int32>& tags)
 }
 
 // Note this is similiar to GetPresentationContentArguments, in case of changing this change the other one to match.
-FUDParameterListInfo UUDActionAdministrator::GetActionParameters(const TSet<int32>& tags, int32 excludeTag)
+FUDParameterListInfo UUDActionAdministrator::GetActionParameters(const TSet<int32>& tags, int32 excludeTag, int32 optionalDealId, int32 optionalFactionId)
 {
 	FUDParameterListInfo parameters;
 	parameters.OrderedType.Empty(0);
@@ -866,7 +910,7 @@ FUDParameterListInfo UUDActionAdministrator::GetActionParameters(const TSet<int3
 	if (HasActionParameter(tags, excludeTag))
 	{
 		parameters.OrderedType.Add(EUDParameterType::Action);
-		parameters.OrderedData.Add(GetActionParameter(tags));
+		parameters.OrderedData.Add(GetActionParameter(tags, optionalDealId, optionalFactionId));
 	}
 	if (HasResourceParameter(tags, excludeTag))
 	{
@@ -1271,6 +1315,11 @@ FText UUDActionAdministrator::GetStateName(EUDDealSimulationState state, EUDDeal
 
 #undef LOCTEXT_NAMESPACE
 
+int32 UUDActionAdministrator::GetDealModeratorId(int32 dealId)
+{
+	return State->Deals[dealId]->OwnerUniqueId;
+}
+
 FUDDealInfo UUDActionAdministrator::GetDealInfo(int32 dealId)
 {
 	FUDDealInfo dealInfo = FUDDealInfo();
@@ -1297,6 +1346,8 @@ TArray<FUDDealFactionInfo> UUDActionAdministrator::GetDealParticipantList(int32 
 		faction.IsInviteble = false;
 		faction.IsReady = State->Deals[dealId]->IsReadyPlayerList.Contains(member);
 		faction.IsYesVote = State->Deals[dealId]->PositiveVotePlayerList.Contains(member);
+		faction.CanBeKicked = member != State->Deals[dealId]->OwnerUniqueId &&
+			State->Deals[dealId]->OwnerUniqueId == State->FactionPerspective;
 		participants.Add(faction);
 	}
 
@@ -1322,6 +1373,7 @@ TArray<FUDDealFactionInfo> UUDActionAdministrator::GetDealInviteList(int32 dealI
 		faction.IsInviteble = !State->Deals[dealId]->BlockedParticipants.Contains(nonmember.Key);
 		faction.IsReady = false;
 		faction.IsYesVote = false;
+		faction.CanBeKicked = false;
 		inviteables.Add(faction);
 	}
 
@@ -1394,7 +1446,7 @@ TArray<FUDActionData> UUDActionAdministrator::GetDealPointsActions(int32 dealId)
 	return actions;
 }
 
-FUDParameterListInfo UUDActionAdministrator::GetDealActionParameters(const TSet<int32>& tags)
+FUDParameterListInfo UUDActionAdministrator::GetDealActionParameters(const TSet<int32>& tags, int32 optionalDealId, int32 optionalFactionId)
 {
 	// TLDR:
 	// DealAction and FactionInvoker are not standard parameters, so they are added on top of normal parameters.
@@ -1406,20 +1458,21 @@ FUDParameterListInfo UUDActionAdministrator::GetDealActionParameters(const TSet<
 	parameters.OrderedData.Empty(0);
 	// This determines actions that can belong to the point.
 	parameters.OrderedType.Add(EUDParameterType::DealAction);
-	parameters.OrderedData.Add(GetActionParameter(tags));
+	parameters.OrderedData.Add(GetActionParameter(tags, optionalDealId, UUDGlobalData::InvalidFactionId));
 	// This determines invoker parameter.
 	parameters.OrderedType.Add(EUDParameterType::FactionInvoker);
 	parameters.OrderedData.Add(GetFactionParameter(tags));
 	// Always exclude deal ?
-	FUDParameterListInfo valueTextParameters = GetActionParameters(tags, UD_INVALID_TAG_ID);
+	FUDParameterListInfo valueTextParameters = GetActionParameters(tags, UD_INVALID_TAG_ID, UUDGlobalData::InvalidDealId, optionalFactionId);
 	parameters.OrderedType.Append(valueTextParameters.OrderedType);
 	parameters.OrderedData.Append(valueTextParameters.OrderedData);
 	return parameters;
 }
 
-FUDParameterListInfo UUDActionAdministrator::GetDealActionParametersWithValues(const TSet<int32>& tags, int32 dealAction, FUDActionData data)
+FUDParameterListInfo UUDActionAdministrator::GetDealActionParametersWithValues(const TSet<int32>& tags, int32 dealAction, 
+	FUDActionData data, int32 optionalDealId, int32 optionalFactionId)
 {
-	FUDParameterListInfo parameters = GetDealActionParameters(tags);
+	FUDParameterListInfo parameters = GetDealActionParameters(tags, optionalDealId, optionalFactionId);
 
 	int32 index = 0;
 	for (int32 i = 0; i < parameters.OrderedType.Num(); i++)
@@ -1462,9 +1515,9 @@ FUDParameterListInfo UUDActionAdministrator::GetDealActionParametersWithValues(c
 	return parameters;
 }
 
-FUDParameterListInfo UUDActionAdministrator::GeActionParametersWithValues(const TSet<int32>& tags, FUDActionData data)
+FUDParameterListInfo UUDActionAdministrator::GeActionParametersWithValues(const TSet<int32>& tags, FUDActionData data, int32 optionalFactionId)
 {
-	FUDParameterListInfo parameters = GetActionParameters(tags, UD_INVALID_TAG_ID);
+	FUDParameterListInfo parameters = GetActionParameters(tags, UD_INVALID_TAG_ID, UUDGlobalData::InvalidDealId, optionalFactionId);
 
 	int32 index = 0;
 	for (int32 i = 0; i < parameters.OrderedType.Num(); i++)
@@ -1523,7 +1576,7 @@ FUDPointInteractionInfo UUDActionAdministrator::GetPointInteraction(int32 dealId
 	}
 	// Fill the action.
 	FUDActionData dummyData = FUDActionData(pointData->ActionId, pointData->Invoker, valueParams, pointData->TextParameter);
-	interaction.Parameters = GetDealActionParametersWithValues(executorPresentation.Tags, pointData->ActionId, dummyData);
+	interaction.Parameters = GetDealActionParametersWithValues(executorPresentation.Tags, pointData->ActionId, dummyData, dealId, pointData->Invoker);
 	interaction.PointContent = GetFormattedPresentationString(executorPresentation.DealContentFormat, executorPresentation.Tags, dummyData);
 	// TODO find use for type, like seriously it's ignored in all iterations...
 	//pointData->Type;
@@ -1547,7 +1600,7 @@ FUDActionInteractionInfo UUDActionAdministrator::GetActionInteraction(int32 deal
 	// TODO properly named points...
 	interaction.ActionTitle = executorPresentation.Name;
 	// Fill the action.
-	interaction.Parameters = GeActionParametersWithValues(executorPresentation.Tags, pointData.Action);
+	interaction.Parameters = GeActionParametersWithValues(executorPresentation.Tags, pointData.Action, pointData.Action.InvokerFactionId);
 	interaction.ActionContent = GetFormattedPresentationString(executorPresentation.DealContentFormat, executorPresentation.Tags, pointData.Action);
 
 	interaction.IsInteractable = pointData.Action.InvokerFactionId == State->FactionPerspective && 

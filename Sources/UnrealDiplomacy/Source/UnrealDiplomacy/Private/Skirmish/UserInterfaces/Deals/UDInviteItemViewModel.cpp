@@ -6,6 +6,7 @@
 #include "Skirmish/UDSkirmishHUD.h"
 #include "Core/Simulation/Actions/UDDealActionParticipantInvite.h"
 #include "Core/Simulation/UDActionData.h"
+#include "Core/Simulation/UDWorldState.h"
 
 #define LOCTEXT_NAMESPACE "InviteItem"
 
@@ -15,11 +16,15 @@ void UUDInviteItemViewModel::Setup()
 	SetFactionNameText(factionName);
 	FText invite = FText(LOCTEXT("ParticipantItem", "Invite"));
 	SetInviteText(invite);
+	FText blocked = FText(LOCTEXT("ParticipantItem", "Blocked"));
+	SetBlockedText(blocked);
+	SetIsInviteableValue(false);
 }
 
 void UUDInviteItemViewModel::Refresh()
 {
 	SetFactionNameText(FText::FromString(Content.FactionName));
+	SetIsInviteableValue(Content.IsInviteble);
 }
 
 #undef LOCTEXT_NAMESPACE
@@ -27,7 +32,8 @@ void UUDInviteItemViewModel::Refresh()
 void UUDInviteItemViewModel::Invite()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDInviteItemViewModel: Invite."));
-	Model->RequestAction(Model->GetAction(UUDDealActionParticipantInvite::ActionTypeId, { Content.DealId, Content.FactionId }));
+	FUDActionData action = Model->GetAction(UUDDealActionParticipantInvite::ActionTypeId, { Content.DealId, Content.FactionId } );
+	Model->RequestAction(Model->GetDecisionAction(Content.FactionId, EUDDecisionType::Offer, action));
 }
 
 void UUDInviteItemViewModel::SetContent(FUDDealFactionInfo content)
@@ -53,4 +59,24 @@ void UUDInviteItemViewModel::SetInviteText(FText newInviteText)
 FText UUDInviteItemViewModel::GetInviteText() const
 {
 	return InviteText;
+}
+
+void UUDInviteItemViewModel::SetBlockedText(FText newBlockedText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(BlockedText, newBlockedText);
+}
+
+FText UUDInviteItemViewModel::GetBlockedText() const
+{
+	return BlockedText;
+}
+
+void UUDInviteItemViewModel::SetIsInviteableValue(bool newIsInviteableValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(IsInviteableValue, newIsInviteableValue);
+}
+
+bool UUDInviteItemViewModel::GetIsInviteableValue() const
+{
+	return IsInviteableValue;
 }

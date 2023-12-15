@@ -579,12 +579,12 @@ public:
 	 * List of players that is currently participating in the deal.
 	 */
 	UPROPERTY()
-	TArray<int32> Participants;
+	TSet<int32> Participants;
 	/**
 	 * List of players that can't be invited back to deal.
 	 */
 	UPROPERTY()
-	TArray<int32> BlockedParticipants;
+	TSet<int32> BlockedParticipants;
 	/**
 	 * Deal is identifiably by this Id. This Id is same as the Action Id that created this deal.  
 	 */

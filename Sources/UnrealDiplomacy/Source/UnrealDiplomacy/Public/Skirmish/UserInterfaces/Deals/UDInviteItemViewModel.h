@@ -30,6 +30,10 @@ public:
 	FText FactionNameText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText InviteText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText BlockedText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool IsInviteableValue;
 public:
 	virtual void Setup() override;
 	virtual void Refresh() override;
@@ -39,6 +43,10 @@ private:
 	FText GetFactionNameText() const;
 	void SetInviteText(FText newInviteText);
 	FText GetInviteText() const;
+	void SetBlockedText(FText newBlockedText);
+	FText GetBlockedText() const;
+	void SetIsInviteableValue(bool newIsInviteableValue);
+	bool GetIsInviteableValue() const;
 private:
 	// Fields
 	FUDDealFactionInfo Content;
