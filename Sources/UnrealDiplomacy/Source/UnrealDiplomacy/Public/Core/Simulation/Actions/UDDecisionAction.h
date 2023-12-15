@@ -50,15 +50,16 @@ public:
  * Transforms action parameters to properly named fields.
  */
 USTRUCT(BlueprintType)
-struct FUDDecisionDataTargetTypeParameters
+struct FUDDecisionDataTargetTypeActionParameters
 {
 	GENERATED_BODY()
 public:
-	FUDDecisionDataTargetTypeParameters() {}
-	FUDDecisionDataTargetTypeParameters(TArray<int32> valueParameters)
+	FUDDecisionDataTargetTypeActionParameters() {}
+	FUDDecisionDataTargetTypeActionParameters(TArray<int32> valueParameters)
 	{
 		TargetId = valueParameters[0];
 		Type = valueParameters[1];
+		DeclineReplacementActionId = valueParameters[2];
 		for (int32 i = ParameterCount; i < valueParameters.Num(); i++)
 		{
 			Parameters.Add(valueParameters[i]);
@@ -68,9 +69,12 @@ public:
 	int32 TargetId = 0;
 	UPROPERTY(BlueprintReadOnly)
 	int32 Type = 0;
+	/** Assumes that called action in decline will use same params and transforms them to whatever is required. */
+	UPROPERTY(BlueprintReadOnly)
+	int32 DeclineReplacementActionId = -1;
 	UPROPERTY(BlueprintReadOnly)
 	TArray<int32> Parameters = { };
-	static const int32 ParameterCount = 2;
+	static const int32 ParameterCount = 3;
 };
 
 UCLASS(Abstract)

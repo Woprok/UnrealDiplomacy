@@ -19,7 +19,7 @@
 bool UUDDecisionActionCreate::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
 	// Parse decision
-	FUDDecisionDataTargetTypeParameters data(action.ValueParameters);
+	FUDDecisionDataTargetTypeActionParameters data(action.ValueParameters);
 	EUDDecisionType decisionType = UUDDecisionAction::IntegerToDecisionType(data.Type);
 	FUDActionData confirm = FUDActionData::FromValues(data.Parameters);
 
@@ -40,7 +40,7 @@ void UUDDecisionActionCreate::Execute(const FUDActionData& action, TObjectPtr<UU
 {
 	IUDActionInterface::Execute(action, world);
 	// Queue new confirmable request.
-	FUDDecisionDataTargetTypeParameters data(action.ValueParameters);
+	FUDDecisionDataTargetTypeActionParameters data(action.ValueParameters);
 	EUDDecisionType decisionType = UUDDecisionAction::IntegerToDecisionType(data.Type);
 	FUDActionData confirm = FUDActionData::FromValues(data.Parameters);
 	FUDDecision newDecision;
@@ -49,6 +49,15 @@ void UUDDecisionActionCreate::Execute(const FUDActionData& action, TObjectPtr<UU
 	if (UUDDecisionAction::IntegerToDecisionType(data.Type) == EUDDecisionType::Demand)
 	{
 		FUDActionData decline(world->Factions[action.InvokerFactionId]->DecisionDemandPolicy, action.InvokerFactionId, { data.TargetId });
+		newDecision = FUDDecision(decisionType, confirm, decline, action.InvokerFactionId);
+	}
+	// HACK: inserts consequence for the actions that have improper decline replacement defined.
+	// e.g. this exists only for deals invite handling...
+	// basically old way of doing decisions...
+	else if (data.DeclineReplacementActionId != UUDGlobalData::InvalidActionId)
+	{
+		FUDActionData decline = FUDActionData::FromValues(data.Parameters);
+		decline.ActionTypeId = data.DeclineReplacementActionId;
 		newDecision = FUDDecision(decisionType, confirm, decline, action.InvokerFactionId);
 	}
 	else
@@ -71,7 +80,7 @@ void UUDDecisionActionCreate::Revert(const FUDActionData& action, TObjectPtr<UUD
 {
 	IUDActionInterface::Revert(action, world);
 	// Remove request from queue.
-	FUDDecisionDataTargetTypeParameters data(action.ValueParameters);
+	FUDDecisionDataTargetTypeActionParameters data(action.ValueParameters);
 	FUDActionData decisionAction = FUDActionData::FromValues(data.Parameters);
 
 	const TObjectPtr<UUDFactionState>& creatorFaction = world->Factions[action.InvokerFactionId];
@@ -96,7 +105,7 @@ FUDActionPresentation UUDDecisionActionCreate::GetPresentation() const
 TArray<FUDActionData> UUDDecisionActionCreate::GetContinuations(const FUDActionData& parentAction, TObjectPtr<UUDWorldState> world) const
 {
 	TArray<FUDActionData> directExecution = { };
-	FUDDecisionDataTargetTypeParameters data(parentAction.ValueParameters);
+	FUDDecisionDataTargetTypeActionParameters data(parentAction.ValueParameters);
 	// If enabled follows execution of the direct decisions. Thus this will call confirm on these decisions immediately as consequence.
 	if (UUDGlobalGameConfig::IsDirectExecutionEnabled && 
 		UUDDecisionAction::IntegerToDecisionType(data.Type) == EUDDecisionType::Gift)

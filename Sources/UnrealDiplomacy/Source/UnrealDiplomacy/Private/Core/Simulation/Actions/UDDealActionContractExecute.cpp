@@ -10,16 +10,19 @@ bool UUDDealActionContractExecute::CanExecute(const FUDActionData& action, TObje
 {
 	FUDDealData data(action.ValueParameters);
 	bool areAllActionsResolved = UUDDealActionContractExecute::AreAllActionsPrepared(world, data.DealId);
-	return IUDActionInterface::CanExecute(action, world) && areAllActionsResolved;
+	//bool dealIsNotExecuted = world->Deals[data.DealId]->;
+	return IUDActionInterface::CanExecute(action, world) && areAllActionsResolved;//&& dealIsNotExecuted;
 }
 void UUDDealActionContractExecute::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Execute(action, world);
+
 	// Execution is empty as this action only invokes other.
 }
 void UUDDealActionContractExecute::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Revert(action, world);
+
 	// Execution is always reverted if all subactions were revoked.
 }
 

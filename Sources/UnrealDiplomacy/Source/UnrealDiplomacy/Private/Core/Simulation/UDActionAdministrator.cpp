@@ -93,7 +93,14 @@ FUDActionData UUDActionAdministrator::ReverseActionInvokerAndTarget(FUDActionDat
 
 FUDActionData UUDActionAdministrator::GetDecisionAction(int32 targetId, EUDDecisionType type, FUDActionData requestedAction)
 {
-	TArray<int32> parameters = { targetId, UUDDecisionAction::DecisionTypeToInteger(type) };
+	TArray<int32> parameters = { targetId, UUDDecisionAction::DecisionTypeToInteger(type), UUDGlobalData::InvalidActionId };
+	parameters.Append(FUDActionData::ToValues(requestedAction));
+	return FUDActionData(UUDDecisionActionCreate::ActionTypeId, State->FactionPerspective, parameters);
+}
+
+FUDActionData UUDActionAdministrator::GetDecisionAction(int32 targetId, EUDDecisionType type, int32 declineActionReplace, FUDActionData requestedAction)
+{
+	TArray<int32> parameters = { targetId, UUDDecisionAction::DecisionTypeToInteger(type), declineActionReplace };
 	parameters.Append(FUDActionData::ToValues(requestedAction));
 	return FUDActionData(UUDDecisionActionCreate::ActionTypeId, State->FactionPerspective, parameters);
 }

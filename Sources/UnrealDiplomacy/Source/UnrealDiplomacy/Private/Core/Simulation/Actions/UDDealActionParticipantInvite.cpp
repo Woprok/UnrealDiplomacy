@@ -50,7 +50,7 @@ FUDActionPresentation UUDDealActionParticipantInvite::GetPresentation() const
 
 	//presentation.RejectActionId = UUDDealActionParticipantInviteReject::ActionTypeId;
 	presentation.MessageContentFormat = FText(LOCTEXT("ParticipantInvite",
-		"Your faction [{TARGET}] has been invited to participate in [{INVOKER}]'s deal: [{DEAL}].\nHow do you answer ?"
+		"Your faction [{TARGET}] has been invited to participate in [{INVOKER}]'s deal: [{DEAL}]."
 	)).ToString();
 	presentation.DealContentFormat = FText(LOCTEXT("ParticipantInvite",
 		"Faction [{INVOKER}] will invite [{TARGET}] to [{DEAL}].\nReport this as bug please!"

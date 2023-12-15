@@ -155,10 +155,10 @@ public:
 	 * This will exchange Invoker and Target. Thus this expects Target as first value parameter.
 	 */
 	FUDActionData ReverseActionInvokerAndTarget(FUDActionData actionData);
-	/**
-	 * Returns new action that can be invoked.
-	 */
+	/** Returns new action that can be invoked, that uses standardized demand decline only. */
 	FUDActionData GetDecisionAction(int32 targetId, EUDDecisionType type, FUDActionData requestedAction);
+	/** Returns new action that can be invoked, that uses HACK for decline, by forcing action with same parameters, but different id. */
+	FUDActionData GetDecisionAction(int32 targetId, EUDDecisionType type, int32 declineActionReplace, FUDActionData requestedAction);
 	/**
 	 * Returns new action that can be invoked.
 	 */

@@ -18,7 +18,7 @@ public:
 	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual int32 GetId() const override { return ActionTypeId; };
-	virtual int32 GetParameterCount() const override { return FUDDecisionDataTargetTypeParameters::ParameterCount; };
+	virtual int32 GetParameterCount() const override { return FUDDecisionDataTargetTypeActionParameters::ParameterCount; };
 	virtual FUDActionPresentation GetPresentation() const override;
 	virtual bool HasContinuations() const override { return true; }
 	// This action can optionally execute it's content without any confirmation.

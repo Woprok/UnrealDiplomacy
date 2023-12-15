@@ -5,6 +5,7 @@
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Skirmish/UDSkirmishHUD.h"
 #include "Core/Simulation/Actions/UDDealActionParticipantInvite.h"
+#include "Core/Simulation/Actions/UDDealActionParticipantInviteConsequence.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDWorldState.h"
 
@@ -33,7 +34,7 @@ void UUDInviteItemViewModel::Invite()
 {
 	UE_LOG(LogTemp, Log, TEXT("UUDInviteItemViewModel: Invite."));
 	FUDActionData action = Model->GetAction(UUDDealActionParticipantInvite::ActionTypeId, { Content.DealId, Content.FactionId } );
-	Model->RequestAction(Model->GetDecisionAction(Content.FactionId, EUDDecisionType::Offer, action));
+	Model->RequestAction(Model->GetDecisionAction(Content.FactionId, EUDDecisionType::Offer, UUDDealActionParticipantInviteConsequence::ActionTypeId, action));
 }
 
 void UUDInviteItemViewModel::SetContent(FUDDealFactionInfo content)
