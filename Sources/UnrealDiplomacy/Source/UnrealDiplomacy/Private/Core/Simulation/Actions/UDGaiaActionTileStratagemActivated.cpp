@@ -28,7 +28,7 @@ void UUDGaiaActionTileStratagemActivated::Revert(const FUDActionData& action, TO
 	// We can use action id (this is not type id!) as we are just reverting... and this runs as normal action.
 	FUDGaiaDataTargetTileAction data(action.ValueParameters);
 	FIntPoint tile(data.X, data.Y);
-	ModifierManager->RemoveTileModifier(world->Map->GetTile(tile), action.UniqueId);
+	ModifierManager->RemoveTileModifier(world->Map->GetTile(tile), UUDTileModifierStratagemActivated::ModifierTypeId, action.UniqueId);
 }
 
 void UUDGaiaActionTileStratagemActivated::SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager)

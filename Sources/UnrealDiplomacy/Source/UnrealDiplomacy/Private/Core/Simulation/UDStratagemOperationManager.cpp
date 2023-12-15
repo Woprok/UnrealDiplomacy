@@ -60,7 +60,7 @@ bool UUDStratagemOperationManager::CanStratagemBeActivated(const TObjectPtr<UUDW
 		// Get reference to executor
 		const TObjectPtr<UUDFactionState>& faction = world->Factions[action.InvokerFactionId];
 		bool isFactionStratagemOrSharedStratagem = faction->AccessibleStratagemOptions.Contains(action.ActionTypeId);
-		canBeUsed == canBeUsed && isFactionStratagemOrSharedStratagem;
+		canBeUsed = canBeUsed && isFactionStratagemOrSharedStratagem;
 	}
 
 	// This is faction interaction, we will check if it was already used this turn by action invoker.

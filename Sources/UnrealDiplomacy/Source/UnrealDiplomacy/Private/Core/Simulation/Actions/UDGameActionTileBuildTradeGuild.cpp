@@ -44,7 +44,7 @@ void UUDGameActionTileBuildTradeGuild::Revert(const FUDActionData& action, TObje
 	FUDGameDataTile data(action.ValueParameters);
 	FIntPoint tile(data.X, data.Y);
 	const auto& editedTile = world->Map->GetTile(tile);
-	ModifierManager->RemoveTileModifier(editedTile, action.UniqueId);
+	ModifierManager->RemoveTileModifier(editedTile, UUDTileModifierBuildingTradeGuild::ModifierTypeId, action.UniqueId);
 }
 
 void UUDGameActionTileBuildTradeGuild::SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager)

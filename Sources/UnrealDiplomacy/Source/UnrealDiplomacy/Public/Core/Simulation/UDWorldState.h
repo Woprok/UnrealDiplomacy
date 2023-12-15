@@ -198,15 +198,16 @@ struct UNREALDIPLOMACY_API FUDDecision
 	GENERATED_BODY()
 public:
 	FUDDecision() {}
-	FUDDecision(EUDDecisionType type, FUDActionData action)
-		: Type(type), ConfirmAction(action), HasDecline(false), Result(EUDDecisionResult::Pending) {}
+	FUDDecision(EUDDecisionType type, FUDActionData action, int32 creatorId)
+		: Type(type), ConfirmAction(action), HasDecline(false), Result(EUDDecisionResult::Pending),
+		CreatorId(creatorId) {}
 	/** 
 	 * Demands require decline action.This can be supplied in backup parameters.
 	 * Thus enabling for both actions to be sent in single action decision.
 	 */
-	FUDDecision(EUDDecisionType type, FUDActionData action, FUDActionData declineAction)
+	FUDDecision(EUDDecisionType type, FUDActionData action, FUDActionData declineAction, int32 creatorId)
 		: Type(type), ConfirmAction(action), DeclineAction(declineAction), 
-		HasDecline(true), Result(EUDDecisionResult::Pending) {}
+		HasDecline(true), Result(EUDDecisionResult::Pending), CreatorId(creatorId) {}
 
 	UPROPERTY(BlueprintReadOnly)
 	EUDDecisionType Type;
@@ -224,6 +225,8 @@ public:
 	 */
 	UPROPERTY(BlueprintReadOnly)
 	int32 Lifetime = 2;
+	UPROPERTY(BlueprintReadOnly)
+	int32 CreatorId;
 public:
 	/**
 	 * Equality over all fields.

@@ -23,7 +23,10 @@ public:
 	virtual bool HasContinuations() const override { return true; }
 	// This action can optionally execute it's content without any confirmation.
 	virtual TArray<FUDActionData> GetContinuations(const FUDActionData& parentAction, TObjectPtr<UUDWorldState> world) const override;
-
+	virtual void SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager) override;
 public:
 	static const int32 ActionTypeId = 5001;
+protected:
+	UPROPERTY()
+	TWeakObjectPtr<UUDModifierManager> ModifierManager = nullptr;
 };

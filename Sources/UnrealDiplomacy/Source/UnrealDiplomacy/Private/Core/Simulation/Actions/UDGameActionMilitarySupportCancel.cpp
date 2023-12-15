@@ -33,7 +33,7 @@ void UUDGameActionMilitarySupportCancel::Execute(const FUDActionData& action, TO
 		action.InvokerFactionId, data.TargetId
 	);
 	int32 oldModifierActionId = ModifierManager->GetFactionModifierActionId(faction, modifierData);
-	ModifierManager->RemoveFactionModifier(faction, oldModifierActionId);
+	ModifierManager->RemoveFactionModifier(faction, UUDFactionModifierMilitarySupport::ModifierTypeId, oldModifierActionId);
 }
 
 void UUDGameActionMilitarySupportCancel::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)

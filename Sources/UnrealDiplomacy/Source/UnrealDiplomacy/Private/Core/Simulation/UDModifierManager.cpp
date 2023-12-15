@@ -153,19 +153,21 @@ void UUDModifierManager::CreateFactionModifier(const TObjectPtr<UUDFactionState>
 	faction->Modifiers.Add(newModifier);
 }
 
-void UUDModifierManager::RemoveTileModifier(const TObjectPtr<UUDTileState>& tile, int32 actionUniqueId)
+void UUDModifierManager::RemoveTileModifier(const TObjectPtr<UUDTileState>& tile, int32 modifierTypeId, int32 actionUniqueId)
 {
 	// Find & Delete
 	const auto& found = tile->Modifiers.RemoveAll(
-		[&actionUniqueId](const FUDModifierData& item) { return item.ActionUniqueId == actionUniqueId; }
+		[&actionUniqueId, &modifierTypeId](const FUDModifierData& item) { return item.ActionUniqueId == actionUniqueId &&
+		item.ModifierTypeId == modifierTypeId; }
 	);
 }
 
-void UUDModifierManager::RemoveFactionModifier(const TObjectPtr<UUDFactionState>& faction, int32 actionUniqueId)
+void UUDModifierManager::RemoveFactionModifier(const TObjectPtr<UUDFactionState>& faction, int32 modifierTypeId, int32 actionUniqueId)
 {
 	// Find & Delete
 	const auto& found = faction->Modifiers.RemoveAll(
-		[&actionUniqueId](const FUDModifierData& item) { return item.ActionUniqueId == actionUniqueId; }
+		[&actionUniqueId, &modifierTypeId](const FUDModifierData& item) { return item.ActionUniqueId == actionUniqueId &&
+			item.ModifierTypeId == modifierTypeId; }
 	);
 }
 

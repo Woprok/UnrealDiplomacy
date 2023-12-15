@@ -207,8 +207,10 @@ public:
 	bool IsStratagemTakeable(FUDStratagemPickableInfo stratagem);
 	/** Provides comprehensive list of all available stratagems, taking them from internal action manager instance. */
 	TArray<FUDStratagemPickableInfo> GetPickableStratagemList();
-	/** HUD methord for determining correct UI switching. */
+	/** HUD method for determining correct UI switching. */
 	EUDGameStateInfo GetMatchStateInfo();
+	/** Returns current world name. */
+	FString GetWorldName();
 private:
 	/** Provides comprehensive list of all available stratagems, taking them from internal action manager instance. */
 	int32 GetStratagemCostFromTags(TSet<int32> tags);

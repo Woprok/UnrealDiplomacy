@@ -46,7 +46,7 @@ void UUDGameActionStratagemShare::Revert(const FUDActionData& action, TObjectPtr
 	// Technically this should nover succeed as the execution should prevent this case.
 	if (!faction->PickedStratagemOptions.Contains(data.ActionTypeId))
 		faction->AccessibleStratagemOptions.Remove(data.ActionTypeId);
-	ModifierManager->RemoveFactionModifier(faction, action.UniqueId);
+	ModifierManager->RemoveFactionModifier(faction, UUDFactionModifierStratagemShare::ModifierTypeId, action.UniqueId);
 }
 
 void UUDGameActionStratagemShare::SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager)

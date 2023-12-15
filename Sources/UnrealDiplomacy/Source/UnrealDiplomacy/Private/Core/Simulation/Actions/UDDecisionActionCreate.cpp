@@ -4,13 +4,36 @@
 #include "Core/UDGlobalData.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDWorldState.h"
+#include "Core/Simulation/UDModifierManager.h"
+#include "Core/Simulation/Modifiers/UDFactionModifierDecisionSend.h"
+
+// Note:
+// Invoker is the one that created the decision for other player.
+// Target is the one that has to decide.
+// In case of direct there is no decision.
+// In case of Demand and Request, action passed in parameters has reversed invoker and target.
+// To prevent repeated creations and spam:
+// Modifier must be created on the invoker, to prevent him from using repeatedly decision create
+// Target is innocenet, thus there is no need to do anything to him
 
 bool UUDDecisionActionCreate::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
-	//bool isPlayer = action.InvokerFactionId != UUDGlobalData::GaiaFactionId;
-	//bool isQueuedAgain = IsPendingInterchangeableTargetDecision(action, data.TargetId, world);
-	// TODO prevent duplicates
-	return IUDActionInterface::CanExecute(action, world);
+	// Parse decision
+	FUDDecisionDataTargetTypeParameters data(action.ValueParameters);
+	EUDDecisionType decisionType = UUDDecisionAction::IntegerToDecisionType(data.Type);
+	FUDActionData confirm = FUDActionData::FromValues(data.Parameters);
+
+	const TObjectPtr<UUDFactionState>& creatorFaction = world->Factions[action.InvokerFactionId];
+
+	bool isNotTarget = action.InvokerFactionId != data.TargetId;
+	const auto& mods = ModifierManager->GetAllFactionModifiers(creatorFaction, UUDFactionModifierDecisionSend::ModifierTypeId);
+		
+	const auto& foundMod = mods.FindByPredicate(
+		[&confirm](const FUDModifierData& data) {	return data.ValueParameters[0] == confirm.ActionTypeId; }
+	);
+	bool hasNotSameActionTypeDecisionPending = foundMod == nullptr;
+
+	return IUDActionInterface::CanExecute(action, world) && isNotTarget && hasNotSameActionTypeDecisionPending;
 }
 
 void UUDDecisionActionCreate::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -21,20 +44,27 @@ void UUDDecisionActionCreate::Execute(const FUDActionData& action, TObjectPtr<UU
 	EUDDecisionType decisionType = UUDDecisionAction::IntegerToDecisionType(data.Type);
 	FUDActionData confirm = FUDActionData::FromValues(data.Parameters);
 	FUDDecision newDecision;
-	
+
 	// This handles the demand consequence case 
 	if (UUDDecisionAction::IntegerToDecisionType(data.Type) == EUDDecisionType::Demand)
 	{
 		FUDActionData decline(world->Factions[action.InvokerFactionId]->DecisionDemandPolicy, action.InvokerFactionId, { data.TargetId });
-		newDecision = FUDDecision(decisionType, confirm, decline);
+		newDecision = FUDDecision(decisionType, confirm, decline, action.InvokerFactionId);
 	}
 	else
 	{
-		newDecision = FUDDecision(decisionType, confirm);
+		newDecision = FUDDecision(decisionType, confirm, action.InvokerFactionId);
 	}
 
+	// DecisionId is ActionUniqueId, thus any action that confirms or declines can just remove modifier with DecisionId
+	const TObjectPtr<UUDFactionState>& creatorFaction = world->Factions[action.InvokerFactionId];
+	FUDModifierData modifierData = FUDModifierData(
+		UUDFactionModifierDecisionSend::ModifierTypeId, action.UniqueId,
+		action.InvokerFactionId, action.InvokerFactionId, { confirm.ActionTypeId }
+	);
+	ModifierManager->CreateFactionModifier(creatorFaction, modifierData);
+
 	AddPendingTargetDecision(data.TargetId, action.UniqueId, newDecision, world);
-	
 }
 
 void UUDDecisionActionCreate::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -43,6 +73,10 @@ void UUDDecisionActionCreate::Revert(const FUDActionData& action, TObjectPtr<UUD
 	// Remove request from queue.
 	FUDDecisionDataTargetTypeParameters data(action.ValueParameters);
 	FUDActionData decisionAction = FUDActionData::FromValues(data.Parameters);
+
+	const TObjectPtr<UUDFactionState>& creatorFaction = world->Factions[action.InvokerFactionId];
+	ModifierManager->RemoveFactionModifier(creatorFaction, UUDFactionModifierDecisionSend::ModifierTypeId, action.UniqueId);
+
 	RemovePendingTargetDecision(data.TargetId, action.UniqueId, world);
 }
 
@@ -72,4 +106,9 @@ TArray<FUDActionData> UUDDecisionActionCreate::GetContinuations(const FUDActionD
 	}
 
 	return directExecution;
+}
+
+void UUDDecisionActionCreate::SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager)
+{
+	ModifierManager = modifierManager;
 }

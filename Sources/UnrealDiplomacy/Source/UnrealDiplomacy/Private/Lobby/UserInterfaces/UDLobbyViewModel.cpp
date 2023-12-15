@@ -12,6 +12,8 @@
 #include "Skirmish/UDSkirmishHUD.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Core/Simulation/UDModelStructs.h"
+#include "Core/Simulation/Actions/UDSettingActionWorldRename.h"
+#include "Core/Simulation/UDActionData.h"
 
 #define LOCTEXT_NAMESPACE "Lobby"
 
@@ -66,12 +68,29 @@ void UUDLobbyViewModel::Refresh()
 	if (!Model->IsOverseeingStatePresent())
 		return;
 	// Following updates require model.
+	UpdateLobbyName();
 	UpdateClientList();
 	HostViewModelInstance->Refresh();
 	MemberViewModelInstance->Refresh();
 }
 
 #undef LOCTEXT_NAMESPACE
+
+void UUDLobbyViewModel::UpdateLobbyName()
+{
+	if (!GetIsHostValue())
+	{
+		// This updates the client version of display as the session one might be incorrect.
+		SetLobbyTitleText(FText::FromString(Model->GetWorldName()));
+		return;
+	}
+	// This only updates the name on server, so it's reflected on all clients.
+	FString currentName = GetLobbyTitleText().ToString();
+	if (currentName != Model->GetWorldName())
+	{
+		Model->RequestAction(Model->GetAction(UUDSettingActionWorldRename::ActionTypeId, currentName));
+	}
+}
 
 void UUDLobbyViewModel::UpdateClientList()
 {

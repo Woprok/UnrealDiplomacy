@@ -33,7 +33,7 @@ void UUDGameActionThroneSupportCancel::Execute(const FUDActionData& action, TObj
 		action.InvokerFactionId, data.TargetId
 	);
 	int32 oldModifierActionId = ModifierManager->GetFactionModifierActionId(faction, modifierData);
-	ModifierManager->RemoveFactionModifier(faction, oldModifierActionId);
+	ModifierManager->RemoveFactionModifier(faction, UUDFactionModifierThroneSupport::ModifierTypeId, oldModifierActionId);
 }
 
 void UUDGameActionThroneSupportCancel::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)

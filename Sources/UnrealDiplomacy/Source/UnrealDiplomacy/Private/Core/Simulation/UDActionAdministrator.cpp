@@ -207,6 +207,11 @@ TArray<FUDStratagemPickableInfo> UUDActionAdministrator::GetPickableStratagemLis
 	return stratagemList;
 }
 
+FString UUDActionAdministrator::GetWorldName()
+{
+	return State->Settings.SessionName;
+}
+
 EUDGameStateInfo UUDActionAdministrator::GetMatchStateInfo()
 {
 	switch (State->WorldSimulationState)

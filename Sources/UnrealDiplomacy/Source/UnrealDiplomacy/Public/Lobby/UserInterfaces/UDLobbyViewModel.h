@@ -81,6 +81,8 @@ private:
 	 */
 	UFUNCTION()
 	void OnSessionStarted(bool success);
+	/** Update lobby name. */
+	void UpdateLobbyName();
 	/**
 	 * Update clients on change.
 	 */

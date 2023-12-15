@@ -41,7 +41,7 @@ void UUDGameActionThroneUsurp::Revert(const FUDActionData& action, TObjectPtr<UU
 	IUDActionInterface::Revert(action, world);
 	// Remove modifiers
 	const TObjectPtr<UUDFactionState>& faction = world->Factions[action.InvokerFactionId];
-	ModifierManager->RemoveFactionModifier(faction, action.UniqueId);
+	ModifierManager->RemoveFactionModifier(faction, UUDFactionModifierThroneUsurper::ModifierTypeId, action.UniqueId);
 	// Rollback to the empty throne.
 	world->ImperialThrone.Ruler = UUDGlobalData::GaiaFactionId;
 }

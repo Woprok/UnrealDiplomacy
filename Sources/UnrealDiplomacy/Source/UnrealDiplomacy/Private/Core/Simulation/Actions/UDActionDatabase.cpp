@@ -101,6 +101,7 @@
 #include "Core/Simulation/Actions/UDSettingActionStratagemPointsChange.h"
 #include "Core/Simulation/Actions/UDSettingActionStratagemOptionSelect.h"
 #include "Core/Simulation/Actions/UDSettingActionStratagemOptionDeselect.h"
+#include "Core/Simulation/Actions/UDSettingActionWorldRename.h"
 // System
 #include "Core/Simulation/Actions/UDSystemAction.h"
 #include "Core/Simulation/Actions/UDSystemActionGameEnd.h"
@@ -262,5 +263,6 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetSettingAction
 		NewObject<UUDSettingActionStratagemPointsChange>(parent),
 		NewObject<UUDSettingActionStratagemOptionSelect>(parent),
 		NewObject<UUDSettingActionStratagemOptionDeselect>(parent),
+		NewObject<UUDSettingActionWorldRename>(parent),
 	};
 }

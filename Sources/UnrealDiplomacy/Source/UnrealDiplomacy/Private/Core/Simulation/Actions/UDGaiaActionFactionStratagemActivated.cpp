@@ -27,7 +27,7 @@ void UUDGaiaActionFactionStratagemActivated::Revert(const FUDActionData& action,
 	// We can use action id (this is not type id!) as we are just reverting... and this runs as normal action.
 	// FUDGaiaDataAction data(action.ValueParameters);
 	FUDGaiaDataTargetAction data(action.ValueParameters);
-	ModifierManager->RemoveFactionModifier(world->Factions[data.TargetId], action.UniqueId);
+	ModifierManager->RemoveFactionModifier(world->Factions[data.TargetId], UUDFactionModifierStratagemActivated::ModifierTypeId, action.UniqueId);
 }
 
 void UUDGaiaActionFactionStratagemActivated::SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager)

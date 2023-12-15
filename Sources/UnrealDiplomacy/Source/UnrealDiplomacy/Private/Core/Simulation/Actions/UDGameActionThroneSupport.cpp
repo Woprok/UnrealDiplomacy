@@ -41,7 +41,7 @@ void UUDGameActionThroneSupport::Revert(const FUDActionData& action, TObjectPtr<
 	// Rollback to the empty throne.
 	FUDGameDataTarget data(action.ValueParameters);
 	const TObjectPtr<UUDFactionState>& faction = world->Factions[data.TargetId];
-	ModifierManager->RemoveFactionModifier(faction, action.UniqueId);
+	ModifierManager->RemoveFactionModifier(faction, UUDFactionModifierThroneSupport::ModifierTypeId, action.UniqueId);
 }
 
 void UUDGameActionThroneSupport::SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager)

@@ -4,6 +4,8 @@
 #include "Core/UDGlobalData.h"
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDWorldState.h"
+#include "Core/Simulation/UDModifierManager.h"
+#include "Core/Simulation/Modifiers/UDFactionModifierDecisionSend.h"
 
 bool UUDDecisionActionDecline::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
@@ -20,7 +22,12 @@ void UUDDecisionActionDecline::Execute(const FUDActionData& action, TObjectPtr<U
 	// Move from pending to resolved. Add decline.
 	FUDDecisionDataDecision data(action.ValueParameters);
 	MoveToResolved(action.InvokerFactionId, data.DecisionId, world);
+	int32 originalCreator = world->Factions[action.InvokerFactionId]->ResolvedDecisions[data.DecisionId].CreatorId;
 	world->Factions[action.InvokerFactionId]->ResolvedDecisions[data.DecisionId].Result = EUDDecisionResult::Declined;
+
+	// Clear modifier from original invoker player
+	const TObjectPtr<UUDFactionState>& creatorFaction = world->Factions[originalCreator];
+	ModifierManager->RemoveFactionModifier(creatorFaction, UUDFactionModifierDecisionSend::ModifierTypeId, data.DecisionId);
 }
 
 void UUDDecisionActionDecline::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -30,6 +37,8 @@ void UUDDecisionActionDecline::Revert(const FUDActionData& action, TObjectPtr<UU
 	FUDDecisionDataDecision data(action.ValueParameters);
 	MoveToPending(action.InvokerFactionId, data.DecisionId, world);
 	world->Factions[action.InvokerFactionId]->PendingDecisions[data.DecisionId].Result = EUDDecisionResult::Pending;
+
+	// TODO revert back modifier to existance
 }
 
 TArray<FUDActionData> UUDDecisionActionDecline::GetContinuations(const FUDActionData& parentAction, TObjectPtr<UUDWorldState> world) const
@@ -41,4 +50,9 @@ TArray<FUDActionData> UUDDecisionActionDecline::GetContinuations(const FUDAction
 		finalActionList.Add(world->Factions[parentAction.InvokerFactionId]->ResolvedDecisions[data.DecisionId].DeclineAction);
 	}
 	return finalActionList;
+}
+
+void UUDDecisionActionDecline::SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager)
+{
+	ModifierManager = modifierManager;
 }

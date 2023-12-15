@@ -44,7 +44,7 @@ void UUDGameActionTileBuildPalace::Revert(const FUDActionData& action, TObjectPt
 	FUDGameDataTile data(action.ValueParameters);
 	FIntPoint tile(data.X, data.Y);
 	const auto& editedTile = world->Map->GetTile(tile);
-	ModifierManager->RemoveTileModifier(editedTile, action.UniqueId);
+	ModifierManager->RemoveTileModifier(editedTile, UUDTileModifierBuildingPalace::ModifierTypeId, action.UniqueId);
 }
 
 void UUDGameActionTileBuildPalace::SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager)

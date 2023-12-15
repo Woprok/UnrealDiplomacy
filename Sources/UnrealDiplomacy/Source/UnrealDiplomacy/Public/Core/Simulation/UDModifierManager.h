@@ -38,11 +38,11 @@ public:
 	/**
 	 * Removes tile modifier from a specified tile based on Action that created it.
 	 */
-	void RemoveTileModifier(const TObjectPtr<UUDTileState>& tile, int32 actionUniqueId);
+	void RemoveTileModifier(const TObjectPtr<UUDTileState>& tile, int32 modifierTypeId, int32 actionUniqueId);
 	/**
 	 * Removes faction modifier from a specified faction based on Action that created it.
 	 */
-	void RemoveFactionModifier(const TObjectPtr<UUDFactionState>& faction, int32 actionUniqueId);
+	void RemoveFactionModifier(const TObjectPtr<UUDFactionState>& faction, int32 modifierTypeId, int32 actionUniqueId);
 	/**
 	 * Removes tile modifiers from a specified tile of specified type.
 	 */

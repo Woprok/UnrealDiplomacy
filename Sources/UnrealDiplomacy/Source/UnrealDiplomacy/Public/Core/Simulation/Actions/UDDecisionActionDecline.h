@@ -23,6 +23,10 @@ public:
 	virtual bool HasContinuations() const override { return true; }
 	// This action needs to invoke on decline action.	
 	virtual TArray<FUDActionData> GetContinuations(const FUDActionData& parentAction, TObjectPtr<UUDWorldState> world) const override;
+	virtual void SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager) override;
 public:
 	static const int32 ActionTypeId = 5003;
+protected:
+	UPROPERTY()
+	TWeakObjectPtr<UUDModifierManager> ModifierManager = nullptr;
 };
