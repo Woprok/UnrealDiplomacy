@@ -33,8 +33,12 @@ TArray<FUDActionData> UUDDealActionContractCreate::FinalizeActions(TObjectPtr<UU
 {
 	TArray<FUDActionData> actions;
 	auto deal = world->Deals[dealUniqueId];
-	for (auto point : deal->Points)
+	for (const auto& point : deal->Points)
 	{
+		if (point.Value->IsIgnored)
+		{
+			continue;
+		}
 		auto actionId = point.Value->ActionId;
 		// TODO figure out what this field is supposed to do in actions.
 		auto type = point.Value->Type;

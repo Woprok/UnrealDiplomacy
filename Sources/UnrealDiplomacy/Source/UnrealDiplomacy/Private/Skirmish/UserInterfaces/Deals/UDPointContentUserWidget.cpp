@@ -10,3 +10,15 @@ void UUDPointContentUserWidget::BindViewModel(TObjectPtr<UUDViewModel> viewModel
 	ViewModel = actionItemViewModel;
 	SetBlueprintViewModel(ViewModel.Get());
 }
+
+void UUDPointContentUserWidget::BindDelegates()
+{
+	// Bind viewmodel to widgets.
+	IgnoreButtonWidget->OnClicked.Clear();
+	IgnoreButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDPointContentViewModel::Ignore);
+}
+
+void UUDPointContentUserWidget::BindWidgets()
+{
+	IgnoreButtonWidget = GetWidget<UButton>(TEXT("IgnoreButton"));
+}

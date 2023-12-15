@@ -691,6 +691,9 @@ public:
 	/** Parameters are extended with deal action and invoker for full editation. */
 	UPROPERTY(BlueprintReadOnly)
 	FUDParameterListInfo Parameters;
+	/** Defines if the point is ignored or not from all future evaluations. */
+	UPROPERTY(BlueprintReadOnly)
+	bool IsIgnored;
 };
 
 USTRUCT(BlueprintType)

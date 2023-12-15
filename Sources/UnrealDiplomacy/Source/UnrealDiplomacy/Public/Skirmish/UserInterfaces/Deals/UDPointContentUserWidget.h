@@ -24,7 +24,12 @@ public:
 	void SetBlueprintViewModel(UUDPointContentViewModel* model);
 protected:
 	virtual void BindViewModel(TObjectPtr<UUDViewModel> viewModel) override;
+	virtual void BindDelegates() override;
+	virtual void BindWidgets() override;
 protected:
+	// Bindings
+	UPROPERTY()
+	TWeakObjectPtr<UButton> IgnoreButtonWidget;
 	// ViewModel
 	UPROPERTY()
 	TWeakObjectPtr<UUDPointContentViewModel> ViewModel;

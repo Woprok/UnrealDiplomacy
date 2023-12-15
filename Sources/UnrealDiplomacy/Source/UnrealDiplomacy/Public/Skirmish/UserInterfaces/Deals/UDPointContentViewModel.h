@@ -28,6 +28,8 @@ public:
 	void SetContent(FUDDealPointMinimalInfo content);
 public:
 	// Button Functions
+	UFUNCTION()
+	void Ignore();
 	// MVVM Fields
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText PointTitleText;
@@ -39,6 +41,10 @@ public:
 	bool IsValidContentValue;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Getter)
 	FUDViewModelContent ParameterEditorContent;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText IgnoredText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	bool IsIgnoredValue;
 public:
 	virtual void Setup() override;
 	virtual void Refresh() override;
@@ -64,6 +70,10 @@ private:
 	bool GetIsValidContentValue() const;
 	void SetParameterEditorContent(FUDViewModelContent newParameterEditorContent);
 	FUDViewModelContent GetParameterEditorContent() const;
+	void SetIgnoredText(FText newIgnoredText);
+	FText GetIgnoredText() const;
+	void SetIsIgnoredValue(bool newIsIgnoredValue);
+	bool GetIsIgnoredValue() const;
 private:
 	// Fields
 	FUDPointInteractionInfo Content;

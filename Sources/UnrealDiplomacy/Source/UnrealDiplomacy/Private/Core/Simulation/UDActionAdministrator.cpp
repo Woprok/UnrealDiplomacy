@@ -1573,6 +1573,8 @@ FUDPointInteractionInfo UUDActionAdministrator::GetPointInteraction(int32 dealId
 	// Once we have action we can move to determining the rest.
 	// TODO properly named points...
 	interaction.PointTitle = executorPresentation.Name;
+	// Copy ignore flag...
+	interaction.IsIgnored = pointData->IsIgnored;
 
 	// Extend with dummy parameters, TODO move this to action code!
 	TArray<int32> valueParams = pointData->ValueParameters;

@@ -6,6 +6,7 @@
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Skirmish/UDSkirmishHUD.h"
 #include "Core/Simulation/Actions/UDDealActionPointAdd.h"
+#include "Core/Simulation/Actions/UDDealActionPointIgnore.h"
 #include "Core/Simulation/Actions/UDDealActionPointModifyInvoker.h"
 #include "Core/Simulation/Actions/UDDealActionPointModifyAction.h"
 #include "Core/Simulation/Actions/UDDealActionPointModifyTextParameter.h"
@@ -27,6 +28,9 @@ void UUDPointContentViewModel::Setup()
 	SetPointText(point);
 	FText editor = FText(LOCTEXT("PointContent", "Edit"));
 	SetEditorText(editor);
+	FText ignored = FText(LOCTEXT("PointContent", "X"));
+	SetIgnoredText(ignored);
+	SetIsIgnoredValue(false);
 
 	// Retrieve model
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
@@ -46,16 +50,33 @@ void UUDPointContentViewModel::Setup()
 
 void UUDPointContentViewModel::Refresh()
 {
-	FFormatOrderedArguments args;
-	args.Add(FFormatArgumentValue(Content.PointId));
-	args.Add(FFormatArgumentValue(FText::FromString(Content.PointTitle)));
-	FText pointTitle = FText::Format(LOCTEXT("PointContent", "Point {0}: {1}"), args);
-	SetPointTitleText(pointTitle);
+	if (!Content.IsIgnored)
+	{
+		FFormatOrderedArguments args;
+		args.Add(FFormatArgumentValue(Content.PointId));
+		args.Add(FFormatArgumentValue(FText::FromString(Content.PointTitle)));
+		SetPointTitleText(FText::Format(LOCTEXT("PointContent", "Point {0}: {1}"), args));
+	}
+	else
+	{
+		SetPointTitleText(FText(LOCTEXT("PointContent", "Point Ignored")));
+	}
 	SetPointText(FText::FromString(Content.PointContent));
+	SetIsIgnoredValue(Content.IsIgnored);
 	UpdateEditor();
 }
 
 #undef LOCTEXT_NAMESPACE
+
+void UUDPointContentViewModel::Ignore()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDPointContentViewModel: Ignore point %d."), Content.PointId);
+	Model->RequestAction(Model->GetAction(UUDDealActionPointIgnore::ActionTypeId,
+		{
+			Content.DealId, Content.PointId
+		}
+	));
+}
 
 void UUDPointContentViewModel::SetContent(FUDDealPointMinimalInfo content)
 {
@@ -162,4 +183,24 @@ void UUDPointContentViewModel::SetParameterEditorContent(FUDViewModelContent new
 FUDViewModelContent UUDPointContentViewModel::GetParameterEditorContent() const
 {
 	return ParameterEditorContent;
+}
+
+void UUDPointContentViewModel::SetIgnoredText(FText newIgnoredText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(IgnoredText, newIgnoredText);
+}
+
+FText UUDPointContentViewModel::GetIgnoredText()  const
+{
+	return IgnoredText;
+}
+
+void UUDPointContentViewModel::SetIsIgnoredValue(bool newIsIgnoredValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(IsIgnoredValue, newIsIgnoredValue);
+}
+
+bool UUDPointContentViewModel::GetIsIgnoredValue()  const
+{
+	return IsIgnoredValue;
 }

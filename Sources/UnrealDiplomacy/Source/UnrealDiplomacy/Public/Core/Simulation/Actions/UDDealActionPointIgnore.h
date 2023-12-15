@@ -8,6 +8,7 @@
 
 /**
  * Set discussion point to be ignored in further evaluation of the deal.
+ * Point is still visible, and if TODO unignore is added, it can be used again.
  */
 UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDDealActionPointIgnore : public UUDDealAction
