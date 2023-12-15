@@ -27,11 +27,11 @@ protected:
 	UPROPERTY()
 	TWeakObjectPtr<UUDResourceManager> ResourceManager = nullptr;
 	UPROPERTY()
-	int32 InvokerGoldGain = 100;
+	int32 InvokerGoldGain = 50;
 	UPROPERTY()
-	int32 InvokerLuxuriesGain = 50;
+	int32 InvokerLuxuriesGain = 10;
 	UPROPERTY()
-	int32 TargetGoldLose = 100;
+	int32 TargetGoldLose = 50;
 	UPROPERTY()
-	int32 TargetLuxuriesLose = 50;
+	int32 TargetLuxuriesLose = 10;
 };
