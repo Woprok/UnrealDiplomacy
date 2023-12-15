@@ -9,18 +9,18 @@ void UUDSettingActionFactionRename::Execute(const FUDActionData& action, TObject
 {
 	IUDActionInterface::Execute(action, world);
 	// Change to new value
-	world->Settings.SessionName = action.TextParameter;
+	world->Factions[action.InvokerFactionId]->Name = action.TextParameter;
 }
 
 void UUDSettingActionFactionRename::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	IUDActionInterface::Revert(action, world);
 	// Change to backup value
-	world->Settings.SessionName = action.BackupTextParameter;
+	world->Factions[action.InvokerFactionId]->Name = action.BackupTextParameter;
 }
 
 void UUDSettingActionFactionRename::Backup(FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
 	// Old faction name is backuped for future revert use.
-	action.BackupTextParameter = world->Settings.SessionName;
+	action.BackupTextParameter = world->Factions[action.InvokerFactionId]->Name;
 }
