@@ -138,9 +138,9 @@ public:
 	FUDApplicationSettings(FIntPoint resolution, EUDWindowModeType windowMode)
 		: Resolution(resolution), WindowMode(windowMode) { }
 	UPROPERTY(BlueprintReadOnly)
-	FIntPoint Resolution;
+	FIntPoint Resolution = FIntPoint(1280, 720);
 	UPROPERTY(BlueprintReadOnly)
-	EUDWindowModeType WindowMode;
+	EUDWindowModeType WindowMode = EUDWindowModeType::Fullscreen;
 	static FUDApplicationSettings GetDefault();
 };
 

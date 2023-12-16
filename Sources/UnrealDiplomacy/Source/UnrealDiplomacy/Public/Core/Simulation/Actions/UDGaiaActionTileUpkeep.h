@@ -14,9 +14,9 @@ public:
 	FUDResourceUpkeep() {};
 	FUDResourceUpkeep(int32 resourceId, int32 resourceUpkeep) : ResourceId(resourceId), ResourceUpkeep(resourceUpkeep) {};
 	UPROPERTY(BlueprintReadWrite)
-	int32 ResourceId;
+	int32 ResourceId = -1;
 	UPROPERTY(BlueprintReadWrite)
-	int32 ResourceUpkeep;
+	int32 ResourceUpkeep = 0;
 };
 
 USTRUCT(BlueprintType)

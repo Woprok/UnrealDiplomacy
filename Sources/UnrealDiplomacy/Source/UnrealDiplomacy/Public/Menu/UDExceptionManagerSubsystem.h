@@ -38,11 +38,11 @@ public:
 	FUDDialogueData(EUDDialogueContentType contentType, FString titleText, FString contentText)
 		: ContentType(contentType), TitleText(titleText), ContentText(contentText) { }
 	UPROPERTY(BlueprintReadOnly)
-	EUDDialogueContentType ContentType;
+	EUDDialogueContentType ContentType = EUDDialogueContentType::Error;
 	UPROPERTY(BlueprintReadOnly)
-	FString TitleText;	
+	FString TitleText = TEXT("");
 	UPROPERTY(BlueprintReadOnly)
-	FString ContentText;
+	FString ContentText = TEXT("");
 };
 
 /**

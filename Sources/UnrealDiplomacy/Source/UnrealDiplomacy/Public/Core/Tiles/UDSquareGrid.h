@@ -27,9 +27,9 @@ struct FUDTileType
 public:
 	FUDTileType() {};
 	UPROPERTY(EditAnywhere)
-	FName TypeName;
+	FName TypeName = TEXT("");
 	UPROPERTY(EditAnywhere)
-	int32 TypeId;
+	int32 TypeId = -1;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AUDSquareTile> TileType;
 };

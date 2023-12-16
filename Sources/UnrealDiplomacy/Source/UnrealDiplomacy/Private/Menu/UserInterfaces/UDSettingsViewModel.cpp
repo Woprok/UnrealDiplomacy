@@ -12,6 +12,25 @@
 
 #define LOCTEXT_NAMESPACE "Settings"
 
+UUDSettingsViewModel::UUDSettingsViewModel()
+{
+	WindowModes = {
+		FUDWindowModeItem(EUDWindowModeType::Windowed, FText(LOCTEXT("Settings", "Windowed")).ToString()),
+		FUDWindowModeItem(EUDWindowModeType::Borderless, FText(LOCTEXT("Settings", "Borderless")).ToString()),
+		FUDWindowModeItem(EUDWindowModeType::Fullscreen, FText(LOCTEXT("Settings", "Fullscreen")).ToString()),
+	};
+	Resolutions = {
+		FUDResolutionItem(FIntPoint(1280, 720), FText(LOCTEXT("Settings", "1280x720")).ToString()),
+		FUDResolutionItem(FIntPoint(1920, 1080), FText(LOCTEXT("Settings", "1920x1080")).ToString()),
+		FUDResolutionItem(FIntPoint(2560, 1440), FText(LOCTEXT("Settings", "2560x1440")).ToString()),
+	};
+}
+
+FUDWindowModeItem::FUDWindowModeItem()
+{
+	ItemCode = EUDWindowModeType::Fullscreen;
+}
+
 void UUDSettingsViewModel::Setup()
 {
 	FText settingsTitle = FText(LOCTEXT("Settings", "Settings"));
@@ -26,8 +45,6 @@ void UUDSettingsViewModel::Setup()
 	SetSaveText(save);
 	FText credits = FText(LOCTEXT("Settings", "Credits"));
 	SetCreditsText(credits);
-	CreateWindowModeOptions();
-	CreateResolutionOptions();
 }
 
 void UUDSettingsViewModel::Refresh()
@@ -38,23 +55,6 @@ void UUDSettingsViewModel::Refresh()
 	OnSettingsLoaded.Broadcast();
 }
 
-void UUDSettingsViewModel::CreateWindowModeOptions()
-{
-	WindowModes = {
-		FUDWindowModeItem(EUDWindowModeType::Fullscreen, FText(LOCTEXT("Settings", "Fullscreen")).ToString()),
-		FUDWindowModeItem(EUDWindowModeType::Borderless, FText(LOCTEXT("Settings", "Borderless")).ToString()),
-		FUDWindowModeItem(EUDWindowModeType::Windowed, FText(LOCTEXT("Settings", "Windowed")).ToString()),
-	};
-}
-
-void UUDSettingsViewModel::CreateResolutionOptions()
-{
-	Resolutions = {
-		FUDResolutionItem(FIntPoint(1280, 720), FText(LOCTEXT("Settings", "1280x720")).ToString()),
-		FUDResolutionItem(FIntPoint(1920, 1080), FText(LOCTEXT("Settings", "1920x1080")).ToString()),
-		FUDResolutionItem(FIntPoint(2560, 1440), FText(LOCTEXT("Settings", "2560x1440")).ToString()),
-	};
-}
 
 TArray<FString> UUDSettingsViewModel::GetWindowModeOptions() const
 {
@@ -138,34 +138,43 @@ void UUDSettingsViewModel::SaveChanges()
 
 FUDWindowModeItem UUDSettingsViewModel::FindInWindowModes(EUDWindowModeType searchedItem, const TArray<FUDWindowModeItem>& items) const
 {
-	FUDWindowModeItem selected = *items.FindByPredicate(
+	const auto& selected = items.FindByPredicate(
 		[&searchedItem](const FUDWindowModeItem& item) { return item.ItemCode == searchedItem; }
 	);
-	return selected;
+
+	if (selected)
+		return *selected;
+	return WindowModes[0];
 }
 
 FUDWindowModeItem UUDSettingsViewModel::FindInWindowModes(FString searchedItem, const TArray<FUDWindowModeItem>& items) const
 {
-	FUDWindowModeItem selected = *items.FindByPredicate(
+	const auto& selected = items.FindByPredicate(
 		[&searchedItem](const FUDWindowModeItem& item) { return item.ItemText == searchedItem; }
 	);
-	return selected;
+	if (selected)
+		return *selected;
+	return WindowModes[0];
 }
 
 FUDResolutionItem UUDSettingsViewModel::FindInResolutions(FIntPoint searchedItem, const TArray<FUDResolutionItem>& items) const
 {
-	FUDResolutionItem selected = *items.FindByPredicate(
+	const auto& selected = items.FindByPredicate(
 		[&searchedItem](const FUDResolutionItem& item) { return item.ItemCode == searchedItem; }
 	);
-	return selected;
+	if (selected)
+		return *selected;
+	return Resolutions[0];
 }
 
 FUDResolutionItem UUDSettingsViewModel::FindInResolutions(FString searchedItem, const TArray<FUDResolutionItem>& items) const
 {
-	FUDResolutionItem selected = *items.FindByPredicate(
+	const auto& selected = items.FindByPredicate(
 		[&searchedItem](const FUDResolutionItem& item) { return item.ItemText == searchedItem; }
 	);
-	return selected;
+	if (selected)
+		return *selected;
+	return Resolutions[0];
 }
 
 void UUDSettingsViewModel::SetWindowModeText(FText newWindowModeText)

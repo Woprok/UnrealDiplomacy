@@ -23,11 +23,11 @@ public:
 	FUDStratagemResourceCost() {};
 	FUDStratagemResourceCost(int32 resourceId, int32 resourceCost) : ResourceId(resourceId), ResourceCost(resourceCost) {};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Tooltip = "Help field for designers, to know which resource is using this cost."))
-	FName Note;
+	FName Note = TEXT("");
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 ResourceId;
+	int32 ResourceId = -1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 ResourceCost;
+	int32 ResourceCost = 0;
 };
 
 USTRUCT(BlueprintType)
@@ -38,7 +38,7 @@ public:
 	FUDStratagemCost() {};
 	FUDStratagemCost(TArray<FUDStratagemResourceCost> costs) : Costs(costs) {};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Tooltip = "Help field for designers, to know which action is using these costs."))
-	FName Note;
+	FName Note = TEXT("");
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FUDStratagemResourceCost> Costs = { };
 };

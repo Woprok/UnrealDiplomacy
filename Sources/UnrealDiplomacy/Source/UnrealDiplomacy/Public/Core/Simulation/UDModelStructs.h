@@ -113,11 +113,11 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	int32 Id = 0;
 	UPROPERTY(BlueprintReadOnly)
-	FString Name;
+	FString Name = TEXT("");
 	UPROPERTY(BlueprintReadOnly)
-	int32 Cost;
+	int32 Cost = 0;
 	UPROPERTY(BlueprintReadOnly)
-	bool IsSelected;
+	bool IsSelected = false;
 }; 
 
 USTRUCT(BlueprintType)
@@ -584,11 +584,11 @@ struct FUDModifierInfo
 public:
 	FUDModifierInfo();
 	UPROPERTY(BlueprintReadOnly)
-	FString Name;
+	FString Name = TEXT("");
 	UPROPERTY(BlueprintReadOnly)
-	FString Description;
+	FString Description = TEXT("");
 	UPROPERTY(BlueprintReadOnly)
-	int32 Id;
+	int32 Id = -1;
 };
 
 #pragma region Deals
@@ -612,9 +612,9 @@ struct FUDChatMessageInfo
 public:
 	FUDChatMessageInfo();
 	UPROPERTY(BlueprintReadOnly)
-	FString FactionName;
+	FString FactionName = TEXT("");
 	UPROPERTY(BlueprintReadOnly)
-	FString Message;
+	FString Message = TEXT("");
 };
 
 USTRUCT(BlueprintType)
@@ -624,19 +624,19 @@ struct FUDDealFactionInfo
 public:
 	FUDDealFactionInfo();
 	UPROPERTY(BlueprintReadOnly)
-	int32 DealId;
+	int32 DealId = -1;
 	UPROPERTY(BlueprintReadOnly)
-	int32 FactionId;
+	int32 FactionId = -1;
 	UPROPERTY(BlueprintReadOnly)
-	FString FactionName;
+	FString FactionName = TEXT("");
 	UPROPERTY(BlueprintReadOnly)
 	bool IsInviteble = false;
 	UPROPERTY(BlueprintReadOnly)
-	bool IsReady;
+	bool IsReady = false;
 	UPROPERTY(BlueprintReadOnly)
-	bool IsYesVote;
+	bool IsYesVote = false;
 	UPROPERTY(BlueprintReadOnly)
-	bool CanBeKicked;
+	bool CanBeKicked = false;
 };
 
 USTRUCT(BlueprintType)
@@ -650,7 +650,7 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	bool IsModerator = false;
 	UPROPERTY(BlueprintReadOnly)
-	FString State;
+	FString State = TEXT("");
 	UPROPERTY(BlueprintReadOnly)
 	int32 ReadyCount = 0;
 	UPROPERTY(BlueprintReadOnly)
@@ -719,7 +719,7 @@ public:
 	FUDParameterListInfo Parameters;
 	/** Defines if the point is ignored or not from all future evaluations. */
 	UPROPERTY(BlueprintReadOnly)
-	bool IsIgnored;
+	bool IsIgnored = false;
 };
 
 USTRUCT(BlueprintType)
@@ -741,9 +741,9 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	FUDParameterListInfo Parameters;
 	UPROPERTY(BlueprintReadOnly)
-	bool IsInteractable;
+	bool IsInteractable = false;
 	UPROPERTY(BlueprintReadOnly)
-	bool IsSabotageable;
+	bool IsSabotageable = false;
 };
 
 USTRUCT(BlueprintType)
@@ -753,9 +753,9 @@ struct FUDDealActionMinimalInfo
 public:
 	FUDDealActionMinimalInfo();
 	UPROPERTY(BlueprintReadOnly)
-	int32 DealId;
+	int32 DealId = -1;
 	UPROPERTY(BlueprintReadOnly)
-	int32 ActionIndex;
+	int32 ActionIndex = -1;
 };
 
 /** Single selectable policy item. */
@@ -767,13 +767,13 @@ public:
 	FUDPolicySelectItemInfo();
 	/** Refers to action that is used for select. */
 	UPROPERTY(BlueprintReadOnly)
-	int32 SelectPolicyActionId;
+	int32 SelectPolicyActionId = -1;
 	/** Id of the policy. Most likely refers to an ActionId. */
 	UPROPERTY(BlueprintReadOnly)
-	int32 PolicyId;
+	int32 PolicyId = -1;
 	UPROPERTY(BlueprintReadOnly)
-	FString Name;
+	FString Name = TEXT("");
 	UPROPERTY(BlueprintReadOnly)
-	bool IsSelected;
+	bool IsSelected = false;
 };
 #pragma endregion

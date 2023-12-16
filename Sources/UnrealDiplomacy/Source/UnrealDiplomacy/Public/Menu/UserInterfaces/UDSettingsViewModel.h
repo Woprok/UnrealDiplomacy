@@ -20,13 +20,13 @@ struct FUDWindowModeItem
 {
 	GENERATED_BODY()
 public:
-	FUDWindowModeItem() { }
+	FUDWindowModeItem();
 	FUDWindowModeItem(EUDWindowModeType itemCode, FString itemText)
 		: ItemCode(itemCode), ItemText(itemText) { }
 	UPROPERTY(BlueprintReadOnly)
 	EUDWindowModeType ItemCode;
 	UPROPERTY(BlueprintReadOnly)
-	FString ItemText;
+	FString ItemText = TEXT("");
 };
 
 /**
@@ -41,9 +41,9 @@ public:
 	FUDResolutionItem(FIntPoint itemCode, FString itemText)
 		: ItemCode(itemCode), ItemText(itemText) { }
 	UPROPERTY(BlueprintReadOnly)
-	FIntPoint ItemCode;
+	FIntPoint ItemCode = FIntPoint(1280, 720);
 	UPROPERTY(BlueprintReadOnly)
-	FString ItemText;
+	FString ItemText = TEXT("");
 };
 
 /**
@@ -53,6 +53,8 @@ UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDSettingsViewModel : public UUDViewModel
 {
 	GENERATED_BODY()
+public:
+	UUDSettingsViewModel();
 public:
 	/** Gets new list from all supported window options. */
 	TArray<FString> GetWindowModeOptions() const;
@@ -103,10 +105,6 @@ public:
 private:
 	/** Applies changes that are present in the view model to the settings in game instance. */
 	void SaveChanges();
-	/** Creates new list of all supported window options. */
-	void CreateWindowModeOptions();
-	/** Creates new list of all supported resolution options. */
-	void CreateResolutionOptions();
 	FUDWindowModeItem FindInWindowModes(EUDWindowModeType searchedItem, const TArray<FUDWindowModeItem>& items) const;
 	FUDWindowModeItem FindInWindowModes(FString searchedItem, const TArray<FUDWindowModeItem>& items) const;
 	FUDResolutionItem FindInResolutions(FIntPoint searchedItem, const TArray<FUDResolutionItem>& items) const;

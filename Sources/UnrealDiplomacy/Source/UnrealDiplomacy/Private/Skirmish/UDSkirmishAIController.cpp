@@ -82,6 +82,11 @@ void AUDSkirmishAIController::ProcessInTurnPlay()
 	if (Supports.Num() > 0)
 	{
 		int32 badActorId = GetFirstIntersecting(Supports, EnemyFactions);
+
+		// Give priority to usurpers in support cancel
+		if (throne.State == EUDImperialThroneState::Usurper && Supports.Contains(throne.UsurperId))
+			badActorId = throne.UsurperId;
+
 		// Remove support from bad actor
 		if (badActorId != -1)
 		{

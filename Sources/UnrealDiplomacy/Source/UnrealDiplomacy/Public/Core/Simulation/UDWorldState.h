@@ -210,7 +210,7 @@ public:
 		HasDecline(true), Result(EUDDecisionResult::Pending), CreatorId(creatorId) {}
 
 	UPROPERTY(BlueprintReadOnly)
-	EUDDecisionType Type;
+	EUDDecisionType Type = EUDDecisionType::Error;
 	UPROPERTY(BlueprintReadOnly)
 	FUDActionData ConfirmAction;
 	UPROPERTY(BlueprintReadOnly)
@@ -226,7 +226,7 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	int32 Lifetime = 2;
 	UPROPERTY(BlueprintReadOnly)
-	int32 CreatorId;
+	int32 CreatorId = -1;
 public:
 	/**
 	 * Equality over all fields.
@@ -524,15 +524,15 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	FUDActionData Action;
 	UPROPERTY(BlueprintReadOnly)
-	EUDDealActionResult SelectedResult;
+	EUDDealActionResult SelectedResult = EUDDealActionResult::Unresolved;
 	/**
 	 * This has to be outside of Result, even if it is result.
 	 * We are still required to track original player action.
 	 */
 	UPROPERTY(BlueprintReadOnly)
-	bool WasSabotaged;
+	bool WasSabotaged = false;
 	UPROPERTY(BlueprintReadOnly)
-	int32 SabotageId;
+	int32 SabotageId = -1;
 };
 
 /**
@@ -547,9 +547,9 @@ public:
 	FUDChatMessage(int32 authorId, FString message)
 		: AuthorId(authorId), Message(message) {}
 	UPROPERTY(BlueprintReadOnly)
-	int32 AuthorId;
+	int32 AuthorId = -1;
 	UPROPERTY(BlueprintReadOnly)
-	FString Message;
+	FString Message = TEXT("");
 };
 
 /**
