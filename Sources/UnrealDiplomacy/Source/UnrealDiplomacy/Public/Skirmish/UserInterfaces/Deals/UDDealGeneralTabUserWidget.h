@@ -38,7 +38,13 @@ protected:
 	TWeakObjectPtr<UButton> CancelButtonWidget;
 
 	UPROPERTY()
-	TWeakObjectPtr<UButton> CreateContractButtonWidget;
+	TWeakObjectPtr<UButton> EndAssembleButtonWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UButton> EndDefineButtonWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UButton> EndVoteButtonWidget;
+	UPROPERTY()
+	TWeakObjectPtr<UButton> EndResolutionButtonWidget;
 	UPROPERTY()
 	TWeakObjectPtr<UButton> ExecuteContractButtonWidget;
 	// ViewModel

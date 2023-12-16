@@ -26,4 +26,8 @@ public:
 protected:
 	UPROPERTY()
 	TWeakObjectPtr<UUDModifierManager> ModifierManager = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bonus")
+	int32 FlatResourceBonus = 50;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bonus For Correct Type")
+	int32 ExtraResourceBonus = 200;
 };

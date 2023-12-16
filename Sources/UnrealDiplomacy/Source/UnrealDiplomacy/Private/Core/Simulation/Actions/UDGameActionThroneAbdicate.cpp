@@ -24,3 +24,29 @@ void UUDGameActionThroneAbdicate::Revert(const FUDActionData& action, TObjectPtr
 	// Player is returned to throne.
 	world->ImperialThrone.Ruler = action.InvokerFactionId;
 }
+
+#define LOCTEXT_NAMESPACE "ThroneAbdicate"
+FUDActionPresentation UUDGameActionThroneAbdicate::GetPresentation() const
+{
+	if (GetId() != UUDGameActionThroneAbdicate::ActionTypeId)
+		return Super::GetPresentation();
+	FUDActionPresentation presentation = FUDActionPresentation();
+	presentation.ActionId = GetId();
+	presentation.Name = FText(LOCTEXT("ThroneAbdicate", "Abdicate Throne")).ToString();
+	presentation.Tags.Append(
+		{
+			UD_ACTION_TAG_VALID,
+			UD_ACTION_TAG_FREE_DEAL_USE,
+		}
+	);
+
+	presentation.MessageContentFormat = FText(LOCTEXT("ThroneAbdicate",
+		"Faction [{INVOKER}] abdicates."
+	)).ToString();
+	presentation.DealContentFormat = FText(LOCTEXT("ThroneAbdicate",
+		"Faction [{INVOKER}] will abdicate."
+	)).ToString();
+
+	return presentation;
+}
+#undef LOCTEXT_NAMESPACE

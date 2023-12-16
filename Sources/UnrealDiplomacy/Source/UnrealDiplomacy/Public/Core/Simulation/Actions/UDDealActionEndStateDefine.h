@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Core/Simulation/Actions/UDDealAction.h"
-#include "UDDealActionContractExecute.generated.h"
+#include "UDDealActionEndStateDefine.generated.h"
 
 /**
- * Executes all actions in the deal, based on players final believe.
+ * Advances the deal state to next in chronological order.
  */
 UCLASS(Blueprintable, BlueprintType)
-class UNREALDIPLOMACY_API UUDDealActionContractExecute : public UUDDealAction
+class UNREALDIPLOMACY_API UUDDealActionEndStateDefine : public UUDDealAction
 {
 	GENERATED_BODY()
 public:
@@ -21,8 +21,6 @@ public:
 	virtual int32 GetParameterCount() const override { return FUDDealData::ParameterCount; };
 	virtual bool HasContinuations() const override { return true; }
 	virtual TArray<FUDActionData> GetContinuations(const FUDActionData& parentAction, TObjectPtr<UUDWorldState> world) const override;
-	virtual bool IsBypassingStratagemRequirements() const override { return true; } 
 public:
-	static const int32 ActionTypeId = 3019;
-	TArray<FUDActionData> GetAllContractedActions(TObjectPtr<UUDWorldState> world, int32 dealUniqueId) const;
+	static const int32 ActionTypeId = 3017;
 };

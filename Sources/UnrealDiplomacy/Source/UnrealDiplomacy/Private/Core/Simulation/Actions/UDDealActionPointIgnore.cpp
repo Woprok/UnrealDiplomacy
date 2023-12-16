@@ -8,7 +8,7 @@
 bool UUDDealActionPointIgnore::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
 	FUDDealDataPoint data(action.ValueParameters);
-	bool isStateOpen = world->Deals[data.DealId]->DealSimulationState <= EUDDealSimulationState::FinalizingDraft;
+	bool isStateOpen = world->Deals[data.DealId]->DealSimulationState == EUDDealSimulationState::DefinePoints;
 	bool isResultOpen = world->Deals[data.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
 	bool isNotIgnored = world->Deals[data.DealId]->Points[data.PointId]->IsIgnored == false;
 	return IUDActionInterface::CanExecute(action, world) && isStateOpen && isResultOpen;

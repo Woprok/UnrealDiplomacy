@@ -7,7 +7,7 @@
 #include "UDGameActionTileBuildQuarry.generated.h"
 
 /**
- * Invoker will build Manufactury on specified tile.
+ * Invoker will build Quarry on specified tile.
  */
 UCLASS(Blueprintable, BlueprintType)
 class UNREALDIPLOMACY_API UUDGameActionTileBuildQuarry : public UUDGameAction
@@ -26,4 +26,8 @@ public:
 protected:
 	UPROPERTY()
 	TWeakObjectPtr<UUDModifierManager> ModifierManager = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bonus")
+	int32 FlatResourceBonus = 25;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bonus For Correct Type")
+	int32 ExtraResourceBonus = 500;
 };

@@ -170,6 +170,11 @@ TArray<FUDActionPresentation> UUDActionManager::FilterStratagems()
 	return FilterByTag(FilterStartpoint, UD_ACTION_TAG_STRATAGEM);
 }
 
+TArray<FUDActionPresentation> UUDActionManager::FilterActionsWithTag(int32 searchedTag)
+{
+	return FilterByTag(FilterStartpoint, searchedTag);
+}
+
 TArray<FUDActionPresentation> UUDActionManager::FilterFactionInteractions(int32 additionalTag)
 {
 	TSet<int32> filterTags = { UD_ACTION_TAG_FACTION_INTERACTION, additionalTag };

@@ -7,6 +7,7 @@
 #include "Core/Simulation/UDModifierManager.h"
 #include "Core/Simulation/UDModifierData.h"
 #include "Core/Simulation/Modifiers/UDTileModifierBuildingFarm.h"
+#include "Core/Simulation/Resources/UDGameResourceFood.h"
 
 bool UUDGameActionTileBuildFarm::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
@@ -35,6 +36,15 @@ void UUDGameActionTileBuildFarm::Execute(const FUDActionData& action, TObjectPtr
 		action.InvokerFactionId, action.InvokerFactionId
 	);
 	ModifierManager->CreateTileModifier(editedTile, modifierData);
+
+	if (editedTile->ResourceType == UUDGameResourceFood::ResourceId)
+	{
+		editedTile->ResourceStockpile += (FlatResourceBonus + ExtraResourceBonus);
+	}
+	else
+	{
+		editedTile->ResourceStockpile += FlatResourceBonus;
+	}
 }
 
 void UUDGameActionTileBuildFarm::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -45,6 +55,15 @@ void UUDGameActionTileBuildFarm::Revert(const FUDActionData& action, TObjectPtr<
 	FIntPoint tile(data.X, data.Y);
 	const auto& editedTile = world->Map->GetTile(tile);
 	ModifierManager->RemoveTileModifier(editedTile, UUDTileModifierBuildingFarm::ModifierTypeId, action.UniqueId);
+
+	if (editedTile->ResourceType == UUDGameResourceFood::ResourceId)
+	{
+		editedTile->ResourceStockpile -= (FlatResourceBonus + ExtraResourceBonus);
+	}
+	else
+	{
+		editedTile->ResourceStockpile -= FlatResourceBonus;
+	}
 }
 
 void UUDGameActionTileBuildFarm::SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager)

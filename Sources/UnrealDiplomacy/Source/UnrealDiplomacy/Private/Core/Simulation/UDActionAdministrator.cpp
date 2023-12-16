@@ -637,6 +637,16 @@ TArray<FUDActionMinimalInfo> UUDActionAdministrator::GetDealStratagemList(int32 
 		actions.Add(action);
 	}
 
+	for (const auto& additonalAction : ActionManager->FilterActionsWithTag(UD_ACTION_TAG_FREE_DEAL_USE))
+	{
+		if (stratagemList.Contains(additonalAction.ActionId))
+			continue;
+		FUDActionMinimalInfo action;
+		action.Id = additonalAction.ActionId;
+		action.Name = additonalAction.Name;
+		actions.Add(action);
+	}
+
 	return actions;
 }
 
@@ -871,6 +881,10 @@ ParameterData UUDActionAdministrator::GetValueParameter(const TSet<int32>& tags)
 	if (tags.Contains(UD_ACTION_TAG_PARAMETER_VALUE_SMALL_MAX))
 	{
 		parameter.MaxValue = 50;
+	}
+	if (tags.Contains(UD_ACTION_TAG_PARAMETER_VALUE_STANDARD_MAX))
+	{
+		parameter.MaxValue = 500;
 	}
 
 	data.Set<FUDValueParameter>(parameter);
@@ -1278,29 +1292,32 @@ FText UUDActionAdministrator::GetStateName(EUDDealSimulationState state, EUDDeal
 	case EUDDealSimulationResult::Opened:
 		switch (state)
 		{
-		case EUDDealSimulationState::CreatingDraft:
-			return FText(LOCTEXT("DealStateConvertor", "Draft Phase"));
-			break;
-		case EUDDealSimulationState::Assembling:
+		//case EUDDealSimulationState::CreateAndAssemble:
+		//	return FText(LOCTEXT("DealStateConvertor", "Draft Phase"));
+		//	break;
+		case EUDDealSimulationState::CreateAndAssemble:
 			return FText(LOCTEXT("DealStateConvertor", "Assemble Phase"));
 			break;
-		case EUDDealSimulationState::ExtendingDraft:
-			return FText(LOCTEXT("DealStateConvertor", "Extension Phase"));
+		case EUDDealSimulationState::DefinePoints:
+			return FText(LOCTEXT("DealStateConvertor", "Discussion Phase"));
 			break;
-		case EUDDealSimulationState::DemandsAndRequests:
-			return FText(LOCTEXT("DealStateConvertor", "Demands & Requests Phase"));
-			break;
-		case EUDDealSimulationState::Bidding:
-			return FText(LOCTEXT("DealStateConvertor", "Bidding Phase"));
-			break;
-		case EUDDealSimulationState::FinalizingDraft:
-			return FText(LOCTEXT("DealStateConvertor", "Final Check Phase"));
-			break;
-		case EUDDealSimulationState::Vote:
+		//case EUDDealSimulationState::DefinePoints:
+		//	return FText(LOCTEXT("DealStateConvertor", "Demands & Requests Phase"));
+		//	break;
+		//case EUDDealSimulationState::DefinePoints:
+		//	return FText(LOCTEXT("DealStateConvertor", "Bidding Phase"));
+		//	break;
+		//case EUDDealSimulationState::DefinePoints:
+		//	return FText(LOCTEXT("DealStateConvertor", "Final Check Phase"));
+		//	break;
+		case EUDDealSimulationState::FinalVote:
 			return FText(LOCTEXT("DealStateConvertor", "Vote Phase"));
 			break;
-		case EUDDealSimulationState::Resolution:
+		case EUDDealSimulationState::ResolutionOfPoints:
 			return FText(LOCTEXT("DealStateConvertor", "Resolution Phase"));
+			break;
+		case EUDDealSimulationState::Result:
+			return FText(LOCTEXT("DealStateConvertor", "Execution Phase"));
 			break;
 		}
 		break;
@@ -1325,6 +1342,20 @@ FText UUDActionAdministrator::GetStateName(EUDDealSimulationState state, EUDDeal
 int32 UUDActionAdministrator::GetDealModeratorId(int32 dealId)
 {
 	return State->Deals[dealId]->OwnerUniqueId;
+}
+
+FUDDealPhaseInfo UUDActionAdministrator::GetDealPhaseInfo(int32 dealId)
+{
+	FUDDealPhaseInfo dealPhaseInfo = FUDDealPhaseInfo();
+	bool isOpen = State->Deals[dealId]->DealSimulationResult == EUDDealSimulationResult::Opened;
+	dealPhaseInfo.CanClose = isOpen;
+	dealPhaseInfo.CanEndAssemble = isOpen && State->Deals[dealId]->DealSimulationState == EUDDealSimulationState::CreateAndAssemble;
+	dealPhaseInfo.CanEndDefine = isOpen && State->Deals[dealId]->DealSimulationState == EUDDealSimulationState::DefinePoints;
+	dealPhaseInfo.CanEndVote = isOpen && State->Deals[dealId]->DealSimulationState == EUDDealSimulationState::FinalVote;
+	dealPhaseInfo.CanEndResolution = isOpen && State->Deals[dealId]->DealSimulationState == EUDDealSimulationState::ResolutionOfPoints;
+	dealPhaseInfo.CanEndExecute = isOpen && State->Deals[dealId]->DealSimulationState == EUDDealSimulationState::Result &&
+		State->Deals[dealId]->CanBeExecuted;
+	return dealPhaseInfo;
 }
 
 FUDDealInfo UUDActionAdministrator::GetDealInfo(int32 dealId)

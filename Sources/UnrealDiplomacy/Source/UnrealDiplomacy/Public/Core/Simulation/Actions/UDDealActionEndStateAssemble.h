@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Core/Simulation/Actions/UDDealAction.h"
-#include "UDDealActionStateExtendingDraft.generated.h"
+#include "UDDealActionEndStateAssemble.generated.h"
 
 /**
  * Advances the deal state to next in chronological order.
  */
 UCLASS(Blueprintable, BlueprintType)
-class UNREALDIPLOMACY_API UUDDealActionStateExtendingDraft : public UUDDealAction
+class UNREALDIPLOMACY_API UUDDealActionEndStateAssemble : public UUDDealAction
 {
 	GENERATED_BODY()
 public:
@@ -20,5 +20,7 @@ public:
 	virtual int32 GetId() const override { return ActionTypeId; };
 	virtual int32 GetParameterCount() const override { return FUDDealData::ParameterCount; };
 public:
-	static const int32 ActionTypeId = 3017;
+	static const int32 ActionTypeId = 3016;
+	UPROPERTY()
+	int32 MinimumParticipantCount = 2;
 };

@@ -44,8 +44,10 @@ void UUDDealActionContractReputationBonus::Execute(const FUDActionData& action, 
 	float activeParticipantBonus = FMath::Min(1.0, participantCount * BonusPerDealActiveParticipant);
 	// Size of the deal matters in small amount defined by passive cap.
 	float passiveBonus = FMath::Min(PassiveCap, (successfulPoints + pasiveCount) * BonusPerDealPassivePoint);
+	// Look, it might be cool to get points for nothing, but no, do at least the bare minimum!
+	float baseBonus = successfulPoints <= 0 ? 0.0f : 1.0f;
 	
-	int32 amount = BaseDealReputation 
+	int32 amount = BaseDealReputation * baseBonus
 		- BaseDealReputation * sabotagePenalty
 		+ BaseDealReputation * activeParticipantBonus
 		+ BaseDealReputation * passiveBonus;

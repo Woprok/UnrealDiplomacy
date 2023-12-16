@@ -7,6 +7,7 @@
 #include "Core/Simulation/UDModifierManager.h"
 #include "Core/Simulation/UDModifierData.h"
 #include "Core/Simulation/Modifiers/UDTileModifierBuildingQuarry.h"
+#include "Core/Simulation/Resources/UDGameResourceMaterials.h"
 
 bool UUDGameActionTileBuildQuarry::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
@@ -35,6 +36,15 @@ void UUDGameActionTileBuildQuarry::Execute(const FUDActionData& action, TObjectP
 		action.InvokerFactionId, action.InvokerFactionId
 	);
 	ModifierManager->CreateTileModifier(editedTile, modifierData);
+
+	if (editedTile->ResourceType == UUDGameResourceMaterials::ResourceId)
+	{
+		editedTile->ResourceStockpile += (FlatResourceBonus + ExtraResourceBonus);
+	}
+	else
+	{
+		editedTile->ResourceStockpile += FlatResourceBonus;
+	}
 }
 
 void UUDGameActionTileBuildQuarry::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -45,6 +55,15 @@ void UUDGameActionTileBuildQuarry::Revert(const FUDActionData& action, TObjectPt
 	FIntPoint tile(data.X, data.Y);
 	const auto& editedTile = world->Map->GetTile(tile);
 	ModifierManager->RemoveTileModifier(editedTile, UUDTileModifierBuildingQuarry::ModifierTypeId, action.UniqueId);
+
+	if (editedTile->ResourceType == UUDGameResourceMaterials::ResourceId)
+	{
+		editedTile->ResourceStockpile -= (FlatResourceBonus + ExtraResourceBonus);
+	}
+	else
+	{
+		editedTile->ResourceStockpile -= FlatResourceBonus;
+	}
 }
 
 void UUDGameActionTileBuildQuarry::SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager)

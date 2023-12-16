@@ -73,7 +73,8 @@ class UUDResourceManager;
 #define UD_ACTION_TAG_PARAMETER_TEXT 17
 // Details
 #define UD_ACTION_TAG_PARAMETER_VALUE_AMOUNT 18
-#define UD_ACTION_TAG_PARAMETER_VALUE_SMALL_MAX 19
+#define UD_ACTION_TAG_PARAMETER_VALUE_SMALL_MAX 100
+#define UD_ACTION_TAG_PARAMETER_VALUE_STANDARD_MAX 101
 // Decisions
 // Direct action on target (Give Resource)
 #define UD_ACTION_TAG_DECISION_DIRECT 20
@@ -88,6 +89,8 @@ class UUDResourceManager;
 
 // Specifies for this action to have at least default resource cost
 #define UD_ACTION_TAG_RESOURCE_COST 30
+// Available in deals as free stratagem or action.
+#define UD_ACTION_TAG_FREE_DEAL_USE 31
 
 // This action is hidden from all UI, even if it would be normally visible.
 //#define UD_ACTION_TAG_HIDDEN 30

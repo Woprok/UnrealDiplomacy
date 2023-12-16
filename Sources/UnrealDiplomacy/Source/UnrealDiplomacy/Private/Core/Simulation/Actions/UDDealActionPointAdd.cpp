@@ -8,7 +8,7 @@
 bool UUDDealActionPointAdd::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
 	FUDDealData data(action.ValueParameters);
-	bool isStateOpen = world->Deals[data.DealId]->DealSimulationState <= EUDDealSimulationState::FinalizingDraft;
+	bool isStateOpen = world->Deals[data.DealId]->DealSimulationState == EUDDealSimulationState::DefinePoints;
 	bool isResultOpen = world->Deals[data.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
 	return IUDActionInterface::CanExecute(action, world) && isStateOpen && isResultOpen;
 }

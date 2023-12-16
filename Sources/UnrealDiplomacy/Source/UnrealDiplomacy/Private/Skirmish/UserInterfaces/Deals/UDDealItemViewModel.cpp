@@ -22,7 +22,7 @@ void UUDDealItemViewModel::Setup()
 	SetDealNameText(dealName);
 	FText general = FText(LOCTEXT("DealItem", "Overview"));
 	SetGeneralText(general);
-	FText points = FText(LOCTEXT("DealItem", "Edit Points"));
+	FText points = FText(LOCTEXT("DealItem", "Point Discussion"));
 	SetEditationText(points);
 	FText resolution = FText(LOCTEXT("DealItem", "Resolution"));
 	SetExecutionText(resolution);

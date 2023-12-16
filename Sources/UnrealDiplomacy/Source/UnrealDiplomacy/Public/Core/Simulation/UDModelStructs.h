@@ -658,6 +658,26 @@ public:
 };
 
 USTRUCT(BlueprintType)
+struct FUDDealPhaseInfo
+{
+	GENERATED_BODY()
+public:
+	FUDDealPhaseInfo();
+	UPROPERTY(BlueprintReadOnly)
+	bool CanClose = false;
+	UPROPERTY(BlueprintReadOnly)
+	bool CanEndAssemble = false;
+	UPROPERTY(BlueprintReadOnly)
+	bool CanEndDefine = false;
+	UPROPERTY(BlueprintReadOnly)
+	bool CanEndVote = false;
+	UPROPERTY(BlueprintReadOnly)
+	bool CanEndResolution = false;
+	UPROPERTY(BlueprintReadOnly)
+	bool CanEndExecute = false;
+};
+
+USTRUCT(BlueprintType)
 struct FUDDealPointMinimalInfo
 {
 	GENERATED_BODY()

@@ -188,6 +188,11 @@ FUDDealInfo::FUDDealInfo()
 
 }
 
+FUDDealPhaseInfo::FUDDealPhaseInfo()
+{
+
+}
+
 FUDDealPointMinimalInfo::FUDDealPointMinimalInfo()
 {
 

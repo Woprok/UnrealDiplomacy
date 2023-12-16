@@ -19,7 +19,10 @@ void UUDDealGeneralTabUserWidget::BindDelegates()
 	LeaveButtonWidget->OnClicked.Clear();
 	CancelButtonWidget->OnClicked.Clear();
 
-	CreateContractButtonWidget->OnClicked.Clear();
+	EndAssembleButtonWidget->OnClicked.Clear();
+	EndDefineButtonWidget->OnClicked.Clear();
+	EndVoteButtonWidget->OnClicked.Clear();
+	EndResolutionButtonWidget->OnClicked.Clear();
 	ExecuteContractButtonWidget->OnClicked.Clear();
 
 	ChangeReadyButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDDealGeneralTabViewModel::ChangeReady);
@@ -27,7 +30,10 @@ void UUDDealGeneralTabUserWidget::BindDelegates()
 	LeaveButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDDealGeneralTabViewModel::Leave);
 	CancelButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDDealGeneralTabViewModel::Cancel);
 
-	CreateContractButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDDealGeneralTabViewModel::CreateContract);
+	EndAssembleButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDDealGeneralTabViewModel::EndAssemble);
+	EndDefineButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDDealGeneralTabViewModel::EndDefine);
+	EndVoteButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDDealGeneralTabViewModel::EndVote);
+	EndResolutionButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDDealGeneralTabViewModel::EndResolution);
 	ExecuteContractButtonWidget->OnClicked.AddUniqueDynamic(ViewModel.Get(), &UUDDealGeneralTabViewModel::ExecuteContract);
 }
 
@@ -38,6 +44,9 @@ void UUDDealGeneralTabUserWidget::BindWidgets()
 	LeaveButtonWidget = GetWidget<UButton>(TEXT("LeaveButton"));
 	CancelButtonWidget = GetWidget<UButton>(TEXT("CancelButton"));
 
-	CreateContractButtonWidget = GetWidget<UButton>(TEXT("CreateContractButton"));
+	EndAssembleButtonWidget = GetWidget<UButton>(TEXT("EndAssembleButton"));
+	EndDefineButtonWidget = GetWidget<UButton>(TEXT("EndDefineButton"));
+	EndVoteButtonWidget = GetWidget<UButton>(TEXT("EndVoteButton"));
+	EndResolutionButtonWidget = GetWidget<UButton>(TEXT("EndResolutionButton"));
 	ExecuteContractButtonWidget = GetWidget<UButton>(TEXT("ExecuteContractButton"));
 }

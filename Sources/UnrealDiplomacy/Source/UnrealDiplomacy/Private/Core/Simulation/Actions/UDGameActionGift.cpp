@@ -55,6 +55,7 @@ FUDActionPresentation UUDGameActionGift::GetPresentation() const
 			UD_ACTION_TAG_DECISION_DIRECT,
 			UD_ACTION_TAG_DECISION_REQUEST,
 			UD_ACTION_TAG_DECISION_DEMAND,
+			UD_ACTION_TAG_FREE_DEAL_USE,
 		}
 	);
 

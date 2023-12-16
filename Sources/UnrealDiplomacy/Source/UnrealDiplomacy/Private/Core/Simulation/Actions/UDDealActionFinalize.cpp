@@ -9,7 +9,6 @@
 bool UUDDealActionFinalize::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
 	FUDDealData data(action.ValueParameters);
-	//bool areAllActionsResolved = UUDDealActionContractExecute::AreAllActionsPrepared(world, data.DealId);
 	//bool dealIsNotExecuted = world->Deals[data.DealId]->
 	//	return IUDActionInterface::CanExecute(action, world) && areAllActionsResolved && dealIsNotExecuted;
 	return false;

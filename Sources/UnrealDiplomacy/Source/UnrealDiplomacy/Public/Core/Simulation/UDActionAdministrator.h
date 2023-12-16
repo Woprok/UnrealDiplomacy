@@ -62,6 +62,7 @@ struct FUDActionInteractionInfo;
 struct FUDChatMessageInfo;
 struct FUDDealMinimalInfo;
 struct FUDDealInfo;
+struct FUDDealPhaseInfo;
 struct FUDDealFactionInfo;
 struct FUDDealPointMinimalInfo;
 struct FUDDealActionMinimalInfo;
@@ -380,6 +381,8 @@ public:
 	TArray<FUDChatMessageInfo> GetDealChatHistory(int32 dealId);
 	/** Returns list of deals that can be used as parameter. */
 	TArray<FUDDealMinimalInfo> GetDealList();
+	/** Returns deal phase info. */
+	FUDDealPhaseInfo GetDealPhaseInfo(int32 dealId);
 	/** Returns extended deal info. */
 	FUDDealInfo GetDealInfo(int32 dealId);
 	/** Returns extended deal info. */

@@ -333,38 +333,37 @@ enum class EUDDealSimulationState : uint8
 	/**
 	 * Deal draft is being created.
 	 */
-	CreatingDraft = 1,
+	// CreatingDraft = 1,
 	/**
 	 * Players are assembling to discusss deal draft.
 	 */
-	Assembling = 2,
+	//Assembling = 2,
 	/**
 	 * Players are able to add additional points to draft.
 	 */
-	ExtendingDraft = 3,
+	//ExtendingDraft = 3,
 	/**
 	 * Players can demand or request something for being favorable toward the points.
 	 */
-	DemandsAndRequests = 4,
+	//DemandsAndRequests = 4,
 	/**
 	 * Players are trying to appease these that oppose the deal.
 	 */
-	Bidding = 5,
+	//Bidding = 5,
 	/**
 	 * Players select bids they accept in exchange for voting favorably or leave.
 	 */
-	FinalizingDraft = 6,
-	/**
-	 * Remaining players vote.
-	 */
-	Vote = 7,
-	/**
-	 * Resolution. 
-	 */
-	Resolution = 8,
-	/**
-	 * Result.
-	 */
+	//FinalizingDraft = 6,
+
+	/** Single state for initial phase of deal. */
+	CreateAndAssemble = 1,
+	/** Single state of previous 4 covering creation of points. Only time they can be created and changed. */
+	DefinePoints = 3,
+	/** Remaining players vote for deal to pass, last chance to change decision. */
+	FinalVote = 7,
+	/** Resolution of all actions created by points. Only time they are resolveable. */
+	ResolutionOfPoints = 8,
+	/** Result. */
 	Result = 9,
 };
 
@@ -643,6 +642,12 @@ public:
 	 */
 	UPROPERTY()
 	FString Name;
+	/**
+	 * Can this deal be executed ?
+	 * False might indicate either not yet, or no more.
+	 */
+	UPROPERTY()
+	bool CanBeExecuted = false;
 };
 
 /**

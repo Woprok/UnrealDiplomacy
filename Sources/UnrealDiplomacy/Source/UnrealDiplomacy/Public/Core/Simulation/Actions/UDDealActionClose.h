@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Core/Simulation/Actions/UDDealAction.h"
-#include "UDDealActionStateAssemble.generated.h"
+#include "UDDealActionClose.generated.h"
 
 /**
- * Advances the deal state to next in chronological order.
+ * Moderator choosed to close deal prematurely.
  */
 UCLASS(Blueprintable, BlueprintType)
-class UNREALDIPLOMACY_API UUDDealActionStateAssemble : public UUDDealAction
+class UNREALDIPLOMACY_API UUDDealActionClose : public UUDDealAction
 {
 	GENERATED_BODY()
 public:
@@ -20,5 +20,5 @@ public:
 	virtual int32 GetId() const override { return ActionTypeId; };
 	virtual int32 GetParameterCount() const override { return FUDDealData::ParameterCount; };
 public:
-	static const int32 ActionTypeId = 3016;
+	static const int32 ActionTypeId = 3012;
 };

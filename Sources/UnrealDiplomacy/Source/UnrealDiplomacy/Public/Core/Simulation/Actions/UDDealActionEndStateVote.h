@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Core/Simulation/Actions/UDGameAction.h"
-#include "UDGameActionThroneAbdicate.generated.h"
+#include "Core/Simulation/Actions/UDDealAction.h"
+#include "UDDealActionEndStateVote.generated.h"
 
 /**
- * Current usurper can abdicate or be forced to abdicate via deal.
+ * Advances the deal state to next in chronological order.
  */
 UCLASS(Blueprintable, BlueprintType)
-class UNREALDIPLOMACY_API UUDGameActionThroneAbdicate : public UUDGameAction
+class UNREALDIPLOMACY_API UUDDealActionEndStateVote : public UUDDealAction
 {
 	GENERATED_BODY()
 public:
@@ -18,7 +18,7 @@ public:
 	virtual void Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual void Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world) override;
 	virtual int32 GetId() const override { return ActionTypeId; };
-	virtual FUDActionPresentation GetPresentation() const override;
+	virtual int32 GetParameterCount() const override { return FUDDealData::ParameterCount; };
 public:
-	static const int32 ActionTypeId = 2002;
+	static const int32 ActionTypeId = 3040;
 };

@@ -64,6 +64,10 @@ public:
 	 */
 	TArray<FUDActionPresentation> FilterStratagems();
 	/**
+	 * Retrieves all actions that are tagged with one specific tag.
+	 */
+	TArray<FUDActionPresentation> FilterActionsWithTag(int32 searchedTag);
+	/**
 	 * Retrieves all actions that are tagged as faction interactions.
 	 * Faction interaction is any action that targets directly other faction.
 	 */

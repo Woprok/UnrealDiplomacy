@@ -5,6 +5,7 @@
 #include "Core/Simulation/UDActionData.h"
 #include "Core/Simulation/UDWorldState.h"
 #include "Core/Simulation/UDResourceManager.h"
+#include "Core/Simulation/UDModifierManager.h"
 #include "Core/Simulation/Resources/UDGameResourceReputation.h"
 #include "Core/Simulation/Resources/UDGameResourceGold.h"
 #include "Core/Simulation/Resources/UDGameResourceFood.h"

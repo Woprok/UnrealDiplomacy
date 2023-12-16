@@ -35,16 +35,16 @@
 #include "Core/Simulation/Actions/UDDealActionPointModifyTileValue.h"
 #include "Core/Simulation/Actions/UDDealActionPointModifyType.h"
 #include "Core/Simulation/Actions/UDDealActionPointModifyValue.h"
-#include "Core/Simulation/Actions/UDDealActionPointRemove.h"
 #include "Core/Simulation/Actions/UDDealActionReady.h"
-#include "Core/Simulation/Actions/UDDealActionReadyReset.h"
 #include "Core/Simulation/Actions/UDDealActionReadyRevert.h"
-#include "Core/Simulation/Actions/UDDealActionResultClose.h"
+#include "Core/Simulation/Actions/UDDealActionClose.h"
 #include "Core/Simulation/Actions/UDDealActionResultDisassemble.h"
 #include "Core/Simulation/Actions/UDDealActionResultPass.h"
 #include "Core/Simulation/Actions/UDDealActionResultVeto.h"
-#include "Core/Simulation/Actions/UDDealActionStateAssemble.h"
-#include "Core/Simulation/Actions/UDDealActionStateExtendingDraft.h"
+#include "Core/Simulation/Actions/UDDealActionEndStateAssemble.h"
+#include "Core/Simulation/Actions/UDDealActionEndStateDefine.h"
+#include "Core/Simulation/Actions/UDDealActionEndStateVote.h"
+#include "Core/Simulation/Actions/UDDealActionEndStateResolution.h"
 #include "Core/Simulation/Actions/UDDealActionVoteNo.h"
 #include "Core/Simulation/Actions/UDDealActionVoteYes.h"
 // Decision
@@ -236,16 +236,16 @@ TArray<TScriptInterface<IUDActionInterface>> UUDActionDatabase::GetDealActions(U
 		//NewObject<UUDDealActionPointModifyTile>(parent),
 		//NewObject<UUDDealActionPointModifyTileValue>(parent),
 		//NewObject<UUDDealActionPointModifyValue>(parent),
-		//NewObject<UUDDealActionPointRemove>(parent),
 		NewObject<UUDDealActionReady>(parent),
-		//NewObject<UUDDealActionReadyReset>(parent),
 		NewObject<UUDDealActionReadyRevert>(parent),
-		NewObject<UUDDealActionResultClose>(parent),
+		NewObject<UUDDealActionClose>(parent),
 		NewObject<UUDDealActionResultDisassemble>(parent),
 		NewObject<UUDDealActionResultPass>(parent),
 		NewObject<UUDDealActionResultVeto>(parent),
-		NewObject<UUDDealActionStateAssemble>(parent),
-		NewObject<UUDDealActionStateExtendingDraft>(parent),
+		NewObject<UUDDealActionEndStateAssemble>(parent),
+		NewObject<UUDDealActionEndStateDefine>(parent),
+		NewObject<UUDDealActionEndStateVote>(parent),
+		NewObject<UUDDealActionEndStateResolution>(parent),
 		NewObject<UUDDealActionVoteNo>(parent),
 		NewObject<UUDDealActionVoteYes>(parent),
 	};

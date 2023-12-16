@@ -8,8 +8,10 @@
 bool UUDDealActionContractPointSabotage::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
 	FUDDealDataContractPoint data(action.ValueParameters);
+	bool isStateOpen = world->Deals[data.DealId]->DealSimulationState == EUDDealSimulationState::ResolutionOfPoints;
+	bool isResultOpen = world->Deals[data.DealId]->DealSimulationResult == EUDDealSimulationResult::Opened;
 	bool isNotSabotaged = !world->Deals[data.DealId]->DealActionList[data.ContractPointId].WasSabotaged;
-	return IUDActionInterface::CanExecute(action, world) && isNotSabotaged;
+	return IUDActionInterface::CanExecute(action, world) && isNotSabotaged && isStateOpen && isResultOpen;
 }
 
 void UUDDealActionContractPointSabotage::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)

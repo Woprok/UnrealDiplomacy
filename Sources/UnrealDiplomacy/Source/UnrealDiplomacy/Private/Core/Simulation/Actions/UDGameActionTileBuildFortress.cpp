@@ -7,6 +7,7 @@
 #include "Core/Simulation/UDModifierManager.h"
 #include "Core/Simulation/UDModifierData.h"
 #include "Core/Simulation/Modifiers/UDTileModifierBuildingFortress.h"
+#include "Core/Simulation/Resources/UDGameResourceManpower.h"
 
 bool UUDGameActionTileBuildFortress::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
@@ -35,6 +36,15 @@ void UUDGameActionTileBuildFortress::Execute(const FUDActionData& action, TObjec
 		action.InvokerFactionId, action.InvokerFactionId
 	);
 	ModifierManager->CreateTileModifier(editedTile, modifierData);
+
+	if (editedTile->ResourceType == UUDGameResourceManpower::ResourceId)
+	{
+		editedTile->ResourceStockpile += (FlatResourceBonus + ExtraResourceBonus);
+	}
+	else
+	{
+		editedTile->ResourceStockpile += FlatResourceBonus;
+	}
 }
 
 void UUDGameActionTileBuildFortress::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -45,6 +55,15 @@ void UUDGameActionTileBuildFortress::Revert(const FUDActionData& action, TObject
 	FIntPoint tile(data.X, data.Y);
 	const auto& editedTile = world->Map->GetTile(tile);
 	ModifierManager->RemoveTileModifier(editedTile, UUDTileModifierBuildingFortress::ModifierTypeId, action.UniqueId);
+
+	if (editedTile->ResourceType == UUDGameResourceManpower::ResourceId)
+	{
+		editedTile->ResourceStockpile -= (FlatResourceBonus + ExtraResourceBonus);
+	}
+	else
+	{
+		editedTile->ResourceStockpile -= FlatResourceBonus;
+	}
 }
 
 void UUDGameActionTileBuildFortress::SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager)

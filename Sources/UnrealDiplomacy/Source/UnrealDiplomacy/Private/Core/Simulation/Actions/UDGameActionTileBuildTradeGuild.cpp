@@ -7,6 +7,7 @@
 #include "Core/Simulation/UDModifierManager.h"
 #include "Core/Simulation/UDModifierData.h"
 #include "Core/Simulation/Modifiers/UDTileModifierBuildingTradeGuild.h"
+#include "Core/Simulation/Resources/UDGameResourceGold.h"
 
 bool UUDGameActionTileBuildTradeGuild::CanExecute(const FUDActionData& action, TObjectPtr<UUDWorldState> world) const
 {
@@ -35,6 +36,15 @@ void UUDGameActionTileBuildTradeGuild::Execute(const FUDActionData& action, TObj
 		action.InvokerFactionId, action.InvokerFactionId
 	);
 	ModifierManager->CreateTileModifier(editedTile, modifierData);
+
+	if (editedTile->ResourceType == UUDGameResourceGold::ResourceId)
+	{
+		editedTile->ResourceStockpile += (FlatResourceBonus + ExtraResourceBonus);
+	}
+	else
+	{
+		editedTile->ResourceStockpile += FlatResourceBonus;
+	}
 }
 
 void UUDGameActionTileBuildTradeGuild::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -45,6 +55,15 @@ void UUDGameActionTileBuildTradeGuild::Revert(const FUDActionData& action, TObje
 	FIntPoint tile(data.X, data.Y);
 	const auto& editedTile = world->Map->GetTile(tile);
 	ModifierManager->RemoveTileModifier(editedTile, UUDTileModifierBuildingTradeGuild::ModifierTypeId, action.UniqueId);
+
+	if (editedTile->ResourceType == UUDGameResourceGold::ResourceId)
+	{
+		editedTile->ResourceStockpile -= (FlatResourceBonus + ExtraResourceBonus);
+	}
+	else
+	{
+		editedTile->ResourceStockpile -= FlatResourceBonus;
+	}
 }
 
 void UUDGameActionTileBuildTradeGuild::SetModifierManager(TWeakObjectPtr<UUDModifierManager> modifierManager)

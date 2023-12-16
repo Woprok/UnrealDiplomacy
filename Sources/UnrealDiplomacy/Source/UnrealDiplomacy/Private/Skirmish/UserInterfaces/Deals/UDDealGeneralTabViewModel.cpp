@@ -8,18 +8,76 @@
 #include "Skirmish/UDSkirmishPlayerController.h"
 #include "Core/Simulation/UDActionAdministrator.h"
 #include "Core/Simulation/UDModelStructs.h"
-#include "Core/Simulation/Actions/UDDealActionResultClose.h"
+#include "Core/Simulation/Actions/UDDealActionClose.h"
 #include "Core/Simulation/Actions/UDDealActionParticipantLeave.h"
 #include "Core/Simulation/Actions/UDDealActionReady.h"
 #include "Core/Simulation/Actions/UDDealActionReadyRevert.h"
 #include "Core/Simulation/Actions/UDDealActionVoteYes.h"
 #include "Core/Simulation/Actions/UDDealActionVoteNo.h"
-#include "Core/Simulation/Actions/UDDealActionContractCreate.h"
+#include "Core/Simulation/Actions/UDDealActionEndStateAssemble.h"
+#include "Core/Simulation/Actions/UDDealActionEndStateDefine.h"
+#include "Core/Simulation/Actions/UDDealActionEndStateVote.h"
+#include "Core/Simulation/Actions/UDDealActionEndStateResolution.h"
 #include "Core/Simulation/Actions/UDDealActionContractExecute.h"
 #include "Core/UDGlobalData.h"
 #include "Core/Simulation/UDActionData.h"
 
 #define LOCTEXT_NAMESPACE "DealGeneralTab"
+
+FText ConstructDealHelp()
+{
+	TStringBuilder<128> content;
+
+	content.Append(FText(LOCTEXT("DealGeneralTab", "Deal is split into multiple phases:")).ToString());
+	content.Append(FText::FromString(TEXT("\n")).ToString());
+
+	content.Append(FText(LOCTEXT("DealGeneralTab", "1. Assemble Phase")).ToString());
+	content.Append(FText::FromString(TEXT("\n")).ToString());
+	content.Append(FText(LOCTEXT("DealGeneralTab", " - Factions can join by invite/leave/be kicked from the deal.")).ToString());
+	content.Append(FText::FromString(TEXT("\n")).ToString());
+	content.Append(FText(LOCTEXT("DealGeneralTab", " - Regent can start discussions.")).ToString());
+	content.Append(FText::FromString(TEXT("\n")).ToString());
+	content.Append(FText(LOCTEXT("DealGeneralTab", " - The next phase requires 2 or more participants.")).ToString());
+	content.Append(FText::FromString(TEXT("\n")).ToString());
+
+	content.Append(FText(LOCTEXT("DealGeneralTab", "2. Discussion Phase")).ToString());
+	content.Append(FText::FromString(TEXT("\n")).ToString());
+	content.Append(FText(LOCTEXT("DealGeneralTab", " - Factions can add/edit/ignore discussion points.")).ToString());
+	content.Append(FText::FromString(TEXT("\n")).ToString());
+	content.Append(FText(LOCTEXT("DealGeneralTab", " - Refer to the 'Point Discussion' tab.")).ToString());
+	content.Append(FText::FromString(TEXT("\n")).ToString());
+	content.Append(FText(LOCTEXT("DealGeneralTab", " - Regent can start a vote.")).ToString());
+	content.Append(FText::FromString(TEXT("\n")).ToString());
+
+	content.Append(FText(LOCTEXT("DealGeneralTab", "3. Vote Phase")).ToString());
+	content.Append(FText::FromString(TEXT("\n")).ToString());
+	content.Append(FText(LOCTEXT("DealGeneralTab", " - Factions have a last chance to change their vote.")).ToString());
+	content.Append(FText::FromString(TEXT("\n")).ToString());
+	content.Append(FText(LOCTEXT("DealGeneralTab", " - Regent can end the vote.")).ToString());
+	content.Append(FText::FromString(TEXT("\n")).ToString());
+	content.Append(FText(LOCTEXT("DealGeneralTab", " - The next phase requires a unanimous vote.")).ToString());
+	content.Append(FText::FromString(TEXT("\n")).ToString());
+
+	content.Append(FText(LOCTEXT("DealGeneralTab", "4. Resolution Phase")).ToString());
+	content.Append(FText::FromString(TEXT("\n")).ToString());
+	content.Append(FText(LOCTEXT("DealGeneralTab", " - Factions can resolve each item (Accept/Deny/Change/Sabotage).")).ToString());
+	content.Append(FText::FromString(TEXT("\n")).ToString());
+	content.Append(FText(LOCTEXT("DealGeneralTab", " - Refer to the 'Resolution' tab.")).ToString());
+	content.Append(FText::FromString(TEXT("\n")).ToString());
+	content.Append(FText(LOCTEXT("DealGeneralTab", " - Regent can finish the deal.")).ToString());
+	content.Append(FText::FromString(TEXT("\n")).ToString());
+	content.Append(FText(LOCTEXT("DealGeneralTab", " - The next phase requires all points to be resolved.")).ToString());
+	content.Append(FText::FromString(TEXT("\n")).ToString());
+
+	content.Append(FText(LOCTEXT("DealGeneralTab", "5. Execution Phase")).ToString());
+	content.Append(FText::FromString(TEXT("\n")).ToString());
+	content.Append(FText(LOCTEXT("DealGeneralTab", " - Regent can execute the deal once before the game ends.")).ToString());
+	content.Append(FText::FromString(TEXT("\n")).ToString());
+	content.Append(FText(LOCTEXT("DealGeneralTab", " - Based on the resolution, all participants receive reputation.")).ToString());
+	content.Append(FText::FromString(TEXT("\n")).ToString());
+
+	return FText::FromString(content.ToString());
+}
 
 void UUDDealGeneralTabViewModel::Setup()
 {
@@ -45,11 +103,29 @@ void UUDDealGeneralTabViewModel::Setup()
 	SetLeaveText(leave);
 	FText cancel = FText(LOCTEXT("DealGeneralTab", "Cancel"));
 	SetCancelText(cancel);
-	
-	FText createContract = FText(LOCTEXT("DealGeneralTab", "Create Contract"));
-	SetCreateContractText(createContract);
-	FText executeContract = FText(LOCTEXT("DealGeneralTab", "Execute Contract"));
+
+	FText assemble = FText(LOCTEXT("DealGeneralTab", "Start Discussion"));
+	SetEndAssembleText(assemble);
+	FText define = FText(LOCTEXT("DealGeneralTab", "Start Vote"));
+	SetEndDefineText(define);
+	FText votePhase = FText(LOCTEXT("DealGeneralTab", "End Vote"));
+	SetEndVoteText(votePhase);
+	FText resolution = FText(LOCTEXT("DealGeneralTab", "Finish Deal"));
+	SetEndResolutionText(resolution);
+	FText executeContract = FText(LOCTEXT("DealGeneralTab", "Execute Deal"));
 	SetExecuteContractText(executeContract);
+
+	FText helpTitle = FText(LOCTEXT("DealGeneralTab", "Deal Process Guide"));
+	SetHelpTitleText(helpTitle);
+	FText help = ConstructDealHelp();
+	SetHelpText(help);
+
+	SetCanEndAssembleValue(false);
+	SetCanEndDefineValue(false);
+	SetCanEndVoteValue(false);
+	SetCanEndResolutionValue(false);
+	SetCanExecuteContractValue(false);
+	SetCanCloseDealValue(false);
 
 	TObjectPtr<AUDSkirmishHUD> hud = AUDSkirmishHUD::Get(GetWorld());
 	TObjectPtr<UUDViewModel> chatViewModel = hud->GetViewModelCollection(ChatViewModelInstanceName, ChatViewModelType);
@@ -75,12 +151,25 @@ void UUDDealGeneralTabViewModel::Refresh()
 	FText voteCount = FText::Format(LOCTEXT("DealGeneralTab", "Voted {0}/{1}"), dealInfo.VoteCount, dealInfo.ParticipantCount);
 	SetVoteCountText(voteCount);
 
+	UpdateExecution();
 	UpdateChatInstance();
 	UpdateParticipantItemList();
 	UpdateInviteItemList();
 }
 
 #undef LOCTEXT_NAMESPACE
+
+void UUDDealGeneralTabViewModel::UpdateExecution()
+{
+	FUDDealPhaseInfo dealPhaseInfo = Model->GetDealPhaseInfo(Content.DealId);
+
+	SetCanEndAssembleValue(dealPhaseInfo.CanEndAssemble);
+	SetCanEndDefineValue(dealPhaseInfo.CanEndDefine);
+	SetCanEndVoteValue(dealPhaseInfo.CanEndVote);
+	SetCanEndResolutionValue(dealPhaseInfo.CanEndResolution);
+	SetCanExecuteContractValue(dealPhaseInfo.CanEndExecute);
+	SetCanCloseDealValue(dealPhaseInfo.CanClose);
+}
 
 void UUDDealGeneralTabViewModel::ChangeReady()
 {
@@ -124,16 +213,43 @@ void UUDDealGeneralTabViewModel::Cancel()
 	UE_LOG(LogTemp, Log, TEXT("UUDDealGeneralTabViewModel: Cancel."));
 	if (IsModeratorValue)
 	{
-		Model->RequestAction(Model->GetAction(UUDDealActionResultClose::ActionTypeId, { Content.DealId }));
+		Model->RequestAction(Model->GetAction(UUDDealActionClose::ActionTypeId, { Content.DealId }));
 	}
 }
 
-void UUDDealGeneralTabViewModel::CreateContract()
+void UUDDealGeneralTabViewModel::EndAssemble()
 {
-	UE_LOG(LogTemp, Log, TEXT("UUDDealGeneralTabViewModel: CreateContract."));
+	UE_LOG(LogTemp, Log, TEXT("UUDDealGeneralTabViewModel: EndAssemble."));
 	if (IsModeratorValue)
 	{
-		Model->RequestAction(Model->GetAction(UUDDealActionContractCreate::ActionTypeId, { Content.DealId }));
+		Model->RequestAction(Model->GetAction(UUDDealActionEndStateAssemble::ActionTypeId, { Content.DealId }));
+	}
+}
+
+void UUDDealGeneralTabViewModel::EndDefine()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDDealGeneralTabViewModel: EndDefine."));
+	if (IsModeratorValue)
+	{
+		Model->RequestAction(Model->GetAction(UUDDealActionEndStateDefine::ActionTypeId, { Content.DealId }));
+	}
+}
+
+void UUDDealGeneralTabViewModel::EndVote()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDDealGeneralTabViewModel: EndVote."));
+	if (IsModeratorValue)
+	{
+		Model->RequestAction(Model->GetAction(UUDDealActionEndStateVote::ActionTypeId, { Content.DealId }));
+	}
+}
+
+void UUDDealGeneralTabViewModel::EndResolution()
+{
+	UE_LOG(LogTemp, Log, TEXT("UUDDealGeneralTabViewModel: EndResolution."));
+	if (IsModeratorValue)
+	{
+		Model->RequestAction(Model->GetAction(UUDDealActionEndStateResolution::ActionTypeId, { Content.DealId }));
 	}
 }
 
@@ -328,26 +444,6 @@ FText UUDDealGeneralTabViewModel::GetCancelText() const
 	return CancelText;
 }
 
-void UUDDealGeneralTabViewModel::SetExecuteContractText(FText newExecuteContractText)
-{
-	UE_MVVM_SET_PROPERTY_VALUE(ExecuteContractText, newExecuteContractText);
-}
-
-FText UUDDealGeneralTabViewModel::GetExecuteContractText() const
-{
-	return ExecuteContractText;
-}
-
-void UUDDealGeneralTabViewModel::SetCreateContractText(FText newCreateContractText)
-{
-	UE_MVVM_SET_PROPERTY_VALUE(CreateContractText, newCreateContractText);
-}
-
-FText UUDDealGeneralTabViewModel::GetCreateContractText() const
-{
-	return CreateContractText;
-}
-
 void UUDDealGeneralTabViewModel::SetParticipantItemList(FUDViewModelList newParticipantItemList)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(ParticipantItemList, newParticipantItemList);
@@ -376,4 +472,134 @@ void UUDDealGeneralTabViewModel::SetDealChatContent(FUDViewModelContent newDealC
 FUDViewModelContent UUDDealGeneralTabViewModel::GetDealChatContent() const
 {
 	return DealChatContent;
+}
+
+void UUDDealGeneralTabViewModel::SetExecuteContractText(FText newExecuteContractText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(ExecuteContractText, newExecuteContractText);
+}
+
+FText UUDDealGeneralTabViewModel::GetExecuteContractText() const
+{
+	return ExecuteContractText;
+}
+
+void UUDDealGeneralTabViewModel::SetEndResolutionText(FText newEndResolutionText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(EndResolutionText, newEndResolutionText);
+}
+
+FText UUDDealGeneralTabViewModel::GetEndResolutionText() const
+{
+	return EndResolutionText;
+}
+
+void UUDDealGeneralTabViewModel::SetEndVoteText(FText newEndVoteText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(EndVoteText, newEndVoteText);
+}
+
+FText UUDDealGeneralTabViewModel::GetEndVoteText() const
+{
+	return EndVoteText;
+}
+
+void UUDDealGeneralTabViewModel::SetEndDefineText(FText newEndDefineText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(EndDefineText, newEndDefineText);
+}
+
+FText UUDDealGeneralTabViewModel::GetEndDefineText() const
+{
+	return EndDefineText;
+}
+
+void UUDDealGeneralTabViewModel::SetEndAssembleText(FText newEndAssembleText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(EndAssembleText, newEndAssembleText);
+}
+
+FText UUDDealGeneralTabViewModel::GetEndAssembleText() const
+{
+	return EndAssembleText;
+}
+
+void UUDDealGeneralTabViewModel::SetHelpTitleText(FText newHelpTitleText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(HelpTitleText, newHelpTitleText);
+}
+
+FText UUDDealGeneralTabViewModel::GetHelpTitleText() const
+{
+	return HelpTitleText;
+}
+
+void UUDDealGeneralTabViewModel::SetHelpText(FText newHelpText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(HelpText, newHelpText);
+}
+
+FText UUDDealGeneralTabViewModel::GetHelpText() const
+{
+	return HelpText;
+}
+
+void UUDDealGeneralTabViewModel::SetCanExecuteContractValue(bool newCanExecuteContractValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(CanExecuteContractValue, newCanExecuteContractValue);
+}
+
+bool UUDDealGeneralTabViewModel::GetCanExecuteContractValue() const
+{
+	return CanExecuteContractValue;
+}
+
+void UUDDealGeneralTabViewModel::SetCanEndResolutionValue(bool newCanEndResolutionValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(CanEndResolutionValue, newCanEndResolutionValue);
+}
+
+bool UUDDealGeneralTabViewModel::GetCanEndResolutionValue() const
+{
+	return CanEndResolutionValue;
+}
+
+void UUDDealGeneralTabViewModel::SetCanEndVoteValue(bool newCanEndVoteValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(CanEndVoteValue, newCanEndVoteValue);
+}
+
+bool UUDDealGeneralTabViewModel::GetCanEndVoteValue() const
+{
+	return CanEndVoteValue;
+}
+
+void UUDDealGeneralTabViewModel::SetCanEndDefineValue(bool newCanEndDefineValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(CanEndDefineValue, newCanEndDefineValue);
+}
+
+bool UUDDealGeneralTabViewModel::GetCanEndDefineValue() const
+{
+	return CanEndDefineValue;
+}
+
+void UUDDealGeneralTabViewModel::SetCanEndAssembleValue(bool newCanEndAssembleValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(CanEndAssembleValue, newCanEndAssembleValue);
+}
+
+bool UUDDealGeneralTabViewModel::GetCanEndAssembleValue() const
+{
+	return CanEndAssembleValue;
+}
+
+void UUDDealGeneralTabViewModel::SetCanCloseDealValue(bool newCanCloseDealValue)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(CanCloseDealValue, newCanCloseDealValue);
+}
+
+bool UUDDealGeneralTabViewModel::GetCanCloseDealValue() const
+{
+	return CanCloseDealValue;
 }

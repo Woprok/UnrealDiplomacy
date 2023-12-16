@@ -87,7 +87,7 @@ TObjectPtr<UUDFactionState> UUDFactionState::CreateState(int32 factionId)
 TObjectPtr<UUDDealState> UUDDealState::CreateState(int32 dealId, int32 ownerId)
 {
 	TObjectPtr<UUDDealState> newState = NewObject<UUDDealState>();
-	newState->DealSimulationState = EUDDealSimulationState::CreatingDraft;
+	newState->DealSimulationState = EUDDealSimulationState::CreateAndAssemble;
 	newState->DealSimulationResult = EUDDealSimulationResult::Opened;
 	newState->UniqueDealId = dealId;
 	newState->OwnerUniqueId = ownerId;
@@ -98,6 +98,7 @@ TObjectPtr<UUDDealState> UUDDealState::CreateState(int32 dealId, int32 ownerId)
 	newState->IsReadyPlayerList.Empty(0);
 	newState->PositiveVotePlayerList.Empty(0);
 	newState->Name = FString::Format(TEXT("Deal {0}"), { dealId });
+	newState->CanBeExecuted = false;
 	return newState;
 }
 
@@ -124,7 +125,7 @@ TObjectPtr<UUDWorldState> UUDWorldState::CreateState(int32 playerId, EUDWorldPer
 	newState->Settings = FUDSettings();
 	newState->Settings.MapWidth = 5;
 	newState->Settings.MapHeight = 5;
-	newState->Settings.StratagemPoints = 3;
+	newState->Settings.StratagemPoints = 4;
 	newState->ImperialThrone = FUDThroneState(UUDGlobalData::GaiaFactionId);
 	return newState;
 }

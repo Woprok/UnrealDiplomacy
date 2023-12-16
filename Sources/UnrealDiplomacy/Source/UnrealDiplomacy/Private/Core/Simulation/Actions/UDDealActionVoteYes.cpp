@@ -9,7 +9,7 @@ bool UUDDealActionVoteYes::CanExecute(const FUDActionData& action, TObjectPtr<UU
 {
 	FUDDealData data(action.ValueParameters);
 	bool isNotVoting = !world->Deals[data.DealId]->PositiveVotePlayerList.Contains(action.InvokerFactionId);
-	bool isStateOpen = world->Deals[data.DealId]->DealSimulationState <= EUDDealSimulationState::Resolution;
+	bool isStateOpen = world->Deals[data.DealId]->DealSimulationState <= EUDDealSimulationState::FinalVote;
 	bool isResultOpen = world->Deals[data.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
 	return IUDActionInterface::CanExecute(action, world) && isNotVoting && isStateOpen && isResultOpen;
 }
