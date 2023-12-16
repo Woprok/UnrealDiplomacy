@@ -183,6 +183,11 @@ void AUDAIController::MakeAction(int32 actionId, TArray<int32> values)
 	OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetAction(actionId, values));
 }
 
+void AUDAIController::MakeAction(int32 actionId, FString text)
+{
+	OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetAction(actionId, text));
+}
+
 void AUDAIController::MakeConfirmAction(int32 decisionId)
 {
 	OnActionDecidedDelegate.ExecuteIfBound(GetAdministrator()->GetConfirmAction(decisionId));

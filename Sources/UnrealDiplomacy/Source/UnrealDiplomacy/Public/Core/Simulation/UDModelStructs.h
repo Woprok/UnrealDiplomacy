@@ -213,6 +213,8 @@ public:
 	FString FactionName = TEXT("");
 	UPROPERTY(BlueprintReadOnly)
 	bool CanInteract = false;
+	UPROPERTY(BlueprintReadOnly)
+	int32 UsurperId = -1;
 };
 
 USTRUCT(BlueprintType)
@@ -548,6 +550,10 @@ public:
 	bool HasChoices = true;
 	UPROPERTY(BlueprintReadOnly)
 	bool HasReject = false;
+	UPROPERTY(BlueprintReadOnly)
+	bool IsDemand = false;
+	UPROPERTY(BlueprintReadOnly)
+	int32 CreatorId = -1;
 public:
 	/** Equality over UniqueId field. */
 	inline bool operator!=(const FUDMessageInfo& rhs) const

@@ -125,7 +125,7 @@ TObjectPtr<UUDWorldState> UUDWorldState::CreateState(int32 playerId, EUDWorldPer
 	newState->Settings = FUDSettings();
 	newState->Settings.MapWidth = 5;
 	newState->Settings.MapHeight = 5;
-	newState->Settings.StratagemPoints = 4;
+	newState->Settings.StratagemPoints = 5;
 	newState->ImperialThrone = FUDThroneState(UUDGlobalData::GaiaFactionId);
 	return newState;
 }

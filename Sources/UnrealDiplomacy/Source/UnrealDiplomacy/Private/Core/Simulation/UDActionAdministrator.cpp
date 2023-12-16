@@ -481,7 +481,7 @@ FUDThroneInfo UUDActionAdministrator::GetThroneInfo()
 		info.CanInteract = false;
 		info.FactionName = State->Factions[State->ImperialThrone.Ruler]->Name;
 	}
-
+	info.UsurperId = State->ImperialThrone.Ruler;
 	return info;
 }
 
@@ -1126,6 +1126,7 @@ FUDMessageInfo UUDActionAdministrator::CreateMessageFromRequest(int32 decisionId
 	message.DecisionId = decisionId;
 	message.Content = CreateMessageContent(decision.ConfirmAction);
 	message.Type = GetFormattedDecisionType(decision.Type).ToString();
+	message.CreatorId = decision.CreatorId;
 
 	if (decision.HasDecline)
 	{
@@ -1138,6 +1139,8 @@ FUDMessageInfo UUDActionAdministrator::CreateMessageFromRequest(int32 decisionId
 		message.HasReject = false;
 	}
 	
+	message.IsDemand = decision.Type == EUDDecisionType::Demand;
+
 	message.HasChoices = decision.Type != EUDDecisionType::Gift;
 
 	return message;
@@ -1710,7 +1713,7 @@ TArray<FUDTileMinimalInfo> UUDActionAdministrator::GetNeutralTiles()
 
 	for (const auto& tileData : State->Map->Tiles)
 	{
-		if (IsNeutral(tileData->OwnerUniqueId))
+		if (!IsNeutral(tileData->OwnerUniqueId))
 			continue;
 		FUDTileMinimalInfo info;
 		info.Name = tileData->Name;

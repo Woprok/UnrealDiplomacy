@@ -105,6 +105,8 @@ protected:
 	/** Shortcut for executing actions. */
 	void MakeAction(int32 actionId, TArray<int32> values);
 	/** Shortcut for executing actions. */
+	void MakeAction(int32 actionId, FString text);
+	/** Shortcut for executing actions. */
 	void MakeConfirmAction(int32 decisionId);
 	/** Shortcut for executing actions. */
 	void MakeDeclineAction(int32 decisionId);
