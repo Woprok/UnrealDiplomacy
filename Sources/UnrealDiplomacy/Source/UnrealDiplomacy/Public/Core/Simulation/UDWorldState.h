@@ -619,11 +619,17 @@ public:
 	UPROPERTY()
 	TArray<int32> IsReadyPlayerList;
 	/**
-	 * List of players that selected yes in the vote phase.
-	 * This will be automatically resent on phase change.
+	 * List of players that selected yes in the vote phase (have to actively choose to vote).
+	 * Players in this list should never be in the Negative.
 	 */
 	UPROPERTY()
-	TArray<int32> PositiveVotePlayerList;
+	TSet<int32> PositiveVotePlayerList;
+	/**
+	 * List of players that selected no in the vote phase (also default position on join).
+	 * Players in this list should never be in the Positive.
+	 */
+	UPROPERTY()
+	TSet<int32> NegativeVotePlayerList;
 	/**
 	 * All actions that are required to be executed and their current state.
 	 * This is filled by an action and then updated by invoker for each action.
@@ -675,11 +681,17 @@ public:
 	UPROPERTY()
 	TArray<int32> FactionTurnOrder = { };
 	/**
-	 * Current Faction that is playing.
+	 * Current Faction that is playing as regent.
 	 * Default value is 0.
 	 */
 	UPROPERTY()
 	int32 RegentFaction = 0;
+	/**
+	 * Current Faction that is playing as regent.
+	 * Default value is false. Handled by create deals, reset by intermezzo end.
+	 */
+	UPROPERTY()
+	bool RegentCreatedDeal = false;
 	/**
 	 * Current turn, has no purpose other than flavor info.
 	 * Default value is 0.

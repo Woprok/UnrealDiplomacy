@@ -39,6 +39,8 @@ void UUDDealGeneralTabViewModel::Setup()
 	SetReadyText(ready);
 	FText vote = FText(LOCTEXT("DealGeneralTab", "Vote"));
 	SetVoteText(vote);
+	FText voteHelp = FText(LOCTEXT("DealGeneralTab", "Vote can be switched between Yes / No by repeated use, before vote phase is over."));
+	SetVoteHelpText(voteHelp);
 	FText leave = FText(LOCTEXT("DealGeneralTab", "Leave"));
 	SetLeaveText(leave);
 	FText cancel = FText(LOCTEXT("DealGeneralTab", "Cancel"));
@@ -70,7 +72,7 @@ void UUDDealGeneralTabViewModel::Refresh()
 	SetStateText(FText::FromString(dealInfo.State));
 	FText readyCount = FText::Format(LOCTEXT("DealGeneralTab", "Ready {0}/{1}"), dealInfo.ReadyCount, dealInfo.ParticipantCount);
 	SetReadyCountText(readyCount);
-	FText voteCount = FText::Format(LOCTEXT("DealGeneralTab", "Vote Yes {0}/{1}"), dealInfo.VoteCount, dealInfo.ParticipantCount);
+	FText voteCount = FText::Format(LOCTEXT("DealGeneralTab", "Voted {0}/{1}"), dealInfo.VoteCount, dealInfo.ParticipantCount);
 	SetVoteCountText(voteCount);
 
 	UpdateChatInstance();
@@ -294,6 +296,16 @@ void UUDDealGeneralTabViewModel::SetVoteText(FText newVoteText)
 FText UUDDealGeneralTabViewModel::GetVoteText() const
 {
 	return VoteText;
+}
+
+void UUDDealGeneralTabViewModel::SetVoteHelpText(FText newVoteHelpText)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(VoteHelpText, newVoteHelpText);
+}
+
+FText UUDDealGeneralTabViewModel::GetVoteHelpText() const
+{
+	return VoteHelpText;
 }
 
 void UUDDealGeneralTabViewModel::SetLeaveText(FText newLeaveText)

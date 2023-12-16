@@ -62,6 +62,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText VoteText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FText VoteHelpText;
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText LeaveText;
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FText CancelText;
@@ -106,6 +108,8 @@ private:
 	FText GetReadyText() const;
 	void SetVoteText(FText newVoteText);
 	FText GetVoteText() const;
+	void SetVoteHelpText(FText newVoteHelpText);
+	FText GetVoteHelpText() const;
 	void SetLeaveText(FText newLeaveText);
 	FText GetLeaveText() const;
 	void SetCancelText(FText newCancelText);

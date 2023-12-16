@@ -9,7 +9,9 @@ bool UUDDealActionVoteNo::CanExecute(const FUDActionData& action, TObjectPtr<UUD
 {
 	FUDDealData data(action.ValueParameters);
 	bool isVoting = world->Deals[data.DealId]->PositiveVotePlayerList.Contains(action.InvokerFactionId);
-	return IUDActionInterface::CanExecute(action, world) && isVoting;
+	bool isStateOpen = world->Deals[data.DealId]->DealSimulationState <= EUDDealSimulationState::Resolution;
+	bool isResultOpen = world->Deals[data.DealId]->DealSimulationResult <= EUDDealSimulationResult::Opened;
+	return IUDActionInterface::CanExecute(action, world) && isVoting && isStateOpen && isResultOpen;
 }
 void UUDDealActionVoteNo::Execute(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
@@ -17,6 +19,7 @@ void UUDDealActionVoteNo::Execute(const FUDActionData& action, TObjectPtr<UUDWor
 	// Revert to no vote.
 	FUDDealData data(action.ValueParameters);
 	world->Deals[data.DealId]->PositiveVotePlayerList.Remove(action.InvokerFactionId);
+	world->Deals[data.DealId]->NegativeVotePlayerList.Add(action.InvokerFactionId);
 }
 void UUDDealActionVoteNo::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
 {
@@ -24,4 +27,5 @@ void UUDDealActionVoteNo::Revert(const FUDActionData& action, TObjectPtr<UUDWorl
 	// Vote yes.
 	FUDDealData data(action.ValueParameters);
 	world->Deals[data.DealId]->PositiveVotePlayerList.Add(action.InvokerFactionId);
+	world->Deals[data.DealId]->NegativeVotePlayerList.Remove(action.InvokerFactionId);
 }

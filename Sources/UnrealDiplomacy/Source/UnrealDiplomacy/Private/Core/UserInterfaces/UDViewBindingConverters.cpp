@@ -22,6 +22,24 @@ ESlateVisibility UUDViewBindingConverters::BoolToCollapsed(bool InBool)
 	return ESlateVisibility::Visible;
 }
 
+ESlateVisibility UUDViewBindingConverters::BoolToHiddenVisible(bool InBool)
+{
+	if (InBool)
+	{
+		return ESlateVisibility::Visible;
+	}
+	return ESlateVisibility::Hidden;
+}
+
+ESlateVisibility UUDViewBindingConverters::BoolToHidden(bool InBool)
+{
+	if (InBool)
+	{
+		return ESlateVisibility::Hidden;
+	}
+	return ESlateVisibility::Visible;
+}
+
 bool UUDViewBindingConverters::VisibleToBool(ESlateVisibility InVisibility)
 {
 	switch (InVisibility)

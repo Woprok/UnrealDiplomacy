@@ -18,6 +18,7 @@ void UUDSystemActionIntermezzoEnd::Execute(const FUDActionData& action, TObjectP
 	IUDActionInterface::Execute(action, world);
 	// Deactivate intermezzo.
 	world->TurnData.IsIntermezzo = false;
+	world->TurnData.RegentCreatedDeal = false;
 	// Clear finish list
 	world->TurnData.TurnFinishedFactions.Empty();
 }
@@ -32,4 +33,6 @@ void UUDSystemActionIntermezzoEnd::Revert(const FUDActionData& action, TObjectPt
 	{
 		world->TurnData.TurnFinishedFactions.Add(faction);
 	}
+	// TODO proper revert for
+	// world->TurnData.RegentCreatedDeal = false;
 }

@@ -24,6 +24,13 @@ public:
 	static ESlateVisibility BoolToVisible(bool InBool);
 	UFUNCTION(BlueprintPure, meta = (DisplayName = "True as Collapsed Visibility", CompactNodeTitle = "BoolToInvisibility", BlueprintAutocast), Category = "Convertors")
 	static ESlateVisibility BoolToCollapsed(bool InBool);
+
+	UFUNCTION(BlueprintPure, meta = (DisplayName = "True as Visible Hidden Visibility", CompactNodeTitle = "HiddenBoolToVisbility", BlueprintAutocast), Category = "Convertors")
+	static ESlateVisibility BoolToHiddenVisible(bool InBool);
+	UFUNCTION(BlueprintPure, meta = (DisplayName = "True as Hidden Visibility", CompactNodeTitle = "HiddenBoolToInvisibility", BlueprintAutocast), Category = "Convertors")
+	static ESlateVisibility BoolToHidden(bool InBool);
+
+
 	UFUNCTION(BlueprintPure, meta = (DisplayName = "Visibility Visible To True", CompactNodeTitle = "VisibilityToBool", BlueprintAutocast), Category = "Convertors")
 	static bool VisibleToBool(ESlateVisibility InVisibility);
 	UFUNCTION(BlueprintPure, meta = (DisplayName = "Visibility Collapsed To True", CompactNodeTitle = "InVisibilityToBool", BlueprintAutocast), Category = "Convertors")

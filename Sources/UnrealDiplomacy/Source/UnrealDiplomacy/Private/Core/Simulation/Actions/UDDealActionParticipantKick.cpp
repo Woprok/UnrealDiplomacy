@@ -22,6 +22,8 @@ void UUDDealActionParticipantKick::Execute(const FUDActionData& action, TObjectP
 	FUDDealDataTarget data(action.ValueParameters);
 	world->Deals[data.DealId]->Participants.Remove(data.TargetId);
 	world->Deals[data.DealId]->BlockedParticipants.Add(data.TargetId);
+	world->Deals[data.DealId]->PositiveVotePlayerList.Remove(data.TargetId);
+	world->Deals[data.DealId]->NegativeVotePlayerList.Remove(data.TargetId);
 }
 
 void UUDDealActionParticipantKick::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -31,4 +33,6 @@ void UUDDealActionParticipantKick::Revert(const FUDActionData& action, TObjectPt
 	FUDDealDataTarget data(action.ValueParameters);
 	world->Deals[data.DealId]->BlockedParticipants.Remove(data.TargetId);
 	world->Deals[data.DealId]->Participants.Add(data.TargetId);
+	world->Deals[data.DealId]->PositiveVotePlayerList.Remove(data.TargetId);
+	world->Deals[data.DealId]->NegativeVotePlayerList.Add(data.TargetId);
 }

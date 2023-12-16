@@ -22,6 +22,7 @@ void UUDDealActionParticipantInvite::Execute(const FUDActionData& action, TObjec
 	// Queue new confirmable request.
 	FUDDealDataTarget data(action.ValueParameters);
 	world->Deals[data.DealId]->Participants.Add(data.TargetId);
+	world->Deals[data.DealId]->NegativeVotePlayerList.Add(data.TargetId);
 }
 
 void UUDDealActionParticipantInvite::Revert(const FUDActionData& action, TObjectPtr<UUDWorldState> world)
@@ -30,6 +31,7 @@ void UUDDealActionParticipantInvite::Revert(const FUDActionData& action, TObject
 	// Remove request from queue.
 	FUDDealDataTarget data(action.ValueParameters);
 	world->Deals[data.DealId]->Participants.Remove(data.TargetId);
+	world->Deals[data.DealId]->NegativeVotePlayerList.Remove(data.TargetId);
 }
 
 #define LOCTEXT_NAMESPACE "ParticipantInvite"
