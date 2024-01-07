@@ -131,6 +131,10 @@ public:
 	 */
 	void SetOverseeingState(TObjectPtr<UUDWorldState> overseeingState);
 	/**
+	 * Retrieves saved state. Returns nullptr, when state was not yet set.
+	 */
+	TObjectPtr<UUDWorldState> GetOverseeingState();
+	/**
 	 * Checks if the state functions are useable.
 	 */
 	bool IsOverseeingStatePresent();
@@ -175,7 +179,7 @@ public:
 	void SetManagers(TWeakObjectPtr<UUDSettingManager> settingManager, TWeakObjectPtr<UUDActionManager> actionManager);
 protected:
 	UPROPERTY()
-	TObjectPtr<UUDWorldState> State;
+	TObjectPtr<UUDWorldState> State = nullptr;
 	UPROPERTY()
 	TWeakObjectPtr<UUDSettingManager> SettingManager;
 	UPROPERTY()

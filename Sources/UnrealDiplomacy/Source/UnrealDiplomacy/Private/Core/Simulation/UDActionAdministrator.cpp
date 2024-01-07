@@ -42,6 +42,19 @@ void UUDActionAdministrator::SetOverseeingState(TObjectPtr<UUDWorldState> overse
 	}
 	State = overseeingState;
 }
+
+TObjectPtr<UUDWorldState> UUDActionAdministrator::GetOverseeingState()
+{
+	if (IsOverseeingStatePresent())
+	{
+		return State;
+	}
+	UE_LOG(LogTemp, Log,
+		TEXT("UUDActionAdministrator(%d): No state set."),
+		State->FactionPerspective);
+	return nullptr;
+}
+
 bool UUDActionAdministrator::IsOverseeingStatePresent()
 {
 	return IsValid(State);
@@ -1534,7 +1547,8 @@ FUDParameterListInfo UUDActionAdministrator::GetDealActionParametersWithValues(c
 			break;
 		case EUDParameterType::Tile:
 			parameters.OrderedData[i].Get<FUDTileParameter>().HasCurrentValue = true;
-			parameters.OrderedData[i].Get<FUDTileParameter>().CurrentValue = FIntPoint(data.ValueParameters[index++], data.ValueParameters[index++]);
+			parameters.OrderedData[i].Get<FUDTileParameter>().CurrentValue.X = data.ValueParameters[index++];
+			parameters.OrderedData[i].Get<FUDTileParameter>().CurrentValue.Y = data.ValueParameters[index++];
 			break;
 		case EUDParameterType::Action:
 			parameters.OrderedData[i].Get<FUDActionParameter>().HasCurrentValue = true;
@@ -1571,7 +1585,8 @@ FUDParameterListInfo UUDActionAdministrator::GeActionParametersWithValues(const 
 			break;
 		case EUDParameterType::Tile:
 			parameters.OrderedData[i].Get<FUDTileParameter>().HasCurrentValue = true;
-			parameters.OrderedData[i].Get<FUDTileParameter>().CurrentValue = FIntPoint(data.ValueParameters[index++], data.ValueParameters[index++]);
+			parameters.OrderedData[i].Get<FUDTileParameter>().CurrentValue.X = data.ValueParameters[index++];
+			parameters.OrderedData[i].Get<FUDTileParameter>().CurrentValue.Y = data.ValueParameters[index++];
 			break;
 		case EUDParameterType::Action:
 			parameters.OrderedData[i].Get<FUDActionParameter>().HasCurrentValue = true;
