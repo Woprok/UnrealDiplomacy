@@ -193,7 +193,7 @@ void AUDSkirmishAIController::ResolveDeals()
 		const auto participants = GetAdministrator()->GetDealParticipantList(deal.DealId);
 		bool hasEnemy = participants.ContainsByPredicate(
 			[this](const FUDDealFactionInfo& faction) {
-				return EnemyFactions.Contains(faction.DealId);
+				return EnemyFactions.Contains(faction.FactionId);
 			}
 		);
 		// friendly is only if it has no enemy.
