@@ -21,6 +21,7 @@ protected:
 	virtual void ProcessOutTurnPlay() override;
 	virtual void ProcessInTurnPlay() override;
 private:
+	void ResolveDeals();
 	void ResolveRequests();
 	/** Returns -1 if empty. */
 	int32 GetFirst(const TSet<int32>& iteratedSet);

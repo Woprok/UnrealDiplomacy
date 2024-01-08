@@ -52,14 +52,15 @@ TArray<FUDActionData> UUDDealActionContractCreate::FinalizeActions(TObjectPtr<UU
 
 TArray<FUDDiscussionAction> UUDDealActionContractCreate::WrapActions(TArray<FUDActionData> data)
 {
-	TArray<FUDDiscussionAction> dealActions;
+	TArray<FUDDiscussionAction> dealActions = { };
 	for (auto action : data)
 	{
 		dealActions.Add(FUDDiscussionAction(
 			action,
 			EUDDealActionResult::Unresolved,
 			false,
-			UUDGlobalData::InvalidActionId)
+			UUDGlobalData::InvalidActionId,
+			dealActions.Num())
 		);
 	}
 	return dealActions;

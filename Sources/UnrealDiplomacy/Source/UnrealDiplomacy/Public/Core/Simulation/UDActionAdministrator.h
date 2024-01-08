@@ -379,12 +379,14 @@ private:
 
 #pragma region Deals
 public:
-	/** Returns all active deals separated by active and history for current player. */
+	/** Returns all deals separated by active and history for current player. */
 	FUDDealListInfo GetAllLocalDeals();
 	/** Retrives chat for the local deal. */
 	TArray<FUDChatMessageInfo> GetDealChatHistory(int32 dealId);
 	/** Returns list of deals that can be used as parameter. */
 	TArray<FUDDealMinimalInfo> GetDealList();
+	/** Returns list of deals, in which state owner is participating. */
+	TArray<FUDDealMinimalInfo> GetActiveParticipatingDealList();
 	/** Returns deal phase info. */
 	FUDDealPhaseInfo GetDealPhaseInfo(int32 dealId);
 	/** Returns extended deal info. */
@@ -403,6 +405,8 @@ public:
 	TArray<FUDDealPointMinimalInfo> GetDealTertiaryPointList(int32 dealId, int32 pointId);
 	/** Retrieves all actions associated with the specified deal for execution. */
 	TArray<FUDDealActionMinimalInfo> GetDealActionList(int32 dealId);
+	/** Retrieves all actions associated with the specified deal for execution that are for local player and are not resolved by local player. */
+	TArray<FUDDealActionMinimalInfo> GetDealLocalUnresolvedActionList(int32 dealId);
 	/** Retrieves all actions that might be result of this deal. */
 	TArray<FUDActionData> GetDealPointsActions(int32 dealId);
 	/** Retrieves single point that can be used as editable content. */

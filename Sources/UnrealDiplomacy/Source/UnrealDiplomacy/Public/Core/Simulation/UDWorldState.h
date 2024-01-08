@@ -519,8 +519,8 @@ struct UNREALDIPLOMACY_API FUDDiscussionAction
 	GENERATED_BODY()
 public:
 	FUDDiscussionAction() {}
-	FUDDiscussionAction(FUDActionData action, EUDDealActionResult result, bool isSabotaged, int32 sabotageId) 
-		: Action(action), SelectedResult(result), WasSabotaged(isSabotaged), SabotageId(sabotageId) {}
+	FUDDiscussionAction(FUDActionData action, EUDDealActionResult result, bool isSabotaged, int32 sabotageId, int32 index) 
+		: Action(action), SelectedResult(result), WasSabotaged(isSabotaged), SabotageId(sabotageId), Index(index) {}
 	UPROPERTY(BlueprintReadOnly)
 	FUDActionData Action;
 	UPROPERTY(BlueprintReadOnly)
@@ -533,6 +533,8 @@ public:
 	bool WasSabotaged = false;
 	UPROPERTY(BlueprintReadOnly)
 	int32 SabotageId = -1;
+	UPROPERTY(BlueprintReadOnly)
+	int32 Index = -1;
 };
 
 /**

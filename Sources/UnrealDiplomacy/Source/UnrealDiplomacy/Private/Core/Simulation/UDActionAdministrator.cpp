@@ -1299,6 +1299,25 @@ TArray<FUDDealMinimalInfo> UUDActionAdministrator::GetDealList()
 	return deals;
 }
 
+TArray<FUDDealMinimalInfo> UUDActionAdministrator::GetActiveParticipatingDealList()
+{
+	TArray<FUDDealMinimalInfo> deals = { };
+
+	for (const auto& dealDetail : State->Deals)
+	{
+		if (dealDetail.Value->DealSimulationResult == EUDDealSimulationResult::Opened &&
+			dealDetail.Value->Participants.Contains(State->FactionPerspective))
+		{
+			FUDDealMinimalInfo deal;
+			deal.DealId = dealDetail.Key;
+			deal.Name = dealDetail.Value->Name;
+			deals.Add(deal);
+		}
+	}
+
+	return deals;
+}
+
 #define LOCTEXT_NAMESPACE "DealStateConvertor"
 
 FText UUDActionAdministrator::GetStateName(EUDDealSimulationState state, EUDDealSimulationResult result)
@@ -1480,10 +1499,30 @@ TArray<FUDDealActionMinimalInfo> UUDActionAdministrator::GetDealActionList(int32
 	for (const auto& item : State->Deals[dealId]->DealActionList)
 	{
 		FUDDealActionMinimalInfo info = FUDDealActionMinimalInfo();
-		info.ActionIndex = actions.Num();
+		info.ActionIndex = item.Index;
 		info.DealId = dealId;
 
 		actions.Add(info);
+	}
+
+	return actions;
+}
+
+TArray<FUDDealActionMinimalInfo> UUDActionAdministrator::GetDealLocalUnresolvedActionList(int32 dealId)
+{
+	TArray<FUDDealActionMinimalInfo> actions = { };
+
+	for (const auto& item : State->Deals[dealId]->DealActionList)
+	{
+		// Checks for local is executor and action is not resolved yet.
+		if (item.Action.InvokerFactionId == State->FactionPerspective && item.SelectedResult == EUDDealActionResult::Unresolved)
+		{
+			FUDDealActionMinimalInfo info = FUDDealActionMinimalInfo();
+			info.ActionIndex = item.Index;
+			info.DealId = dealId;
+
+			actions.Add(info);
+		}
 	}
 
 	return actions;

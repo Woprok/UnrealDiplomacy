@@ -22,6 +22,13 @@
 #include "Core/Simulation/Resources/UDGameResourceManpower.h"
 #include "Core/Simulation/Resources/UDGameResourceLuxuries.h"
 
+#include "Core/Simulation/Actions/UDDealActionEndStateDefine.h"
+#include "Core/Simulation/Actions/UDDealActionEndStateVote.h"
+#include "Core/Simulation/Actions/UDDealActionVoteNo.h"
+#include "Core/Simulation/Actions/UDDealActionVoteYes.h"
+#include "Core/Simulation/Actions/UDDealActionContractPointAccept.h"
+#include "Core/Simulation/Actions/UDDealActionContractPointReject.h"
+
 // This AI is very naive and basically accepts everything it can.
 // Then it provides boon to anyone who gave it gift, but she has short memory so be last.
 // She also hates usurpers and will attack them.
@@ -44,6 +51,8 @@ void AUDSkirmishAIController::ProcessOutTurnPlay()
 {
 	// Resolve requests
 	ResolveRequests();
+	// Do necessary to accept/reject deal.
+	ResolveDeals();
 }
 
 int32 AUDSkirmishAIController::GetFirst(const TSet<int32>& iteratedSet)
@@ -69,6 +78,8 @@ void AUDSkirmishAIController::ProcessInTurnPlay()
 {
 	// Resolve requests
 	ResolveRequests();
+	// Do necessary to accept/reject deal.
+	ResolveDeals();
 
 	const auto res = GetAdministrator()->GetLocalFactionResourceList();
 	const auto throne = GetAdministrator()->GetThroneInfo();
@@ -165,5 +176,51 @@ void AUDSkirmishAIController::ResolveRequests()
 		}
 
 		MakeConfirmAction(request.DecisionId);
+	}
+}
+
+void AUDSkirmishAIController::ResolveDeals()
+{
+	bool isFriendlyDeal = true;
+	// AI will generally vote yes and accept all points.
+	// AI will vote no and reject all points if it considers any player enemy.
+
+	for (const auto& deal : GetAdministrator()->GetActiveParticipatingDealList())
+	{
+		// Resolve each deal, by looking directly into the state
+		// TODO this needs to be exchanged for mdoel functions.
+		// Looking up the state was added only as temporary solution.
+		const auto participants = GetAdministrator()->GetDealParticipantList(deal.DealId);
+		bool hasEnemy = participants.ContainsByPredicate(
+			[this](const FUDDealFactionInfo& faction) {
+				return EnemyFactions.Contains(faction.DealId);
+			}
+		);
+		// friendly is only if it has no enemy.
+		isFriendlyDeal = !hasEnemy;
+
+		const auto state = GetAdministrator()->GetOverseeingState()->Deals[deal.DealId]->DealSimulationState;
+		const auto dealInfo = GetAdministrator()->GetDealInfo(deal.DealId);
+		// handle vote phase
+		if (state == EUDDealSimulationState::FinalVote)
+		{
+			if (isFriendlyDeal && !dealInfo.LocalVote)
+			{
+				MakeAction(UUDDealActionVoteYes::ActionTypeId, { deal.DealId });
+			}
+			else if (!isFriendlyDeal && dealInfo.LocalVote)
+			{
+				MakeAction(UUDDealActionVoteNo::ActionTypeId, { deal.DealId });
+			}
+		}
+		else if (state == EUDDealSimulationState::ResolutionOfPoints)
+		{
+			// Always accepts as the no option is impossible to trigger for AI as it accepts immediately after phase change.
+			// Handles only unresolved request for this AI. Never attempts to sabotage or change them.
+			for (const auto& action : GetAdministrator()->GetDealLocalUnresolvedActionList(deal.DealId))
+			{
+				MakeAction(UUDDealActionContractPointAccept::ActionTypeId, { deal.DealId, action.ActionIndex });
+			}
+		}
 	}
 }

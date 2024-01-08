@@ -9,24 +9,7 @@ FText ConstructNews()
 {
 	TStringBuilder<128> content;
 
-	content.Append(FText(LOCTEXT("News", "You are playing an early development build.")).ToString());
-	content.Append(FText::FromString(TEXT("\n")).ToString());
-	content.Append(FText(LOCTEXT("News", "Features may be missing or incomplete.")).ToString());
-	content.Append(FText::FromString(TEXT("\n")).ToString());
-	content.Append(FText(LOCTEXT("News", "Be prepared for:")).ToString());
-	content.Append(FText::FromString(TEXT("\n")).ToString());
-	content.Append(FText(LOCTEXT("News", " - Bugs")).ToString());
-	content.Append(FText::FromString(TEXT("\n")).ToString());
-	content.Append(FText(LOCTEXT("News", " - Lack of feedback upon button click")).ToString());
-	content.Append(FText::FromString(TEXT("\n")).ToString());
-	content.Append(FText(LOCTEXT("News", " - Lack of tooltips")).ToString());
-	content.Append(FText::FromString(TEXT("\n")).ToString());
-	content.Append(FText(LOCTEXT("News", " - Incorrect descriptions")).ToString());
-	content.Append(FText::FromString(TEXT("\n")).ToString());
-	content.Append(FText(LOCTEXT("News", " - Lack of balance")).ToString());
-	content.Append(FText::FromString(TEXT("\n")).ToString());
-	content.Append(FText(LOCTEXT("News", " - Referring to gameplay documentation for details")).ToString());
-	content.Append(FText::FromString(TEXT("\n")).ToString());
+	content.Append(FText(LOCTEXT("News", "You are playing a prototype of the Koruna.")).ToString());
 
 	return FText::FromString(content.ToString());
 }

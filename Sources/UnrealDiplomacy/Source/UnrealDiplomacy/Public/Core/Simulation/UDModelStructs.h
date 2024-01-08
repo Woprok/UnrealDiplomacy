@@ -14,9 +14,9 @@ struct FUDDealMinimalInfo
 public:
 	FUDDealMinimalInfo();
 	UPROPERTY(BlueprintReadOnly)
-		int32 DealId = 0;
+	int32 DealId = 0;
 	UPROPERTY(BlueprintReadOnly)
-		FString Name = TEXT("");
+	FString Name = TEXT("");
 public:
 	/** Equality over UniqueId field. */
 	inline bool operator!=(const FUDDealMinimalInfo& rhs) const
