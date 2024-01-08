@@ -1,9 +1,4 @@
-Shield: [![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
-
-This work is licensed under a
-[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License][cc-by-nc-sa].
-
-[![CC BY-NC-SA 4.0][cc-by-nc-sa-image]][cc-by-nc-sa]
+[![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
 
 [cc-by-nc-sa]: http://creativecommons.org/licenses/by-nc-sa/4.0/
 [cc-by-nc-sa-image]: https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png
@@ -11,5 +6,5 @@ This work is licensed under a
 
 # Koruna - UnrealDiplomacy
 
-This project was developed as part of the Bachelor's Thesis on a topic of Diplomacy-based strategy game.   
+This project was developed as part of the Bachelor's Thesis on a topic of Diplomacy-based strategy game at [MFF UK](https://www.mff.cuni.cz/en).  
 The latest release includes the thesis text, which is recommended for gaining familiarity with the project.
