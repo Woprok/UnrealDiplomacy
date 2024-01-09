@@ -35,16 +35,18 @@ TArray<FUDActionData> UUDDealActionEndStateDefine::GetContinuations(const FUDAct
 {
 	TArray<FUDActionData> actions = { };
 	FUDDealData data(parentAction.ValueParameters);
-	int32 partCount = world->Deals[data.DealId]->Participants.Num();
-	int32 okCount = world->Deals[data.DealId]->PositiveVotePlayerList.Num();
+	// Contract is created before vote ends, thus this check is never going to succeed
+	// If contract is created after vote, then this condition is fine.
+	//int32 partCount = world->Deals[data.DealId]->Participants.Num();
+	//int32 okCount = world->Deals[data.DealId]->PositiveVotePlayerList.Num();
 	// Deal Passed, thus create contract
-	if (partCount == okCount)
-	{
+	//if (partCount == okCount)
+	//{
 		actions.Add(FUDActionData(
 			UUDDealActionContractCreate::ActionTypeId,
 			world->Deals[data.DealId]->OwnerUniqueId,
 			{ data.DealId }
 		));
-	}
+	//}
 	return actions;
 }
