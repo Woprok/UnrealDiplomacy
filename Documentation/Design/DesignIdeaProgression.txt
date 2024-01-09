@@ -1,0 +1,45 @@
+---------------------------------------------------------------------------------------------------------------------
+-- Idea 1
+---------------------------------------------------------------------------------------------------------------------
+Téma: Grand Strategy Game s fantasy tématikou.
+GSG sú komplikovanejšie hry s veľkým množstvom mechaník od ekonomického manažmentu krajiny až po diplomatické a vojenské vzťahy s ostatnými krajinami.
+Hráč ovláda jednu z krajín vo svete a AI ovládajú ostatné krajiny.
+
+Jednou z oblastí, ktoré v moderných GSG ako Europa Universalis 4 a ďalších (primárne sú to hry od Paradox Development Studio) chýba je AI schopná akceptovať zložitejšie mierové dohody na konci vojenských konfliktov, kde obe strany stratia niečo aby mohli dosiahnuť svojho cieľa a potenciálne tak predišli opakovaným konfliktom (napr. územie vo výmene za územie, kvôli ktorému sa vo vojne ocitli.) Určite by sa dali nájsť aj ďalšie komplikácie...
+
+Prečo Fantasy: Primárne pretože by som chcel generovať svet a krajiny na začiatku hry, fantasy mi zároveň umožňuje urobiť politickú situáciu zaujímavejšiu, kedže národy môžu byť rôznorodejšie a okupovať môžu rôzne všetky časti sveta. 
+Zároveň chcem v diplomacii umožniť ako pre hráča aj AI brať rôzne časti území. Niečo na štýl kreslenia na mape ako vyzerá územie, ktoré chce hráč/AI prebrať, miesto statických oblastí určených na začiatku hry.
+
+Cieľom práce by v rámci ročníkového projektu bolo vytvoriť kostru hry a v rámci pokračovania ako bakalárskej práce snaha spraviť AI schopnú  aspoň trochu diplomacie aby dokázala poskytnúť výzvu hráčovi v jeho snahe prezvať vládu nad celým svetom.
+---------------------------------------------------------------------------------------------------------------------
+-- Idea 2
+---------------------------------------------------------------------------------------------------------------------
+Ciel implementacie:
+Vytvoriť čo najjednoduchšiu ťahovú stratégiu. (Inšpiráciu by som bral z Civilization/Stellaris atď., kde všetko čo nie je relevantné k diplomatickej stránke bude zjednodušené alebo vynechané) 
+Hlavnou mechanikou bude možnosť vyjednávanie medzi viacerými hráčmi súčasne. Každý hráč môže navrhnúť/upresniť čo ponúka a čo vyžaduje, alebo prizvať ďalšieho člena do diskusie, čím efektívne zväčší počet strán vo vyjednávaní.
+(Príklad by mohol byť napríklad: Ak hráč A chce X od hráča B, tak hráč B má možnosť POTVRDIŤ / ZAMIETNUŤ / VYJEDNÁVAŤ. Pokiaľ sa rozhodne vyjednávať tak môže navrhnúť úpravu, vrátane prizvania dalšieho člena. Iný príklad by mohol byť, že hráč chce od viacerých hráčov niečo súčasne a jednal by s nimi všetkými v rámci jednej dohody, napriklad pridať sa do existujúcej Aliancie.)
+
+Ide prakticky o Multi-Player Multi-Issue Negotiations, k čomu existujú aj články, ktoré sa zameriavajú primárne na AI napr. https://is.ieis.tue.nl/staff/yqzhang/wp-content/uploads/2016/02/multiplayer.pdf alebo https://www.ri.cmu.edu/pub_files/2013/3/negotiation_no_knowledge.pdf .
+Tieto články to neskúmajú v rámci videohier.
+
+Prečo to je zajímavé:
+Z mojej znalosti som nevidel a nenašiel hru, ktorá by to mala implementované ako hernú mechaniku. V súčasných hrach je toto možné iba diskusiou mimo hru.
+Prípadne hladanie vedie k AI/Botom pre Diplomacy. (K Diplomacy sa dá nájsť toho dosť, keďže je viacero článkov o implementácii botov s rôznymi cielmi, napr. https://github.com/rowatc/Diplomacy-AI)
+---------------------------------------------------------------------------------------------------------------------
+-- Idea 3
+---------------------------------------------------------------------------------------------------------------------
+Predtim z pohľadu mierových rokovaní po konflikte. Teraz ako "Multi-Player Multi-Issue Negotiations".
+
+Idea/Cieľ je stále rovnaký strategická hra zameraná na diplomaciu + AI.
+
+Nultá časť:
+Ťahová strategická hra inšpirovaná Civilization / Europa Universalis 4  / Stellaris aby v nej bolo možne mať zmysluplnú diplomaciu. (Herné mechaniky, ktoré pôjde zjednodušiť/vynechať budú zjednodušené/vynechané)
+
+Prvá časť je:
+Diplomacia, pod ktorou si predstavujem zložitejšie dohody/zmluvy/vyjednávania než sú v dnešných videohrách, ale o "tradičných" položkách ktoré sa nájdu v GSG a 4X hrách (suroviny, vzťahy[aliancia, pakt, vazalizácia atď...], teritória).
+Teda diplomacia v ktorej ide vyjednávať a robiť dohody
+- Medzi 2+ hráčmi / stranami. Počet diskutujúcich sa môže meniť, aktuálny diskutujúci môžu prizvať niekoho ďalšieho ale odísť.
+- Každá strana vo finálnej dohode, buď niečo získa, stratí alebo oboje súčasne.
+
+Druhá časť je:
+AI, ktorá bude schopná hrať samotnú hru a aspoň naivne sa zapojiť do diplomacie. 
