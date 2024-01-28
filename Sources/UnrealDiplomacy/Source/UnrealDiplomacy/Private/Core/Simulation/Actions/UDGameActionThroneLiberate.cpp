@@ -85,7 +85,7 @@ FUDActionPresentation UUDGameActionThroneLiberate::GetPresentation() const
 		}
 	);
 	presentation.DealContentFormat = FText(LOCTEXT("ThroneLiberate",
-		"Faction [{INVOKER}] will attempt to liberate the throne from usurper hands with his armny."
+		"Faction [{INVOKER}] will attempt to liberate the throne from usurper hands with his army."
 	)).ToString();
 
 	return presentation;

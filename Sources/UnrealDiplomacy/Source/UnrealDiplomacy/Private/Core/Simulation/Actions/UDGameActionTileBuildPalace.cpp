@@ -94,7 +94,7 @@ FUDActionPresentation UUDGameActionTileBuildPalace::GetPresentation() const
 		"Faction [{INVOKER}] builds Palace on province [{TILE}] owned by [{TARGET}]."
 	)).ToString();
 	presentation.DealContentFormat = FText(LOCTEXT("TileBuildPalace",
-		"Faction [{INVOKER}] will build Palace on province [{TILE}] owned by [{TARGET}]."
+		"Faction [{INVOKER}] will build Palace on province [{TILE}]."
 	)).ToString();
 
 	return presentation;
